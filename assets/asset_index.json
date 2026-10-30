@@ -1,0 +1,62 @@
+[
+ {
+  "file": "assets/fonts/fusion_pixel_12_ja.woff2",
+  "source": "fusion-pixel-font/fonts/fusion_pixel_12_ja.woff2",
+  "license_id": "fusion_pixel_font",
+  "sha256": "032f031a2f97b978160e6623453e4cb7b95c200db9d5e856dca8d7a6be93432c"
+ },
+ {
+  "file": "assets/fonts/fusion_pixel_12_ko.woff2",
+  "source": "fusion-pixel-font/fonts/fusion_pixel_12_ko.woff2",
+  "license_id": "fusion_pixel_font",
+  "sha256": "d245e57082e5f2fc06a9ae3985eaf7da80c9b4bb5e6a440d6709a9ff7cc03c47"
+ },
+ {
+  "file": "assets/fonts/fusion_pixel_12_latin.woff2",
+  "source": "fusion-pixel-font/fonts/fusion_pixel_12_latin.woff2",
+  "license_id": "fusion_pixel_font",
+  "sha256": "93352f2008fc7ca29e71862ecf92080cd3a21ae07c7fef1193b35a7c4524dd4a"
+ },
+ {
+  "file": "assets/fonts/fusion_pixel_12_zh_hans.woff2",
+  "source": "fusion-pixel-font/fonts/fusion_pixel_12_zh_hans.woff2",
+  "license_id": "fusion_pixel_font",
+  "sha256": "04e18ed9d94a9cb7a58850d4270d91d6b1879c4a9212eb6f84623698db2d908f"
+ },
+ {
+  "file": "assets/fonts/fusion_pixel_12_zh_tw.woff2",
+  "source": "fusion-pixel-font/fonts/fusion_pixel_12_zh_tw.woff2",
+  "license_id": "fusion_pixel_font",
+  "sha256": "a7754e7683aec659465e9b8e8f85e96f4c9546172a535bbf466ebb382877354b"
+ },
+ {
+  "file": "assets/licenses_src/fusion_pixel_OFL.txt",
+  "source": "fusion-pixel-font/licenses/fusion_pixel_OFL.txt",
+  "license_id": "fusion_pixel_font",
+  "sha256": "bc518cf64b8032c07690f33cc270c35c179255a6ac8efa7c165ebae7e8f76a63"
+ },
+ {
+  "file": "assets/licenses_src/fusion_pixel_upstream_ark_pixel_OFL.txt",
+  "source": "fusion-pixel-font/licenses/fusion_pixel_upstream_ark_pixel_OFL.txt",
+  "license_id": "fusion_pixel_font",
+  "sha256": "3ab41567e68e3988ba1ef16dd2644eca95ca5648ea12e7d46e6287fc0bbe5aee"
+ },
+ {
+  "file": "assets/licenses_src/fusion_pixel_upstream_cubic_11_OFL.txt",
+  "source": "fusion-pixel-font/licenses/fusion_pixel_upstream_cubic_11_OFL.txt",
+  "license_id": "fusion_pixel_font",
+  "sha256": "2b6e5938e5cffa0b9e183bd05f8c363e174e7ebed1a0556e2855fd1707fa2188"
+ },
+ {
+  "file": "assets/licenses_src/fusion_pixel_upstream_galmuri_LICENSE.txt",
+  "source": "fusion-pixel-font/licenses/fusion_pixel_upstream_galmuri_LICENSE.txt",
+  "license_id": "fusion_pixel_font",
+  "sha256": "86a3ee9495f942f0243f18c103da9faca27adb88142613edb8bb852e56c892c1"
+ },
+ {
+  "file": "assets/licenses_src/kenney_License.txt",
+  "source": "kenney/pixel-shmup/License.txt",
+  "license_id": "kenney_art",
+  "sha256": "6872b1de22d4575086a712fda36a3e6735c5f85c4d3bfcc06e8508232574da11"
+ }
+]

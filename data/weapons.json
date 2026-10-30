@@ -1,0 +1,6 @@
+[
+	{"id": "pulsar", "name_key": "weapon.pulsar", "orb_color": "blue", "dps": [60, 90, 130, 175]},
+	{"id": "laser", "name_key": "weapon.laser", "orb_color": "cyan", "dps": [60, 90, 130, 175]},
+	{"id": "plasma", "name_key": "weapon.plasma", "orb_color": "violet", "dps": [60, 90, 130, 175]},
+	{"id": "railgun", "name_key": "weapon.railgun", "orb_color": "gold", "dps": [60, 90, 130, 175]}
+]

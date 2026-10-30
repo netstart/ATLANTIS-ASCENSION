@@ -1,0 +1,27 @@
+key,pt_BR,en,es,de,fr,ru,id,ja,ko,zh_TW,zh_CN
+boot.credits,Créditos,Credits,Créditos,Mitwirkende,Crédits,Авторы,Kredit,クレジット,크레딧,製作名單,制作名单
+boot.dev_build,Versão de desenvolvimento %s,Development build %s,Versión de desarrollo %s,Entwicklungsversion %s,Version de développement %s,Версия для разработки %s,Versi pengembangan %s,開発版 %s,개발 버전 %s,開發版本 %s,开发版本 %s
+boot.tagline,O oceano se lembra. O céu pertence a quem sobreviver.,The ocean remembers. The sky belongs to whoever survives.,El océano recuerda. El cielo es de quien sobreviva.,"Der Ozean erinnert sich. Der Himmel gehört dem, der überlebt.",L'océan se souvient. Le ciel appartient à qui survivra.,"Океан помнит. Небо принадлежит тому, кто выживет.",Lautan mengingat. Langit milik siapa pun yang bertahan.,海は覚えている。空は生き残った者のものだ。,바다는 기억한다. 하늘은 살아남은 자의 것이다.,海洋記得一切。天空屬於倖存者。,海洋记得一切。天空属于幸存者。
+credits.back,Voltar,Back,Volver,Zurück,Retour,Назад,Kembali,戻る,뒤로,返回,返回
+credits.game_by,"Design, programação e direção: %s","Design, programming and direction: %s","Diseño, programación y dirección: %s","Design, Programmierung und Regie: %s","Conception, programmation et direction : %s","Дизайн, программирование и руководство: %s","Desain, pemrograman, dan arahan: %s",デザイン・プログラム・ディレクション：%s,"디자인, 프로그래밍, 디렉션: %s",設計、程式與總監：%s,设计、程序与总监：%s
+credits.license,%s · licença %s,%s · license %s,%s · licencia %s,%s · Lizenz %s,%s · licence %s,%s · лицензия %s,%s · lisensi %s,%s・ライセンス %s,%s · 라이선스 %s,%s・授權 %s,%s・许可 %s
+credits.section_art,Arte,Art,Arte,Grafik,Graphismes,Графика,Seni,アート,아트,美術,美术
+credits.section_fonts,Fontes,Fonts,Fuentes,Schriftarten,Polices,Шрифты,Fon,フォント,글꼴,字型,字体
+credits.section_music,Música,Music,Música,Musik,Musique,Музыка,Musik,音楽,음악,音樂,音乐
+credits.section_sfx,Efeitos sonoros,Sound effects,Efectos de sonido,Soundeffekte,Effets sonores,Звуковые эффекты,Efek suara,効果音,효과음,音效,音效
+credits.section_tech,Tecnologia,Technology,Tecnología,Technologie,Technologie,Технологии,Teknologi,テクノロジー,기술,技術,技术
+credits.title,Créditos,Credits,Créditos,Mitwirkende,Crédits,Авторы,Kredit,クレジット,크레딧,製作名單,制作名单
+options.gfx_auto_level,Auto (%s),Auto (%s),Auto (%s),Auto (%s),Auto (%s),Авто (%s),Otomatis (%s),自動（%s）,자동 (%s),自動（%s）,自动（%s）
+options.gfx_high,Alta,High,Alta,Hoch,Haute,Высокое,Tinggi,高,높음,高,高
+options.gfx_low,Baixa,Low,Baja,Niedrig,Basse,Низкое,Rendah,低,낮음,低,低
+options.gfx_medium,Média,Medium,Media,Mittel,Moyenne,Среднее,Sedang,中,중간,中,中
+ship.atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas
+ship.falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon
+ship.hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra
+ship.manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta
+ship.tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest
+ship.trident,Tridente,Trident,Tridente,Dreizack,Trident,Трезубец,Trisula,トライデント,트라이던트,三叉戟,三叉戟
+weapon.laser,Laser,Laser,Láser,Laser,Laser,Лазер,Laser,レーザー,레이저,雷射,激光
+weapon.plasma,Plasma,Plasma,Plasma,Plasma,Plasma,Плазма,Plasma,プラズマ,플라스마,電漿,等离子
+weapon.pulsar,Pulsar,Pulsar,Púlsar,Pulsar,Pulsar,Пульсар,Pulsar,パルサー,펄서,脈衝,脉冲
+weapon.railgun,Railgun,Railgun,Cañón de riel,Railgun,Canon électromagnétique,Рельсотрон,Railgun,レールガン,레일건,磁軌砲,磁轨炮

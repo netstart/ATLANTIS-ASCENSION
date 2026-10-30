@@ -1,0 +1,14 @@
+[
+	{"id": "falcon", "name_key": "ship.falcon", "role": "balanced", "signature": "pulsar", "special": "area_bomb",
+		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "1.0"},
+	{"id": "manta", "name_key": "ship.manta", "role": "precision", "signature": "laser", "special": "focused_burst",
+		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "1.0"},
+	{"id": "hydra", "name_key": "ship.hydra", "role": "missiles", "signature": "pulsar", "special": "drone_swarm",
+		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 1.0, "release": "1.0"},
+	{"id": "tempest", "name_key": "ship.tempest", "role": "speed", "signature": "laser", "special": "emp_pulse",
+		"hull": 3, "speed": 1.2, "hitbox": 2.5, "fire_rate": 1.0, "release": "1.0"},
+	{"id": "trident", "name_key": "ship.trident", "role": "area_control", "signature": "plasma", "special": "gravity_rift",
+		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 0.9, "release": "1.0"},
+	{"id": "atlas", "name_key": "ship.atlas", "role": "defense", "signature": "railgun", "special": "tide_shield",
+		"hull": 4, "speed": 0.9, "hitbox": 3.5, "fire_rate": 0.9, "release": "1.0"}
+]

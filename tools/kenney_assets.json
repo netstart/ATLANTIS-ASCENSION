@@ -1,0 +1,8 @@
+{
+	"pack_root": "kenney",
+	"license_id": "kenney_art",
+	"note": "Packs Kenney (CC0) do Vertical Slice. Por enquanto só o aviso de licença; sprites, partículas, UI e ícones entram com o uso (pastas assets/art/kenney/*).",
+	"files": {
+		"pixel-shmup/License.txt": "licenses_src/kenney_License.txt"
+	}
+}

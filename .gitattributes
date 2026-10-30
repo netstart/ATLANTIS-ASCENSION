@@ -1,0 +1,14 @@
+# Texto sempre com LF no repositório e na cópia de trabalho (scripts, dados, docs).
+* text=auto eol=lf
+# Scripts do PowerShell 5.1 e .bat precisam de CRLF no Windows.
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+# Textos de licença: tools/fetch_licenses.py compara o conteúdo byte a byte.
+licenses/** text eol=lf
+# Snapshots de origem e binários: o hash em licenses/registry.json vale para os bytes exatos.
+docs/licenses/** -text
+*.png binary
+*.woff2 binary
+*.ogg binary
+*.wav binary
+*.zip binary

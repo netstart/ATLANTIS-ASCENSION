@@ -8,16 +8,21 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 ## Estado atual (30/10/2026)
 
 - ✅ Planejamento: plano mestre, catálogo de assets, pesquisa de mercado, políticas e AGENTS.md.
+- ✅ Fase 0 concluída (versão `0.0.1`), exceto o Android SDK (⚠️ abaixo). `tools/run_checks.ps1`: `TUDO OK`
+  (433 verificações de regras, 8.472 de integração e layout, 26 textos x 11 idiomas, 20 componentes de licença).
 - ⚠️ `CLAUDE.md` não é link simbólico: o Windows negou o `mklink` sem privilégio. O arquivo importa o `AGENTS.md`
   com `@AGENTS.md`. Para o link real, ative o Modo de Desenvolvedor do Windows e rode
   `git config core.symlinks true` e `cmd /c mklink CLAUDE.md AGENTS.md` no lugar do arquivo atual.
-- ⚠️ Ferramentas ausentes na máquina: Godot 4.7.2, gdtoolkit, Android SDK, JDK 17.
-- ⬜ Implementação: nada começado. Próximo passo é a Fase 0.
+- ⚠️ Android SDK não instalado: o `sdkmanager` exige que o mantenedor aceite as licenças do Google. Rode
+  `powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1` (instala os pacotes que o Godot 4.7 pede e
+  aponta o editor para o JDK e o SDK). Sem ele, o export Android não roda; o resto da Fase 0 não depende dele.
+- ⬜ Próximo passo: Fase 1 (Vertical Slice).
 
 ## Decisões pendentes do mantenedor
 
 - ⬜ Ratificar CC-BY-3.0 e OGA-BY-3.0 na lista de licenças.
-- ⬜ Confirmar licenças de Void Fleet Pack 1, Fleet Pack 3 e Pickups Pack.
+- ✅ Licenças de Void Fleet Pack 1, Fleet Pack 3 e Pickups Pack: CC0 e "No generative AI was used" nas páginas
+  (snapshots em `docs/licenses/`, 30/10/2026).
 - ⬜ Retratos: criar ou usar o pack SakPix (licença custom).
 - ⬜ Pacote Android definitivo.
 - ⬜ Preço na Steam (alvo US$ 9,99) e da compra "Apoiar" (alvo US$ 3,99).
@@ -25,15 +30,29 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 
 ## Fase 0 — Fundação · `0.0.x`
 
-- ⬜ Godot 4.7.2 + templates em `C:\src\tools\godot`
-- ⬜ gdtoolkit 4, JDK 17, Android SDK
-- ⬜ `project.godot`, `export_presets.cfg` (Android, Windows, Linux), `gdlintrc`
-- ⬜ Portar do hyakki: PixelScaler (regra por orientação), MenuKit, TouchScroll, StaticBake, Stroke, SpatialHash,
-  SaveManager, Locale, AudioManager, DB, GameClock
-- ⬜ `tests/device_profiles.gd` com as 18 resoluções, `tests/run_tests.gd`, `tests/version_tests.gd`
-- ⬜ `tools/run_checks.ps1`, `check_licenses.py`, `build_license_index.py`, `sync_assets.py`, `build_i18n.py`
-- ⬜ Downloads do Vertical Slice em `c:\src\downloads\assets\` com licença registrada
-- ⬜ Critério: projeto abre, testes passam em todas as resoluções, licenças verdes
+- ✅ Godot 4.7.2 + templates: editor em `C:\src\tools\godot`, templates em `%APPDATA%\Godot\export_templates\4.7.2.stable`
+  (SHA-512 conferido com o `SHA512-SUMS.txt` oficial)
+- ✅ gdtoolkit 4 (`python -m gdtoolkit.linter`; pyyaml instalado sem extensão C), JDK 17.0.20.1 Temurin em
+  `C:\src\tools\jdk` (SHA-256 conferido)
+- ⚠️ Android SDK: script pronto (`tools\setup_android_sdk.ps1`), falta o mantenedor rodar e aceitar as licenças
+- ✅ `project.godot` (retrato, Compatibility, `untyped_declaration=2`, versão 0.0.1), `export_presets.cfg` (Android,
+  Windows, Linux, todos em 0.0.1), `gdlintrc`, `.gitattributes` (LF; CRLF e BOM nos `.ps1`)
+- ✅ Portado do hyakki e adaptado: PixelScaler (regra por orientação + janela de desktop que cabe no monitor),
+  MenuKit (área segura nos 4 lados), TouchScroll, StaticBake, Stroke, SpatialHash, FrameStats, FramePacing,
+  GfxQuality (orçamentos deste jogo), InputSetup (ações deste jogo), Settings, SaveManager, Locale, DB, GameClock;
+  AudioManager novo (buses Music/SFX/UI, crossfade, pool); Log, Events, Languages
+- ✅ `Playfield` (campo 270x450, HUD, zona do polegar, laterais) com teste em todos os casos
+- ✅ App + telas de abertura (com o contorno do campo) e Créditos (lidos de `licenses/index.json`)
+- ✅ `tests/device_profiles.gd` com as 18 resoluções (15 retrato + 3 paisagem); `tests/run_tests.gd` (escala, campo,
+  SpatialHash, FrameStats, FramePacing, GfxQuality, idiomas, versão SemVer em todos os presets);
+  `tests/integration_tests.tscn` (dados, 11 idiomas e glifos, opções, save com backup e migração, áudio, licenças,
+  PixelScaler, layout de cada tela em todos os casos, créditos); `tests/screens_runner.tscn` (capturas para revisão)
+- ✅ `tools/run_checks.ps1`, `check_licenses.py`, `build_license_index.py`, `fetch_licenses.py` (snapshots PDF pelo
+  Edge), `sync_assets.py`, `build_i18n.py` + `i18n_keys.py`
+- ✅ Downloads do Vertical Slice em `c:\src\downloads\assets\`: 14 packs Kenney, 6 packs Void, Ocean Creatures, 2 faixas
+  CC0 da OpenGameArt e Fusion Pixel, todos no `licenses/registry.json` com snapshot da página de origem
+- ✅ Critério: projeto abre, testes passam em todas as resoluções, licenças verdes
+- ⬜ Benchmark de rolagem (`tests/scroll_bench.tscn`): entra com a primeira lista longa (hub e mapa, Fase 1)
 
 ## Fase 1 — Vertical Slice · `0.1.0`
 

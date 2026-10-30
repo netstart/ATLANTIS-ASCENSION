@@ -5,7 +5,8 @@
 Shoot'em up vertical 2.5D sobre a Atlântida que desperta em 2147. Feito em Godot 4.7.2 para Android (retrato) e
 Steam, só com assets gratuitos e livres para uso comercial.
 
-**Estado:** planejamento concluído; implementação começa pela Fase 0 do roadmap.
+**Estado:** Fase 0 concluída (versão 0.0.1): projeto Godot, pipeline de licenças e testes em todas as
+resoluções-alvo. Próximo passo: Vertical Slice. O export Android depende de `tools\setup_android_sdk.ps1`.
 
 ## Documentação
 
@@ -17,10 +18,14 @@ Steam, só com assets gratuitos e livres para uso comercial.
 
 ## Rodar no PC
 
-Depois da Fase 0:
-
 ```powershell
 C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --path C:\src\ATLANTIS-ASCENSION
+```
+
+## Capturas para revisão visual
+
+```powershell
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots --res=305x678,960x540
 ```
 
 ## Checagens

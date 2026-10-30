@@ -33,10 +33,10 @@ preto vulcânico).
 
 | Asset | Autor | URL | Licença | Status | Destino | Uso |
 |---|---|---|---|---|---|---|
-| Void — Main Ship | Foozle | https://foozlecc.itch.io/void-main-ship | CC0-1.0 | ✅ página lida (sem IA) | `foozle/void-main-ship.zip` | Falcon (nave inicial): casco, motores, escudo e armas animados |
-| Pixel Shmup | Kenney | https://kenney.nl/assets/pixel-shmup | CC0-1.0 | ✅ catálogo | `kenney/pixel-shmup.zip` | Bases para recolorir e montar as aeronaves 2 a 12, power-ups, ícones de HUD |
-| Space Shooter Redux (Remastered) | Kenney | https://kenney.nl/assets/space-shooter-remastered | CC0-1.0 | ✅ catálogo | `kenney/space-shooter-remastered.zip` | Partes de nave (asas, cockpits, motores) para kitbash das 12 aeronaves |
-| Space Shooter Extension | Kenney | https://kenney.nl/assets/space-shooter-extension | CC0-1.0 | ✅ catálogo | `kenney/space-shooter-extension.zip` | Partes extras, estações, peças de chefe |
+| Void — Main Ship | Foozle | https://foozlecc.itch.io/void-main-ship | CC0-1.0 | ✅ baixado 30/10 | `foozle/void-main-ship.zip` | Falcon (nave inicial): casco, motores, escudo e armas animados |
+| Pixel Shmup | Kenney | https://kenney.nl/assets/pixel-shmup | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/pixel-shmup.zip` | Bases para recolorir e montar as aeronaves 2 a 12, power-ups, ícones de HUD |
+| Space Shooter Redux (Remastered) | Kenney | https://kenney.nl/assets/space-shooter-remastered | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/space-shooter-remastered.zip` | Partes de nave (asas, cockpits, motores) para kitbash das 12 aeronaves |
+| Space Shooter Extension | Kenney | https://kenney.nl/assets/space-shooter-extension | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/space-shooter-extension.zip` | Partes extras, estações, peças de chefe |
 | Space Pack | Odi Studio | https://odistudio-games.itch.io/space-pack | CC-BY-4.0 | ✅ catálogo | `odistudio/space-pack.zip` | Reserva de naves 8/16-bit (crédito obrigatório) |
 
 **Criar:** as 12 aeronaves não existem prontas num estilo só. Montar por **kitbash** (peças Kenney + Void) em
@@ -47,13 +47,13 @@ aeronave ganha silhueta própria (ver seção 4.2 do plano mestre). Arte origina
 
 | Asset | Autor | URL | Licença | Status | Destino | Uso |
 |---|---|---|---|---|---|---|
-| Void — Fleet Pack 1 (Kla'ed) | Foozle | https://foozlecc.itch.io/void-fleet-pack-1 | CC0-1.0 provável | ⚠️ | `foozle/void-fleet-pack-1.zip` | 8 inimigos dos Drones do Protocolo |
-| Void — Fleet Pack 2 (Nairan) | Foozle | https://foozlecc.itch.io/void-fleet-pack-2 | CC0-1.0 | ✅ página lida | `foozle/void-fleet-pack-2.zip` | 8 inimigos da Guarda Atlante |
-| Void — Fleet Pack 3 (Nautolan) | Foozle | https://foozlecc.itch.io/void-fleet-pack-3 | CC0-1.0 provável | ⚠️ | `foozle/void-fleet-pack-3.zip` | 8 inimigos das Bioformas |
+| Void — Fleet Pack 1 (Kla'ed) | Foozle | https://foozlecc.itch.io/void-fleet-pack-1 | CC0-1.0 | ✅ baixado 30/10 | `foozle/void-fleet-pack-1.zip` | 8 inimigos dos Drones do Protocolo |
+| Void — Fleet Pack 2 (Nairan) | Foozle | https://foozlecc.itch.io/void-fleet-pack-2 | CC0-1.0 | ✅ baixado 30/10 | `foozle/void-fleet-pack-2.zip` | 8 inimigos da Guarda Atlante |
+| Void — Fleet Pack 3 (Nautolan) | Foozle | https://foozlecc.itch.io/void-fleet-pack-3 | CC0-1.0 | ✅ baixado 30/10 | `foozle/void-fleet-pack-3.zip` | 8 inimigos das Bioformas |
 | Alien UFO Pack | Kenney | https://kenney.nl/assets/alien-ufo-pack | CC0-1.0 | ✅ catálogo | `kenney/alien-ufo-pack.zip` | Variações de drones, cápsulas de resgate |
-| Ocean Creatures | michael-jay-rov | https://michael-jay-rov.itch.io/ocean-creatures | CC-BY-4.0 | ✅ catálogo | `michael-jay-rov/ocean-creatures.zip` | Fauna do capítulo 1, partes orgânicas do Kraken Engine |
+| Ocean Creatures | michael-jay-rov | https://michael-jay-rov.itch.io/ocean-creatures | CC-BY-4.0 | ✅ baixado 30/10 | `michael-jay-rov/ocean-creatures.zip` | Fauna do capítulo 1, partes orgânicas do Kraken Engine |
 
-Plano B se Fleet Pack 1 ou 3 não for CC0: inimigos do Pixel Shmup e do Space Shooter Redux recoloridos.
+As seis páginas Void declaram CC0 e "No generative AI was used" (snapshots em `docs/licenses/`). Os zips não trazem arquivo de licença; vale a página.
 
 ## 3. Chefes
 
@@ -72,9 +72,9 @@ Escala: 160 a 270 px de largura (60% a 100% da largura do campo).
 
 | Asset | Autor | URL | Licença | Status | Destino | Uso |
 |---|---|---|---|---|---|---|
-| Particle Pack | Kenney | https://kenney.nl/assets/particle-pack | CC0-1.0 | ✅ catálogo | `kenney/particle-pack.zip` | Faíscas, brilhos, rastros, impactos |
-| Smoke Particles | Kenney | https://kenney.nl/assets/smoke-particles | CC0-1.0 | ✅ catálogo | `kenney/smoke-particles.zip` | Fumaça de dano, vapor, explosões |
-| Void — Pickups Pack | Foozle | https://foozlecc.itch.io/void-pickups-pack | CC0-1.0 provável | ⚠️ | `foozle/void-pickups-pack.zip` | Power-ups, medalhas de oricalco, cristais |
+| Particle Pack | Kenney | https://kenney.nl/assets/particle-pack | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/particle-pack.zip` | Faíscas, brilhos, rastros, impactos |
+| Smoke Particles | Kenney | https://kenney.nl/assets/smoke-particles | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/smoke-particles.zip` | Fumaça de dano, vapor, explosões |
+| Void — Pickups Pack | Foozle | https://foozlecc.itch.io/void-pickups-pack | CC0-1.0 | ✅ baixado 30/10 | `foozle/void-pickups-pack.zip` | Power-ups, medalhas de oricalco, cristais |
 | Five Free Pixel Explosions | Untied Games | https://untiedgames.itch.io/five-free-pixel-explosions | CC-BY com cláusula "não revender o asset" | ⚠️ | `untiedgames/five-free-pixel-explosions.zip` | Explosões grandes (só se a cláusula for compatível) |
 
 **Criar:** balas inimigas (6 formas x 4 cores, 8 a 16 px, contorno claro e núcleo saturado), lasers contínuos
@@ -102,10 +102,10 @@ gravitacional do núcleo. Tiles das ruínas atlantes: desenhar 1 tileset de 32x3
 
 | Asset | Autor | URL | Licença | Status | Destino | Uso |
 |---|---|---|---|---|---|---|
-| UI Pack Sci-fi | Kenney | https://kenney.nl/assets/ui-pack-sci-fi | CC0-1.0 | ✅ catálogo | `kenney/ui-pack-sci-fi.zip` | Painéis, barras, botões do hub e do HUD |
+| UI Pack Sci-fi | Kenney | https://kenney.nl/assets/ui-pack-sci-fi | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/ui-pack-sci-fi.zip` | Painéis, barras, botões do hub e do HUD |
 | UI Pack | Kenney | https://kenney.nl/assets/ui-pack | CC0-1.0 | ✅ catálogo | `kenney/ui-pack.zip` | Controles genéricos |
-| Game Icons (e Expansion) | Kenney | https://kenney.nl/assets/game-icons | CC0-1.0 | ✅ catálogo | `kenney/game-icons.zip` | Ícones de menu, abas, opções |
-| Input Prompts (e Pixel) | Kenney | https://kenney.nl/assets/input-prompts | CC0-1.0 | ✅ catálogo | `kenney/input-prompts.zip` | Teclado, controle e Steam Deck |
+| Game Icons (e Expansion) | Kenney | https://kenney.nl/assets/game-icons | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/game-icons.zip` | Ícones de menu, abas, opções |
+| Input Prompts (e Pixel) | Kenney | https://kenney.nl/assets/input-prompts | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/input-prompts.zip` | Teclado, controle e Steam Deck |
 | Cursor Pack | Kenney | https://kenney.nl/assets/cursor-pack | CC0-1.0 | ✅ catálogo | `kenney/cursor-pack.zip` | Cursor no desktop |
 
 **Criar:** cartões do hub (moldura de cerâmica com filete dourado), banners de evento, ícones das 7 armas e das 12
@@ -118,20 +118,20 @@ comercial: 🔶, só com decisão registrada.
 
 | Fonte | Autor | URL | Licença | Status | Uso |
 |---|---|---|---|---|---|
-| Fusion Pixel 12px | TakWolf | https://github.com/TakWolf/fusion-pixel-font | OFL-1.1 | ⚠️ copiar entrada do registro do hyakki | Texto em todos os 11 idiomas (latim, cirílico, CJK, hangul) |
-| Kenney Fonts | Kenney | https://kenney.nl/assets/kenney-fonts | CC0-1.0 | ✅ catálogo | Números do HUD, pontuação |
+| Fusion Pixel 12px | TakWolf | https://github.com/TakWolf/fusion-pixel-font | OFL-1.1 | ✅ no jogo (release 2026.10.16) | Texto em todos os 11 idiomas (latim, cirílico, CJK, hangul) |
+| Kenney Fonts | Kenney | https://kenney.nl/assets/kenney-fonts | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | Números do HUD, pontuação |
 | Orbitron | Matt McInerney | https://fonts.google.com/specimen/Orbitron | OFL-1.1 | ⚠️ | Título e logotipo (só latim) |
 
 ## 8. Efeitos sonoros
 
 | Asset | Autor | URL | Licença | Status | Destino | Uso |
 |---|---|---|---|---|---|---|
-| Sci-fi Sounds | Kenney | https://kenney.nl/assets/sci-fi-sounds | CC0-1.0 | ✅ catálogo | `kenney/sci-fi-sounds.zip` | Lasers, motores, escudo, especial |
-| Impact Sounds | Kenney | https://kenney.nl/assets/impact-sounds | CC0-1.0 | ✅ catálogo | `kenney/impact-sounds.zip` | Acertos, destruição, dano |
-| Interface Sounds | Kenney | https://kenney.nl/assets/interface-sounds | CC0-1.0 | ✅ catálogo | `kenney/interface-sounds.zip` | Toques, abas, cartões do hub |
+| Sci-fi Sounds | Kenney | https://kenney.nl/assets/sci-fi-sounds | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/sci-fi-sounds.zip` | Lasers, motores, escudo, especial |
+| Impact Sounds | Kenney | https://kenney.nl/assets/impact-sounds | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/impact-sounds.zip` | Acertos, destruição, dano |
+| Interface Sounds | Kenney | https://kenney.nl/assets/interface-sounds | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/interface-sounds.zip` | Toques, abas, cartões do hub |
 | UI Audio | Kenney | https://kenney.nl/assets/ui-audio | CC0-1.0 | ✅ catálogo | `kenney/ui-audio.zip` | Confirmação, cancelamento |
-| Digital Audio | Kenney | https://kenney.nl/assets/digital-audio | CC0-1.0 | ✅ catálogo | `kenney/digital-audio.zip` | Power-up, nível de arma, alerta |
-| Music Jingles | Kenney | https://kenney.nl/assets/music-jingles | CC0-1.0 | ✅ catálogo | `kenney/music-jingles.zip` | Vitória, derrota, recompensa |
+| Digital Audio | Kenney | https://kenney.nl/assets/digital-audio | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/digital-audio.zip` | Power-up, nível de arma, alerta |
+| Music Jingles | Kenney | https://kenney.nl/assets/music-jingles | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/music-jingles.zip` | Vitória, derrota, recompensa |
 | Space Laser, Chunky Explosion | OpenGameArt | título no catálogo | CC0-1.0 | ⚠️ URL exata a registrar | `opengameart/` | Variações de tiro e explosão |
 | Laser Fire | OpenGameArt | título no catálogo | CC-BY-3.0 | 🔶 | `opengameart/` | Só se CC-BY-3.0 for ratificada |
 
@@ -143,10 +143,11 @@ Ocean Shift (onda subindo), Gravity Breach (grave descendente), voz atlante (sí
 | Faixa / pack | Autor | URL | Licença | Status | Uso |
 |---|---|---|---|---|---|
 | Outer Space Music Pack ("A Long Journey", "Starless Sky", "Barren Planets") | Albesca | https://albesca.itch.io/outer-space-music-pack | CC0-1.0 | ✅ catálogo | Estratosfera, órbita, mapa |
-| 8-bit Epic Space Shooter Music | HydroGene | OpenGameArt (título no catálogo) | CC0-1.0 | ⚠️ URL a registrar | Missões dos capítulos 1 a 3 |
+| 8-bit Epic Space Shooter Music | HydroGene | https://opengameart.org/content/8-bit-epic-space-shooter-music | CC0-1.0 | ✅ baixado 30/10 | Missões dos capítulos 1 a 3 (Vertical Slice) |
 | Space Shooter (Loop) | Pro Sensory | OpenGameArt (título no catálogo) | CC0-1.0 | ⚠️ URL a registrar | Missões |
 | futureshmup | OpenGameArt | título no catálogo | CC0-1.0 | ⚠️ URL a registrar | Cidade futurista |
-| Boss Battle Music, Battle Music, Massive Battle, War Theme | OpenGameArt | títulos no catálogo | CC0-1.0 | ⚠️ URL a registrar | Chefes e mini-chefes |
+| Epic Boss Battle (Seamlessly Looping) | Juhani Junkala (SubspaceAudio) | https://opengameart.org/content/boss-battle-music | CC0-1.0 | ✅ baixado 30/10 | Kraken Engine (Vertical Slice) |
+| Battle Music, Massive Battle, War Theme | OpenGameArt | títulos no catálogo | CC0-1.0 | ⚠️ URL a registrar | Chefes e mini-chefes |
 | Another space background track, Outer Space Loop, Space 5 | OpenGameArt | títulos no catálogo | CC0-1.0 | ⚠️ URL a registrar | Hub e menus |
 | Space Dimensions (Techno) | Matthew Pablo | OpenGameArt | CC-BY-3.0 | 🔶 | Tempestade |
 | Space Boss Battle Theme | OpenGameArt | título no catálogo | CC-BY-3.0 | 🔶 | Leviathan Protocol |
@@ -182,6 +183,8 @@ Surge XT, BeepBox. A trilha original é o maior ganho de identidade e o item de 
 | Qualquer asset de Galaxy Attack, Star Wars: Galaxy of Heroes, Raiden e demais referências | Propriedade intelectual de terceiros |
 
 ## 12. Ordem de download
+
+**Estado em 30/10/2026:** itens 1 a 5 baixados e registrados em `licenses/registry.json` (20 componentes).
 
 Para o Vertical Slice, só estes, na ordem:
 

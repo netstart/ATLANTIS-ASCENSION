@@ -81,15 +81,16 @@ aparelhos são só exemplos de cada resolução.
   desenhado 1:1 em pixels lógicos. É o maior campo que cabe na menor tela da tabela (270x480) depois do recorte.
   Telas maiores nunca mostram mais área de jogo: a sobra lateral vira moldura com parallax e painéis, a sobra de
   cima recebe o HUD e a sobra de baixo vira a **zona do polegar** (o dedo arrasta ali sem cobrir a nave). Isso mantém
-  a dificuldade, o ranking e o determinismo iguais em todos os aparelhos. `tests/playfield_tests.gd` confere que o
-  campo cabe inteiro em todas as resoluções, abaixo do recorte e acima da barra de gestos, e que HUD e botões não
-  cobrem mais de 6% do campo nas telas curtas.
+  a dificuldade, o ranking e o determinismo iguais em todos os aparelhos. O teste do campo em `tests/run_tests.gd`
+  (regra pura `Playfield.layout`) confere que o campo cabe inteiro em todas as resoluções, fora do recorte, e que o
+  HUD não cobre mais de 6% do campo nas telas curtas.
 - **Fonte única:** a lista de resoluções fica em `tests/device_profiles.gd`. Os testes de layout leem dela, sem tamanho
   fixo no código. Resolução nova é uma linha nesta tabela **e** em `tests/device_profiles.gd`. Aparelhos que dão a
   mesma resolução lógica ficam na mesma linha.
 - **Recorte da câmera:** em retrato o furo fica **em cima**, e embaixo quando o aparelho gira 180°. Os casos de layout
-  rodam sem recorte (todos os idiomas), com recorte em cima e com recorte embaixo (idiomas `pt_BR`, `de`, `ru`), mais a
-  faixa da barra de gestos embaixo. Tablets e Fold aberto, sem furo, são testados com a mesma faixa genérica.
+  rodam sem recorte (todos os idiomas), com recorte em cima e com recorte embaixo (idiomas `pt_BR`, `de`, `ru`). O
+  modo imersivo esconde a barra de navegação, então ela não entra na área segura. Tablets e Fold aberto, sem furo, são
+  testados com a mesma faixa genérica.
   A faixa física de cada linha é a do hyakki (120, 118, 110, 160, 80, 118, 120, 100, 120, 80, 80, 150, 96, 118, 118 px).
 - **Testes unitários de layout:** em **cada** resolução, nos 11 idiomas e com a área segura simulada, nenhum botão,
   texto ou elemento de toque pode ficar fora da tela, cortado, sobreposto ou dentro do recorte. Alvos de toque têm

@@ -1,0 +1,57 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Atlantis Ascension"
+config/description="Atlantis Ascension — The ocean remembers. The sky belongs to whoever survives."
+config/version="0.0.1"
+run/main_scene="res://scenes/app/App.tscn"
+config/quit_on_go_back=false
+config/features=PackedStringArray("4.7", "GL Compatibility")
+boot_splash/bg_color=Color(0.043137256, 0.11764706, 0.24705882, 1)
+boot_splash/show_image=false
+
+[autoload]
+
+Log="*res://scripts/autoload/log.gd"
+Events="*res://scripts/autoload/events.gd"
+Settings="*res://scripts/autoload/settings.gd"
+GameClock="*res://scripts/autoload/game_clock.gd"
+PixelScaler="*res://scripts/autoload/pixel_scaler.gd"
+SaveManager="*res://scripts/autoload/save_manager.gd"
+DB="*res://scripts/autoload/db.gd"
+Locale="*res://scripts/autoload/locale.gd"
+AudioManager="*res://scripts/autoload/audio_manager.gd"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+
+[display]
+
+window/size/viewport_width=305
+window/size/viewport_height=678
+window/size/window_width_override=610
+window/size/window_height_override=1356
+window/stretch/mode="viewport"
+window/handheld/orientation=5
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+2d/snap/snap_2d_transforms_to_pixel=true

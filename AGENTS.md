@@ -53,7 +53,7 @@ som próprio (áudio), aviso antes do perigo (design), teste automatizado (QA) e
 
 ## Fatos do projeto
 
-- **Engine:** Godot 4.7.2 stable, em `C:\src\tools\godot\` (ou caminho em `$env:GODOT`).
+- **Engine:** Godot 4.7.2 stable, em `C:\src\tools\godot\` (ou caminho em `$env:GODOT`). JDK 17 em `C:\src\tools\jdk\`.
 - **Orientação:** retrato no Android (`sensor_portrait`); paisagem no desktop com área de jogo 9:16 central.
 - **Área de jogo:** campo fixo de 270x450 unidades, igual em todos os aparelhos (sobras viram HUD, moldura e zona do polegar).
 - **Simulação:** passo fixo de 1/60 s, determinística por semente.
@@ -71,9 +71,18 @@ C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --editor --path C:\src\ATLANTIS
 powershell -ExecutionPolicy Bypass -File tools\run_checks.ps1
 # Partida do bot, determinística
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . --fixed-fps 60 -- --bot --seed=7 --quit-at=90
-# Licenças
-python -I tools\check_licenses.py
+# Licenças: baixar textos e snapshots, gerar índice e créditos, conferir
+python -I tools\fetch_licenses.py
 python -I tools\build_license_index.py
+python -I tools\check_licenses.py
+# Assets: copiar de c:\src\downloads\assets só o que os manifestos tools\*_assets.json pedem
+python -I tools\sync_assets.py
+# Textos (fonte: tools\i18n\*.py)
+python -I tools\build_i18n.py
+# Capturas das telas para revisão visual
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
+# Android SDK (você aceita as licenças do Google no terminal)
+powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1
 ```
 
 ## Como trabalhar

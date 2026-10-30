@@ -1,0 +1,21 @@
+# Godot 4
+.godot/
+/android/
+*.tmp
+
+# Builds
+/build/
+*.apk
+*.aab
+
+# Keystores ficam fora do repositório
+*.keystore
+*.jks
+
+# Python
+__pycache__/
+*.pyc
+
+# Saída de benchmarks e capturas locais
+/bench*.json
+/shots/
