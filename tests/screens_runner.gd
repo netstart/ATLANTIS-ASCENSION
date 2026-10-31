@@ -6,7 +6,7 @@ extends Node
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
-const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits"]
+const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"story"]
 
 
 func _ready() -> void:
@@ -49,6 +49,11 @@ func _ready() -> void:
 					"credits": 125}
 			for screen_name: StringName in SCREENS:
 				app.go(screen_name)
+				if screen_name == &"story":
+					# Prólogo no 3º quadro: o primeiro com retrato (o narrador não tem rosto).
+					var story := app.find_child("Story", true, false)
+					for k: int in range(2):
+						story.call("advance")
 				await LayoutTests.settle(self)
 				for i: int in range(40):
 					await get_tree().process_frame

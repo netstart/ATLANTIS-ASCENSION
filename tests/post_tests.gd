@@ -14,6 +14,7 @@ func run(check: Callable) -> void:
 	_capture(check, tables)
 	_unlocks(check, tables)
 	_bot_runs(check, tables)
+	_portraits(check)
 
 
 func _sim(tables: Dictionary, ship: StringName, seed: int = 5) -> Sim:
@@ -168,3 +169,25 @@ func _bot_runs(check: Callable, tables: Dictionary) -> void:
 			hashes.append(sim.state_hash())
 		check.call(sim.cleared, "Bot: vence a 1-1 com %s (%.0f s, %d pontos)" % [id, sim.frame / 60.0, sim.scoring.score])
 		check.call(hashes[0] == hashes[1], "Determinismo: %s dá o mesmo hash" % id)
+
+
+## Todo personagem que fala (menos o narrador) tem retrato nas 3 expressões; toda "mood" usada existe.
+func _portraits(check: Callable) -> void:
+	var speakers := {}
+	var moods := {}
+	var rows: Array = JSON.parse_string(FileAccess.get_file_as_string("res://data/dialogue.json"))
+	for scene: Variant in JSON.parse_string(FileAccess.get_file_as_string("res://data/story.json")):
+		rows.append_array((scene as Dictionary)["panels"])
+	for row: Variant in rows:
+		var r := row as Dictionary
+		speakers[String(r.get("speaker", ""))] = true
+		moods[String(r.get("mood", "calm"))] = true
+	speakers.erase("narrator")
+	for s: String in speakers:
+		for mood: String in Portraits.MOODS:
+			check.call(Portraits.texture(s, mood) != null, "Retrato: %s (%s)" % [s, mood])
+	for mood: String in moods:
+		check.call(mood in Portraits.MOODS, "Retrato: expressão %s conhecida" % mood)
+	check.call(Portraits.texture("narrator") == null, "Retrato: o narrador não tem rosto")
+	var tex := Portraits.texture("mare", "alert")
+	check.call(tex != null and tex.get_size() == Vector2(64, 64), "Retrato: 64x64")

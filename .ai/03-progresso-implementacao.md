@@ -40,7 +40,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ⬜ Ratificar CC-BY-3.0 e OGA-BY-3.0 na lista de licenças.
 - ✅ Licenças de Void Fleet Pack 1, Fleet Pack 3 e Pickups Pack: CC0 e "No generative AI was used" nas páginas
   (snapshots em `docs/licenses/`, 30/10/2026).
-- ⬜ Retratos: criar ou usar o pack SakPix (licença custom).
+- ✅ Retratos: criados pelo projeto (`tools/gen_portraits.py`, MIT), sem o pack SakPix.
 - ⬜ Pacote Android definitivo.
 - ⬜ Preço na Steam (alvo US$ 9,99) e da compra "Apoiar" (alvo US$ 3,99).
 - ⬜ Backend para os sistemas sociais do pós-lançamento.
@@ -192,3 +192,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   Fragmentos nas missões 7-1 a 9-2 e nas 4 secretas. Captura biomecânica: marcado abatido a até 56 u vira escolta
   por 10 s (até 2) e atira junto. Conquista "Armada atlante" (12 aeronaves). Testes em `tests/post_tests.gd`
   (traços, captura, desbloqueio, o bot vence a 1-1 com cada nave nova e o hash se repete)
+- ✅ `1.2.0` Retratos: 5 personagens (Maré, Farol, Duarte, Thalassa, Protocolo) em 3 expressões (calma, alerta,
+  sorriso), pixel art 64x64 gerada por `tools/gen_portraits.py`. Aparecem no rádio da missão (32 px, à esquerda do
+  texto) e nas cenas da história (64 px); a expressão vem do campo `mood` das falas. Testes: todo personagem que
+  fala tem as 3 expressões; o narrador não tem rosto

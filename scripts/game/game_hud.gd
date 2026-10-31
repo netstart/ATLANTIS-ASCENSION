@@ -20,6 +20,7 @@ const RADIO_SECONDS := 4.0
 const BANNER_SECONDS := 2.4
 const BUTTON := 44.0
 const OBJECTIVE_SECONDS := 5.0
+const PORTRAIT := 32.0
 ## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
 const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint.orbs"], [1500, "hint.special"],
 		[2100, "hint.tide"], [2700, "hint.marked"], [3300, "hint.capture"]]
@@ -46,6 +47,9 @@ var _revive_text: Label
 var _revive_yes: Button
 var _revive_no: Button
 var _radio: Label
+## Retrato de quem fala no rádio (Portraits), à esquerda do texto.
+var _portrait: TextureRect
+var _radio_box := Rect2()
 var _banner: Label
 var _prompt: Label
 var _boss_bar: ProgressBar
@@ -85,6 +89,9 @@ func _ready() -> void:
 	_radio = _label(UiTheme.FONT_SIZE, UiTheme.TEXT)
 	_radio.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_radio.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_portrait = Portraits.make_rect(PORTRAIT)
+	_portrait.visible = false
+	add_child(_portrait)
 	_banner = _label(UiTheme.TITLE_SIZE, UiTheme.CORAL)
 	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -378,8 +385,8 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	_pressure.size = Vector2(minf(90.0, width * 0.3), 3.0)
 	_objective.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.18)
 	_objective.size = Vector2(field.size.x - 16.0, 0)
-	_radio.position = Vector2(field.position.x + 8.0, field.end.y - BUTTON - 64.0)
-	_radio.size = Vector2(field.size.x - 16.0, 0)
+	_radio_box = Rect2(field.position.x + 8.0, field.end.y - BUTTON - 64.0, field.size.x - 16.0, 0.0)
+	_place_radio()
 	_banner.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.3)
 	_banner.size = Vector2(field.size.x - 16.0, 0)
 	_prompt.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.62)
@@ -399,12 +406,24 @@ func show_radio(dialogue_id: String) -> void:
 	_radio.text = "%s: %s" % [tr("speaker." + String(row.get("speaker", ""))), tr(String(row.get("text_key", "")))]
 	_radio.add_theme_color_override("font_color", Color(String(row.get("color", "#dff6ff"))))
 	_radio_left = RADIO_SECONDS
+	_portrait.texture = Portraits.texture(String(row.get("speaker", "")), String(row.get("mood", "calm")))
+	_place_radio()
 
 
 func show_radio_text(text: String, color: Color) -> void:
+	_portrait.texture = null
+	_place_radio()
 	_radio.text = text
 	_radio.add_theme_color_override("font_color", color)
 	_radio_left = RADIO_SECONDS
+
+
+## Com retrato, o texto do rádio começa depois dele; sem retrato, ocupa a largura toda.
+func _place_radio() -> void:
+	var inset := PORTRAIT + 6.0 if _portrait.texture != null else 0.0
+	_portrait.position = _radio_box.position
+	_radio.position = _radio_box.position + Vector2(inset, 0.0)
+	_radio.size = Vector2(_radio_box.size.x - inset, 0.0)
 
 
 func show_banner(text: String) -> void:
@@ -450,6 +469,8 @@ func refresh(sim: Sim, delta: float) -> void:
 	_radio_left -= delta
 	_radio.visible = _radio_left > 0.0
 	_radio.modulate.a = clampf(_radio_left * 2.0, 0.0, 1.0)
+	_portrait.visible = _radio.visible and _portrait.texture != null
+	_portrait.modulate.a = _radio.modulate.a
 	_banner_left -= delta
 	_banner.visible = _banner_left > 0.0
 	_banner.modulate.a = clampf(_banner_left * 2.0, 0.0, 1.0)

@@ -186,6 +186,96 @@
   "sha256": "42e54cc1c4bb6f4fda9b2e5c4f9cf37809e60e68aa32f2db2a946e3735538a26"
  },
  {
+  "file": "assets/art/generated/portraits/duarte_alert.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3c1a42dbf904e57773d24732500c2368cb5bfd8af21cb1b4b4dd786917fbeeba"
+ },
+ {
+  "file": "assets/art/generated/portraits/duarte_calm.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "9750a91837f9324bfe2df2918198cb33e0262a20e3a8e5c2fb31ef99035a0dff"
+ },
+ {
+  "file": "assets/art/generated/portraits/duarte_smile.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "0e9db0624b5f4ecef05434deeb4b102ba3f7911b429d747d7f8c504a7b3eb372"
+ },
+ {
+  "file": "assets/art/generated/portraits/farol_alert.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "35ad25e4c04c674dcd3509d1786a2f5517752af865ea0b3bddd6f2d551b54538"
+ },
+ {
+  "file": "assets/art/generated/portraits/farol_calm.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "aec30a4157bbe4c1380734fc5367e13323aa232ca908f4ee36a12bec53703886"
+ },
+ {
+  "file": "assets/art/generated/portraits/farol_smile.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "81c759a7a254054daa728c26e00853f754a9daa50655b420b35b4fd66c429537"
+ },
+ {
+  "file": "assets/art/generated/portraits/mare_alert.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6668bb6efbb4ab162c5545d7c78aa9b0b82a67099f7c7a647bcb278b3d423362"
+ },
+ {
+  "file": "assets/art/generated/portraits/mare_calm.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "b4803590a0e75922f488ed1cd236193d8abffc9665ac77afdecdf3a0ecf44da5"
+ },
+ {
+  "file": "assets/art/generated/portraits/mare_smile.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "89c54e28ee9b24499d4ef04d985f83ce9d5d32e08aeacf0441e2b6c79523cbfd"
+ },
+ {
+  "file": "assets/art/generated/portraits/protocol_alert.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f5d426198b81059da51b9184a8a3e5b81c63fb966146eed37820cb02a42c05e8"
+ },
+ {
+  "file": "assets/art/generated/portraits/protocol_calm.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "d9d52bf61769122e2c4f3b78915019583bc7a01fbeb957840878b7565a887253"
+ },
+ {
+  "file": "assets/art/generated/portraits/protocol_smile.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "84431ea9af0f8e4954faddcd8103b78f9e9b7385339588d55c1dad4402c194fe"
+ },
+ {
+  "file": "assets/art/generated/portraits/thalassa_alert.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "056bf06c86f1bbd3ee52a5304bed23abec1b6c77b9186d71f9fe595ef69e59dd"
+ },
+ {
+  "file": "assets/art/generated/portraits/thalassa_calm.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "eb09c2d8252f811b188e8fcdf23a9cc803f84b406e73d2338064fbbbbbe0bc84"
+ },
+ {
+  "file": "assets/art/generated/portraits/thalassa_smile.png",
+  "source": "tools/gen_portraits.py",
+  "license_id": "atlantis_generated",
+  "sha256": "bffa9712723d6efb3bccf4ed9ec2bebb304bf45a86dd41c52dc8eabe23e40f60"
+ },
+ {
   "file": "assets/art/void/environment/asteroid_explode.png",
   "source": "foozle/Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Asteroids/PNGs/Asteroid 01 - Explode.png",
   "license_id": "foozle_void_environment_pack",

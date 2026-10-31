@@ -13,6 +13,7 @@ var _backdrop: OceanBackdrop
 var _shade: ColorRect
 var _panel: PanelContainer
 var _speaker: Label
+var _portrait: TextureRect
 var _text: Label
 var _next: Button
 var _skip: Button
@@ -61,8 +62,14 @@ func _build() -> void:
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 10)
 	_panel.add_child(col)
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 10)
+	col.add_child(head)
+	_portrait = Portraits.make_rect(64.0)
+	head.add_child(_portrait)
 	_speaker = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
-	col.add_child(_speaker)
+	_speaker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	head.add_child(_speaker)
 	_text = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT, true)
 	col.add_child(_text)
 	_next = Button.new()
@@ -119,6 +126,8 @@ func refresh_texts() -> void:
 		return
 	var p := panels[index] as Dictionary
 	_speaker.text = tr("speaker." + String(p.get("speaker", "")))
+	_portrait.texture = Portraits.texture(String(p.get("speaker", "")), String(p.get("mood", "calm")))
+	_portrait.visible = _portrait.texture != null
 	_text.text = tr(String(p.get("text_key", "")))
 	_next.text = tr("story.next") if index < panels.size() - 1 else tr("story.continue")
 	var kind := StringName(String(p.get("backdrop", "ocean")))
