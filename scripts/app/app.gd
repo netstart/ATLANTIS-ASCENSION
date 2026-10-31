@@ -23,6 +23,8 @@ const SCREENS := {
 	&"shop": preload("res://scripts/app/screens/shop_screen.gd"),
 	&"city": preload("res://scripts/app/screens/city_screen.gd"),
 	&"practice": preload("res://scripts/app/screens/practice_screen.gd"),
+	&"season": preload("res://scripts/app/screens/season_screen.gd"),
+	&"records": preload("res://scripts/app/screens/records_screen.gd"),
 }
 const ROOT_SCREEN := &"boot"
 
@@ -37,6 +39,8 @@ var run_mode: StringName = &""
 var run_queue: Array[Dictionary] = []
 var run_score: int = 0
 var _run_loadout: Dictionary = {}
+var _pending_replay: Replay
+var _replay_return: StringName = &""
 
 var _layer: CanvasLayer
 var _root: Control
@@ -94,6 +98,8 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 		screen.play.connect(_play_from_screen)
 		screen.play_mode.connect(func(mode: StringName) -> void: start_mode(mode))
 		screen.play_practice.connect(practice)
+		if screen.has_signal("watch"):
+			screen.connect("watch", func(key: String) -> void: watch_replay(key))
 		_root.add_child(screen)
 		_screens[screen_name] = screen
 	current = screen_name
@@ -123,9 +129,20 @@ func start_mode(mode: StringName, bot: bool = false) -> void:
 	run_mode = mode
 	run_score = 0
 	run_queue = Modes.run(mode, SaveManager.data, today(), Modes.date_seed(today()))
-	var ship := StringName(String(SaveManager.data["selected"]["ship"]))
-	_run_loadout = Economy.loadout(SaveManager.data) if mode == &"survival" else Sim.default_loadout(ship)
+	_run_loadout = Modes.loadout_for(mode, SaveManager.data, today())
 	_next_in_run(bot)
+
+
+## Assiste a um replay gravado (recorde de uma missão ou modo); ao fim volta para a tela de onde veio.
+func watch_replay(key: String) -> bool:
+	var r := Replay.load_key(key)
+	if r == null:
+		return false
+	_replay_return = current
+	run_mode = &""
+	_pending_replay = r
+	play_mission(r.mission, false, r.seed, r.loadout)
+	return true
 
 
 ## Prática: missão concluída sem recompensas (nem estrelas nem moedas).
@@ -155,6 +172,11 @@ func play_mission(mission: Dictionary, bot: bool = false, seed: int = -1, loadou
 	var run_seed := seed if seed >= 0 else int(Time.get_unix_time_from_system()) % 100000
 	game.configure(mission, loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data), run_seed, bot)
 	game.can_revive = not bot and run_mode in [&"", &"survival"]
+	if not bot and bool(Settings.get_value("ghost")) and run_mode in [&"", &"practice"]:
+		game.ghost = Replay.load_key(Replay.key_for(String(mission.get("id", "")), ""))
+	if _pending_replay != null:
+		game.playback = _pending_replay
+		_pending_replay = null
 	game.finished.connect(_on_mission_finished)
 	add_child(game)
 	AudioManager.play_ui("kenney_ui_confirm")
@@ -162,9 +184,14 @@ func play_mission(mission: Dictionary, bot: bool = false, seed: int = -1, loadou
 
 func _on_mission_finished(result: Dictionary) -> void:
 	var mission_id := StringName(String(result.get("mission", "")))
+	var recording := game.recording
 	game.queue_free()
 	game = null
 	_layer.visible = true
+	if bool(result.get("replay", false)):
+		AudioManager.play_music("")
+		go(_replay_return if _replay_return != &"" else &"records")
+		return
 	if bool(result.get("restart", false)):
 		if run_mode in [&"", &"practice"]:
 			play(mission_id)
@@ -184,6 +211,7 @@ func _on_mission_finished(result: Dictionary) -> void:
 	result["mode"] = String(run_mode)
 	result["run_score"] = run_score
 	last_result = record_result(result, run_mode)
+	_save_record(result, recording)
 	run_mode = &"" if run_mode == &"practice" else run_mode
 	go(&"results")
 
@@ -199,6 +227,8 @@ static func record_result(result: Dictionary, mode: StringName = &"") -> Diction
 	if mode != &"practice":
 		LiveOps.refresh(SaveManager.data, today())
 		LiveOps.track(SaveManager.data, out)
+		out["season_xp"] = Season.add_result(SaveManager.data, today(), out)
+		out["achievements"] = Achievements.check(SaveManager.data, out)
 	SaveManager.add_stat("missions_played", 1)
 	SaveManager.add_stat("kills", float(result.get("kills", 0)))
 	SaveManager.add_stat("grazes", float(result.get("grazes", 0)))
@@ -212,6 +242,20 @@ static func record_result(result: Dictionary, mode: StringName = &"") -> Diction
 	for ship: Variant in out.get("new_ships", []):
 		SaveManager.unlocked.emit("ships", StringName(String(ship)))
 	return out
+
+
+## Placar local e replay do recorde (missões avulsas: campanha, Diário, Correntes, Sobrevivência).
+func _save_record(result: Dictionary, recording: Replay) -> void:
+	if run_mode in [&"practice", &"arcade", &"boss_rush", &"second_tide"] or recording == null:
+		return
+	var key := Replay.key_for(String(result.get("mission", "")), String(run_mode))
+	var pos := Replay.submit(SaveManager.data, key, int(result.get("score", 0)), today(),
+			String(SaveManager.data["selected"]["ship"]))
+	last_result["board_pos"] = pos
+	if pos == 0:
+		recording.score = int(result.get("score", 0))
+		recording.save(key)
+	SaveManager.save_profile()
 
 
 ## Tela já criada (testes).

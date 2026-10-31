@@ -125,6 +125,12 @@ static func reward_lines(r: Dictionary) -> PackedStringArray:
 		lines.append(_t("results.new_ship") % _t("ship." + String(ship)))
 	for wing: Variant in r.get("new_wings", []):
 		lines.append(_t("results.new_wing") % _t("wing." + String(wing)))
+	for a: Variant in r.get("achievements", []):
+		lines.append(_t("results.achievement") % _t("achievement." + String(a)))
+	if int(r.get("board_pos", -1)) >= 0:
+		lines.append(_t("results.board") % (int(r["board_pos"]) + 1))
+	if int(r.get("season_xp", 0)) > 0:
+		lines.append(_t("results.season_xp") % int(r["season_xp"]))
 	for d: Variant in r.get("new_districts", []):
 		lines.append(_t("results.new_district") % _t("district." + String(d)))
 	if int(r.get("rescued", 0)) > 0:

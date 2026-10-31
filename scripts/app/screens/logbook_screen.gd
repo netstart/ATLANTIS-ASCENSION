@@ -19,6 +19,13 @@ func _fill() -> void:
 			add_text(tr("log.%s_text" % id))
 		elif Economy.mission_unlocked(profile, n["id"]):
 			add_text("◇ %s · ???" % MapScreen.node_label(n), UiTheme.TEXT_DIM)
+	var got: Dictionary = profile["achievements"]
+	var all := Achievements.all()
+	add_heading(tr("logbook.achievements") % [got.size(), all.size()])
+	for raw: Variant in all:
+		var id := String((raw as Dictionary)["id"])
+		var done := got.has(id)
+		add_text(("◆ " if done else "◇ ") + tr("achievement." + id), UiTheme.GOLD if done else UiTheme.TEXT_DIM)
 	add_heading(tr("logbook.career"))
 	var stats: Dictionary = profile["stats"]
 	add_text(tr("logbook.stats") % [int(stats["missions_cleared"]), int(stats["missions_played"]),

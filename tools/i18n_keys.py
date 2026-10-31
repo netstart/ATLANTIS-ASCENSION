@@ -37,7 +37,12 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
                               "tint_supporter")] + [
     f"district.{d}" for d in ("docks", "gardens", "forge", "temple", "observatory")] + [
     f"city.bonus_{b}" for b in ("credits", "pearls", "discount", "bombs", "orichalcum")] + [
-    f"ending.{e}" for e in ("shattered", "return", "high_tide")] + ["speaker.narrator", "hangar.title", "ships.title"] + [
+    f"ending.{e}" for e in ("shattered", "return", "high_tide")] + [
+    f"mode.{m}{x}" for m in ("currents", "second_tide") for x in ("", "_desc")] + [
+    f"mutator.{m}" for m in ("fast_bullets", "laser_only", "railgun_only", "dark", "gravity", "glass")] + [
+    f"achievement.{a['id']}" for a in json.loads((ROOT / "data" / "achievements.json").read_text(encoding="utf-8"))] + [
+    f"results.{r}" for r in ("achievement", "board", "season_xp")] + [
+    f"cosmetic.tint_season_{s}" for s in ("a", "b", "c")] + ["season.title", "options.ghost"] + ["speaker.narrator", "hangar.title", "ships.title"] + [
     f"results.{r}" for r in ("fragments", "log", "new_mission", "new_ship", "new_wing")]
 
 

@@ -11,6 +11,7 @@ const CreditsScreenTests := preload("res://tests/credits_screen_tests.gd")
 const FlowTests := preload("res://tests/flow_tests.gd")
 const EconomyTests := preload("res://tests/economy_tests.gd")
 const BetaTests := preload("res://tests/beta_tests.gd")
+const LaunchTests := preload("res://tests/launch_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -34,6 +35,7 @@ func _ready() -> void:
 	await LayoutTests.new().run(self, _check)
 	await CreditsScreenTests.new().run(self, _check)
 	await FlowTests.new().run(self, _check)
+	await LaunchTests.new().run(self, _check)
 	for file: String in SaveManager.TEST_PATHS + [Settings.TEST_PATH]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)

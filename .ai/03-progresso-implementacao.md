@@ -26,7 +26,13 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   18 resoluções), fluxo E2E e simulação da economia; 326 textos x 11 idiomas; 21 componentes de licença, 168 arquivos.
 - ✅ Fase 3 (Beta) concluída na versão `0.9.0`: campanha completa de 9 capítulos (37 missões) vencida pelo bot de
   ponta a ponta com a carga do hangar; ver o checklist da Fase 3 para os números e o que ficou de fora.
-- ⬜ Próximo passo: Fase 4 (Lançamento).
+- ✅ Fase 4 (Lançamento) com o código da `1.0.0` pronto: Segunda Maré, Correntes, replay e Fantasma do Abismo,
+  placares, passe, conquistas, modo foto e documentos de loja. O que depende de contas e contratos (Play Console,
+  AdMob, Billing, Steamworks, Android SDK) está em `docs/store/release-checklist.md`.
+  `tools/run_checks.ps1`: `TUDO OK` (892 verificações de regras, 71.619 de integração, layout e fluxo, 609 textos x
+  11 idiomas, 21 componentes de licença e 169 arquivos, mesmo hash em 1x/2x/3x/Baixa). Benchmarks: partida com
+  1.000 balas p95 2,2 ms (pior 3,2 ms); rolagem 72/72 listas aprovadas.
+- ⬜ Próximo passo: o mantenedor executa o checklist de lançamento (contas, licenças, teste fechado).
 
 ## Decisões pendentes do mantenedor
 
@@ -157,9 +163,20 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 
 ## Fase 4 — Lançamento · `1.0.0`
 
-- ⬜ Segunda Maré, Fantasma do Abismo, placares com replay, Correntes semanais, passe, modo foto
-- ⬜ Play Console, teste fechado (20 testadores por 14 dias), AdMob com UMP, Play Billing
-- ⬜ Steam: página, conquistas, placares, Cloud, Deck Verified
-- ⬜ Política de privacidade, `app-ads.txt`, créditos públicos
-- ⬜ Revisão de traduções por nativos
+- ✅ Segunda Maré (loop 2: balas +15%, bala de vingança, Kraken remendado com 4ª etapa), abre com o primeiro final
+- ✅ Fantasma do Abismo: o recorde voa junto, translúcido, numa segunda Sim com a entrada gravada (opção nas Opções)
+- ✅ Replay determinístico (`scripts/core/replay.gd`, entrada em blocos run-length; reproduzir dá o mesmo hash) e
+  placares locais top 10 por missão e modo, com "Assistir ao recorde"
+- ✅ Correntes semanais (missão + modificador da semana: balas rápidas, só Laser, só Railgun, escuridão, gravidade,
+  casco de vidro)
+- ✅ Passe da Maré por trimestre: 30 níveis, trilha grátis e trilha dourada com 3 pinturas (compra simulada)
+- ✅ 22 conquistas locais (`data/achievements.json`, mesmas ids para a Steam) no Diário e no resultado
+- ✅ Modo foto do mapa (esconde a interface, salva PNG em `user://photos/`)
+- ✅ Política de privacidade (pt-BR e en), textos das lojas, questionários IARC e de Segurança de dados, modelo do
+  `app-ads.txt` e checklist de lançamento em `docs/store/`; créditos públicos em `CREDITS.md`
+- ⚠️ Play Console, teste fechado (20 testadores por 14 dias), AdMob com UMP e Play Billing: exigem a conta e o aceite
+  dos termos pelo mantenedor (passos em `docs/store/release-checklist.md`)
+- ⚠️ Steam (página, Steamworks SDK, GodotSteam, Cloud, Deck Verified): idem; conquistas e placares já existem no
+  jogo
+- ⚠️ Revisão de traduções por nativos
 - ⬜ Critérios: aprovado nas duas lojas, crash-free ≥ 99,5%, D1 ≥ 40% no teste fechado

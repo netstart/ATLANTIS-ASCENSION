@@ -98,6 +98,10 @@ var max_capsule_combo: int = 0
 var lanes := PackedInt32Array([0, 0, 0])
 var ending: StringName = &""
 var revives: int = 0
+## Segunda Maré (loop 2): balas 15% mais rápidas, bala de vingança em cada abate, chefes remendados.
+var second_tide: bool = false
+## Modificadores das Correntes semanais (fast_bullets, glass...).
+var mutators: Array = []
 var bosses_met: int = 0
 var _coral_grazes: int = 0
 var _bubble_timer: int = 0
@@ -139,6 +143,8 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	tables = p_tables
 	loadout = default_loadout(p_loadout) if typeof(p_loadout) != TYPE_DICTIONARY else p_loadout
 	difficulty = StringName(String(loadout.get("difficulty", "normal")))
+	second_tide = bool(loadout.get("second_tide", false))
+	mutators = (loadout.get("mutators", []) as Array).duplicate()
 	if not DIFFICULTY.has(difficulty):
 		difficulty = &"normal"
 	rng = SimRng.new(seed + int(mission.get("seed_salt", 0)))
@@ -155,6 +161,9 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	player.max_hull = maxi(1, player.max_hull + mods.extra_hull + int(diff["hull"]))
 	player.hull = player.max_hull
 	player.bombs += int(loadout.get("bombs", 0))
+	if "glass" in mutators:
+		player.max_hull = 1
+		player.hull = 1
 	player.hitbox *= mods.hitbox_mult
 	player.precise_mult = 0.5 * mods.precise_mult
 	player.invuln_bonus = mods.invuln_bonus
@@ -213,6 +222,10 @@ func bullet_speed_mult() -> float:
 		mult *= 1.0 + 0.12 * (rank - 0.5) * 2.0
 	if boss != null and boss.desperate:
 		mult *= 1.15
+	if second_tide:
+		mult *= 1.15
+	if "fast_bullets" in mutators:
+		mult *= 1.2
 	return mult
 
 
@@ -419,6 +432,9 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 
 
 func spawn_boss(boss_id: StringName, final: bool) -> void:
+	var patched := StringName(String(boss_id) + "_patched")
+	if second_tide and (tables["bosses"] as Dictionary).has(patched):
+		boss_id = patched
 	var def: Dictionary = (tables["bosses"] as Dictionary).get(boss_id, {})
 	if def.is_empty():
 		return
@@ -753,6 +769,10 @@ func _kill_enemy(e: SimEnemy) -> void:
 		hitstop = maxi(hitstop, 3)
 	if mods.fury:
 		fury_stacks = mini(10, fury_stacks + 1)
+	if second_tide and can_fire() and player.alive and e.pos.distance_to(player.pos) > 70.0:
+		# Bala de vingança: lenta, mirada, nunca à queima-roupa (Segunda Maré).
+		fire_enemy(e.pos, rad_to_deg((player.pos - e.pos).angle()), 62.0, BulletKinds.enemy_index(&"orb_gold_m"),
+				0.0, 0.0)
 	if mods.undertow:
 		_splash(e.pos, 30.0, 8.0 * damage_mult())
 	if e.glyph >= 0:

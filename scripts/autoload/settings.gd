@@ -37,6 +37,8 @@ const DEFAULTS := {
 	## Qualidade gráfica (GfxQuality): "auto" | "low" | "medium" | "high".
 	"graphics_quality": "auto",
 	"show_fps": false,
+	## Fantasma do Abismo: o recorde voa junto, translúcido.
+	"ghost": true,
 }
 
 var path: String = PATH

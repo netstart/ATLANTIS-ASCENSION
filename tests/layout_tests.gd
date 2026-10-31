@@ -6,7 +6,7 @@ extends RefCounted
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"hangar", &"ships",
-		&"options", &"logbook", &"story", &"events", &"shop", &"city", &"practice"]
+		&"options", &"logbook", &"story", &"events", &"shop", &"city", &"practice", &"season", &"records"]
 const GAME := preload("res://scenes/game/Game.tscn")
 
 

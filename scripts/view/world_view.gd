@@ -26,6 +26,8 @@ const BREACH_COLOR := Color(0.75, 0.55, 1.0, 0.22)
 var dark: bool = false
 ## Paleta de daltonismo das balas inimigas (Settings "colorblind").
 var colorblind: String = "off"
+## Fantasma do Abismo: a Sim do recorde (só a nave dele é desenhada, translúcida).
+var ghost_sim: Sim
 
 var sim: Sim
 var time: float = 0.0
@@ -329,6 +331,8 @@ func _draw_player(ci: CanvasItem) -> void:
 		_tex_centered(ci, _ring, p, Sim.TIDE_RADIUS / 14.0 * pulse, TIDE_COLOR)
 	if sim.mods.bubbles > 0:
 		_tex_centered(ci, _ring, p, 1.2, Color(0.7, 0.95, 1.0, 0.45))
+	if ghost_sim != null and ghost_sim.player.alive:
+		ci.draw_texture(_ship_bases[3], ghost_sim.player.pos - Vector2(24, 24), Color(0.5, 1.0, 1.0, 0.3))
 	var engine := _engine_power if pl.last_move.y < -0.3 else _engine_idle
 	var frames := maxi(1, engine.get_width() / 48)
 	ci.draw_texture_rect_region(engine, Rect2(p - Vector2(24, 24), Vector2(48, 48)),

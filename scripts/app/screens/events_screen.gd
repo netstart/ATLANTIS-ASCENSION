@@ -5,7 +5,7 @@ extends ListScreen
 ## recorde de cada um e o motivo quando ainda está fechado.
 
 const MODE_HINT := {&"arcade": "c2m3", &"daily": "c2m1", &"survival": "c4m1", &"boss_rush": "c9m3",
-		&"practice": "c1m1"}
+		&"practice": "c1m1", &"currents": "c3m2", &"second_tide": "c9m3"}
 
 
 func title_key() -> String:
@@ -30,11 +30,18 @@ func _fill() -> void:
 		if not LiveOps.open_core(SaveManager.data).is_empty():
 			AudioManager.play_ui("kenney_weapon_up")
 			SaveManager.save_profile(), LiveOps.core_ready(profile), "OpenCore")
+	var tier := Season.tier(profile, App.today())
+	add_heading(tr("events.season") % [Season.id_for(App.today()), tier, Season.TIERS])
+	add_button(tr("events.season_open"), func() -> void: navigate.emit(&"season"), true, "Season")
+	add_button(tr("events.records"), func() -> void: navigate.emit(&"records"), true, "Records")
 	add_heading(tr("events.modes"))
 	for m: Dictionary in Modes.MODES:
 		var mode: StringName = m["id"]
 		var best := int((profile.get("mode_best", {}) as Dictionary).get(String(mode), 0))
 		add_text("%s · %s" % [tr("mode." + String(mode)), tr("mode.%s_desc" % mode)], UiTheme.TEXT_DIM)
+		if mode == &"currents":
+			add_text(tr("events.mutator") % tr("mutator." + String(Modes.current_mutator(LiveOps.week_of(App.today())))),
+					UiTheme.CYAN)
 		if not Modes.unlocked(profile, mode):
 			var need := MapScreen.node_label(Economy.node(StringName(String(MODE_HINT[mode]))))
 			add_text("◇ " + tr("events.locked") % need, UiTheme.CORAL)

@@ -1,0 +1,3 @@
+# Modelo do app-ads.txt (publicar na raiz do site do desenvolvedor, não no jogo).
+# Troque pub-XXXXXXXXXXXXXXXX pelo ID de editor do AdMob quando a conta existir.
+google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0

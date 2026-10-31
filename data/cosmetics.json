@@ -5,5 +5,8 @@
 	{"id": "tint_orichalcum", "kind": "tint", "color": "#ffd27a", "pearls": 90},
 	{"id": "tint_pearl", "kind": "tint", "color": "#f2eaff", "pearls": 120},
 	{"id": "tint_storm", "kind": "tint", "color": "#a8b4ff", "pearls": 120},
-	{"id": "tint_supporter", "kind": "tint", "color": "#ffe9a8", "pearls": 0, "supporter": true}
+	{"id": "tint_supporter", "kind": "tint", "color": "#ffe9a8", "pearls": 0, "supporter": true},
+	{"id": "tint_season_a", "kind": "tint", "color": "#7affe4", "pearls": 0, "season": true},
+	{"id": "tint_season_b", "kind": "tint", "color": "#ff7ad9", "pearls": 0, "season": true},
+	{"id": "tint_season_c", "kind": "tint", "color": "#b4ff7a", "pearls": 0, "season": true}
 ]

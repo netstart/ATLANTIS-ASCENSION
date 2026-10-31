@@ -24,7 +24,7 @@ static func buy(profile: Dictionary, id: String) -> bool:
 		return false
 	for c: Variant in cosmetics():
 		var def := c as Dictionary
-		if bool(def.get("supporter", false)):
+		if bool(def.get("supporter", false)) or bool(def.get("season", false)):
 			continue
 		if String(def["id"]) == id and Economy.pay(profile, {"pearls": int(def["pearls"])}):
 			(profile["unlocked"]["cosmetics"] as Array).append(id)

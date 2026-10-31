@@ -48,6 +48,8 @@ func _fill() -> void:
 				SaveManager.save_profile(), true, "Equip_" + id)
 		elif bool(def.get("supporter", false)):
 			add_text("◇ %s · %s" % [name, tr("shop.supporter_only")], UiTheme.TEXT_DIM)
+		elif bool(def.get("season", false)):
+			add_text("◇ %s · %s" % [name, tr("shop.season_only")], UiTheme.TEXT_DIM)
 		else:
 			add_button(tr("shop.buy") % [name, int(def["pearls"])], func() -> void:
 				if Store.buy(SaveManager.data, id):

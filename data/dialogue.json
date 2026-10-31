@@ -20,5 +20,6 @@
 	{"id": "protocol_core", "speaker": "thalassa", "text_key": "dialogue.protocol_core", "color": "#c79bff"},
 	{"id": "s2_intro", "speaker": "farol", "text_key": "dialogue.s2_intro", "color": "#8fe8ff"},
 	{"id": "s3_intro", "speaker": "thalassa", "text_key": "dialogue.s3_intro", "color": "#c79bff"},
-	{"id": "s4_intro", "speaker": "thalassa", "text_key": "dialogue.s4_intro", "color": "#c79bff"}
+	{"id": "s4_intro", "speaker": "thalassa", "text_key": "dialogue.s4_intro", "color": "#c79bff"},
+	{"id": "kraken_patched", "speaker": "protocol", "text_key": "dialogue.kraken_patched", "color": "#ff7a7e"}
 ]

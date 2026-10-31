@@ -1,4 +1,26 @@
 key,pt_BR,en,es,de,fr,ru,id,ja,ko,zh_TW,zh_CN
+achievement.all_secrets,Registros Abissais,Abyssal Records,Registros Abisales,Abyssale Aufzeichnungen,Archives abyssales,Записи бездны,Catatan Jurang,深淵の記録,심연 기록,深淵紀錄,深渊纪录
+achievement.chain_80,Corrente de 80,Chain of 80,Cadena de 80,80er-Kette,Chaîne de 80,Цепь из 80,Rantai 80,80チェイン,80 체인,80連鎖,80连锁
+achievement.daily,Todo dia,Every Day,Cada día,Jeden Tag,Chaque jour,Каждый день,Setiap Hari,毎日,매일,每一天,每一天
+achievement.ending_high_tide,Maré Alta,High Tide,Marea Alta,Springflut,Grande Marée,Высокий прилив,Pasang Tinggi,満潮,만조,滿潮,满潮
+achievement.ending_return,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky,Return the Sky
+achievement.ending_shattered,Céu Partido,Shattered Sky,Cielo Partido,Zerbrochener Himmel,Ciel Brisé,Расколотое небо,Langit Retak,砕けた空,부서진 하늘,破碎之天,破碎之天
+achievement.first_dive,Primeiro mergulho,First Dive,Primera inmersión,Erster Tauchgang,Première plongée,Первое погружение,Selaman Pertama,初めての潜航,첫 잠수,初次下潛,初次下潜
+achievement.first_secret,Leitor de glifos,Glyph Reader,Lector de glifos,Glyphenleser,Lecteur de glyphes,Чтец глифов,Pembaca Glif,グリフ読み,글리프 해독자,符文解讀者,符文解读者
+achievement.fleet,Frota completa,Full Fleet,Flota completa,Volle Flotte,Flotte complète,Полный флот,Armada Lengkap,全機体集結,함대 완성,艦隊集結,舰队集结
+achievement.grazes_2000,Pele de vidro,Glass Skin,Piel de cristal,Glashaut,Peau de verre,Стеклянная кожа,Kulit Kaca,ガラスの肌,유리 피부,玻璃之膚,玻璃之肤
+achievement.kills_5000,5.000 abates,"5,000 Kills",5.000 derribos,5.000 Abschüsse,5 000 abattus,5000 сбитых,5.000 Kill,撃墜5000,격추 5000,擊墜5000,击坠5000
+achievement.kraken,A tranca girou,The Lock Turned,La cerradura giró,Das Schloss dreht sich,La serrure a tourné,Замок повернулся,Kunci Berputar,錠前は回った,자물쇠가 돌았다,鎖已轉開,锁已转开
+achievement.master_pilot,Piloto mestre,Master Pilot,Piloto maestro,Meisterpilot,Pilote d'élite,Мастер-пилот,Pilot Ahli,マスターパイロット,마스터 파일럿,王牌飛行員,王牌飞行员
+achievement.poseidon,Último guardião,Last Guardian,Último guardián,Letzter Wächter,Dernier gardien,Последний страж,Penjaga Terakhir,最後の守護者,마지막 수호자,最後的守護者,最后的守护者
+achievement.protocol,Fim do Protocolo,End of Protocol,Fin del Protocolo,Ende des Protokolls,Fin du Protocole,Конец Протокола,Akhir Protokol,プロトコル終了,프로토콜 종료,協議終結,协议终结
+achievement.rescuer,Cem vidas,A Hundred Lives,Cien vidas,Hundert Leben,Cent vies,Сто жизней,Seratus Nyawa,百の命,백 개의 생명,百條生命,百条生命
+achievement.sky_leviathan,Céu limpo,Clear Skies,Cielo despejado,Klarer Himmel,Ciel dégagé,Чистое небо,Langit Cerah,晴れ渡る空,맑은 하늘,晴空,晴空
+achievement.stars_100,100 estrelas,100 Stars,100 estrellas,100 Sterne,100 étoiles,100 звёзд,100 Bintang,星100個,별 100개,100顆星,100颗星
+achievement.stars_30,30 estrelas,30 Stars,30 estrellas,30 Sterne,30 étoiles,30 звёзд,30 Bintang,星30個,별 30개,30顆星,30颗星
+achievement.survivor,Sobrevivente,Survivor,Superviviente,Überlebender,Survivant,Выживший,Penyintas,サバイバー,생존자,倖存者,幸存者
+achievement.tidebreaker,Quebra-mar,Breakwater,Rompeolas,Wellenbrecher,Brise-lames,Волнолом,Pemecah Ombak,防波堤,방파제,防波堤,防波堤
+achievement.untouchable,Intocável,Untouchable,Intocable,Unberührbar,Intouchable,Неприкасаемый,Tak Tersentuh,アンタッチャブル,무적,無傷,无伤
 blessing.nereus_chart,Carta Náutica,Sea Chart,Carta Náutica,Seekarte,Carte Marine,Морская карта,Peta Laut,海図,해도,海圖,海图
 blessing.nereus_chart_desc,Marcados brilham e valem +50%,"Marked foes glow, +50% points","Marcados brillan, +50% puntos","Markierte leuchten, +50% Punkte",Cibles marquées : +50% pts,"Отмеченные светятся, +50% очков",Target bertanda +50% poin,マーク対象が光り得点+50%,"표시 대상 강조, 점수 +50%",標記目標發光，分數+50%,标记目标发光，分数+50%
 blessing.nereus_luck,Sorte,Luck,Suerte,Glück,Chance,Удача,Untung,幸運,행운,幸運,幸运
@@ -44,6 +66,7 @@ boss.coral_guardian,GUARDIÃO DE CORAL,CORAL GUARDIAN,GUARDIÁN DE CORAL,KORALLE
 boss.forge,FORJA VIVA,LIVING FORGE,FRAGUA VIVA,LEBENDE SCHMIEDE,FORGE VIVANTE,ЖИВАЯ КУЗНЯ,TEMPA HIDUP,生ける炉,살아있는 용광로,活體熔爐,活体熔炉
 boss.ice_queen,RAINHA DO GELO,ICE QUEEN,REINA DEL HIELO,EISKÖNIGIN,REINE DES GLACES,ЛЕДЯНАЯ КОРОЛЕВА,RATU ES,氷の女王,얼음 여왕,冰之女王,冰之女王
 boss.kraken_engine,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,КРАКЕН-ДВИГАТЕЛЬ,KRAKEN ENGINE,クラーケン・エンジン,크라켄 엔진,克拉肯引擎,克拉肯引擎
+boss.kraken_engine_patched,KRAKEN REMENDADO,PATCHED KRAKEN,KRAKEN REMENDADO,GEFLICKTER KRAKEN,KRAKEN RAPIÉCÉ,ЗАЛАТАННЫЙ КРАКЕН,KRAKEN TAMBALAN,継ぎはぎのクラーケン,기워진 크라켄,縫補克拉肯,缝补克拉肯
 boss.leviathan_protocol,LEVIATHAN PROTOCOL,LEVIATHAN PROTOCOL,PROTOCOLO LEVIATÁN,LEVIATHAN-PROTOKOLL,PROTOCOLE LÉVIATHAN,ПРОТОКОЛ «ЛЕВИАФАН»,PROTOKOL LEVIATHAN,リヴァイアサン・プロトコル,리바이어던 프로토콜,利維坦協議,利维坦协议
 boss.orbital_gate,PORTÃO ORBITAL,ORBITAL GATE,PUERTA ORBITAL,ORBITALTOR,PORTE ORBITALE,ОРБИТАЛЬНЫЕ ВРАТА,GERBANG ORBIT,軌道門,궤도 관문,軌道之門,轨道之门
 boss.poseidon_prime,POSEIDON PRIME,POSEIDON PRIME,POSEIDÓN PRIME,POSEIDON PRIME,POSÉIDON PRIME,ПОСЕЙДОН-ПРАЙМ,POSEIDON PRIME,ポセイドン・プライム,포세이돈 프라임,波塞頓・原初,波塞顿・原初
@@ -67,6 +90,9 @@ cosmetic.tint_coral,Coral,Coral,Coral,Koralle,Corail,Коралл,Karang,コー�
 cosmetic.tint_kelp,Alga,Kelp,Alga,Seetang,Varech,Ламинария,Rumput laut,ケルプ,다시마,海帶,海带
 cosmetic.tint_orichalcum,Oricalco,Orichalcum,Oricalco,Orichalkum,Orichalque,Орихалк,Orikalkum,オリハルコン,오리하르콘,山銅,山铜
 cosmetic.tint_pearl,Pérola,Pearl,Perla,Perle,Perle,Жемчуг,Mutiara,パール,진주,珍珠,珍珠
+cosmetic.tint_season_a,Maré Turquesa,Turquoise Tide,Marea Turquesa,Türkisflut,Marée Turquoise,Бирюзовый прилив,Pasang Pirus,ターコイズの潮,청록 조수,綠松潮,绿松潮
+cosmetic.tint_season_b,Maré Coral,Coral Tide,Marea Coral,Korallenflut,Marée Corail,Коралловый прилив,Pasang Karang,コーラルの潮,산호 조수,珊瑚潮,珊瑚潮
+cosmetic.tint_season_c,Maré Esmeralda,Emerald Tide,Marea Esmeralda,Smaragdflut,Marée Émeraude,Изумрудный прилив,Pasang Zamrud,エメラルドの潮,에메랄드 조수,翡翠潮,翡翠潮
 cosmetic.tint_storm,Tempestade,Storm,Tormenta,Sturm,Tempête,Буря,Badai,ストーム,폭풍,風暴,风暴
 cosmetic.tint_supporter,Dourado do apoiador,Supporter gold,Oro del apoyador,Unterstützergold,Or du soutien,Золото поддержки,Emas pendukung,サポーターゴールド,후원자 골드,支持者金,支持者金
 credits.back,Voltar,Back,Volver,Zurück,Retour,Назад,Kembali,戻る,뒤로,返回,返回
@@ -93,6 +119,7 @@ dialogue.c2_intro,Vocês vieram. A cidade lembra de vocês.,You came. The city r
 dialogue.c3_intro,Tempestade à frente. Cuidado com os raios.,Storm ahead. Watch the lightning.,Tormenta adelante. Ojo con los rayos.,Sturm voraus. Achte auf die Blitze.,Tempête devant. Gare à la foudre.,Впереди буря. Берегись молний.,Badai di depan. Awas petir.,前方に嵐。落雷に注意。,전방에 폭풍. 번개 조심.,前方有風暴，小心雷擊。,前方有风暴，小心雷击。
 dialogue.kraken_p2,AMEAÇA CLASSIFICADA. ABRINDO NÚCLEO.,THREAT CLASSIFIED. OPENING CORE.,AMENAZA CLASIFICADA. ABRIENDO NÚCLEO.,BEDROHUNG EINGESTUFT. KERN ÖFFNET.,MENACE CLASSÉE. OUVERTURE DU NOYAU.,УГРОЗА ОПРЕДЕЛЕНА. ЯДРО ОТКРЫТО.,ANCAMAN TERKLASIFIKASI. INTI DIBUKA.,脅威を分類。コアを開放。,위협 분류 완료. 코어 개방.,威脅已分類。核心開啟。,威胁已分类。核心开启。
 dialogue.kraken_p3,...devolva... o céu...,...return... the sky...,...devuelve... el cielo...,...gib... den Himmel... zurück...,...rends... le ciel...,...верни... небо...,...kembalikan... langit...,…空を…返して…,…하늘을… 돌려줘…,…歸還…天空…,…归还…天空…
+dialogue.kraken_patched,REPARO CONCLUÍDO. A TRANCA FOI REFORÇADA.,REPAIR COMPLETE. THE LOCK IS REINFORCED.,REPARACIÓN COMPLETA. LA CERRADURA SE REFORZÓ.,REPARATUR ABGESCHLOSSEN. SCHLOSS VERSTÄRKT.,RÉPARATION TERMINÉE. LA SERRURE EST RENFORCÉE.,РЕМОНТ ЗАВЕРШЁН. ЗАМОК УСИЛЕН.,PERBAIKAN SELESAI. KUNCI DIPERKUAT.,修復完了。錠前を強化した。,수리 완료. 자물쇠 강화.,修復完成。鎖已強化。,修复完成。锁已强化。
 dialogue.poseidon_gravity,Gravidade invertida! As balas vão curvar.,Gravity's shifting! Bullets will curve.,¡La gravedad cambia! Las balas curvarán.,Schwerkraft kippt! Kugeln werden kurven.,La gravité bascule ! Les tirs vont courber.,Гравитация сместилась! Пули изогнутся.,Gravitasi bergeser! Peluru akan melengkung.,重力が変わる！弾が曲がるぞ。,중력이 바뀐다! 탄이 휜다.,重力改變！子彈會轉彎。,重力改变！子弹会转弯。
 dialogue.poseidon_guardian,Thalassa... desculpe. Eu precisava proteger.,Thalassa... forgive me. I had to protect.,Thalassa... perdóname. Debía proteger.,Thalassa... vergib mir. Ich musste schützen.,Thalassa... pardonne-moi. Je devais protéger.,Таласса... прости. Я должен был защищать.,Thalassa... maafkan aku. Aku harus melindungi.,タラッサ……許せ。守らねばならなかった。,탈라사... 미안하다. 지켜야만 했다.,塔拉莎……原諒我，我必須守護。,塔拉莎……原谅我，我必须守护。
 dialogue.poseidon_intro,Ele foi o último guardião. Não o odeie.,He was the last guardian. Don't hate him.,Fue el último guardián. No lo odies.,Er war der letzte Wächter. Hasse ihn nicht.,Il fut le dernier gardien. Ne le hais pas.,Он был последним стражем. Не держи зла.,Ia penjaga terakhir. Jangan membencinya.,彼は最後の守護者。憎まないで。,그는 마지막 수호자야. 미워하지 마.,他是最後的守護者，別恨他。,他是最后的守护者，别恨他。
@@ -157,8 +184,12 @@ events.daily_done,Feito hoje · %s pontos,Done today · %s points,Hecho hoy · %
 events.locked,Abre ao vencer %s,Unlocks after %s,Se abre al superar %s,Frei nach %s,Débloqué après %s,Откроется после %s,Terbuka setelah %s,%sクリアで解放,%s 클리어 시 해금,通關%s後解鎖,通关%s后解锁
 events.login,Entrada diária · dia %d de %d,Daily login · day %d of %d,Entrada diaria · día %d de %d,Täglicher Login · Tag %d von %d,Connexion · jour %d sur %d,Ежедневный вход · день %d из %d,Masuk harian · hari %d dari %d,ログイン %d/%d日目,출석 %d/%d일차,每日登入 · 第%d/%d天,每日登录 · 第%d/%d天
 events.modes,Modos,Modes,Modos,Modi,Modes,Режимы,Mode,モード,모드,模式,模式
+events.mutator,Regra desta semana: %s,This week's rule: %s,Regla de esta semana: %s,Regel dieser Woche: %s,Règle de la semaine : %s,Правило недели: %s,Aturan minggu ini: %s,今週のルール：%s,이번 주 규칙: %s,本週規則：%s,本周规则：%s
 events.play_mode,Jogar · recorde %s,Play · best %s,Jugar · récord %s,Spielen · Rekord %s,Jouer · record %s,Играть · рекорд %s,Main · terbaik %s,プレイ・ベスト %s,플레이 · 최고 %s,開始・最佳 %s,开始・最佳 %s
 events.practice,Escolher missão,Pick a mission,Elegir misión,Mission wählen,Choisir une mission,Выбрать миссию,Pilih misi,ミッションを選ぶ,임무 선택,選擇任務,选择任务
+events.records,Recordes e replays,Records and replays,Récords y repeticiones,Rekorde und Replays,Records et replays,Рекорды и повторы,Rekor dan tayangan ulang,記録とリプレイ,기록과 리플레이,紀錄與重播,纪录与回放
+events.season,Temporada %s · nível %d de %d,Season %s · tier %d of %d,Temporada %s · nivel %d de %d,Saison %s · Stufe %d von %d,Saison %s · palier %d sur %d,Сезон %s · уровень %d из %d,Musim %s · tingkat %d dari %d,シーズン %s・%d/%d,시즌 %s · %d/%d 단계,賽季 %s・第%d/%d級,赛季 %s・第%d/%d级
+events.season_open,Abrir o passe,Open the pass,Abrir el pase,Pass öffnen,Ouvrir le passe,Открыть пропуск,Buka pass,パスを開く,패스 열기,開啟通行證,打开通行证
 events.shield,Escudo da sequência: %d (perdoa 1 dia por semana),Streak shield: %d (forgives 1 day a week),Escudo de racha: %d (perdona 1 día por semana),Serienschild: %d (verzeiht 1 Tag/Woche),Bouclier de série : %d (pardonne 1 jour/semaine),Щит серии: %d (прощает 1 день в неделю),Perisai beruntun: %d (maafkan 1 hari/minggu),連続ログイン保護：%d（週1日まで）,연속 보호: %d (주 1일 용서),連續保護：%d（每週可補1天）,连续保护：%d（每周可补1天）
 events.weekly,Tarefas da semana,Weekly tasks,Tareas de la semana,Wochenaufgaben,Tâches de la semaine,Задания недели,Tugas mingguan,ウィークリー任務,주간 과제,每週任務,每周任务
 hangar.bonus,Dano +%d%% · Casco +%d,Damage +%d%% · Hull +%d,Daño +%d%% · Casco +%d,Schaden +%d%% · Rumpf +%d,Dégâts +%d%% · Coque +%d,Урон +%d%% · Корпус +%d,Kerusakan +%d%% · Lambung +%d,ダメージ+%d%%・船体+%d,피해 +%d%% · 선체 +%d,傷害 +%d%%・船體 +%d,伤害 +%d%%・船体 +%d
@@ -299,6 +330,7 @@ log.s3_text,Terceiro Registro: Thalassa e o Protocolo nasceram da mesma mente.,T
 log.s3_title,Céu invertido,Inverted sky,Cielo invertido,Umgekehrter Himmel,Ciel inversé,Перевёрнутое небо,Langit terbalik,逆さの空,뒤집힌 하늘,倒轉天空,倒转天空
 log.s4_text,Quarto Registro: as duas metades podem se unir de novo. A maré pode subir sem afogar ninguém.,Fourth Record: the two halves can join again. The tide can rise without drowning anyone.,Cuarto Registro: las dos mitades pueden unirse. La marea puede subir sin ahogar a nadie.,"Vierte Aufzeichnung: Die Hälften können sich vereinen. Die Flut kann steigen, ohne jemanden zu ertränken.",Quatrième archive : les deux moitiés peuvent s'unir. La marée peut monter sans noyer personne.,"Четвёртая запись: половины могут снова слиться. Прилив может подняться, никого не утопив.",Catatan keempat: dua bagian bisa bersatu lagi. Air pasang bisa naik tanpa menenggelamkan siapa pun.,第四の記録：二つの半身は再び結べる。潮は誰も溺れさせずに満ちる。,네 번째 기록: 두 반쪽은 다시 하나가 될 수 있다. 조수는 누구도 익사시키지 않고 오를 수 있다.,第四份紀錄：兩半可以再次結合，潮水能上漲而不淹沒任何人。,第四份纪录：两半可以再次结合，潮水能上涨而不淹没任何人。
 log.s4_title,Maré eterna,Endless tide,Marea eterna,Ewige Flut,Marée éternelle,Вечный прилив,Pasang abadi,終わらぬ潮,끝없는 조수,永恆之潮,永恒之潮
+logbook.achievements,Conquistas (%d de %d),Achievements (%d of %d),Logros (%d de %d),Erfolge (%d von %d),Succès (%d sur %d),Достижения (%d из %d),Pencapaian (%d dari %d),実績（%d/%d）,업적 (%d/%d),成就（%d/%d）,成就（%d/%d）
 logbook.career,Carreira,Career,Carrera,Laufbahn,Carrière,Карьера,Karier,戦績,전적,戰績,战绩
 logbook.logs,Registros da Halcyon (%d de %d),Halcyon logs (%d of %d),Registros de la Halcyon (%d de %d),Halcyon-Logbücher (%d von %d),Journaux de la Halcyon (%d sur %d),Записи «Халкиона» (%d из %d),Catatan Halcyon (%d dari %d),ハルシオンの記録（%d/%d）,할시온의 기록 (%d/%d),翠鳥號日誌（%d/%d）,翠鸟号日志（%d/%d）
 logbook.stats,Missões %d/%d · Abates %s · Rasantes %s · Estrelas %d · %d min,Missions %d/%d · Kills %s · Grazes %s · Stars %d · %d min,Misiones %d/%d · Derribos %s · Roces %s · Estrellas %d · %d min,Missionen %d/%d · Abschüsse %s · Streifer %s · Sterne %d · %d Min,Missions %d/%d · Abattus %s · Frôlements %s · Étoiles %d · %d min,Миссии %d/%d · Сбито %s · Касания %s · Звёзды %d · %d мин,Misi %d/%d · Kill %s · Serempet %s · Bintang %d · %d mnt,ミッション %d/%d・撃墜 %s・かすり %s・星 %d・%d分,임무 %d/%d · 격추 %s · 그레이즈 %s · 별 %d · %d분,任務 %d/%d・擊墜 %s・擦彈 %s・星 %d・%d分,任务 %d/%d・击坠 %s・擦弹 %s・星 %d・%d分
@@ -314,6 +346,9 @@ map.chapter7,Capítulo 7 · Estratosfera,Chapter 7 · Stratosphere,Capítulo 7 �
 map.chapter8,Capítulo 8 · Órbita,Chapter 8 · Orbit,Capítulo 8 · Órbita,Kapitel 8 · Orbit,Chapitre 8 · Orbite,Глава 8 · Орбита,Bab 8 · Orbit,第8章・軌道,8장 · 궤도,第8章・軌道,第8章・轨道
 map.chapter9,Capítulo 9 · Núcleo,Chapter 9 · Core,Capítulo 9 · Núcleo,Kapitel 9 · Kern,Chapitre 9 · Noyau,Глава 9 · Ядро,Bab 9 · Inti,第9章・中枢,9장 · 핵,第9章・核心,第9章・核心
 map.locked,Bloqueado,Locked,Bloqueado,Gesperrt,Verrouillé,Закрыто,Terkunci,ロック中,잠김,未解鎖,未解锁
+map.photo,Foto,Photo,Foto,Foto,Photo,Фото,Foto,写真,사진,拍照,拍照
+map.photo_exit,Sair,Exit,Salir,Zurück,Quitter,Выйти,Keluar,戻る,나가기,離開,退出
+map.photo_save,Salvar,Save,Guardar,Speichern,Enregistrer,Сохранить,Simpan,保存,저장,儲存,保存
 map.route_abyss,"Rota do abismo · pontos x1,5",Abyss route · score x1.5,"Ruta del abismo · puntos x1,5","Abgrundroute · Punkte x1,5","Route de l'abîme · points x1,5","Путь бездны · очки x1,5","Rute jurang · poin x1,5",深淵ルート・スコア1.5倍,심연 경로 · 점수 x1.5,深淵航線・分數x1.5,深渊航线・分数x1.5
 map.route_surface,Rota segura pela superfície,Safer route along the surface,Ruta segura por la superficie,Sicherere Route an der Oberfläche,Route plus sûre en surface,Безопасный путь по поверхности,Rute aman di permukaan,海上を行く安全なルート,수면을 따라가는 안전한 경로,沿海面的安全航線,沿海面的安全航线
 map.secret_hint,Aberta pelos glifos da 2-1,Opened by the glyphs of 2-1,Abierta por los glifos de 2-1,Durch die Glyphen von 2-1 geöffnet,Ouverte par les glyphes de 2-1,Открыта глифами 2-1,Dibuka oleh glif 2-1,2-1のグリフで開放,2-1의 글리프로 개방,由2-1的符文開啟,由2-1的符文开启
@@ -322,12 +357,22 @@ mode.arcade,Arcade,Arcade,Arcade,Arcade,Arcade,Аркада,Arkade,アーケー�
 mode.arcade_desc,"9 capítulos seguidos, sem hangar","9 chapters in a row, no hangar","9 capítulos seguidos, sin hangar","9 Kapitel am Stück, ohne Hangar","9 chapitres d'affilée, sans hangar","9 глав подряд, без ангара","9 bab berturut-turut, tanpa hanggar",9章連続・強化なし,"9장 연속, 강화 없음",連續9章，無機庫強化,连续9章，无机库强化
 mode.boss_rush,Boss Rush,Boss Rush,Boss Rush,Boss Rush,Boss Rush,Битва с боссами,Boss Rush,ボスラッシュ,보스 러시,首領連戰,首领连战
 mode.boss_rush_desc,12 chefes em sequência,12 bosses back to back,12 jefes seguidos,12 Bosse am Stück,12 boss à la suite,12 боссов подряд,12 bos berturut-turut,ボス12体連続,보스 12명 연속,12名首領連戰,12名首领连战
+mode.currents,Correntes da Semana,Weekly Currents,Corrientes Semanales,Wöchentliche Strömungen,Courants de la Semaine,Течения недели,Arus Mingguan,今週の海流,주간 해류,每週洋流,每周洋流
+mode.currents_desc,Uma missão com uma regra da semana,One mission with this week's rule,Una misión con la regla de la semana,Eine Mission mit der Wochenregel,Une mission avec la règle de la semaine,Миссия с правилом недели,Satu misi dengan aturan minggu ini,今週のルールで1ミッション,이번 주 규칙으로 임무 1개,本週規則挑戰一個任務,本周规则挑战一个任务
 mode.daily,Desafio Diário,Daily Challenge,Desafío Diario,Tägliche Herausforderung,Défi du Jour,Ежедневное испытание,Tantangan Harian,デイリーチャレンジ,일일 도전,每日挑戰,每日挑战
 mode.daily_desc,Mesma fase para todos hoje; 1 tentativa conta,Same stage for everyone today; 1 scored try,Misma fase para todos hoy; 1 intento cuenta,Heute für alle gleich; 1 gewerteter Versuch,Même niveau pour tous ; 1 essai compté,Один уровень для всех; засчитана 1 попытка,Tahap sama untuk semua; 1 percobaan dihitung,今日は全員同じステージ・1回だけ記録,오늘은 모두 같은 스테이지 · 1회만 기록,今天大家同一關，計分1次,今天大家同一关，计分1次
 mode.practice,Prática,Practice,Práctica,Training,Entraînement,Тренировка,Latihan,練習,연습,練習,练习
 mode.practice_desc,"Missões vencidas, sem recompensa","Cleared missions, no rewards","Misiones superadas, sin premio","Geschaffte Missionen, ohne Lohn","Missions finies, sans gains",Пройденные миссии без наград,"Misi selesai, tanpa hadiah",クリア済み・報酬なし,"클리어한 임무, 보상 없음",已通關任務，無獎勵,已通关任务，无奖励
+mode.second_tide,Segunda Maré,Second Tide,Segunda Marea,Zweite Flut,Seconde Marée,Второй прилив,Pasang Kedua,セカンドタイド,두 번째 조수,第二潮,第二潮
+mode.second_tide_desc,"Loop 2: balas rápidas, vingança e chefes remendados","Loop 2: faster bullets, revenge, patched bosses","Vuelta 2: balas rápidas, venganza y jefes remendados","Runde 2: schnelle Kugeln, Rache, geflickte Bosse","Boucle 2 : tirs rapides, vengeance, boss rapiécés","Круг 2: быстрые пули, месть, залатанные боссы","Putaran 2: peluru cepat, balas dendam, bos tambalan",2周目：高速弾・撃ち返し・継ぎはぎのボス,"2회차: 빠른 탄, 복수탄, 기워진 보스",第二輪：快速子彈、復仇彈、縫補首領,第二轮：快速子弹、复仇弹、缝补首领
 mode.survival,Sobrevivência das Marés,Tide Survival,Supervivencia de Mareas,Gezeiten-Überleben,Survie des Marées,Выживание приливов,Bertahan Pasang,潮のサバイバル,조수 생존,潮汐生存,潮汐生存
 mode.survival_desc,15 estágios cada vez mais densos,15 ever-denser stages,15 etapas cada vez más densas,15 immer dichtere Stufen,15 vagues de plus en plus denses,15 всё более плотных этапов,15 tahap makin padat,15ステージ、どんどん激しく,갈수록 빽빽한 15단계,15階段，越來越密集,15阶段，越来越密集
+mutator.dark,escuridão com sonar,darkness with sonar,oscuridad con sonar,Dunkelheit mit Sonar,obscurité avec sonar,тьма и сонар,gelap dengan sonar,暗闇とソナー,어둠과 소나,黑暗與聲納,黑暗与声呐
+mutator.fast_bullets,balas 20% mais rápidas,bullets 20% faster,balas 20% más rápidas,Kugeln 20% schneller,tirs 20% plus rapides,пули на 20% быстрее,peluru 20% lebih cepat,弾速20%アップ,탄속 20% 증가,子彈加快20%,子弹加快20%
+mutator.glass,casco de vidro (1 de vida),glass hull (1 hit),casco de cristal (1 vida),Glasrumpf (1 Treffer),coque de verre (1 PV),стеклянный корпус (1 удар),lambung kaca (1 nyawa),ガラスの船体（1発）,유리 선체 (1회),玻璃船體（1命）,玻璃船体（1命）
+mutator.gravity,Gravity Breach permanente,permanent Gravity Breach,Gravity Breach permanente,dauerhafte Gravity Breach,Gravity Breach permanente,постоянный гравипрорыв,Gravity Breach permanen,常時グラビティ・ブリーチ,상시 중력 붕괴,持續重力裂變,持续重力裂变
+mutator.laser_only,só Laser,Laser only,solo Láser,nur Laser,Laser uniquement,только лазер,hanya Laser,レーザーのみ,레이저만,僅限雷射,仅限激光
+mutator.railgun_only,só Railgun,Railgun only,solo Railgun,nur Railgun,Railgun uniquement,только рельсотрон,hanya Railgun,レールガンのみ,레일건만,僅限軌道砲,仅限轨道炮
 objective.boss_time,Vencer o chefe em 2:30,Beat the boss in 2:30,Vencer al jefe en 2:30,Boss in 2:30 besiegen,Vaincre le boss en 2:30,Победить босса за 2:30,Kalahkan bos dalam 2:30,ボスを2:30以内に撃破,보스를 2:30 안에 격파,2:30內擊敗首領,2:30内击败首领
 objective.capsule_combo,Resgate em sequência x4,Rescue chain x4,Rescate en cadena x4,Rettungskette x4,Sauvetages en chaîne x4,Цепочка спасений x4,Rantai penyelamatan x4,連続救出 x4,연속 구조 x4,連續救援 x4,连续救援 x4
 objective.chain,Corrente de 40,Chain of 40,Cadena de 40,40er-Kette,Chaîne de 40,Цепь из 40,Rantai 40,40チェイン,40 체인,40連鎖,40连锁
@@ -363,6 +408,7 @@ options.gfx_auto_level,Auto (%s),Auto (%s),Auto (%s),Auto (%s),Auto (%s),Авт�
 options.gfx_high,Alta,High,Alta,Hoch,Haute,Высокое,Tinggi,高,높음,高,高
 options.gfx_low,Baixa,Low,Baja,Niedrig,Basse,Низкое,Rendah,低,낮음,低,低
 options.gfx_medium,Média,Medium,Media,Mittel,Moyenne,Среднее,Sedang,中,중간,中,中
+options.ghost,Fantasma do recorde,Record ghost,Fantasma del récord,Rekord-Geist,Fantôme du record,Призрак рекорда,Hantu rekor,記録のゴースト,기록 유령,紀錄幽靈,纪录幽灵
 options.graphics,Gráficos,Graphics,Gráficos,Grafik,Graphismes,Графика,Grafis,グラフィック,그래픽,畫質,画质
 options.hand_left,Esquerda,Left,Izquierda,Links,Gauche,Слева,Kiri,左,왼쪽,左,左
 options.hand_right,Direita,Right,Derecha,Rechts,Droite,Справа,Kanan,右,오른쪽,右,右
@@ -382,6 +428,10 @@ options.ui_volume,Interface,Interface,Interfaz,Oberfläche,Interface,Интер�
 options.vibration,Vibração,Vibration,Vibración,Vibration,Vibration,Вибрация,Getar,振動,진동,震動,震动
 practice.desc,Sem estrelas e sem moedas. Use para estudar.,"No stars, no currency. For study only.",Sin estrellas ni monedas. Para estudiar.,"Keine Sterne, keine Währung. Nur zum Üben.",Ni étoiles ni monnaie. Pour s'entraîner.,Без звёзд и валюты. Только для учёбы.,Tanpa bintang dan mata uang. Untuk belajar.,星も通貨もなし。研究用。,별도 재화도 없음. 연습용.,沒有星星與貨幣，僅供研究。,没有星星与货币，仅供研究。
 practice.none,Vença uma missão para treinar nela.,Clear a mission to practice it.,Supera una misión para practicarla.,"Schaffe eine Mission, um sie zu üben.",Termine une mission pour t'y entraîner.,"Пройди миссию, чтобы тренироваться.",Selesaikan misi untuk berlatih.,クリアしたミッションで練習できる。,임무를 클리어하면 연습할 수 있다.,通關任務後即可練習。,通关任务后即可练习。
+records.none,Nenhum recorde ainda. Vença uma missão!,No records yet. Clear a mission!,Aún no hay récords. ¡Supera una misión!,Noch keine Rekorde. Schaffe eine Mission!,Aucun record. Termine une mission !,Рекордов пока нет. Пройди миссию!,Belum ada rekor. Selesaikan misi!,まだ記録がない。ミッションをクリアしよう！,아직 기록이 없다. 임무를 클리어하자!,還沒有紀錄，去通關任務吧！,还没有纪录，去通关任务吧！
+records.watch,Assistir ao recorde,Watch the record,Ver el récord,Rekord ansehen,Voir le record,Смотреть рекорд,Tonton rekor,記録を見る,기록 보기,觀看紀錄,观看纪录
+results.achievement,Conquista: %s,Achievement: %s,Logro: %s,Erfolg: %s,Succès : %s,Достижение: %s,Pencapaian: %s,実績：%s,업적: %s,成就：%s,成就：%s
+results.board,%dº no placar desta missão,#%d on this mission's board,%dº en la tabla de esta misión,Platz %d in dieser Mission,%de au classement de la mission,%d-е место в таблице миссии,Peringkat %d di misi ini,このミッションで%d位,이 임무 순위 %d위,本任務排名第%d,本任务排名第%d
 results.chain,Maior corrente,Best chain,Mejor cadena,Beste Kette,Meilleure chaîne,Лучшая цепь,Rantai terbaik,最大チェイン,최대 체인,最高連鎖,最高连锁
 results.cleared,Missão concluída,Mission complete,Misión completada,Mission erfüllt,Mission accomplie,Миссия выполнена,Misi selesai,ミッションクリア,임무 완료,任務完成,任务完成
 results.continue,Continuar,Continue,Continuar,Weiter,Continuer,Далее,Lanjut,続ける,계속,繼續,继续
@@ -401,12 +451,19 @@ results.new_wing,Nova asa: %s,New wing: %s,Nueva ala: %s,Neuer Flügel: %s,Nouve
 results.record,Novo recorde!,New record!,¡Nuevo récord!,Neuer Rekord!,Nouveau record !,Новый рекорд!,Rekor baru!,新記録！,신기록!,新紀錄！,新纪录！
 results.rescued,Atlantes resgatados: %d,Atlanteans rescued: %d,Atlantes rescatados: %d,Gerettete Atlanter: %d,Atlantes sauvés : %d,Спасено атлантов: %d,Atlantis diselamatkan: %d,救出したアトランティス人：%d,구조한 아틀란티스인: %d,救出的亞特蘭提斯人：%d,救出的亚特兰蒂斯人：%d
 results.retry,Tentar de novo,Try again,Reintentar,Nochmal,Réessayer,Ещё раз,Coba lagi,リトライ,다시 하기,再試一次,再试一次
+results.season_xp,Passe da Maré: +%d XP,Tide Pass: +%d XP,Pase de la Marea: +%d XP,Flutpass: +%d EP,Passe des Marées : +%d XP,Пропуск прилива: +%d опыта,Pass Pasang: +%d XP,タイドパス +%d XP,조수 패스 +%d XP,潮汐通行證 +%d XP,潮汐通行证 +%d XP
 role.area_control,Controle de área,Area control,Control de área,Flächenkontrolle,Contrôle de zone,Контроль зоны,Kendali area,範囲制圧,범위 제압,區域控制,区域控制
 role.balanced,Equilibrada,Balanced,Equilibrada,Ausgewogen,Équilibré,Сбалансированный,Seimbang,バランス,균형형,均衡,均衡
 role.defense,Defesa,Defense,Defensa,Verteidigung,Défense,Защита,Pertahanan,防御,방어형,防禦,防御
 role.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일형,飛彈,导弹
 role.precision,Precisão,Precision,Precisión,Präzision,Précision,Точность,Presisi,精密,정밀형,精準,精准
 role.speed,Velocidade,Speed,Velocidad,Tempo,Vitesse,Скорость,Kecepatan,スピード,속도형,速度,速度
+season.gold_buy,Trilha Maré Dourada (simulada),Golden Tide track (simulated),Pista Marea Dorada (simulada),Goldene Flut (simuliert),Piste Marée Dorée (simulée),Золотой прилив (имитация),Jalur Pasang Emas (simulasi),黄金の潮トラック（模擬）,황금 조수 트랙 (모의),黃金潮汐路線（模擬）,黄金潮汐路线（模拟）
+season.gold_owned,Trilha Maré Dourada ativa,Golden Tide track active,Pista Marea Dorada activa,Goldene Flut aktiv,Piste Marée Dorée active,Золотой прилив активен,Jalur Pasang Emas aktif,黄金の潮トラック有効,황금 조수 트랙 활성,黃金潮汐路線已啟用,黄金潮汐路线已启用
+season.header,Temporada %s · nível %d de %d,Season %s · tier %d of %d,Temporada %s · nivel %d de %d,Saison %s · Stufe %d von %d,Saison %s · palier %d sur %d,Сезон %s · уровень %d из %d,Musim %s · tingkat %d dari %d,シーズン %s・%d/%d,시즌 %s · %d/%d 단계,賽季 %s・第%d/%d級,赛季 %s・第%d/%d级
+season.tier,Nível %d · %s,Tier %d · %s,Nivel %d · %s,Stufe %d · %s,Palier %d · %s,Уровень %d · %s,Tingkat %d · %s,段階%d・%s,%d단계 · %s,第%d級・%s,第%d级・%s
+season.title,Passe da Maré,Tide Pass,Pase de la Marea,Flutpass,Passe des Marées,Пропуск прилива,Pass Pasang,タイドパス,조수 패스,潮汐通行證,潮汐通行证
+season.xp,Próximo nível: %d/%d XP,Next tier: %d/%d XP,Siguiente nivel: %d/%d XP,Nächste Stufe: %d/%d EP,Palier suivant : %d/%d XP,Следующий уровень: %d/%d опыта,Tingkat berikut: %d/%d XP,次の段階：%d/%d XP,다음 단계: %d/%d XP,下一級：%d/%d XP,下一级：%d/%d XP
 secondary.drones,Drones,Drones,Drones,Drohnen,Drones,Дроны,Drone,ドローン,드론,無人機,无人机
 secondary.drones_desc,Orbitam e atiram junto,Orbit and fire with you,Orbitan y disparan contigo,Kreisen und feuern mit,Orbitent et tirent avec toi,Кружат и стреляют,Mengorbit dan ikut menembak,周回して一緒に撃つ,주위를 돌며 함께 사격,環繞並一同射擊,环绕并一同射击
 secondary.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일,飛彈,导弹
@@ -430,6 +487,7 @@ shop.chest_open,Abrir grátis,Open for free,Abrir gratis,Gratis öffnen,Ouvrir g
 shop.chest_wait,Próximo baú em %d h %d min,Next chest in %d h %d min,Próximo cofre en %d h %d min,Nächste Truhe in %d h %d min,Prochain coffre dans %d h %d min,Следующий сундук через %d ч %d мин,Peti berikut dalam %d j %d mnt,次の宝箱まで %d時間%d分,다음 상자까지 %d시간 %d분,下一個寶箱：%d小時%d分,下一个宝箱：%d小时%d分
 shop.cosmetics,Pinturas,Paint jobs,Pinturas,Lackierungen,Peintures,Окраски,Cat,塗装,도색,塗裝,涂装
 shop.default_paint,Pintura original,Original paint,Pintura original,Originallack,Peinture d'origine,Исходная окраска,Cat asli,初期塗装,기본 도색,原廠塗裝,原厂涂装
+shop.season_only,do Passe da Maré,Tide Pass reward,del Pase de la Marea,aus dem Flutpass,du Passe des Marées,из пропуска прилива,hadiah Pass Pasang,タイドパス報酬,조수 패스 보상,潮汐通行證獎勵,潮汐通行证奖励
 shop.simulated,"Versão de teste: compras e anúncios são simulados, nada é cobrado.","Test build: purchases and ads are simulated, nothing is charged.","Versión de prueba: compras y anuncios simulados, no se cobra nada.","Testversion: Käufe und Werbung simuliert, nichts wird berechnet.","Version de test : achats et pubs simulés, rien n'est facturé.","Тестовая версия: покупки и реклама имитируются, оплаты нет.","Versi uji: pembelian dan iklan disimulasikan, tanpa biaya.",テスト版：購入と広告は模擬で、課金されません。,테스트 버전: 구매와 광고는 모의이며 결제되지 않습니다.,測試版：購買與廣告為模擬，不會扣款。,测试版：购买与广告为模拟，不会扣款。
 shop.support,Apoiar o jogo,Support the game,Apoyar el juego,Das Spiel unterstützen,Soutenir le jeu,Поддержать игру,Dukung gim ini,ゲームを支援,게임 후원,支持本遊戲,支持本游戏
 shop.support_buy,Apoiar (simulado),Support (simulated),Apoyar (simulado),Unterstützen (simuliert),Soutenir (simulé),Поддержать (имитация),Dukung (simulasi),支援する（模擬）,후원 (모의),支持（模擬）,支持（模拟）

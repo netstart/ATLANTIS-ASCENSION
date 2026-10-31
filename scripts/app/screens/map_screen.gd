@@ -24,9 +24,13 @@ const KIND_MARK := {&"miniboss": " ◆", &"boss": " ♛", &"secret": " ◎", &"r
 var camera: float = 600.0
 var velocity: float = 0.0
 var selected: StringName = &""
+## Modo foto: esconde a interface e deixa só as camadas do mapa (arrastar continua rolando).
+var photo_mode: bool = false
 
 var _view: _MapView
 var _back: Button
+var _photo: Button
+var _photo_bar: HBoxContainer
 var _title: Label
 var _node_buttons: Dictionary = {}
 var _card: PanelContainer
@@ -61,6 +65,21 @@ func _build() -> void:
 	_back.custom_minimum_size = Vector2(72, UiTheme.TOUCH_MIN)
 	_back.pressed.connect(func() -> void: navigate.emit(&"back"))
 	add_child(_back)
+	_photo = Button.new()
+	_photo.name = "Photo"
+	_photo.custom_minimum_size = Vector2(UiTheme.TOUCH_MIN + 20.0, UiTheme.TOUCH_MIN)
+	_photo.pressed.connect(func() -> void: set_photo_mode(true))
+	add_child(_photo)
+	_photo_bar = HBoxContainer.new()
+	_photo_bar.add_theme_constant_override("separation", 8)
+	for entry: Array in [["Save", save_photo], ["Exit", func() -> void: set_photo_mode(false)]]:
+		var b := Button.new()
+		b.name = entry[0]
+		b.custom_minimum_size = Vector2(96, UiTheme.TOUCH_MIN)
+		b.pressed.connect(entry[1])
+		_photo_bar.add_child(b)
+	_photo_bar.visible = false
+	add_child(_photo_bar)
 	_title = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
 	_title.add_theme_color_override("font_outline_color", UiTheme.VOLCANIC)
 	_title.add_theme_constant_override("outline_size", 4)
@@ -112,6 +131,9 @@ func on_show(_app: Node) -> void:
 func refresh_texts() -> void:
 	_back.text = tr("credits.back")
 	_title.text = tr("map.title")
+	_photo.text = tr("map.photo")
+	(_photo_bar.get_node("Save") as Button).text = tr("map.photo_save")
+	(_photo_bar.get_node("Exit") as Button).text = tr("map.photo_exit")
 	for n: Dictionary in Economy.CAMPAIGN:
 		var b: Button = _node_buttons[n["id"]]
 		b.text = node_label(n)
@@ -171,8 +193,13 @@ func _layout() -> void:
 	if _card == null:
 		return
 	_back.position = Vector2(safe.position.x + 8.0, safe.position.y + 6.0)
+	_photo.reset_size()
+	_photo.position = Vector2(safe.end.x - _photo.size.x - 8.0, safe.position.y + 6.0)
 	_title.position = Vector2(_back.position.x + 84.0, safe.position.y + 10.0)
-	_title.size = Vector2(maxf(0.0, safe.end.x - 8.0 - _title.position.x), 0)
+	_title.size = Vector2(maxf(0.0, _photo.position.x - 8.0 - _title.position.x), 0)
+	_photo_bar.reset_size()
+	_photo_bar.position = Vector2(floorf(safe.position.x + (safe.size.x - _photo_bar.size.x) * 0.5),
+			safe.end.y - _photo_bar.size.y - 10.0)
 	var width := minf(safe.size.x - 16.0, 320.0)
 	# Rótulos com quebra precisam da largura antes do cálculo da altura do cartão.
 	var inner := width - 24.0
@@ -228,8 +255,32 @@ func _place_nodes() -> void:
 
 
 func layout_controls() -> Array[Control]:
-	var list: Array[Control] = [_back, _title, _card]
+	var list: Array[Control] = [_back, _title, _card, _photo]
 	return list
+
+
+## Liga ou desliga o modo foto (plano mestre Fase 4): só o mapa em parallax e os botões Salvar/Sair.
+func set_photo_mode(on: bool) -> void:
+	photo_mode = on
+	for c: Control in [_back, _title, _card, _photo]:
+		c.visible = not on if c != _card else (not on and selected != &"")
+	for b: Button in _node_buttons.values():
+		b.modulate.a = 0.0 if on else 1.0
+	_photo_bar.visible = on
+	AudioManager.play_ui("kenney_ui_click")
+
+
+## Salva a tela (sem a barra do modo foto) em user://photos/ e devolve o caminho.
+func save_photo() -> String:
+	_photo_bar.visible = false
+	await RenderingServer.frame_post_draw
+	var image := get_viewport().get_texture().get_image()
+	_photo_bar.visible = photo_mode
+	DirAccess.make_dir_recursive_absolute("user://photos")
+	var path := "user://photos/atlantis_%d.png" % Time.get_unix_time_from_system()
+	image.save_png(path)
+	AudioManager.play_ui("kenney_ui_confirm")
+	return path
 
 
 func draw_map(ci: CanvasItem) -> void:

@@ -18,6 +18,11 @@ var mission_id: StringName = &"c1m1"
 var mission_data: Dictionary = {}
 ## O jogador ainda pode reviver nesta missão (campanha e sobrevivência; desligado nos testes do bot).
 var can_revive: bool = false
+## Gravação da partida (entrada de cada passo) e, quando houver, o replay a reproduzir no lugar do jogador.
+var recording: Replay
+var playback: Replay
+## Fantasma do Abismo: o recorde voando junto, numa segunda Sim com a entrada gravada.
+var ghost: Replay
 ## Carga do hangar (Economy.loadout) ou só o id da aeronave.
 var loadout: Variant = &"falcon"
 var seed_value: int = 7
@@ -27,6 +32,7 @@ var stress: int = 0
 var paused: bool = false
 
 var _bot: BotPilot
+var _ghost_sim: Sim
 var _backdrop: OceanBackdrop
 var _clip: Control
 var _world: WorldView
@@ -73,6 +79,11 @@ func _ready() -> void:
 			float(Settings.get_value("drag_sensitivity")))
 	if use_bot:
 		_bot = BotPilot.new()
+	recording = Replay.new(sim.mission, seed_value, loadout if typeof(loadout) == TYPE_DICTIONARY
+			else Sim.default_loadout(StringName(String(loadout))))
+	recording.loadout["sensitivity"] = float(Settings.get_value("drag_sensitivity"))
+	if ghost != null and playback == null:
+		_ghost_sim = ghost.make_sim()
 	_backdrop = OceanBackdrop.new()
 	_backdrop.detail = GfxQuality.level()
 	_backdrop.kind = StringName(String(sim.mission.get("backdrop", "ocean")))
@@ -86,6 +97,8 @@ func _ready() -> void:
 	_world.colorblind = String(Settings.get_value("colorblind"))
 	_world.fx_level = GfxQuality.level()
 	_world.setup(sim)
+	if _ghost_sim != null:
+		_world.ghost_sim = _ghost_sim
 	_clip.add_child(_world)
 	_layer = CanvasLayer.new()
 	add_child(_layer)
@@ -207,7 +220,20 @@ func _human_input() -> SimInput:
 func _on_tick(_dt: float) -> void:
 	if paused or sim.finished:
 		return
-	var input := _bot.decide(sim) if _bot != null else _human_input()
+	var input: SimInput
+	if playback != null:
+		input = playback.next_input()
+		if input == null:
+			_finish(true)
+			return
+	else:
+		input = _bot.decide(sim) if _bot != null else _human_input()
+	recording.record(input)
+	if _ghost_sim != null and not _ghost_sim.finished:
+		var g := ghost.next_input()
+		if g != null:
+			_ghost_sim.step(g)
+			_ghost_sim.take_events()
 	if stress > 0:
 		_stress()
 	sim.step(input)
@@ -387,6 +413,7 @@ func _finish(quit: bool) -> void:
 	var result := sim.result()
 	result["quit"] = quit
 	result["seed"] = seed_value
+	result["replay"] = playback != null
 	finished.emit(result)
 
 

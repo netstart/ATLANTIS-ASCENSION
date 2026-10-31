@@ -12,7 +12,14 @@ const MODES: Array[Dictionary] = [
 	{"id": &"survival", "after_all": [&"c4m1"], "rewards": true},
 	{"id": &"boss_rush", "after_all": [&"c2m3", &"c5m3s|c5m3a", &"c7m3s|c7m3a", &"c9m3"], "rewards": true},
 	{"id": &"practice", "after_all": [&"c1m1"], "rewards": false},
+	{"id": &"currents", "after_all": [&"c3m2"], "rewards": true},
+	{"id": &"second_tide", "after_all": [&"c9m3"], "rewards": true},
 ]
+## Segunda Maré: o fim de cada capítulo, com balas mais rápidas, vingança e chefes remendados.
+const SECOND_TIDE: Array[StringName] = [&"c1m2", &"c2m3", &"c3m3a", &"c4m3a", &"c5m3a", &"c6m3a", &"c7m3a", &"c8m3a",
+		&"c9m3"]
+## Modificadores das Correntes semanais (um por semana, sorteado pela data da segunda-feira).
+const MUTATORS: Array[StringName] = [&"fast_bullets", &"laser_only", &"railgun_only", &"dark", &"gravity", &"glass"]
 ## Arcade: um trecho de cada capítulo em sequência, sem hangar.
 const ARCADE: Array[StringName] = [&"c1m1", &"c2m3", &"c3m2", &"c4m2", &"c5m3s", &"c6m2", &"c7m3s", &"c8m2", &"c9m3"]
 const BOSS_RUSH: Array[StringName] = [&"tidebreaker", &"kraken_engine", &"coral_guardian", &"storm_eye", &"forge",
@@ -158,6 +165,50 @@ static func run(mode: StringName, profile: Dictionary, date: String, seed: int) 
 			out.append(daily(date, max_chapter(profile)))
 		&"survival":
 			out.append(survival(seed))
+		&"currents":
+			out.append(currents(LiveOps.week_of(date), max_chapter(profile)))
+		&"second_tide":
+			for id: StringName in SECOND_TIDE:
+				out.append(_load(id))
+	return out
+
+
+## Modificador da semana e a missão (entre os capítulos já vistos) em que ele vale.
+static func current_mutator(week: String) -> StringName:
+	return MUTATORS[date_seed("m" + week) % MUTATORS.size()]
+
+
+## Correntes semanais: uma missão da campanha com o modificador da semana (igual para todos).
+static func currents(week: String, max_ch: int) -> Dictionary:
+	var seed := date_seed("c" + week)
+	var options: Array[StringName] = []
+	for n: Dictionary in Economy.CAMPAIGN:
+		if int(n["chapter"]) <= max_ch and n["kind"] != &"secret":
+			options.append(n["id"])
+	var m := _load(options[seed % options.size()])
+	m["id"] = "currents:" + String(m.get("id", ""))
+	m["currents"] = week
+	match current_mutator(week):
+		&"laser_only":
+			m["weapon_lock"] = "laser"
+		&"railgun_only":
+			m["weapon_lock"] = "railgun"
+		&"dark":
+			m["dark"] = true
+		&"gravity":
+			(m["events"] as Array).append({"op": "gravity_breach", "dx": 1, "dy": 0, "strength": 26, "duration": 600,
+					"t": 0.5})
+	return m
+
+
+## Carga de um modo: hangar na Sobrevivência e na Segunda Maré; nave escolhida sem hangar no resto.
+static func loadout_for(mode: StringName, profile: Dictionary, date: String) -> Dictionary:
+	var ship := StringName(String(profile["selected"]["ship"]))
+	var out := Economy.loadout(profile) if mode in [&"survival", &"second_tide"] else Sim.default_loadout(ship)
+	if mode == &"second_tide":
+		out["second_tide"] = true
+	if mode == &"currents":
+		out["mutators"] = [String(current_mutator(LiveOps.week_of(date)))]
 	return out
 
 
