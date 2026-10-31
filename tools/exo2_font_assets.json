@@ -1,0 +1,8 @@
+{
+	"pack_root": "google-fonts",
+	"license_id": "exo2_font",
+	"files": {
+		"exo2/Exo2[wght].ttf": "fonts/exo2_variable.ttf",
+		"exo2/OFL.txt": "licenses_src/exo2_OFL.txt"
+	}
+}

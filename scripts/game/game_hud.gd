@@ -1,8 +1,13 @@
 class_name GameHud
 extends Control
-## HUD da missão (plano mestre 7.4). Posições vêm do Playfield: em telas altas o HUD fica acima do
-## campo e os botões na zona do polegar; em telas curtas o HUD fica sobre o campo (≤ 6%); no desktop
-## vai para o painel lateral. Lê a Sim a cada quadro; só troca textos quando o valor muda.
+## HUD da missão (plano mestre 7.4; guia "Neon abissal" em docs/design/ui-style.md). Posições vêm do
+## Playfield: em telas altas o HUD fica acima do campo e os botões na zona do polegar; em telas curtas
+## o HUD fica sobre o campo (≤ 6%, mais transparente); no desktop vai para o painel lateral.
+##
+## Lê a Sim a cada quadro, mas só troca texto, StyleBox e desenho vetorial quando o valor muda (regra
+## de desempenho de docs/policies/qualidade.md). O que anda a cada quadro é só tamanho de ColorRect,
+## modulate, escala e tweens; os anéis e glifos (draw_arc/polígonos) são refeitos só na troca de estado.
+## "Reduzir movimento" desliga contagem, pulsos, varreduras e a máquina de escrever.
 
 signal pause_pressed
 signal special_pressed
@@ -18,9 +23,25 @@ signal quit_pressed
 
 const RADIO_SECONDS := 4.0
 const BANNER_SECONDS := 2.4
+## Lado do botão compacto (telas curtas: sobre o campo) e mínimo de toque do HUD.
 const BUTTON := 44.0
+## Bomba e especial quando a zona do polegar tem espaço (e no painel lateral do desktop).
+const BIG_BUTTON := 54.0
+const PAUSE_BUTTON := 38.0
 const OBJECTIVE_SECONDS := 5.0
 const PORTRAIT := 32.0
+## Letras por segundo da máquina de escrever do rádio.
+const TYPE_RATE := 70.0
+const LIFE_ICON := 12.0
+const LIFE_MAX_ICONS := 6
+## Salto de pontos que faz o placar pulsar (abates grandes, medalhas, bônus).
+const SCORE_PULSE := 500
+## Degraus do anel do especial (redesenho só quando muda de degrau: ~a cada 30 quadros).
+const CHARGE_STEPS := 48
+const BOSS_FILL_SECONDS := 1.2
+const BOSS_BAR_H := 6.0
+## Nave do jogador (Void) recortada para os ícones de casco.
+const SHIP_ICON := "res://assets/art/void/main_ship/base_full.png"
 ## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
 const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint.orbs"], [1500, "hint.special"],
 		[2100, "hint.tide"], [2700, "hint.marked"], [3300, "hint.capture"]]
@@ -28,16 +49,57 @@ const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint
 var layout := {}
 var safe := Rect2()
 
+var _sim: Sim
+var _reduced := false
+var _portrait_mode := true
+var _btn := BUTTON
+## Placar: fonte com algarismos tabulares, valor mostrado (contagem) e alvo.
 var _score: Label
+var _score_shown: float = 0.0
+var _score_target: int = 0
+var _score_tween: Tween
+## Multiplicador da corrente: pílula colorida por faixa, barra do tempo da corrente embaixo.
+var _mult_pill: PanelContainer
 var _mult: Label
-var _hull: Label
-var _bombs: Label
+var _chain_bar: ColorRect
+var _mult_value: int = 0
+var _mult_tier: int = -1
+var _mult_on := false
+var _last_chain: int = 0
+var _mult_tween: Tween
+var _mult_boxes: Array[StyleBoxFlat] = []
+## Casco: ícones da nave (ou um ícone e "×N" quando passa de LIFE_MAX_ICONS).
+var _lives_box: HBoxContainer
+var _life_icons: Array[TextureRect] = []
+var _life_count: Label
+var _life_texture: Texture2D
+var _hull_shown: int = -1
+var _hull_max: int = -1
+var _side_panel: Panel
 var _weapon: Label
+var _weapon_pips: Control
+var _weapon_key := ""
+var _pip_level: int = 0
+var _pip_max: int = 0
+var _weapon_right_edge: float = -1.0
 var _pause: Button
 var _special: Button
+var _special_gauge: Control
+var _special_caption: Label
+var _special_glow: Panel
+var _special_ready := false
+var _special_q: int = -1
+var _glow_tween: Tween
 var _bomb: Button
+var _bomb_gauge: Control
+var _bomb_caption: Label
+var _bombs_shown: int = -1
 var _tide: Button
-var _pressure: ProgressBar
+var _pressure_track: ColorRect
+var _pressure: ColorRect
+var _pressure_q: int = -1
+var _pressure_full := false
+var _objective_panel: PanelContainer
 var _objective: Label
 var _offer_panel: PanelContainer
 var _offer_title: Label
@@ -46,22 +108,47 @@ var _revive_panel: PanelContainer
 var _revive_text: Label
 var _revive_yes: Button
 var _revive_no: Button
+var _dim: ColorRect
+## Rádio: painel de vidro com moldura chanfrada do retrato, nome de quem fala e texto digitado.
+var _radio_panel: PanelContainer
+var _radio_frame: PanelContainer
+var _radio_name: Label
 var _radio: Label
 ## Retrato de quem fala no rádio (Portraits), à esquerda do texto.
 var _portrait: TextureRect
-var _radio_box := Rect2()
+var _radio_type: float = 0.0
+var _radio_tween: Tween
+var _banner_root: Control
+var _banner_band: ColorRect
+var _banner_bars: Array[Control] = []
 var _banner: Label
+var _banner_warning := false
+var _banner_tween: Tween
 var _prompt: Label
-var _boss_bar: ProgressBar
+## Barra do chefe: placa com o nome, trilho, rastro do dano, preenchimento e marcas das etapas.
+var _boss_root: Control
+var _boss_name: Label
+var _boss_track: Panel
+var _boss_ghost: ColorRect
+var _boss_fill: ColorRect
+var _boss_shine: ColorRect
+var _boss_ticks: Array[ColorRect] = []
+var _boss_ref: SimBoss
+var _boss_w: float = 200.0
+var _boss_fill_t: float = 0.0
+var _boss_shown: float = -1.0
+var _boss_ghost_v: float = 0.0
+var _boss_hold: float = 0.0
 var _pause_panel: PanelContainer
 var _pause_box: VBoxContainer
 var _side_shade: Array[ColorRect] = []
+var _frame_lines: Array[ColorRect] = []
 var _radio_left: float = 0.0
 var _banner_left: float = 0.0
-var _last_score: int = -1
 var _dialogue: Dictionary = {}
 var _objective_left: float = 0.0
 var _hints: Array = []
+var _refit_frames: int = 0
 
 
 func _init() -> void:
@@ -70,6 +157,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	_reduced = UiFx.reduced()
 	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/dialogue.json"))
 	if typeof(parsed) == TYPE_ARRAY:
 		for row: Variant in parsed:
@@ -81,60 +169,127 @@ func _ready() -> void:
 		shade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(shade)
 		_side_shade.append(shade)
-	_score = _label(UiTheme.HEADING_SIZE, UiTheme.WHITE)
-	_mult = _label(UiTheme.FONT_SIZE, UiTheme.CYAN)
-	_hull = _label(UiTheme.FONT_SIZE, UiTheme.CORAL)
-	_bombs = _label(UiTheme.FONT_SIZE, UiTheme.GOLD)
-	_weapon = _label(UiTheme.FONT_SIZE, UiTheme.TEXT)
-	_radio = _label(UiTheme.FONT_SIZE, UiTheme.TEXT)
-	_radio.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_radio.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_portrait = Portraits.make_rect(PORTRAIT)
-	_portrait.visible = false
-	add_child(_portrait)
-	_banner = _label(UiTheme.TITLE_SIZE, UiTheme.CORAL)
-	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_prompt = _label(UiTheme.HEADING_SIZE, UiTheme.GOLD)
+	for i: int in range(2):
+		var line := ColorRect.new()
+		line.color = Color(UiTheme.CYAN, 0.2)
+		line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(line)
+		_frame_lines.append(line)
+	_side_panel = Panel.new()
+	_side_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_side_panel.add_theme_stylebox_override("panel", UiTheme.panel_box(UiTheme.CYAN, 0.72))
+	add_child(_side_panel)
+	_build_top()
+	_build_boss_bar()
+	_build_objective()
+	_build_radio()
+	_build_banner()
+	_prompt = _label(UiTheme.HEADING_SIZE, UiTheme.GOLD, true)
 	_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_prompt.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_boss_bar = ProgressBar.new()
-	_boss_bar.show_percentage = false
-	_boss_bar.max_value = 1.0
-	_boss_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = UiTheme.CORAL
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(UiTheme.ABYSS, 0.8)
-	_boss_bar.add_theme_stylebox_override("fill", fill)
-	_boss_bar.add_theme_stylebox_override("background", bg)
-	add_child(_boss_bar)
-	_pause = _button("II", func() -> void: pause_pressed.emit())
-	_special = _button("", func() -> void: special_pressed.emit())
-	_bomb = _button("", func() -> void: bomb_pressed.emit())
-	_tide = _button("", func() -> void: tide_pressed.emit())
-	_pressure = _bar(UiTheme.CYAN)
-	_objective = _label(UiTheme.FONT_SIZE, UiTheme.GOLD)
-	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_prompt.visible = false
+	_build_buttons()
+	_dim = ColorRect.new()
+	_dim.color = Color(UiTheme.ABYSS, 0.6)
+	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dim.visible = false
+	add_child(_dim)
 	_build_offer_panel()
 	_build_revive_panel()
 	_build_pause_panel()
 	refresh_texts()
 
 
-func _label(size: int, color: Color) -> Label:
-	var l := UiTheme.label("", size, color)
+# --- Construção ------------------------------------------------------------------------------
+
+func _label(size: int, color: Color, bold: bool = false) -> Label:
+	var l := UiTheme.heading("", size, color) if bold else UiTheme.label("", size, color)
 	l.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	l.add_theme_color_override("font_outline_color", UiTheme.VOLCANIC)
-	l.add_theme_constant_override("outline_size", 4)
+	l.add_theme_color_override("font_outline_color", UiTheme.ABYSS)
+	l.add_theme_constant_override("outline_size", 3)
 	add_child(l)
 	return l
 
 
-func _button(text: String, on_press: Callable) -> Button:
+func _build_top() -> void:
+	_score = _label(UiTheme.HEADING_SIZE, UiTheme.WHITE, true)
+	_score.text = "0"
+	var tab := HudKit.tabular_font()
+	if tab != null:
+		_score.add_theme_font_override("font", tab)
+	_mult_pill = HudKit.ignore(PanelContainer.new()) as PanelContainer
+	_mult_pill.custom_minimum_size = Vector2(44, 18)
+	_mult_pill.visible = false
+	_mult_pill.resized.connect(func() -> void: _mult_pill.pivot_offset = _mult_pill.size * 0.5)
+	add_child(_mult_pill)
+	_mult_boxes = HudKit.mult_boxes()
+	_mult = UiTheme.heading("", UiTheme.FONT_SIZE, UiTheme.CYAN)
+	_mult.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_mult.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	if tab != null:
+		_mult.add_theme_font_override("font", tab)
+	_mult_pill.add_child(HudKit.ignore(_mult))
+	_mult_pill.add_theme_stylebox_override("panel", _mult_boxes[0])
+	_chain_bar = HudKit.ignore(ColorRect.new()) as ColorRect
+	_chain_bar.visible = false
+	add_child(_chain_bar)
+	_lives_box = HudKit.ignore(HBoxContainer.new()) as HBoxContainer
+	_lives_box.add_theme_constant_override("separation", 3)
+	add_child(_lives_box)
+	_life_count = UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.TEXT)
+	_life_count.visible = false
+	_lives_box.add_child(_life_count)
+	_life_texture = HudKit.trimmed_texture(SHIP_ICON)
+	_pressure_track = HudKit.ignore(ColorRect.new()) as ColorRect
+	_pressure_track.color = Color(UiTheme.ABYSS, 0.75)
+	add_child(_pressure_track)
+	_pressure = HudKit.ignore(ColorRect.new()) as ColorRect
+	_pressure.color = UiTheme.CYAN
+	add_child(_pressure)
+
+
+func _build_buttons() -> void:
+	_pause = _button(func() -> void: pause_pressed.emit())
+	_pause.name = "Pause"
+	var pause_glyph := _glyph(_pause, func(c: Control) -> void: HudKit.draw_pause(c))
+	pause_glyph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	HudKit.style_round(_pause, UiTheme.CYAN, 0.5, false, 4)
+	_tide = _button(func() -> void: tide_pressed.emit())
+	_tide.name = "Tide"
+	_tide.custom_minimum_size = Vector2(BUTTON, 38)
+	HudKit.style_round(_tide, UiTheme.CYAN, 0.9, true, 6, 26)
+	var wave := _glyph(_tide, func(c: Control) -> void: HudKit.draw_waves(c))
+	wave.position = Vector2(6, 0)
+	wave.size = Vector2(18, 38)
+	_tide.resized.connect(func() -> void: wave.size.y = _tide.size.y)
+	_tide.visible = false
+	_special = _button(func() -> void: special_pressed.emit())
+	_special.name = "Special"
+	_special_glow = HudKit.ignore(Panel.new()) as Panel
+	_special_glow.show_behind_parent = true
+	_special_glow.add_theme_stylebox_override("panel", HudKit.glow_box(UiTheme.GOLD))
+	_special_glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_special_glow.visible = false
+	_special.add_child(_special_glow)
+	_special_gauge = _glyph(_special, func(c: Control) -> void: HudKit.draw_special(c, _btn >= BIG_BUTTON,
+			1.0 if _special_ready else _special_q / float(CHARGE_STEPS), _special_ready))
+	_special_gauge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_special_caption = HudKit.caption(_special)
+	_bomb = _button(func() -> void: bomb_pressed.emit())
+	_bomb.name = "Bomb"
+	_bomb_gauge = _glyph(_bomb, func(c: Control) -> void: HudKit.draw_bomb(c, _btn >= BIG_BUTTON, _bombs_shown))
+	_bomb_gauge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_bomb_caption = HudKit.caption(_bomb)
+	_weapon = _label(UiTheme.FONT_SIZE, UiTheme.TEXT, true)
+	_weapon_pips = HudKit.ignore(Control.new())
+	_weapon_pips.draw.connect(func() -> void: HudKit.draw_pips(_weapon_pips, _pip_level, _pip_max))
+	add_child(_weapon_pips)
+	_style_special()
+	_style_bomb()
+
+
+func _button(on_press: Callable) -> Button:
 	var b := Button.new()
-	b.text = text
 	b.focus_mode = Control.FOCUS_NONE
 	b.custom_minimum_size = Vector2(BUTTON, BUTTON)
 	b.pressed.connect(on_press)
@@ -142,35 +297,108 @@ func _button(text: String, on_press: Callable) -> Button:
 	return b
 
 
-func _bar(color: Color) -> ProgressBar:
-	var bar := ProgressBar.new()
-	bar.show_percentage = false
-	bar.max_value = 1.0
-	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var fill := StyleBoxFlat.new()
-	fill.bg_color = color
-	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(UiTheme.ABYSS, 0.8)
-	bar.add_theme_stylebox_override("fill", fill)
-	bar.add_theme_stylebox_override("background", bg)
-	add_child(bar)
-	return bar
+## Camada de desenho vetorial dentro de um botão (refeita só com queue_redraw na troca de estado).
+func _glyph(parent: Control, painter: Callable) -> Control:
+	var c := HudKit.ignore(Control.new())
+	c.draw.connect(painter.bind(c))
+	parent.add_child(c)
+	return c
+
+
+func _build_boss_bar() -> void:
+	_boss_root = HudKit.ignore(Control.new())
+	_boss_root.visible = false
+	add_child(_boss_root)
+	_boss_name = UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.CORAL)
+	_boss_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_boss_name.add_theme_color_override("font_outline_color", UiTheme.ABYSS)
+	_boss_name.add_theme_constant_override("outline_size", 3)
+	_boss_name.clip_text = true
+	_boss_root.add_child(_boss_name)
+	_boss_track = HudKit.ignore(Panel.new()) as Panel
+	var track := UiTheme.chamfer(Color(UiTheme.ABYSS, 0.82), Color(UiTheme.CORAL, 0.55), 1, 4)
+	track.shadow_color = Color(UiTheme.CORAL, 0.2)
+	track.shadow_size = 4
+	_boss_track.add_theme_stylebox_override("panel", track)
+	_boss_root.add_child(_boss_track)
+	_boss_ghost = HudKit.ignore(ColorRect.new()) as ColorRect
+	_boss_ghost.color = Color(UiTheme.WHITE, 0.7)
+	_boss_root.add_child(_boss_ghost)
+	_boss_fill = HudKit.ignore(ColorRect.new()) as ColorRect
+	_boss_fill.color = UiTheme.CORAL
+	_boss_root.add_child(_boss_fill)
+	_boss_shine = HudKit.ignore(ColorRect.new()) as ColorRect
+	_boss_shine.color = Color(1.0, 0.85, 0.88, 0.45)
+	_boss_root.add_child(_boss_shine)
+
+
+func _build_objective() -> void:
+	_objective_panel = HudKit.ignore(PanelContainer.new()) as PanelContainer
+	var box := UiTheme.panel_box(UiTheme.GOLD, 0.7)
+	box.set_content_margin_all(8)
+	_objective_panel.add_theme_stylebox_override("panel", box)
+	_objective_panel.visible = false
+	add_child(_objective_panel)
+	_objective = UiTheme.heading("", UiTheme.FONT_SIZE, UiTheme.GOLD)
+	_objective.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_objective_panel.add_child(_objective)
+
+
+func _build_radio() -> void:
+	_radio_panel = HudKit.ignore(PanelContainer.new()) as PanelContainer
+	_radio_panel.visible = false
+	add_child(_radio_panel)
+	var row := HudKit.ignore(HBoxContainer.new()) as HBoxContainer
+	row.add_theme_constant_override("separation", 8)
+	_radio_panel.add_child(row)
+	_radio_frame = HudKit.ignore(PanelContainer.new()) as PanelContainer
+	_radio_frame.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	row.add_child(_radio_frame)
+	_portrait = Portraits.make_rect(PORTRAIT)
+	_radio_frame.add_child(_portrait)
+	var col := HudKit.ignore(VBoxContainer.new()) as VBoxContainer
+	col.add_theme_constant_override("separation", 1)
+	row.add_child(col)
+	_radio_name = UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.CYAN)
+	_radio_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(_radio_name)
+	_radio = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT)
+	_radio.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_radio.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_radio.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
+	col.add_child(_radio)
+
+
+func _build_banner() -> void:
+	_banner_root = HudKit.ignore(Control.new())
+	_banner_root.visible = false
+	add_child(_banner_root)
+	_banner_band = HudKit.ignore(ColorRect.new()) as ColorRect
+	_banner_root.add_child(_banner_band)
+	for i: int in range(2):
+		var bar := HudKit.ignore(Control.new())
+		bar.draw.connect(func() -> void: HudKit.draw_banner_bar(bar, i, _banner_warning))
+		_banner_root.add_child(bar)
+		_banner_bars.append(bar)
+	_banner = UiTheme.heading("", UiTheme.TITLE_SIZE, UiTheme.WHITE)
+	_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_banner.add_theme_color_override("font_outline_color", UiTheme.ABYSS)
+	_banner.add_theme_constant_override("outline_size", 4)
+	_banner_root.add_child(_banner)
 
 
 ## Painel das bênçãos (plano mestre 4.11): a fase congela até o jogador escolher 1 de 3.
 func _build_offer_panel() -> void:
-	_offer_panel = PanelContainer.new()
-	var box := StyleBoxFlat.new()
-	box.bg_color = Color(UiTheme.ABYSS, 0.93)
-	box.border_color = UiTheme.GOLD
-	box.set_border_width_all(1)
-	box.set_corner_radius_all(4)
-	box.set_content_margin_all(10)
-	_offer_panel.add_theme_stylebox_override("panel", box)
+	_offer_panel = HudKit.glass(UiTheme.GOLD)
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 8)
 	_offer_panel.add_child(list)
-	_offer_title = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD, true)
+	_offer_title = UiTheme.heading("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
+	_offer_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_offer_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	list.add_child(_offer_title)
 	for i: int in range(3):
@@ -182,27 +410,22 @@ func _build_offer_panel() -> void:
 		b.pressed.connect(func() -> void: blessing_chosen.emit(i))
 		list.add_child(b)
 		_offer_buttons.append(b)
-	_offer_panel.visible = false
 	add_child(_offer_panel)
 
 
 func _build_revive_panel() -> void:
-	_revive_panel = PanelContainer.new()
-	var box := StyleBoxFlat.new()
-	box.bg_color = Color(UiTheme.ABYSS, 0.95)
-	box.border_color = UiTheme.CORAL
-	box.set_border_width_all(1)
-	box.set_content_margin_all(14)
-	_revive_panel.add_theme_stylebox_override("panel", box)
+	_revive_panel = HudKit.glass(UiTheme.CORAL)
 	var list := VBoxContainer.new()
 	list.add_theme_constant_override("separation", 10)
 	_revive_panel.add_child(list)
-	_revive_text = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.CORAL, true)
+	_revive_text = UiTheme.heading("", UiTheme.HEADING_SIZE, UiTheme.CORAL)
+	_revive_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_revive_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	list.add_child(_revive_text)
 	_revive_yes = Button.new()
 	_revive_yes.name = "Revive"
-	_revive_yes.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
+	_revive_yes.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 10.0)
+	UiTheme.style_primary(_revive_yes)
 	_revive_yes.pressed.connect(func() -> void: revive_chosen.emit(true))
 	list.add_child(_revive_yes)
 	_revive_no = Button.new()
@@ -210,9 +433,17 @@ func _build_revive_panel() -> void:
 	_revive_no.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
 	_revive_no.pressed.connect(func() -> void: revive_chosen.emit(false))
 	list.add_child(_revive_no)
-	_revive_panel.visible = false
 	add_child(_revive_panel)
 
+
+func _build_pause_panel() -> void:
+	_pause_panel = HudKit.glass(UiTheme.CYAN)
+	_pause_box = HudKit.menu_box(_pause_panel, [["Resume", resume_pressed], ["Restart", restart_pressed],
+			["Quit", quit_pressed]])
+	add_child(_pause_panel)
+
+
+# --- Painéis ---------------------------------------------------------------------------------
 
 func show_revive() -> void:
 	_revive_text.text = tr("hud.revive_title")
@@ -221,51 +452,62 @@ func show_revive() -> void:
 	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
 	var width := field.size.x - 32.0
 	_revive_text.custom_minimum_size.x = width - 28.0
-	_revive_panel.size = Vector2(width, 0)
-	_revive_panel.reset_size()
 	_revive_panel.size.x = width
-	_revive_panel.position = (field.get_center() - _revive_panel.size * 0.5).floor()
-	_revive_panel.visible = true
+	_open_panel(_revive_panel)
+	_refit_panels()
 	_revive_yes.grab_focus()
+
+
+## Painéis com texto quebrado medem a altura só depois que o contêiner dá a largura ao rótulo:
+## encolhe-os de novo nos quadros seguintes (PanelContainer nunca encolhe sozinho) e recentraliza.
+func _refit_panels() -> void:
+	_refit_frames = 3
+	_refit_now()
+
+
+func _process(_delta: float) -> void:
+	if _refit_frames > 0:
+		_refit_frames -= 1
+		_refit_now()
+
+
+func _refit_now() -> void:
+	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
+	for panel: Control in [_revive_panel, _offer_panel, _pause_panel, _objective_panel, _radio_panel]:
+		if not panel.visible:
+			continue
+		var width := panel.size.x
+		panel.reset_size()
+		panel.size.x = maxf(width, panel.size.x)
+		if panel != _objective_panel and panel != _radio_panel:
+			panel.position = (field.get_center() - panel.size * 0.5).floor()
 
 
 func hide_revive() -> void:
 	_revive_panel.visible = false
+	_sync_dim()
 
 
 func revive_visible() -> bool:
 	return _revive_panel.visible
 
 
-func _build_pause_panel() -> void:
-	_pause_panel = PanelContainer.new()
-	var box := StyleBoxFlat.new()
-	box.bg_color = Color(UiTheme.ABYSS, 0.94)
-	box.border_color = UiTheme.TURQUOISE
-	box.set_border_width_all(1)
-	box.set_content_margin_all(16)
-	_pause_panel.add_theme_stylebox_override("panel", box)
-	_pause_box = VBoxContainer.new()
-	_pause_box.add_theme_constant_override("separation", 10)
-	_pause_panel.add_child(_pause_box)
-	var title := UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
-	title.name = "Title"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_pause_box.add_child(title)
-	for entry: Array in [["Resume", resume_pressed], ["Restart", restart_pressed], ["Quit", quit_pressed]]:
-		var b := Button.new()
-		b.name = entry[0]
-		b.custom_minimum_size = Vector2(180, UiTheme.TOUCH_MIN)
-		var sig: Signal = entry[1]
-		b.pressed.connect(func() -> void: sig.emit())
-		_pause_box.add_child(b)
-	_pause_panel.visible = false
-	add_child(_pause_panel)
+func _open_panel(panel: Control) -> void:
+	var was := panel.visible
+	panel.visible = true
+	_sync_dim()
+	if not was:
+		UiFx.enter(panel)
+
+
+## Véu escuro atrás de pausa, reviver e bênçãos: o painel de vidro lê bem sobre a ação congelada.
+func _sync_dim() -> void:
+	_dim.visible = _pause_panel.visible or _revive_panel.visible or _offer_panel.visible
 
 
 func refresh_texts() -> void:
-	_special.text = tr("hud.special")
-	_bomb.text = tr("hud.bomb")
+	_special_caption.text = tr("hud.special")
+	_bomb_caption.text = tr("hud.bomb")
 	_tide.text = tr("hud.tide_button")
 	_offer_title.text = tr("hud.blessing_title")
 	(_pause_box.get_node("Title") as Label).text = tr("hud.paused")
@@ -275,12 +517,15 @@ func refresh_texts() -> void:
 
 
 func set_paused(paused: bool) -> void:
-	_pause_panel.visible = paused
 	if paused:
+		_open_panel(_pause_panel)
 		_pause_panel.reset_size()
 		var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
 		_pause_panel.position = (field.get_center() - _pause_panel.size * 0.5).floor()
 		(_pause_box.get_node("Resume") as Button).grab_focus()
+	else:
+		_pause_panel.visible = false
+		_sync_dim()
 
 
 ## Objetivo e dicas da missão (mostrados no começo).
@@ -288,6 +533,8 @@ func setup_mission(sim: Sim) -> void:
 	var obj: Dictionary = sim.mission.get("objective", {})
 	_objective.text = "%s · %s" % [tr(String(sim.mission.get("name_key", ""))), tr(String(obj.get("text_key", "")))]
 	_objective_left = OBJECTIVE_SECONDS
+	_objective_panel.visible = true
+	_refit_panels()
 	_hints = HINTS.duplicate() if bool(sim.mission.get("tutorial", false)) else []
 
 
@@ -302,13 +549,15 @@ func show_offer(sim: Sim) -> void:
 			var def: Dictionary = table.get(sim.offer[i], {})
 			b.text = "%s · %s\n%s" % [tr("deity." + String(def.get("deity", ""))), tr(String(def.get("name_key", ""))),
 					tr(String(def.get("desc_key", "")))]
-	_offer_panel.visible = true
+	_open_panel(_offer_panel)
 	_place_offer()
+	_refit_panels()
 	_offer_buttons[0].grab_focus()
 
 
 func hide_offer() -> void:
 	_offer_panel.visible = false
+	_sync_dim()
 
 
 ## Painel das bênçãos (testes de layout).
@@ -324,21 +573,22 @@ func _place_offer() -> void:
 	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
 	var width := field.size.x - 16.0
 	for b: Button in _offer_buttons:
-		b.custom_minimum_size.x = width - 20.0
-	_offer_title.custom_minimum_size.x = width - 20.0
+		b.custom_minimum_size.x = width - 28.0
+	_offer_title.custom_minimum_size.x = width - 28.0
 	_offer_panel.size = Vector2(width, 0)
 	_offer_panel.reset_size()
 	_offer_panel.size.x = width
 	_offer_panel.position = (field.get_center() - _offer_panel.size * 0.5).floor()
 
 
+# --- Layout ----------------------------------------------------------------------------------
+
 ## Posiciona tudo a partir do Playfield (chamado quando a tela ou a área segura mudam).
 func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	layout = p_layout
 	safe = p_safe
 	var field: Rect2 = layout["field"]
-	var hud: Rect2 = layout["hud"]
-	var portrait := size.y >= size.x
+	_portrait_mode = size.y >= size.x
 	_side_shade[0].position = Vector2.ZERO
 	_side_shade[0].size = Vector2(field.position.x, size.y)
 	_side_shade[1].position = Vector2(field.end.x, 0)
@@ -347,135 +597,600 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	_side_shade[2].size = Vector2(field.size.x, field.position.y)
 	_side_shade[3].position = Vector2(field.position.x, field.end.y)
 	_side_shade[3].size = Vector2(field.size.x, maxf(0.0, size.y - field.end.y))
-	var top := hud.position if portrait else Vector2(field.end.x + 12.0, safe.position.y + 12.0)
-	var width := field.size.x if portrait else maxf(80.0, safe.end.x - field.end.x - 24.0)
-	_score.position = top + Vector2(4, 2)
-	_mult.position = top + Vector2(4, 22) if not portrait else top + Vector2(width * 0.42, 6)
-	_hull.position = top + (Vector2(width - 120, 6) if portrait else Vector2(4, 44))
-	_bombs.position = top + (Vector2(width - 76, 6) if portrait else Vector2(4, 62))
-	_pause.position = Vector2(safe.end.x - BUTTON - 4.0, safe.position.y + 2.0) if portrait \
-			else Vector2(safe.end.x - BUTTON - 8.0, safe.position.y + 8.0)
-	if portrait:
-		_hull.position.x = minf(_hull.position.x, _pause.position.x - 96.0)
-		_bombs.position.x = minf(_bombs.position.x, _pause.position.x - 50.0)
-		if not bool(layout["hud_overlay"]) and _pause.position.y + BUTTON > field.position.y:
-			_pause.position.y = safe.position.y
-	var thumb: Rect2 = layout["thumb"]
-	var buttons_y := field.end.y - BUTTON - 6.0
-	if bool(layout.get("thumb_separate", false)):
-		buttons_y = thumb.position.y + minf(16.0, thumb.size.y - BUTTON - 4.0)
-	if not portrait:
-		buttons_y = safe.end.y - BUTTON - 16.0
-	var right_x := field.end.x - BUTTON - 6.0 if portrait else safe.end.x - BUTTON - 16.0
-	var left_x := field.position.x + 6.0 if portrait else field.end.x + 16.0
-	if String(Settings.get_value("handedness")) == "left" and portrait:
-		var tmp := right_x
-		right_x = left_x
-		left_x = tmp
-	_special.reset_size()
-	_bomb.reset_size()
-	if right_x > left_x:
-		_special.position = Vector2(right_x + BUTTON - _special.size.x, buttons_y)
-		_bomb.position = Vector2(_special.position.x - _bomb.size.x - 8.0, buttons_y)
+	# Fio ciano nas bordas do campo que encostam no HUD (cima e baixo em retrato, lados no desktop).
+	if _portrait_mode:
+		_frame_lines[0].position = Vector2(field.position.x, field.position.y)
+		_frame_lines[0].size = Vector2(field.size.x, 1)
+		_frame_lines[1].position = Vector2(field.position.x, field.end.y - 1.0)
+		_frame_lines[1].size = Vector2(field.size.x, 1)
 	else:
-		_special.position = Vector2(right_x, buttons_y)
-		_bomb.position = Vector2(_special.position.x + _special.size.x + 8.0, buttons_y)
-	_weapon.position = Vector2(left_x, buttons_y + 14.0)
-	_tide.reset_size()
-	_tide.position = Vector2(_special.position.x + _special.size.x - _tide.size.x, buttons_y - BUTTON - 8.0)
-	_pressure.position = _score.position + Vector2(0, 24 if portrait else 82)
-	_pressure.size = Vector2(minf(90.0, width * 0.3), 3.0)
-	_objective.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.18)
-	_objective.size = Vector2(field.size.x - 16.0, 0)
-	_radio_box = Rect2(field.position.x + 8.0, field.end.y - BUTTON - 64.0, field.size.x - 16.0, 0.0)
-	_place_radio()
-	_banner.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.3)
-	_banner.size = Vector2(field.size.x - 16.0, 0)
+		_frame_lines[0].position = Vector2(field.position.x, field.position.y)
+		_frame_lines[0].size = Vector2(1, field.size.y)
+		_frame_lines[1].position = Vector2(field.end.x - 1.0, field.position.y)
+		_frame_lines[1].size = Vector2(1, field.size.y)
+	_pause.custom_minimum_size = Vector2(PAUSE_BUTTON, PAUSE_BUTTON)
+	_pause.size = _pause.custom_minimum_size
+	if _portrait_mode:
+		_pause.position = Vector2(safe.end.x - PAUSE_BUTTON - 4.0, safe.position.y + 2.0)
+		if not bool(layout["hud_overlay"]) and _pause.position.y + PAUSE_BUTTON > field.position.y:
+			_pause.position.y = safe.position.y
+	else:
+		_pause.position = Vector2(safe.end.x - PAUSE_BUTTON - 8.0, safe.position.y + 8.0)
+	_place_top()
+	_place_buttons(field)
+	_objective.custom_minimum_size.x = field.size.x - 32.0
+	_objective_panel.size = Vector2(field.size.x - 16.0, 0)
+	_objective_panel.reset_size()
+	_objective_panel.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.18)
+	_banner_root.position = Vector2(field.position.x, field.position.y + field.size.y * 0.3)
+	_banner_root.size = Vector2(field.size.x, 60)
+	_banner.position = Vector2(10, 10)
+	_banner.size = Vector2(field.size.x - 20.0, 0)
 	_prompt.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.62)
 	_prompt.size = Vector2(field.size.x - 16.0, 0)
-	_boss_bar.position = Vector2(field.position.x + 8.0, field.position.y + (28.0 if bool(layout["hud_overlay"]) else 4.0))
-	_boss_bar.size = Vector2(field.size.x - 16.0, 4.0)
+	_place_boss(field)
+	_place_radio()
 	if _pause_panel.visible:
 		set_paused(true)
 	if _offer_panel.visible:
 		_place_offer()
+	_refit_panels()
 
+
+## Placar, multiplicador, casco e pressão: faixa de cima em retrato; painel de vidro no desktop.
+func _place_top() -> void:
+	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
+	var hud: Rect2 = layout.get("hud", Rect2())
+	var overlay := bool(layout.get("hud_overlay", false))
+	_lives_box.reset_size()
+	var lives_w := _lives_box.get_combined_minimum_size().x
+	if _portrait_mode:
+		_side_panel.visible = false
+		_score.add_theme_font_size_override("font_size", UiTheme.scaled(UiTheme.HEADING_SIZE))
+		_score.position = hud.position + Vector2(4, 1)
+		var right := minf(_pause.position.x - 8.0, field.end.x - 4.0)
+		_lives_box.position = Vector2(right - lives_w, hud.position.y + floorf((hud.size.y - LIFE_ICON) * 0.5))
+		_mult_pill.reset_size()
+		_mult_pill.position = Vector2(_lives_box.position.x - 10.0 - _mult_pill.size.x, hud.position.y + 3.0)
+		_pressure_track.position = Vector2(hud.position.x + 4.0, hud.end.y - 3.0)
+		_pressure_track.size = Vector2(minf(90.0, hud.size.x * 0.3), 2.0)
+	else:
+		var top := Vector2(field.end.x + 12.0, safe.position.y + 8.0)
+		var width := clampf(_pause.position.x - top.x - 12.0, 120.0, 280.0)
+		_side_panel.visible = true
+		_side_panel.position = top
+		_side_panel.size = Vector2(width, 78)
+		_score.add_theme_font_size_override("font_size", UiTheme.scaled(UiTheme.TITLE_SIZE))
+		_score.position = top + Vector2(12, 6)
+		# Pílula à direita do placar; casco na segunda linha; pressão no rodapé do painel.
+		_mult_pill.reset_size()
+		_mult_pill.position = top + Vector2(width - 12.0 - _mult_pill.size.x, 13)
+		_lives_box.position = top + Vector2(13, 46)
+		_pressure_track.position = top + Vector2(12, 66)
+		_pressure_track.size = Vector2(width - 24.0, 3.0)
+	_pressure.position = _pressure_track.position
+	_pressure.size.y = _pressure_track.size.y
+	_pressure_q = -1
+	_chain_bar.position = _mult_pill.position + Vector2(3.0, _mult_pill.size.y + 1.0)
+	_chain_bar.size.y = 2.0
+	# Sobre o campo (telas curtas) o HUD de cima fica mais transparente para não esconder balas.
+	var alpha := 0.82 if overlay else 1.0
+	for node: CanvasItem in [_score, _lives_box, _pressure_track, _pressure]:
+		node.modulate.a = alpha
+
+
+func _place_buttons(field: Rect2) -> void:
+	var thumb: Rect2 = layout["thumb"]
+	var sep := bool(layout.get("thumb_separate", false))
+	_btn = BIG_BUTTON if not _portrait_mode or (sep and thumb.size.y >= BIG_BUTTON + 8.0) else BUTTON
+	var buttons_y := field.end.y - _btn - 6.0
+	if sep and _portrait_mode:
+		buttons_y = thumb.position.y + minf(14.0, thumb.size.y - _btn - 4.0)
+	if not _portrait_mode:
+		buttons_y = safe.end.y - _btn - 16.0
+	var right_x := field.end.x - _btn - 6.0 if _portrait_mode else safe.end.x - _btn - 16.0
+	var left_x := field.position.x + 6.0 if _portrait_mode else field.end.x + 16.0
+	var left_handed := String(Settings.get_value("handedness")) == "left" and _portrait_mode
+	for b: Button in [_special, _bomb]:
+		b.custom_minimum_size = Vector2(_btn, _btn)
+		b.size = b.custom_minimum_size
+	if left_handed:
+		_special.position = Vector2(left_x, buttons_y)
+		_bomb.position = Vector2(left_x + _btn + 10.0, buttons_y)
+		_weapon_right_edge = field.end.x - 6.0
+	else:
+		_special.position = Vector2(right_x, buttons_y)
+		_bomb.position = Vector2(right_x - _btn - 10.0, buttons_y)
+		_weapon_right_edge = -1.0
+	_weapon.position = Vector2(left_x, buttons_y + maxf(4.0, _btn * 0.5 - 13.0))
+	_place_weapon()
+	# Legenda embaixo do anel só no botão grande; no compacto o glifo ocupa o botão todo.
+	var big := _btn >= BIG_BUTTON
+	for cap: Label in [_special_caption, _bomb_caption]:
+		cap.visible = big
+		cap.position = Vector2(2, _btn - 15.0)
+		cap.size = Vector2(_btn - 4.0, 13)
+	# Botões dentro do campo (sem zona do polegar): translúcidos para as balas aparecerem.
+	var inside := _portrait_mode and not sep
+	for node: CanvasItem in [_special, _bomb, _weapon, _weapon_pips]:
+		node.modulate.a = 0.62 if inside else 1.0
+	_special_gauge.queue_redraw()
+	_bomb_gauge.queue_redraw()
+	_tide.reset_size()
+	var tide_y := buttons_y - _tide.size.y - (10.0 if not _portrait_mode else 8.0)
+	var below := buttons_y + _btn + 8.0
+	if sep and _portrait_mode and thumb.end.y - below >= _tide.size.y + 2.0:
+		tide_y = below
+	var tide_x := _special.position.x if left_handed else _special.position.x + _special.size.x - _tide.size.x
+	_tide.position = Vector2(tide_x, tide_y)
+
+
+## Nome da arma e degraus; na mão esquerda o bloco encosta na borda direita do campo.
+func _place_weapon() -> void:
+	_weapon.reset_size()
+	if _weapon_right_edge > 0.0:
+		_weapon.position.x = _weapon_right_edge - maxf(_weapon.size.x, _weapon_pips.size.x)
+	_weapon_pips.position = Vector2(_weapon.position.x + 1.0, _weapon.position.y + _weapon.size.y + 2.0)
+
+
+func _place_boss(field: Rect2) -> void:
+	var top := field.position.y + (28.0 if bool(layout.get("hud_overlay", false)) else 6.0)
+	var right := field.end.x - 8.0
+	if _pause.get_rect().grow(4.0).intersects(Rect2(field.position.x, top, field.size.x, 24.0)):
+		right = minf(right, _pause.position.x - 6.0)
+	_boss_root.position = Vector2(field.position.x + 8.0, top)
+	_boss_w = maxf(80.0, right - _boss_root.position.x)
+	_boss_root.size = Vector2(_boss_w, 14.0 + BOSS_BAR_H + 2.0)
+	_boss_name.position = Vector2(1, 0)
+	_boss_name.size = Vector2(_boss_w - 2.0, 13)
+	_boss_track.position = Vector2(0, 14)
+	_boss_track.size = Vector2(_boss_w, BOSS_BAR_H + 2.0)
+	_boss_ghost.position = Vector2(1, 15)
+	_boss_fill.position = Vector2(1, 15)
+	_boss_shine.position = Vector2(1, 15)
+	_boss_ghost.size.y = BOSS_BAR_H
+	_boss_fill.size.y = BOSS_BAR_H
+	_boss_shine.size.y = 1.0
+	_layout_boss_ticks()
+	_boss_shown = -1.0
+
+
+func _layout_boss_ticks() -> void:
+	var inner := _boss_w - 2.0
+	for tick: ColorRect in _boss_ticks:
+		var at := float(tick.get_meta(&"at", 0.5))
+		tick.position = Vector2(1.0 + floorf(inner * at), 12)
+		tick.size = Vector2(1, BOSS_BAR_H + 6.0)
+
+
+## Rádio em cima do campo (abaixo da barra do chefe), longe da nave; no desktop, no painel esquerdo.
+func _place_radio() -> void:
+	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
+	var width := field.size.x - 16.0
+	var top := 30.0 if bool(layout.get("hud_overlay", false)) else 8.0
+	var pos := Vector2(field.position.x + 8.0, field.position.y + top)
+	if _boss_root.visible:
+		pos.y = _boss_root.position.y + _boss_root.size.y + 6.0
+	var left_room := field.position.x - safe.position.x - 32.0
+	if not _portrait_mode and left_room >= 150.0:
+		width = minf(300.0, left_room)
+		pos = Vector2(field.position.x - 16.0 - width, field.position.y + field.size.y * 0.55)
+	var has_portrait := _portrait.texture != null
+	_radio_frame.visible = has_portrait
+	_radio_name.visible = has_portrait
+	_radio.custom_minimum_size.x = width - 24.0 - (PORTRAIT + 2.0 + 8.0 if has_portrait else 0.0)
+	_radio_panel.size = Vector2(width, 0)
+	_radio_panel.reset_size()
+	_radio_panel.size.x = width
+	_radio_panel.position = pos
+
+
+# --- Rádio e faixas --------------------------------------------------------------------------
 
 func show_radio(dialogue_id: String) -> void:
 	var row: Dictionary = _dialogue.get(dialogue_id, {})
 	if row.is_empty():
 		return
-	_radio.text = "%s: %s" % [tr("speaker." + String(row.get("speaker", ""))), tr(String(row.get("text_key", "")))]
-	_radio.add_theme_color_override("font_color", Color(String(row.get("color", "#dff6ff"))))
-	_radio_left = RADIO_SECONDS
-	_portrait.texture = Portraits.texture(String(row.get("speaker", "")), String(row.get("mood", "calm")))
-	_place_radio()
+	var speaker := String(row.get("speaker", ""))
+	var color := Color(String(row.get("color", "#dff6ff")))
+	_portrait.texture = Portraits.texture(speaker, String(row.get("mood", "calm")))
+	_radio_name.text = tr("speaker." + speaker)
+	var text := tr(String(row.get("text_key", "")))
+	# Sem retrato (narrador), o nome volta para dentro do texto.
+	_open_radio(text if _portrait.texture != null else "%s: %s" % [_radio_name.text, text], color)
 
 
 func show_radio_text(text: String, color: Color) -> void:
 	_portrait.texture = null
-	_place_radio()
+	_open_radio(text, color)
+
+
+func _open_radio(text: String, color: Color) -> void:
 	_radio.text = text
-	_radio.add_theme_color_override("font_color", color)
-	_radio_left = RADIO_SECONDS
+	_radio_name.add_theme_color_override("font_color", color)
+	_radio.add_theme_color_override("font_color", UiTheme.TEXT if _portrait.texture != null else color)
+	var box := UiTheme.panel_box(color, 0.74)
+	box.set_content_margin_all(8)
+	box.content_margin_left = 8
+	_radio_panel.add_theme_stylebox_override("panel", box)
+	var frame := UiTheme.chamfer(Color(UiTheme.ABYSS, 0.9), Color(color, 0.85), 1, 6)
+	frame.set_content_margin_all(1)
+	_radio_frame.add_theme_stylebox_override("panel", frame)
+	_place_radio()
+	_refit_panels()
+	_radio_type = 0.0
+	var chars := text.length()
+	_radio.visible_characters = 0 if not _reduced else -1
+	_radio_left = RADIO_SECONDS + (0.0 if _reduced else minf(2.5, chars / TYPE_RATE))
+	var was := _radio_panel.visible
+	_radio_panel.visible = true
+	_radio_panel.modulate.a = 1.0
+	if not was and not _reduced:
+		if _radio_tween != null and _radio_tween.is_valid():
+			_radio_tween.kill()
+		var y := _radio_panel.position.y
+		_radio_panel.position.y = y - 6.0
+		_radio_panel.modulate.a = 0.0
+		_radio_tween = create_tween().set_parallel()
+		_radio_tween.tween_property(_radio_panel, "position:y", y, 0.2).set_trans(Tween.TRANS_CUBIC) \
+				.set_ease(Tween.EASE_OUT)
+		_radio_tween.tween_property(_radio_panel, "modulate:a", 1.0, 0.16)
 
 
-## Com retrato, o texto do rádio começa depois dele; sem retrato, ocupa a largura toda.
-func _place_radio() -> void:
-	var inset := PORTRAIT + 6.0 if _portrait.texture != null else 0.0
-	_portrait.position = _radio_box.position
-	_radio.position = _radio_box.position + Vector2(inset, 0.0)
-	_radio.size = Vector2(_radio_box.size.x - inset, 0.0)
-
-
+## Faixa grande no centro do campo. O nome do chefe que entra vira aviso em coral com listras de
+## perigo (o jogo já mostra ≥ 0,5 s antes do perigo: o chefe entra invulnerável por 3 s).
 func show_banner(text: String) -> void:
 	_banner.text = text
 	_banner_left = BANNER_SECONDS
+	_banner_warning = _sim != null and _sim.boss != null and _sim.boss.state == SimBoss.State.ENTER \
+			and text == tr(String(_sim.boss.def.get("name_key", "")))
+	var accent := UiTheme.CORAL if _banner_warning else UiTheme.CYAN
+	_banner.add_theme_color_override("font_color", UiTheme.CORAL if _banner_warning else UiTheme.WHITE)
+	_banner.add_theme_color_override("font_shadow_color", Color(accent, 0.45))
+	_banner_band.color = Color(0.22, 0.02, 0.07, 0.62) if _banner_warning else Color(UiTheme.ABYSS, 0.55)
+	var w := _banner_root.size.x
+	_banner.size = Vector2(w - 20.0, 0)
+	var text_h := _banner.get_minimum_size().y
+	_banner.size.y = text_h
+	var bar_h := 7.0 if _banner_warning else 3.0
+	var h := text_h + 20.0
+	_banner_root.size.y = h
+	_banner_band.position = Vector2(0, 0)
+	_banner_band.size = Vector2(w, h)
+	_banner_bars[0].position = Vector2(0, -bar_h)
+	_banner_bars[1].position = Vector2(0, h)
+	for i: int in range(2):
+		var bar := _banner_bars[i]
+		bar.size = Vector2(w, bar_h)
+		bar.pivot_offset = Vector2(0.0 if i == 0 else w, bar_h * 0.5)
+		bar.queue_redraw()
+	_banner.pivot_offset = _banner.size * 0.5
+	_banner_band.pivot_offset = Vector2(w * 0.5, h * 0.5)
+	_banner_root.visible = true
+	_banner_root.modulate.a = 1.0
+	if _banner_tween != null and _banner_tween.is_valid():
+		_banner_tween.kill()
+	if _reduced:
+		_banner.scale = Vector2.ONE
+		_banner.modulate.a = 1.0
+		_banner_band.scale = Vector2.ONE
+		for bar: Control in _banner_bars:
+			bar.scale = Vector2.ONE
+		return
+	_banner_tween = HudKit.banner_in(_banner_root, _banner_band, _banner_bars, _banner,
+			_banner_warning and not bool(Settings.get_value("reduce_flashes")))
 
+
+# --- Quadro a quadro -------------------------------------------------------------------------
 
 func refresh(sim: Sim, delta: float) -> void:
-	if sim.scoring.score != _last_score:
-		_last_score = sim.scoring.score
-		_score.text = Locale.format_number(sim.scoring.score)
-	_mult.text = "x%d" % sim.scoring.multiplier() if sim.scoring.chain > 0 else ""
-	_hull.text = "♥".repeat(maxi(0, sim.player.hull)) + "·".repeat(maxi(0, sim.player.max_hull - sim.player.hull))
-	_bombs.text = "◆".repeat(sim.player.bombs)
-	_weapon.text = "%s %s" % [tr("weapon." + String(sim.player.weapon)), "▲".repeat(sim.player.level)]
-	var ready := sim.player.special_charge >= 1.0
-	_special.modulate = Color(1, 1, 1) if ready else Color(0.6, 0.7, 0.8, 0.8)
-	_special.text = tr("hud.special") if ready else "%d%%" % int(sim.player.special_charge * 100.0)
-	_bomb.disabled = sim.player.bombs <= 0
-	var pressure := sim.scoring.pressure / Scoring.PRESSURE_MAX
-	_pressure.value = pressure if sim.tide_frames == 0 else float(sim.tide_frames) / Sim.TIDE_FRAMES
-	_tide.visible = pressure >= 1.0 or sim.tide_frames > 0
-	_tide.disabled = sim.tide_frames > 0
-	if _tide.visible and not _tide.disabled:
-		_tide.modulate.a = 0.75 + 0.25 * sin(Time.get_ticks_msec() * 0.012)
+	_sim = sim
+	_refresh_score(sim, delta)
+	_refresh_mult(sim)
+	_refresh_hull(sim)
+	_refresh_weapon(sim)
+	_refresh_buttons(sim)
 	_objective_left -= delta
-	_objective.visible = _objective_left > 0.0
-	_objective.modulate.a = clampf(_objective_left, 0.0, 1.0)
+	_objective_panel.visible = _objective_left > 0.0
+	_objective_panel.modulate.a = clampf(_objective_left, 0.0, 1.0)
 	if not _hints.is_empty() and sim.frame >= int(_hints[0][0]):
 		show_radio_text(tr(String(_hints[0][1])), UiTheme.CYAN)
 		_hints.pop_front()
 	if _offer_panel.visible and sim.offer.is_empty():
 		hide_offer()
+	_refresh_boss(sim, delta)
 	var boss := sim.boss
-	_boss_bar.visible = boss != null and boss.state != SimBoss.State.ENTER
-	if _boss_bar.visible:
-		_boss_bar.value = boss.hp / boss.max_hp
 	var duel := boss != null and boss.state == SimBoss.State.DUEL
 	_prompt.visible = duel
 	if duel:
 		_prompt.text = tr("hud.duel")
-		_prompt.modulate.a = 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.02)
-	_radio_left -= delta
-	_radio.visible = _radio_left > 0.0
-	_radio.modulate.a = clampf(_radio_left * 2.0, 0.0, 1.0)
-	_portrait.visible = _radio.visible and _portrait.texture != null
-	_portrait.modulate.a = _radio.modulate.a
+		_prompt.modulate.a = 1.0 if _reduced else 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.02)
+	_refresh_radio(delta)
 	_banner_left -= delta
-	_banner.visible = _banner_left > 0.0
-	_banner.modulate.a = clampf(_banner_left * 2.0, 0.0, 1.0)
+	if _banner_root.visible:
+		_banner_root.visible = _banner_left > 0.0
+		_banner_root.modulate.a = clampf(_banner_left / 0.35, 0.0, 1.0)
+
+
+## Placar com contagem rápida (alcança o alvo em ~0,3 s) e pulso dourado nos saltos grandes.
+func _refresh_score(sim: Sim, delta: float) -> void:
+	var score := sim.scoring.score
+	if score != _score_target:
+		var jump := score - _score_target
+		_score_target = score
+		if score < _score_shown or _reduced:
+			_score_shown = score
+		if jump >= SCORE_PULSE and not _reduced:
+			_score.pivot_offset = Vector2(0.0, _score.size.y * 0.5)
+			_score_tween = HudKit.pop(_score, _score_tween, 1.14, Color(1.0, 0.88, 0.55, _score.modulate.a),
+					Color(1, 1, 1, _score.modulate.a), 0.32)
+	if _score_shown < _score_target:
+		var gap := _score_target - _score_shown
+		_score_shown = minf(_score_target, _score_shown + maxf(gap * 12.0 * delta, 40.0 * delta))
+	var text := Locale.format_number(int(_score_shown))
+	if text != _score.text:
+		_score.text = text
+
+
+## Pílula do multiplicador: cor por faixa (ciano, menta, ouro, violeta no máximo), cresce quando sobe
+## e pisca coral quando a corrente quebra.
+func _refresh_mult(sim: Sim) -> void:
+	var chain := sim.scoring.chain
+	var mult := sim.scoring.multiplier()
+	var broke := chain < _last_chain
+	_last_chain = chain
+	if chain > 0:
+		if mult != _mult_value or not _mult_on:
+			var rose := _mult_on and mult > _mult_value
+			_mult_value = mult
+			_mult.text = "×%d" % mult
+			var tier := 3 if mult >= Scoring.MAX_MULT else (2 if mult >= 8 else (1 if mult >= 4 else 0))
+			if tier != _mult_tier:
+				_mult_tier = tier
+				_mult_pill.add_theme_stylebox_override("panel", _mult_boxes[tier])
+				_mult_pill.reset_size()
+				_mult.add_theme_color_override("font_color", _mult_boxes[tier].border_color)
+				_chain_bar.color = Color(_mult_boxes[tier].border_color, 0.8)
+			if not _mult_on:
+				_mult_on = true
+				_mult_pill.visible = true
+				_chain_bar.visible = true
+				_mult_anim(Color.WHITE, 1.15)
+			elif rose:
+				_mult_anim(Color.WHITE, 1.3)
+		if broke:
+			_mult_anim(Color(UiTheme.CORAL, 1.0), 1.0)
+		_chain_bar.size.x = (_mult_pill.size.x - 6.0) * clampf(float(sim.scoring.chain_timer) / sim.scoring.window,
+				0.0, 1.0)
+	elif _mult_on:
+		_mult_on = false
+		_mult_value = 0
+		_chain_bar.visible = false
+		_mult_break()
+
+
+func _mult_anim(flash: Color, grow: float) -> void:
+	if _reduced:
+		_mult_pill.modulate = Color.WHITE
+		return
+	var lit := flash.lightened(0.2) if flash != Color.WHITE else Color(1.5, 1.5, 1.5)
+	_mult_tween = HudKit.pop(_mult_pill, _mult_tween, grow, lit, Color.WHITE, 0.3)
+
+
+func _mult_break() -> void:
+	if _mult_tween != null and _mult_tween.is_valid():
+		_mult_tween.kill()
+	if _reduced:
+		_mult_pill.visible = false
+		return
+	_mult_pill.modulate = Color(UiTheme.CORAL.r * 1.4, UiTheme.CORAL.g * 1.4, UiTheme.CORAL.b * 1.4, 1.0)
+	_mult_tween = create_tween()
+	_mult_tween.tween_property(_mult_pill, "modulate", Color(UiTheme.CORAL, 0.0), 0.45).set_delay(0.12)
+	_mult_tween.tween_callback(func() -> void:
+		_mult_pill.visible = _mult_on
+		_mult_pill.modulate = Color.WHITE)
+
+
+func _refresh_hull(sim: Sim) -> void:
+	var hull := maxi(0, sim.player.hull)
+	var max_hull := maxi(1, sim.player.max_hull)
+	if max_hull != _hull_max:
+		_hull_max = max_hull
+		_rebuild_lives()
+		_hull_shown = -1
+	if hull == _hull_shown:
+		return
+	var lost := _hull_shown > hull
+	var gained := _hull_shown >= 0 and hull > _hull_shown
+	var before := _hull_shown
+	_hull_shown = hull
+	if _life_count.visible:
+		_life_count.text = "×%d" % hull
+		_life_count.add_theme_color_override("font_color", UiTheme.CORAL if hull <= 1 else UiTheme.TEXT)
+		return
+	for i: int in range(_life_icons.size()):
+		var icon := _life_icons[i]
+		var alive := i < hull
+		icon.modulate = Color.WHITE if alive else Color(0.35, 0.45, 0.6, 0.35)
+		if _reduced:
+			continue
+		if lost and i >= hull and i < before:
+			HudKit.flash_icon(icon, Color(2.0, 0.5, 0.6, 1.0), Color(0.35, 0.45, 0.6, 0.35))
+		elif gained and alive and i >= before:
+			HudKit.flash_icon(icon, Color(0.8, 2.0, 1.2, 1.0), Color.WHITE)
+	# Último casco: o ícone que sobra fica coral (perigo).
+	if hull == 1 and not _life_icons.is_empty():
+		_life_icons[0].modulate = Color(1.0, 0.55, 0.62)
+
+
+func _rebuild_lives() -> void:
+	for icon: TextureRect in _life_icons:
+		_lives_box.remove_child(icon)
+		icon.queue_free()
+	_life_icons.clear()
+	var n := _hull_max if _hull_max <= LIFE_MAX_ICONS else 1
+	for i: int in range(n):
+		var icon := HudKit.life_icon(_life_texture, LIFE_ICON)
+		_lives_box.add_child(icon)
+		_life_icons.append(icon)
+	_life_count.visible = _hull_max > LIFE_MAX_ICONS
+	_lives_box.move_child(_life_count, -1)
+	_place_top()
+
+
+func _refresh_weapon(sim: Sim) -> void:
+	var p := sim.player
+	var max_level := p.max_level()
+	if p.level != _pip_level or max_level != _pip_max:
+		_pip_level = p.level
+		_pip_max = max_level
+		_weapon_pips.custom_minimum_size = HudKit.pips_size(max_level)
+		_weapon_pips.size = _weapon_pips.custom_minimum_size
+		_weapon_pips.queue_redraw()
+		_place_weapon()
+	var key := String(p.weapon)
+	if key != _weapon_key:
+		_weapon_key = key
+		_weapon.text = tr("weapon." + key)
+		_place_weapon()
+
+
+func _refresh_buttons(sim: Sim) -> void:
+	var p := sim.player
+	var ready := p.special_charge >= 1.0
+	var q := int(clampf(p.special_charge, 0.0, 1.0) * CHARGE_STEPS)
+	if ready != _special_ready:
+		_special_ready = ready
+		_style_special()
+		if ready and not _reduced:
+			_special.pivot_offset = _special.size * 0.5
+			_special.scale = Vector2(1.18, 1.18)
+			_special.create_tween().tween_property(_special, "scale", Vector2.ONE, 0.3).set_trans(Tween.TRANS_BACK) \
+					.set_ease(Tween.EASE_OUT)
+	if q != _special_q:
+		_special_q = q
+		_special_gauge.queue_redraw()
+	if p.bombs != _bombs_shown:
+		_bombs_shown = p.bombs
+		_bomb.disabled = p.bombs <= 0
+		_style_bomb()
+		_bomb_gauge.queue_redraw()
+	var pressure := sim.scoring.pressure / Scoring.PRESSURE_MAX
+	var value := pressure if sim.tide_frames == 0 else float(sim.tide_frames) / Sim.TIDE_FRAMES
+	var pq := int(value * 200.0)
+	if pq != _pressure_q:
+		_pressure_q = pq
+		_pressure.size.x = _pressure_track.size.x * clampf(value, 0.0, 1.0)
+	var full := pressure >= 1.0 or sim.tide_frames > 0
+	if full != _pressure_full:
+		_pressure_full = full
+		_pressure.color = UiTheme.WHITE if full else UiTheme.CYAN
+	_tide.visible = full
+	_tide.disabled = sim.tide_frames > 0
+	if _tide.visible and not _tide.disabled and not _reduced:
+		_tide.modulate.a = 0.75 + 0.25 * sin(Time.get_ticks_msec() * 0.012)
+
+
+## Especial: vidro com borda ouro fraca enquanto carrega; pronto, borda ouro cheia e halo pulsando.
+func _style_special() -> void:
+	var inside := _special.modulate.a < 1.0
+	if _special_ready:
+		HudKit.style_round(_special, UiTheme.GOLD, 1.0, true, 14)
+	else:
+		HudKit.style_round(_special, UiTheme.GOLD, 0.6 if inside else 0.9, false, 14)
+	_special_caption.add_theme_color_override("font_color", UiTheme.GOLD if _special_ready else UiTheme.TEXT_DIM)
+	_special_glow.visible = _special_ready
+	if _glow_tween != null and _glow_tween.is_valid():
+		_glow_tween.kill()
+	if _special_ready and not _reduced:
+		_special_glow.modulate.a = 1.0
+		_glow_tween = _special_glow.create_tween().set_loops()
+		_glow_tween.tween_property(_special_glow, "modulate:a", 0.3, 0.55).set_trans(Tween.TRANS_SINE)
+		_glow_tween.tween_property(_special_glow, "modulate:a", 1.0, 0.55).set_trans(Tween.TRANS_SINE)
+	else:
+		_special_glow.modulate.a = 1.0
+
+
+func _style_bomb() -> void:
+	HudKit.style_round(_bomb, UiTheme.CYAN, 0.9, false, 14)
+	_bomb_caption.add_theme_color_override("font_color", UiTheme.TEXT if _bombs_shown > 0 else UiTheme.TEXT_DIM)
+
+
+func _refresh_radio(delta: float) -> void:
+	_radio_left -= delta
+	if not _radio_panel.visible:
+		return
+	if _radio.visible_characters >= 0:
+		_radio_type += delta
+		var shown := int(_radio_type * TYPE_RATE)
+		_radio.visible_characters = -1 if shown >= _radio.get_total_character_count() else shown
+	_radio_panel.visible = _radio_left > 0.0
+	if _radio_left < 0.35:
+		_radio_panel.modulate.a = clampf(_radio_left / 0.35, 0.0, 1.0)
+
+
+func _refresh_boss(sim: Sim, delta: float) -> void:
+	var boss := sim.boss
+	var active := boss != null and boss.state != SimBoss.State.DEAD
+	if active and boss != _boss_ref:
+		_boss_appear(boss)
+	elif not active and _boss_root.visible:
+		_boss_root.visible = false
+		_boss_ref = null
+		_place_radio()
+	if not active:
+		return
+	var target := clampf(boss.hp / maxf(1.0, boss.max_hp), 0.0, 1.0)
+	_boss_fill_t = minf(1.0, _boss_fill_t + delta / BOSS_FILL_SECONDS)
+	var shown := minf(target, ease(_boss_fill_t, 0.4)) if _boss_fill_t < 1.0 else target
+	if shown < _boss_shown - 0.0001 and _boss_fill_t >= 1.0:
+		_boss_hold = 0.35
+	if _boss_hold > 0.0:
+		_boss_hold -= delta
+	else:
+		_boss_ghost_v = move_toward(_boss_ghost_v, shown, delta * 0.6)
+	_boss_ghost_v = maxf(_boss_ghost_v, shown)
+	var inner := _boss_w - 2.0
+	if not is_equal_approx(shown, _boss_shown):
+		_boss_shown = shown
+		_boss_fill.size.x = floorf(inner * shown)
+		_boss_shine.size.x = _boss_fill.size.x
+	_boss_ghost.size.x = floorf(inner * _boss_ghost_v)
+	if boss.state == SimBoss.State.DYING:
+		_boss_root.modulate.a = maxf(0.0, _boss_root.modulate.a - delta * 1.5)
+
+
+func _boss_appear(boss: SimBoss) -> void:
+	_boss_ref = boss
+	_boss_name.text = tr(String(boss.def.get("name_key", ""))).to_upper()
+	for tick: ColorRect in _boss_ticks:
+		tick.queue_free()
+	_boss_ticks.clear()
+	# Uma marca em cada limiar de etapa (until_hp entre 0 e 1): o jogador vê quando o chefe muda.
+	for raw: Variant in boss.def.get("phases", []):
+		var at := float((raw as Dictionary).get("until_hp", 0.0))
+		if at <= 0.0 or at >= 1.0:
+			continue
+		var tick := HudKit.ignore(ColorRect.new()) as ColorRect
+		tick.color = Color(UiTheme.WHITE, 0.85)
+		tick.set_meta(&"at", at)
+		_boss_root.add_child(tick)
+		_boss_ticks.append(tick)
+	_layout_boss_ticks()
+	_boss_fill_t = 1.0 if _reduced else 0.0
+	_boss_ghost_v = 0.0
+	_boss_shown = -1.0
+	_boss_fill.size.x = 0.0
+	_boss_root.visible = true
+	_boss_root.modulate.a = 1.0
+	_place_radio()
+	if not _reduced:
+		var y := _boss_root.position.y
+		_boss_root.position.y = y - 8.0
+		_boss_root.modulate.a = 0.0
+		var t := create_tween().set_parallel()
+		t.tween_property(_boss_root, "position:y", y, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		t.tween_property(_boss_root, "modulate:a", 1.0, 0.25)
 
 
 ## Controles que precisam caber na área segura (testes de layout).

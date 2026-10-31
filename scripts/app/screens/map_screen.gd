@@ -1,24 +1,38 @@
 class_name MapScreen
 extends Screen
-## Mapa da campanha "Carta da Ascensão" (plano mestre 7.3): uma coluna que SOBE do abismo à órbita,
-## em 6 camadas de parallax. Arrastar rola com inércia; ao abrir, a câmera desliza até a próxima
-## missão. Tocar um nó abre o cartão (nome, 4 estrelas, recorde, Jogar).
+## Mapa da campanha "Carta da Ascensão" (plano mestre 7.3, redesenho 1.6): uma coluna que SOBE do
+## abismo à órbita, em profundidade 2,5D. Atrás de tudo, o fundo abissal compartilhado (três terraços de
+## ruínas em shader) rola em velocidades próprias com a câmera; por cima, véus de cor por estrato,
+## silhuetas distantes, a rota, os nós (faróis chanfrados) e bolhas de primeiro plano. Arrastar rola
+## com inércia; ao abrir, a câmera desliza até a próxima missão. Tocar um nó abre o cartão (nome,
+## 4 estrelas, recorde, Jogar). O humor da água (cores, ruínas, raios) muda com o estrato no centro.
 ##
 ## Coordenadas do mundo: y cresce PARA CIMA a partir do fundo do abismo. Uma camada de fator f
-## desenha o ponto (x, y) em tela_y = altura - (y - câmera * f). As camadas de fundo são retângulos e
-## texturas por quadro, redesenhadas só quando a câmera anda (ou a 30 Hz para o brilho dos nós).
+## desenha o ponto (x, y) em tela_y = altura - (y - câmera * f).
+##
+## Orçamento: com a câmera parada, o desenho do mapa só é refeito a IDLE_HZ (o brilho dos faróis pulsa
+## devagar) e os nós não são reposicionados; rolando, tudo anda a cada quadro.
 
 const STRATUM := 760.0
 const STRATA := 11
 const FACTORS: Array[float] = [0.1, 0.25, 0.5, 1.0, 1.35]
 const FRICTION := 4.0
-const HEADER := 48.0
+const HEADER := 52.0
+const IDLE_HZ := 15.0
+const NODE_SIZE := 50.0
 const STRATUM_COLORS: Array[Color] = [Color("040b1a"), Color("0b2a4a"), Color("0f4652"), Color("26364a"),
 		Color("3a1410"), Color("141c38"), Color("2c4a5e"), Color("2d5f8a"), Color("0a0f2a"), Color("2a0a26"),
 		Color("05060f")]
+## Véu de cor de cada estrato sobre o fundo compartilhado: mar quase transparente (as ruínas aparecem),
+## céu e espaço quase opacos.
+const STRATUM_ALPHA: Array[float] = [0.35, 0.08, 0.12, 0.45, 0.55, 0.5, 0.55, 0.82, 0.9, 0.92, 0.95]
+## Humor do fundo (AbyssBackdrop.MOODS) e presença das ruínas por estrato.
+const STRATUM_MOODS: Array[StringName] = [&"hadal", &"default", &"calm", &"danger", &"lava", &"calm", &"ice",
+		&"sky", &"space", &"space", &"space"]
+const STRATUM_RUINS: Array[float] = [1.0, 1.0, 1.0, 0.7, 0.6, 0.8, 0.4, 0.0, 0.0, 0.0, 0.0]
 const STRATUM_KEYS: Array[String] = ["map.chapter10", "map.chapter1", "map.chapter2", "map.chapter3", "map.chapter4",
 		"map.chapter5", "map.chapter6", "map.chapter7", "map.chapter8", "map.chapter9", ""]
-## Rótulo curto do nó por tipo (o tipo também muda a cor do brilho).
+## Rótulo curto do nó por tipo (o tipo também muda a cor do farol).
 const KIND_MARK := {&"miniboss": " ◆", &"boss": " ♛", &"secret": " ◎", &"route": ""}
 
 var camera: float = 600.0
@@ -45,25 +59,41 @@ var _focus_y: float = -1.0
 var _dragging: bool = false
 var _planet: Texture2D
 var _glow: Texture2D
+var _bold: Font
+var _app: App
+var _stratum: int = -1
+var _drawn_camera: float = -1.0
+var _idle_wait: float = 0.0
+var _clock: float = 0.0
 
 
 func _build() -> void:
 	_planet = SpriteBank.texture("res://assets/art/void/environment/planet_earth.png")
 	_glow = SpriteBank.generated("fx/glow_32")
+	_bold = UiTheme.bold_font()
 	_view = _MapView.new(self)
 	_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_view)
 	for n: Dictionary in Economy.CAMPAIGN:
 		var b := Button.new()
 		b.name = "Node_" + String(n["id"])
-		b.custom_minimum_size = Vector2(56, 56)
+		b.custom_minimum_size = Vector2(NODE_SIZE, NODE_SIZE)
+		b.size = b.custom_minimum_size
+		if _bold != null:
+			b.add_theme_font_override("font", _bold)
+		b.add_theme_font_size_override("font_size", UiTheme.scaled(UiTheme.FONT_SIZE))
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		b.add_theme_constant_override("icon_max_width", 14)
+		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+		_style_node(b, n, false)
 		b.pressed.connect(_select.bind(n["id"]))
 		add_child(b)
 		_node_buttons[n["id"]] = b
-	_back = Button.new()
-	_back.name = "Back"
-	_back.custom_minimum_size = Vector2(72, UiTheme.TOUCH_MIN)
-	_back.pressed.connect(func() -> void: navigate.emit(&"back"))
+	_back = UiTheme.icon_button("arrowLeft", "Back")
+	_back.pressed.connect(func() -> void:
+		AudioManager.play_ui("kenney_ui_back")
+		navigate.emit(&"back"))
 	add_child(_back)
 	_photo = Button.new()
 	_photo.name = "Photo"
@@ -80,56 +110,96 @@ func _build() -> void:
 		_photo_bar.add_child(b)
 	_photo_bar.visible = false
 	add_child(_photo_bar)
-	_title = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
-	_title.add_theme_color_override("font_outline_color", UiTheme.VOLCANIC)
-	_title.add_theme_constant_override("outline_size", 4)
+	_title = UiTheme.heading("", UiTheme.HEADING_SIZE, UiTheme.WHITE)
 	_title.clip_text = true
+	_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	add_child(_title)
 	_build_card()
 
 
 func _build_card() -> void:
 	_card = PanelContainer.new()
-	var box := StyleBoxFlat.new()
-	box.bg_color = Color(UiTheme.ABYSS, 0.95)
-	box.border_color = UiTheme.GOLD
-	box.set_border_width_all(1)
-	box.set_corner_radius_all(4)
-	box.set_content_margin_all(12)
-	_card.add_theme_stylebox_override("panel", box)
+	_card.add_theme_stylebox_override("panel", UiTheme.panel_box(UiTheme.GOLD, 0.92))
 	_card_box = VBoxContainer.new()
-	_card_box.add_theme_constant_override("separation", 6)
+	_card_box.add_theme_constant_override("separation", 5)
 	_card.add_child(_card_box)
-	_card_title = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD, true)
+	_card_title = UiTheme.heading("", UiTheme.HEADING_SIZE, UiTheme.WHITE)
+	_card_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_card_box.add_child(_card_title)
+	var rule := ColorRect.new()
+	rule.color = Color(UiTheme.GOLD, 0.35)
+	rule.custom_minimum_size = Vector2(0, 1)
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_card_box.add_child(rule)
 	for i: int in range(4):
 		var star := UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT, true)
 		_card_box.add_child(star)
 		_card_stars.append(star)
-	_card_best = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT_DIM)
+	_card_best = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT_DIM, true)
 	_card_box.add_child(_card_best)
 	_card_play = Button.new()
 	_card_play.name = "PlayMission"
-	_card_play.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
-	_card_play.pressed.connect(func() -> void: play.emit(selected))
+	_card_play.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 10.0)
+	UiTheme.style_primary(_card_play, UiTheme.HEADING_SIZE)
+	_card_play.pressed.connect(func() -> void:
+		AudioManager.play_ui("kenney_ui_confirm")
+		play.emit(selected))
 	_card_box.add_child(_card_play)
 	_card.visible = false
 	add_child(_card)
 
 
-func on_show(_app: Node) -> void:
+## Farol de missão: chanfro com cor por tipo (chefe coral, chefe médio dourado, segredo violeta, rota
+## ciano); o selecionado ganha borda e halo dourados. Só troca as caixas quando o estado muda.
+func _style_node(b: Button, n: Dictionary, chosen: bool) -> void:
+	var accent := UiTheme.CYAN
+	if n["kind"] == &"boss":
+		accent = UiTheme.CORAL
+	elif n["kind"] == &"miniboss":
+		accent = UiTheme.GOLD
+	elif n["kind"] == &"secret":
+		accent = UiTheme.VIOLET
+	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
+		var box := UiTheme.chamfer(Color(UiTheme.ABYSS, 0.86), Color(accent, 0.8), 2, 12)
+		box.set_content_margin_all(2)
+		if chosen:
+			box.border_color = UiTheme.GOLD
+			box.bg_color = Color(UiTheme.RAISED, 0.96)
+			box.shadow_color = Color(UiTheme.GOLD, 0.45)
+			box.shadow_size = 10
+		elif state in ["hover", "focus"]:
+			box.shadow_color = Color(accent, 0.4)
+			box.shadow_size = 8
+		if state == "disabled":
+			box.bg_color = Color(UiTheme.ABYSS, 0.72)
+			box.border_color = Color(UiTheme.TEXT_DIM, 0.3)
+			box.shadow_size = 0
+		b.add_theme_stylebox_override(state, box)
+	b.add_theme_color_override("font_color", UiTheme.GOLD if chosen else UiTheme.WHITE)
+	b.add_theme_color_override("font_hover_color", UiTheme.GOLD if chosen else UiTheme.WHITE)
+	b.add_theme_color_override("font_disabled_color", Color(UiTheme.TEXT_DIM, 0.6))
+	b.add_theme_color_override("icon_disabled_color", Color(UiTheme.TEXT_DIM, 0.6))
+	b.set_meta(&"chosen", chosen)
+
+
+func on_show(app: Node) -> void:
+	_app = app as App
+	_stratum = -1
+	_drawn_camera = -1.0
 	# Câmera desliza até a próxima missão (primeira sem conclusão, ou a última aberta).
 	var focus := Economy.node(Economy.next_mission(SaveManager.data))
+	var lock := UiTheme.icon("locked")
 	for n: Dictionary in Economy.CAMPAIGN:
 		var b: Button = _node_buttons[n["id"]]
 		b.disabled = not is_open(n["id"])
+		b.icon = lock if b.disabled else null
 	_focus_y = float(focus["y"])
 	_select(focus["id"])
 	refresh_texts()
 
 
 func refresh_texts() -> void:
-	_back.text = tr("credits.back")
+	_back.tooltip_text = tr("credits.back")
 	_title.text = tr("map.title")
 	_photo.text = tr("map.photo")
 	(_photo_bar.get_node("Save") as Button).text = tr("map.photo_save")
@@ -138,7 +208,6 @@ func refresh_texts() -> void:
 		var b: Button = _node_buttons[n["id"]]
 		b.text = node_label(n)
 		b.tooltip_text = "" if is_open(n["id"]) else tr("map.locked")
-	_card_play.text = tr("boot.play")
 	_update_card()
 	relayout()
 
@@ -161,6 +230,11 @@ static func node_label(n: Dictionary) -> String:
 func _select(id: StringName) -> void:
 	selected = id
 	AudioManager.play_ui("kenney_ui_click")
+	for n: Dictionary in Economy.CAMPAIGN:
+		var b: Button = _node_buttons[n["id"]]
+		if bool(b.get_meta(&"chosen", false)) != (n["id"] == id):
+			_style_node(b, n, n["id"] == id)
+	_drawn_camera = -1.0
 	_update_card()
 	relayout()
 
@@ -168,7 +242,7 @@ func _select(id: StringName) -> void:
 func _update_card() -> void:
 	if _card == null or selected == &"":
 		return
-	_card.visible = true
+	_card.visible = not photo_mode
 	var record := SaveManager.mission_record(selected)
 	var stars: Array = record["stars"]
 	_card_title.text = tr("stage." + String(selected))
@@ -177,7 +251,7 @@ func _update_card() -> void:
 	var texts := [tr("star.clear"), tr("star.no_damage"), tr("star.all_marked"), tr(objective)]
 	for i: int in range(4):
 		var got := i < stars.size() and bool(stars[i])
-		_card_stars[i].text = ("★ " if got else "☆ ") + texts[i]
+		_card_stars[i].text = ("★  " if got else "☆  ") + texts[i]
 		_card_stars[i].add_theme_color_override("font_color", UiTheme.GOLD if got else UiTheme.TEXT_DIM)
 	_card_best.text = tr("map.best") % Locale.format_number(int(record["best_score"]))
 	var n := Economy.node(selected)
@@ -186,34 +260,38 @@ func _update_card() -> void:
 	elif n["kind"] == &"secret":
 		_card_best.text += "\n" + tr("map.secret_hint")
 	_card_play.disabled = not is_open(selected)
-	_card_play.text = tr("boot.play") if is_open(selected) else tr("map.locked")
+	_card_play.text = tr("boot.play").to_upper() if is_open(selected) else tr("map.locked")
 
 
 func _layout() -> void:
 	if _card == null:
 		return
-	_back.position = Vector2(safe.position.x + 8.0, safe.position.y + 6.0)
+	_back.size = _back.custom_minimum_size
+	_back.position = Vector2(safe.position.x + 8.0, safe.position.y + 8.0)
 	_photo.reset_size()
-	_photo.position = Vector2(safe.end.x - _photo.size.x - 8.0, safe.position.y + 6.0)
-	_title.position = Vector2(_back.position.x + 84.0, safe.position.y + 10.0)
+	_photo.position = Vector2(safe.end.x - _photo.size.x - 8.0, safe.position.y + 8.0)
+	_title.position = Vector2(_back.position.x + _back.size.x + 10.0, safe.position.y + 14.0)
 	_title.size = Vector2(maxf(0.0, _photo.position.x - 8.0 - _title.position.x), 0)
 	_photo_bar.reset_size()
 	_photo_bar.position = Vector2(floorf(safe.position.x + (safe.size.x - _photo_bar.size.x) * 0.5),
 			safe.end.y - _photo_bar.size.y - 10.0)
-	var width := minf(safe.size.x - 16.0, 320.0)
+	var width := minf(safe.size.x - 16.0, 340.0)
 	# Rótulos com quebra precisam da largura antes do cálculo da altura do cartão.
 	var inner := width - 24.0
-	_card_title.custom_minimum_size.x = inner
-	for star: Label in _card_stars:
-		star.custom_minimum_size.x = inner
+	for label: Label in [_card_title, _card_best] + _card_stars:
+		label.custom_minimum_size.x = inner
 	_card.size = Vector2(width, 0)
 	_card.reset_size()
 	_card.size.x = width
 	_card.position = Vector2(floorf(safe.position.x + (safe.size.x - width) * 0.5), safe.end.y - _card.size.y - 8.0)
+	_drawn_camera = -1.0
 	_place_nodes()
 
 
 func _process(delta: float) -> void:
+	if not is_visible_in_tree():
+		return
+	_clock += delta
 	if _focus_y >= 0.0 and size.y > 0.0:
 		_target = maxf(0.0, _focus_y - size.y * 0.55)
 		camera = maxf(0.0, _target - 320.0)
@@ -221,13 +299,38 @@ func _process(delta: float) -> void:
 	if _target >= 0.0 and not _dragging:
 		camera = lerpf(camera, _target, minf(1.0, delta * 3.5))
 		if absf(camera - _target) < 0.5:
+			camera = _target
 			_target = -1.0
 	elif not _dragging and absf(velocity) > 1.0:
 		camera += velocity * delta
 		velocity = lerpf(velocity, 0.0, minf(1.0, delta * FRICTION))
-	camera = clampf(camera, 0.0, STRATUM * STRATA - size.y)
-	_place_nodes()
-	_view.queue_redraw()
+	camera = clampf(camera, 0.0, maxf(0.0, STRATUM * STRATA - size.y))
+	_sync_backdrop()
+	# Câmera andando: nós e desenho a cada quadro. Parada: só o pulso dos faróis, a IDLE_HZ.
+	if camera != _drawn_camera:
+		_drawn_camera = camera
+		_place_nodes()
+		_view.queue_redraw()
+		return
+	_idle_wait -= delta
+	if _idle_wait <= 0.0:
+		_idle_wait = 1.0 / IDLE_HZ
+		_view.queue_redraw()
+
+
+## O fundo compartilhado anda com a câmera (ruínas em três profundidades) e muda de humor por estrato.
+func _sync_backdrop() -> void:
+	if _app == null:
+		return
+	var backdrop := _app.backdrop()
+	backdrop.scroll = -camera
+	var s := clampi(floori((camera + size.y * 0.5) / STRATUM), 0, STRATA - 1)
+	if s == _stratum:
+		return
+	_stratum = s
+	backdrop.set_mood(STRATUM_MOODS[s])
+	var tween := create_tween()
+	tween.tween_property(backdrop, "ruins", STRATUM_RUINS[s], 0.8).set_trans(Tween.TRANS_SINE)
 
 
 ## Rolagem pelo dedo (o _MapView repassa): arrastar para baixo revela o que está acima.
@@ -247,7 +350,6 @@ func screen_y(world_y: float, factor: float) -> float:
 func _place_nodes() -> void:
 	for n: Dictionary in Economy.CAMPAIGN:
 		var b: Button = _node_buttons[n["id"]]
-		b.reset_size()
 		var at := Vector2(size.x * float(n["x"]), screen_y(float(n["y"]), 1.0))
 		b.position = (at - b.size * 0.5).floor()
 		var on_screen := at.y - b.size.y * 0.5 > safe.position.y + HEADER and at.y < size.y + 40.0
@@ -267,6 +369,7 @@ func set_photo_mode(on: bool) -> void:
 	for b: Button in _node_buttons.values():
 		b.modulate.a = 0.0 if on else 1.0
 	_photo_bar.visible = on
+	_drawn_camera = -1.0
 	AudioManager.play_ui("kenney_ui_click")
 
 
@@ -286,77 +389,100 @@ func save_photo() -> String:
 func draw_map(ci: CanvasItem) -> void:
 	var w := size.x
 	var h := size.y
-	# 0: céu e mar em faixas por estrato (fator 0,1).
+	# 0: véus de cor por estrato (fator 0,1) sobre o fundo compartilhado, com degradê na passagem.
 	for s: int in range(STRATA):
 		var y0 := screen_y((s + 1) * STRATUM, FACTORS[0])
 		var y1 := screen_y(s * STRATUM, FACTORS[0])
-		ci.draw_rect(Rect2(0, y0, w, y1 - y0 + 1.0), STRATUM_COLORS[s])
-	# Brilho de horizonte em cada passagem de estrato (onde o mar vira céu, o céu vira espaço).
+		if y1 < 0.0 or y0 > h:
+			continue
+		ci.draw_rect(Rect2(0, y0, w, y1 - y0 + 1.0), Color(STRATUM_COLORS[s], STRATUM_ALPHA[s]))
 	for s: int in range(1, STRATA):
 		var by := screen_y(s * STRATUM, FACTORS[0])
-		ci.draw_texture_rect(_glow, Rect2(-w * 0.2, by - 60.0, w * 1.4, 120.0), false, Color(0.4, 0.85, 1.0, 0.12))
-	# 1: silhuetas distantes (montanhas submarinas, torres, ilhas) e o planeta no alto.
+		if by < -80.0 or by > h + 80.0:
+			continue
+		ci.draw_texture_rect(_glow, Rect2(-w * 0.2, by - 70.0, w * 1.4, 140.0), false, Color(0.4, 0.85, 1.0, 0.14))
+	# 1: silhuetas distantes (montes submarinos, torres, ilhas) na neblina, e o planeta no alto.
 	for i: int in range(24):
-		var wy := 120.0 + i * 160.0
-		var y := screen_y(wy, FACTORS[1])
+		var y := screen_y(120.0 + i * 160.0, FACTORS[1])
 		if y < -120.0 or y > h + 120.0:
 			continue
 		var x := fmod(float(absi(hash(i * 13)) % 1000) / 1000.0 * w * 1.4, w)
 		var tall := 40.0 + float(absi(hash(i * 17)) % 70)
-		ci.draw_rect(Rect2(x - 22.0, y - tall, 44.0, tall), Color(0.02, 0.07, 0.14, 0.75))
-		ci.draw_rect(Rect2(x - 22.0, y - tall, 44.0, 2.0), Color(0.3, 0.8, 0.9, 0.18))
+		var wide := 30.0 + float(absi(hash(i * 23)) % 30)
+		ci.draw_rect(Rect2(x - wide * 0.5, y - tall, wide, tall), Color(0.02, 0.07, 0.14, 0.55))
+		ci.draw_rect(Rect2(x - wide * 0.5 - 4.0, y - tall - 3.0, wide + 8.0, 3.0), Color(0.02, 0.07, 0.14, 0.55))
+		ci.draw_rect(Rect2(x - wide * 0.5, y - tall, wide, 1.0), Color(0.3, 0.8, 0.9, 0.22))
 	if _planet != null:
 		var py := screen_y(STRATUM * STRATA - 260.0, FACTORS[1])
-		ci.draw_texture_rect_region(_planet, Rect2(w * 0.5 - 72.0, py - 72.0, 144.0, 144.0), Rect2(0, 0, 96, 96))
-	# 2: ruínas e nuvens no meio (fator 0,5).
+		if py > -100.0 and py < h + 100.0:
+			ci.draw_texture_rect(_glow, Rect2(w * 0.5 - 130.0, py - 130.0, 260.0, 260.0), false, Color(0.4, 0.7, 1.0, 0.3))
+			ci.draw_texture_rect_region(_planet, Rect2(w * 0.5 - 72.0, py - 72.0, 144.0, 144.0), Rect2(0, 0, 96, 96))
+	# 2: correntes de luz no meio (fator 0,5).
 	for i: int in range(30):
 		var y := screen_y(80.0 + i * 120.0, FACTORS[2])
 		if y < -40.0 or y > h + 40.0:
 			continue
-		var x := fmod(float(absi(hash(i * 29)) % 1000) / 1000.0 * w, w)
-		ci.draw_rect(Rect2(x, y, 26.0 + float(i % 3) * 12.0, 6.0), Color(0.5, 0.8, 0.9, 0.08 + 0.04 * float(i % 2)))
-	# Rótulos dos estratos (na camada da rota).
+		var x := fmod(float(absi(hash(i * 29)) % 1000) / 1000.0 * w + _clock * (6.0 + i % 4), w + 60.0) - 30.0
+		ci.draw_rect(Rect2(x, y, 26.0 + float(i % 3) * 14.0, 2.0), Color(0.5, 0.9, 1.0, 0.07 + 0.04 * float(i % 2)))
+	# Rótulos dos estratos (na camada da rota): chapéu ciano em negrito com um traço.
+	var label_font := _bold if _bold != null else Locale.font
 	for s: int in range(STRATA):
 		if STRATUM_KEYS[s].is_empty():
 			continue
 		var ly := screen_y(s * STRATUM + 40.0, 1.0)
 		if ly > safe.position.y + HEADER + 12.0 and ly < h:
-			ci.draw_string(Locale.font, Vector2(safe.position.x + 12.0, ly), tr(STRATUM_KEYS[s]),
-					HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE, Color(UiTheme.TEXT, 0.75))
-	# 3: rota e nós (fator 1,0).
+			var text := tr(STRATUM_KEYS[s]).to_upper()
+			ci.draw_rect(Rect2(safe.position.x + 12.0, ly + 5.0, 28.0, 2.0), UiTheme.CYAN)
+			ci.draw_string(label_font, Vector2(safe.position.x + 12.0, ly), text, HORIZONTAL_ALIGNMENT_LEFT,
+					safe.size.x - 24.0, UiTheme.scaled(UiTheme.SMALL_SIZE + 1), Color(UiTheme.CYAN, 0.85))
+	# 3: rota (traços: dourado aberto, cinza fechado) e halos dos faróis (fator 1,0).
 	for n: Dictionary in Economy.CAMPAIGN:
 		var open := is_open(n["id"])
 		for prev: Variant in [] if bool(n.get("bridge", false)) else n["after"]:
 			var pn := Economy.node(prev)
 			var a := Vector2(w * float(pn["x"]), screen_y(float(pn["y"]), 1.0))
 			var b := Vector2(w * float(n["x"]), screen_y(float(n["y"]), 1.0))
-			for d: int in range(12):
-				var p := a.lerp(b, (d + 0.5) / 12.0)
-				ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), UiTheme.GOLD if open else Color(0.4, 0.5, 0.6, 0.5))
-	var pulse := 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.004)
+			if maxf(a.y, b.y) < -20.0 or minf(a.y, b.y) > h + 20.0:
+				continue
+			var col := Color(UiTheme.GOLD, 0.85) if open else Color(0.45, 0.55, 0.65, 0.4)
+			var steps := maxi(4, int(a.distance_to(b) / 9.0))
+			for d: int in range(steps):
+				var p := a.lerp(b, (d + 0.5) / steps)
+				ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), col)
+	var pulse := 0.6 + 0.4 * sin(_clock * 2.4)
 	for n: Dictionary in Economy.CAMPAIGN:
 		var open := is_open(n["id"])
 		if n["kind"] == &"secret" and not open:
 			continue
 		var c := Vector2(w * float(n["x"]), screen_y(float(n["y"]), 1.0))
-		var base := Color(0.3, 0.95, 1.0)
+		if c.y < -60.0 or c.y > h + 60.0:
+			continue
+		var base := UiTheme.CYAN
 		if n["kind"] == &"boss":
 			base = UiTheme.CORAL
+		elif n["kind"] == &"miniboss":
+			base = UiTheme.GOLD
 		elif n["kind"] == &"secret":
-			base = Color(0.75, 0.55, 1.0)
-		var col := Color(base, 0.5 * pulse) if open else Color(0.3, 0.4, 0.5, 0.25)
+			base = UiTheme.VIOLET
+		var col := Color(base, 0.45 * pulse) if open else Color(0.3, 0.4, 0.5, 0.18)
+		var r := 46.0
 		if n["id"] == selected:
-			col = Color(1.0, 0.85, 0.4, 0.7 * pulse)
-		ci.draw_texture_rect(_glow, Rect2(c - Vector2(44, 44), Vector2(88, 88)), false, col)
-	# 4: bolhas e nuvens rasantes de primeiro plano (fator 1,35).
+			col = Color(UiTheme.GOLD, 0.75 * pulse)
+			r = 58.0
+		ci.draw_texture_rect(_glow, Rect2(c - Vector2(r, r), Vector2(r, r) * 2.0), false, col)
+	# 4: bolhas de primeiro plano (fator 1,35), redondas e suaves.
 	for i: int in range(40):
 		var y := screen_y(40.0 + i * 95.0, FACTORS[4])
 		if y < -10.0 or y > h + 10.0:
 			continue
-		var x := fmod(float(absi(hash(i * 41)) % 1000) / 1000.0 * w, w)
-		ci.draw_rect(Rect2(x, y, 3.0, 3.0), Color(0.75, 0.95, 1.0, 0.2))
-	# Cabeçalho escuro para o título ler sobre qualquer estrato.
-	ci.draw_rect(Rect2(0, 0, w, safe.position.y + HEADER), Color(UiTheme.ABYSS, 0.75))
+		var x := fmod(float(absi(hash(i * 41)) % 1000) / 1000.0 * w + sin(_clock + i) * 3.0, w)
+		var rr := 2.0 + float(i % 3)
+		ci.draw_texture_rect(_glow, Rect2(x - rr, y - rr, rr * 2.0, rr * 2.0), false, Color(0.75, 0.95, 1.0, 0.35))
+	# Cabeçalho: faixa escura com filete ciano para o título ler sobre qualquer estrato.
+	if not photo_mode:
+		var head := safe.position.y + HEADER
+		ci.draw_rect(Rect2(0, 0, w, head), Color(UiTheme.ABYSS, 0.72))
+		ci.draw_rect(Rect2(0, head, w, 1.0), Color(UiTheme.CYAN, 0.3))
 
 
 ## Área de desenho e arrasto do mapa.

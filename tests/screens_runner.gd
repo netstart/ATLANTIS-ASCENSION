@@ -1,12 +1,14 @@
 extends Node
 ## Capturas das telas para revisão visual (não é teste de aprovação). Sem --headless:
 ##   godot --path . res://tests/screens_runner.tscn -- --shots=<pasta> [--res=305x678,960x540] [--langs=pt_BR,ja]
+##   [--screens=hub,map]
 ## Grava <pasta>/<tela>_<resolução>_<idioma>.png com a janela em 2x da tela lógica (k = 2).
 ## Save e opções usam os arquivos dos testes.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
-const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"story"]
+const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"story", &"hangar",
+		&"ships", &"options", &"shop", &"events", &"logbook", &"records", &"season", &"city", &"practice"]
 
 
 func _ready() -> void:
@@ -15,11 +17,14 @@ func _ready() -> void:
 	var out := ""
 	var wanted := PackedStringArray()
 	var langs := PackedStringArray(["pt_BR", "ja"])
+	var only := PackedStringArray()
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--shots="):
 			out = arg.trim_prefix("--shots=")
 		elif arg.begins_with("--res="):
 			wanted = arg.trim_prefix("--res=").split(",", false)
+		elif arg.begins_with("--screens="):
+			only = arg.trim_prefix("--screens=").split(",", false)
 		elif arg.begins_with("--langs="):
 			langs = arg.trim_prefix("--langs=").split(",", false)
 	if out.is_empty():
@@ -48,6 +53,8 @@ func _ready() -> void:
 					"stars": [true, true, false, true], "kills": 92, "grazes": 41, "max_chain": 33, "medals": 8,
 					"credits": 125}
 			for screen_name: StringName in SCREENS:
+				if not only.is_empty() and not String(screen_name) in only:
+					continue
 				app.go(screen_name)
 				if screen_name == &"story":
 					# Prólogo no 3º quadro: o primeiro com retrato (o narrador não tem rosto).

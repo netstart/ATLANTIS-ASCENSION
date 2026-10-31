@@ -2,7 +2,7 @@
 	"id": "s2",
 	"chapter": 4,
 	"name_key": "stage.s2",
-	"music": "hydrogene_space_shooter",
+	"music": "magnesus_hostile_territory",
 	"scroll_speed": 20,
 	"backdrop": "volcanic",
 	"seed_salt": 165,

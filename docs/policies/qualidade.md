@@ -58,6 +58,9 @@ Regras herdadas do hyakki, protegidas pelos benchmarks da [política de testes](
 - Um estilo só. A base é a série **Void** (Foozle, CC0). Todo asset de outro pack passa pelo shader de paleta
   unificada (`shaders/palette_tint.gdshader`) antes de entrar em cena.
 - Pixel art sem filtro (`default_texture_filter=0`), sem escala fracionária na partida, `snap_2d_transforms_to_pixel`.
+- Interface no guia [docs/design/ui-style.md](../design/ui-style.md) ("neon abissal", redesenho 1.6): stretch
+  `canvas_items` (texto e vetores na resolução física, layout na lógica), fonte Exo 2, chanfro 45° como única
+  forma, cor = significado, um fundo vivo compartilhado (`AbyssBackdrop`) e uma única ação dourada por tela.
 - **Leitura de projéteis acima de tudo.** Balas inimigas têm contorno claro e núcleo saturado. O contraste da bala
   contra o fundo da fase é ≥ 4,5:1, medido por `tests/bullet_contrast_tests.gd` em capturas de cada capítulo.
 - A profundidade (parallax, escala, névoa) nunca cobre a camada de jogo. Camadas de primeiro plano ficam abaixo de

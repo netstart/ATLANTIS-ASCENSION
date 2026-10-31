@@ -60,7 +60,7 @@ def bosses(beta):
     matriarch = {
         "id": "hadal_matriarch", "name_key": "boss.hadal_matriarch", "sprite": "nautolan_dreadnought", "scale": 1.9,
         "tint": "#7affd8", "hp": 7800, "home_y": 100, "body_radius": 40, "points": 60000, "medals": 14, "duel": True,
-        "music": "junkala_epic_boss_battle", "enter_from": 170, "parts": arms(beta) + [
+        "music": "killerfishred_boss_fight", "enter_from": 170, "parts": arms(beta) + [
             {"id": "core", "x": 0, "y": 6, "radius": 15, "weak": 1.6, "active_in": ["pressure", "song"]}],
         "phases": [
             {"id": "brood", "until_hp": 0.62, "armor": 0.35, "par_s": 45, "move": {"amp": 26, "freq": 0.08},

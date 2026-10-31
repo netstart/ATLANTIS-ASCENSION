@@ -160,6 +160,19 @@ func _free_player() -> AudioStreamPlayer:
 	return null
 
 
+## Trilhas de fase e de menu tocam em laço (o import padrão do Godot não repete); vinhetas não.
+static func _make_loop(stream: AudioStream) -> void:
+	if stream is AudioStreamMP3:
+		(stream as AudioStreamMP3).loop = true
+	elif stream is AudioStreamOggVorbis:
+		(stream as AudioStreamOggVorbis).loop = true
+	elif stream is AudioStreamWAV:
+		var wav := stream as AudioStreamWAV
+		wav.loop_mode = AudioStreamWAV.LOOP_FORWARD
+		wav.loop_begin = 0
+		wav.loop_end = int(wav.get_length() * wav.mix_rate)
+
+
 func _stream(dir: String, id: String) -> AudioStream:
 	var key := dir + id
 	if _streams.has(key):
@@ -168,6 +181,8 @@ func _stream(dir: String, id: String) -> AudioStream:
 		var file_path := "%s%s.%s" % [dir, id, ext]
 		if ResourceLoader.exists(file_path):
 			var stream := load(file_path) as AudioStream
+			if dir == MUSIC_DIR and not id.begins_with("kenney_jingle"):
+				_make_loop(stream)
 			_streams[key] = stream
 			return stream
 	missing[id] = int(missing.get(id, 0)) + 1

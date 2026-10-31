@@ -5,7 +5,9 @@ extends Node
 ##   tela girada: no Redmi Note 14 Pro+ (1220x2712) dá k = 4 e 305x678 pixels lógicos.
 ## - Paisagem (Steam, desktop): k = floor(altura / 540). Altura lógica entre 540 e 800; a área de
 ##   jogo 9:16 fica no centro e as laterais recebem painéis.
-## Sempre k >= 1, stretch "viewport", pixels nítidos.
+## Sempre k >= 1. O stretch é "canvas_items": a tela lógica continua a mesma (layout, área de jogo e
+## regras não mudam), mas texto, contornos e shaders são desenhados na resolução física do aparelho
+## (nítidos em 1220x2712), e o pixel art sobe em múltiplo inteiro k com filtro nearest, sem borrão.
 ##
 ## Também é a fonte única da troca de área segura (recorte da câmera): girar o celular 180° leva o
 ## furo de cima para baixo SEM redimensionar a janela, então o sinal safe_insets_changed sai de uma
@@ -53,7 +55,7 @@ func _apply() -> void:
 	if window_size.x <= 0 or window_size.y <= 0:
 		return
 	scale_factor = factor_for(window_size)
-	root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
 	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
 	root.content_scale_size = logical_for(window_size)
 

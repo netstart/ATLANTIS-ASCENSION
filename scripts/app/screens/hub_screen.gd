@@ -1,25 +1,35 @@
 class_name HubScreen
 extends Screen
-## Hub interativo (plano mestre 7.2, no espírito do menu de Star Wars: Galaxy of Heroes, sem copiar
-## nada dele): cena viva do hangar em parallax, saldo no topo, banner de destaque, botão JOGAR na zona
-## do polegar e abas embaixo: Hangar (oficina), Campanha, Naves, Eventos e Loja. Ao abrir no dia, o login
-## de 7 dias entrega a recompensa num aviso que some sozinho.
+## Hub (plano mestre 7.2, redesenho 1.6 "neon abissal"): a aeronave num pedestal holográfico sobre o
+## fundo abissal compartilhado. Topo só com moedas e dois ícones (opções e créditos); um cartão do
+## capítulo atual; uma única ação dourada (JOGAR) na zona do polegar; atalhos secundários de vidro
+## (Diário e Cidade) logo acima; e a barra de 5 abas com ícone e rótulo embaixo: Hangar, Campanha,
+## Naves, Eventos e Loja. Ao abrir no dia, o login de 7 dias entrega a recompensa num aviso que some.
 
-const TAB_HEIGHT := 48.0
-const PLAY_HEIGHT := 52.0
+const TAB_HEIGHT := 50.0
+const PLAY_HEIGHT := 56.0
 const TABS: Array[StringName] = [&"hangar", &"campaign", &"ships", &"events", &"shop"]
 const OPEN_TABS: Array[StringName] = [&"hangar", &"campaign", &"ships", &"events", &"shop"]
+const TAB_ICONS := {
+	&"hangar": "wrench", &"campaign": "target", &"ships": "joystick", &"events": "trophy", &"shop": "shoppingCart",
+}
+## Moedas no topo: chave, cor do losango.
+const CURRENCIES := [["credits", Color("2ff3e0")], ["orichalcum", Color("ffc94a")], ["pearls", Color("b57bff")]]
 const TOAST_SECONDS := 4.0
 
 var _stage: HangarStage
-var _wallet: Label
+var _wallet: HBoxContainer
+var _wallet_labels: Dictionary = {}
 var _credits_button: Button
-var _banner: Button
-var _play: Button
 var _options: Button
+var _banner: Button
+var _banner_kicker: Label
+var _banner_title: Label
+var _play: Button
 var _logbook: Button
 var _city: Button
-var _toast: Label
+var _toast: PanelContainer
+var _toast_label: Label
 var _toast_left: float = 0.0
 var _tabs: HBoxContainer
 var _tab_buttons: Dictionary = {}
@@ -32,71 +42,151 @@ func _build() -> void:
 	_stage.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_stage.ship_tapped.connect(func() -> void: AudioManager.play_ui("kenney_ui_confirm"))
 	add_child(_stage)
-	_wallet = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.GOLD)
-	_wallet.add_theme_color_override("font_outline_color", UiTheme.VOLCANIC)
-	_wallet.add_theme_constant_override("outline_size", 4)
-	add_child(_wallet)
-	_credits_button = Button.new()
-	_credits_button.name = "Credits"
-	_credits_button.custom_minimum_size = Vector2(UiTheme.TOUCH_MIN, UiTheme.TOUCH_MIN)
-	_credits_button.text = "i"
-	_credits_button.pressed.connect(func() -> void: navigate.emit(&"credits"))
-	add_child(_credits_button)
-	_banner = Button.new()
-	_banner.name = "Banner"
-	_banner.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	_banner.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	_banner.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 8.0)
-	_banner.pressed.connect(func() -> void: navigate.emit(&"map"))
-	add_child(_banner)
+	_build_top()
+	_build_banner()
 	_play = Button.new()
 	_play.name = "Play"
-	_play.custom_minimum_size = Vector2(0, PLAY_HEIGHT)
-	_play.add_theme_font_size_override("font_size", UiTheme.HEADING_SIZE)
-	_play.add_theme_stylebox_override("normal", _gold_box(false))
-	_play.add_theme_stylebox_override("hover", _gold_box(true))
-	_play.add_theme_stylebox_override("pressed", _gold_box(true))
-	_play.add_theme_stylebox_override("focus", _gold_box(true))
+	UiTheme.style_primary(_play, 18)
+	_play.clip_text = true
+	_play.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_play.pressed.connect(_on_play)
 	add_child(_play)
-	_options = _small_button("Options", func() -> void: navigate.emit(&"options"))
-	_logbook = _small_button("Logbook", func() -> void: navigate.emit(&"logbook"))
-	_city = _small_button("City", func() -> void: navigate.emit(&"city"))
-	_toast = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.GOLD, true)
-	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_toast.add_theme_color_override("font_outline_color", UiTheme.VOLCANIC)
-	_toast.add_theme_constant_override("outline_size", 4)
+	_logbook = _side_button("Logbook", "menuList", func() -> void: navigate.emit(&"logbook"))
+	_city = _side_button("City", "home", func() -> void: navigate.emit(&"city"))
+	_build_toast()
+	_build_tabs()
+
+
+func _build_top() -> void:
+	_wallet = HBoxContainer.new()
+	_wallet.add_theme_constant_override("separation", 4)
+	_wallet.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_wallet)
+	for entry: Array in CURRENCIES:
+		var pill := PanelContainer.new()
+		pill.add_theme_stylebox_override("panel", UiTheme.pill_box(entry[1]))
+		pill.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 5)
+		pill.add_child(row)
+		# Losango da moeda (um quadrado girado): cor = qual moeda, sem depender de glifo da fonte.
+		var gem := Control.new()
+		gem.custom_minimum_size = Vector2(8, 8)
+		gem.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var dot := ColorRect.new()
+		dot.color = entry[1]
+		dot.size = Vector2(6, 6)
+		dot.position = Vector2(4, 0)
+		dot.rotation = PI * 0.25
+		gem.add_child(dot)
+		row.add_child(gem)
+		var value := UiTheme.label("0", UiTheme.FONT_SIZE, UiTheme.TEXT)
+		var bold := UiTheme.bold_font()
+		if bold != null:
+			value.add_theme_font_override("font", bold)
+		row.add_child(value)
+		_wallet.add_child(pill)
+		_wallet_labels[entry[0]] = value
+	_options = UiTheme.icon_button("gear", "Options")
+	_options.pressed.connect(func() -> void:
+		AudioManager.play_ui("kenney_ui_click")
+		navigate.emit(&"options"))
+	add_child(_options)
+	_credits_button = UiTheme.icon_button("information", "Credits")
+	_credits_button.pressed.connect(func() -> void:
+		AudioManager.play_ui("kenney_ui_click")
+		navigate.emit(&"credits"))
+	add_child(_credits_button)
+
+
+## Cartão do capítulo: "Capítulo 1" em ciano pequeno e o título em negrito, num vidro com borda dourada.
+func _build_banner() -> void:
+	_banner = Button.new()
+	_banner.name = "Banner"
+	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
+		var box := UiTheme.panel_box(UiTheme.GOLD if state != "disabled" else UiTheme.CYAN, 0.78)
+		if state in ["hover", "focus"]:
+			box.border_color = UiTheme.GOLD
+			box.shadow_color = Color(UiTheme.GOLD, 0.25)
+			box.shadow_offset = Vector2.ZERO
+		_banner.add_theme_stylebox_override(state, box)
+	_banner.pressed.connect(func() -> void:
+		AudioManager.play_ui("kenney_ui_click")
+		navigate.emit(&"map"))
+	add_child(_banner)
+	_banner_kicker = UiTheme.label("", UiTheme.SMALL_SIZE, UiTheme.CYAN)
+	_banner_kicker.clip_text = true
+	_banner_kicker.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_banner_kicker.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banner.add_child(_banner_kicker)
+	_banner_title = UiTheme.heading("", UiTheme.FONT_SIZE + 1, UiTheme.WHITE)
+	_banner_title.clip_text = true
+	_banner_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_banner_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_banner.add_child(_banner_title)
+
+
+func _build_toast() -> void:
+	_toast = PanelContainer.new()
+	_toast.add_theme_stylebox_override("panel", UiTheme.panel_box(UiTheme.GOLD, 0.92))
+	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_toast.visible = false
+	_toast_label = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.GOLD, true)
+	_toast_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast.add_child(_toast_label)
 	add_child(_toast)
+
+
+func _build_tabs() -> void:
+	var bar := PanelContainer.new()
+	bar.name = "TabBar"
+	var bar_box := UiTheme.chamfer(Color(UiTheme.ABYSS, 0.82), Color(UiTheme.CYAN, 0.25), 0, UiTheme.CUT)
+	bar_box.border_width_top = 1
+	bar_box.set_content_margin_all(2)
+	bar.add_theme_stylebox_override("panel", bar_box)
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(bar)
 	_tabs = HBoxContainer.new()
-	_tabs.add_theme_constant_override("separation", 2)
-	add_child(_tabs)
+	_tabs.add_theme_constant_override("separation", 0)
+	bar.add_child(_tabs)
 	for tab: StringName in TABS:
 		var b := Button.new()
 		b.name = "Tab_" + String(tab)
 		b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		b.custom_minimum_size = Vector2(0, TAB_HEIGHT)
+		b.custom_minimum_size = Vector2(0, TAB_HEIGHT - 4.0)
 		b.clip_text = true
 		b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		b.disabled = not tab in OPEN_TABS
-		# Abas estreitas: margem interna mínima para o nome caber inteiro.
-		for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
-			var box := UiTheme.button_box(state)
-			box.content_margin_left = 2
-			box.content_margin_right = 2
-			if tab == &"hangar":
-				box.border_color = UiTheme.GOLD
-			b.add_theme_stylebox_override(state, box)
+		b.icon = UiTheme.icon(TAB_ICONS[tab])
+		b.expand_icon = true
+		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
+		b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		b.add_theme_constant_override("icon_max_width", 18)
+		b.add_theme_constant_override("h_separation", 1)
+		b.add_theme_font_size_override("font_size", UiTheme.scaled(UiTheme.SMALL_SIZE))
+		UiTheme.style_tab(b, tab == &"campaign")
+		b.add_theme_color_override("icon_normal_color", UiTheme.CYAN if tab == &"campaign" else UiTheme.TEXT_DIM)
+		b.add_theme_color_override("icon_hover_color", UiTheme.WHITE)
+		b.add_theme_color_override("icon_focus_color", UiTheme.WHITE)
+		b.add_theme_color_override("icon_pressed_color", UiTheme.CYAN)
 		b.pressed.connect(_on_tab.bind(tab))
 		_tabs.add_child(b)
 		_tab_buttons[tab] = b
 
 
-func _small_button(button_name: String, on_press: Callable) -> Button:
+## Atalho secundário (vidro, ícone + texto) acima do botão Jogar.
+func _side_button(button_name: String, icon_name: String, on_press: Callable) -> Button:
 	var b := Button.new()
 	b.name = button_name
+	b.icon = UiTheme.icon(icon_name)
+	b.expand_icon = true
+	b.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	b.add_theme_constant_override("icon_max_width", 14)
+	b.add_theme_color_override("icon_normal_color", UiTheme.CYAN)
 	b.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
 	b.clip_text = true
+	b.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	b.pressed.connect(func() -> void:
 		AudioManager.play_ui("kenney_ui_click")
 		on_press.call())
@@ -106,15 +196,8 @@ func _small_button(button_name: String, on_press: Callable) -> Button:
 
 ## Jogar: a cena de história pendente (prólogo, fim de ato) vem antes do mapa.
 func _on_play() -> void:
+	AudioManager.play_ui("kenney_ui_confirm")
 	navigate.emit(&"story" if not StoryScreen.pending(SaveManager.data).is_empty() else &"map")
-
-
-func _gold_box(hot: bool) -> StyleBoxFlat:
-	var box := UiTheme.button_box("normal")
-	box.bg_color = Color("6b4a12") if not hot else Color("8a6418")
-	box.border_color = UiTheme.GOLD
-	box.set_border_width_all(2)
-	return box
 
 
 func on_show(_app: Node) -> void:
@@ -137,7 +220,7 @@ static func reward_text(reward: Dictionary) -> String:
 
 
 func show_toast(text: String) -> void:
-	_toast.text = text
+	_toast_label.text = text
 	_toast.visible = true
 	_toast_left = TOAST_SECONDS
 	relayout()
@@ -160,12 +243,14 @@ func _process(delta: float) -> void:
 
 func refresh_texts() -> void:
 	var wallet := SaveManager.data["wallet"] as Dictionary
-	_wallet.text = "%s %s   %s %s   %s %s" % [tr("currency.credits"), Locale.format_number(int(wallet["credits"])),
-			tr("currency.orichalcum"), Locale.format_number(int(wallet["orichalcum"])),
-			tr("currency.pearls"), Locale.format_number(int(wallet["pearls"]))]
+	for key: String in _wallet_labels:
+		var value := _wallet_labels[key] as Label
+		value.text = Locale.format_number(int(wallet[key]))
+		(value.get_parent().get_parent() as Control).tooltip_text = tr("currency." + key)
 	var next := Economy.next_mission(SaveManager.data)
 	_play.text = tr("hub.play") % MapScreen.node_label(Economy.node(next))
-	_options.text = tr("options.title")
+	_options.tooltip_text = tr("options.title")
+	_credits_button.tooltip_text = tr("boot.credits")
 	_logbook.text = tr("logbook.title")
 	_city.text = tr("city.title")
 	for tab: StringName in TABS:
@@ -178,7 +263,12 @@ func refresh_texts() -> void:
 
 func _update_banner() -> void:
 	var chapter := int(Economy.node(Economy.next_mission(SaveManager.data))["chapter"])
-	_banner.text = tr("hub.banner_c%d" % chapter) if _banner_index == 0 else tr("hub.banner_daily")
+	var text := tr("hub.banner_c%d" % chapter) if _banner_index == 0 else tr("hub.banner_daily")
+	# "Capítulo 1 · A Halcyon pede socorro": antes do ponto vira o chapéu, depois o título.
+	var parts := text.split(" · ", false, 1)
+	_banner_kicker.text = parts[0].to_upper() if parts.size() > 1 else tr("hub.tab_campaign").to_upper()
+	_banner_title.text = parts[1] if parts.size() > 1 else text
+	_banner.tooltip_text = text
 	_banner.disabled = _banner_index != 0
 
 
@@ -187,27 +277,52 @@ func _layout() -> void:
 		return
 	var left := safe.position.x + 8.0
 	var width := safe.size.x - 16.0
-	_tabs.position = Vector2(left, safe.end.y - TAB_HEIGHT - 6.0)
-	_tabs.size = Vector2(width, TAB_HEIGHT)
-	var play_width := minf(width, 300.0)
+	var column := minf(width, 360.0)
+	var col_left := floorf(safe.position.x + (safe.size.x - column) * 0.5)
+	# Topo: ícones à direita, moedas à esquerda no que sobra.
+	var top := safe.position.y + 6.0
+	_credits_button.size = Vector2(UiTheme.TOUCH_MIN, UiTheme.TOUCH_MIN)
+	_credits_button.position = Vector2(safe.end.x - UiTheme.TOUCH_MIN - 8.0, top)
+	_options.size = _credits_button.size
+	_options.position = _credits_button.position - Vector2(UiTheme.TOUCH_MIN + 6.0, 0.0)
+	_wallet.reset_size()
+	_wallet.position = Vector2(left, top + floorf((UiTheme.TOUCH_MIN - _wallet.size.y) * 0.5))
+	var wallet_room := _options.position.x - left - 6.0
+	_wallet.scale = Vector2.ONE * minf(1.0, wallet_room / maxf(_wallet.size.x, 1.0))
+	# Cartão do capítulo.
+	var banner_h := UiTheme.TOUCH_MIN + 14.0
+	_banner.position = Vector2(col_left, top + UiTheme.TOUCH_MIN + 10.0)
+	_banner.size = Vector2(column, banner_h)
+	_banner_kicker.position = Vector2(14.0, 8.0)
+	_banner_kicker.size = Vector2(column - 28.0, 14.0)
+	_banner_title.position = Vector2(14.0, 21.0)
+	_banner_title.size = Vector2(column - 28.0, 22.0)
+	# Base: abas, Jogar e atalhos.
+	var bar := _tabs.get_parent() as Control
+	# No desktop a barra não atravessa a tela inteira: fica na coluna central, como num celular grande.
+	var bar_w := minf(safe.size.x - 8.0, 560.0)
+	bar.position = Vector2(floorf(safe.position.x + (safe.size.x - bar_w) * 0.5), safe.end.y - TAB_HEIGHT - 4.0)
+	bar.size = Vector2(bar_w, TAB_HEIGHT)
+	var play_width := minf(column, 320.0)
 	_play.size = Vector2(play_width, PLAY_HEIGHT)
 	_play.position = Vector2(floorf(safe.position.x + (safe.size.x - play_width) * 0.5),
-			_tabs.position.y - PLAY_HEIGHT - 12.0)
-	var third := floorf((play_width - 16.0) / 3.0)
-	var row_y := _play.position.y - UiTheme.TOUCH_MIN - 8.0
-	for k: int in range(3):
-		var b: Button = [_logbook, _city, _options][k]
-		b.size = Vector2(third, UiTheme.TOUCH_MIN)
-		b.position = Vector2(_play.position.x + k * (third + 8.0), row_y)
-	_toast.custom_minimum_size.x = width
-	_toast.size = Vector2(width, 0)
-	_toast.position = Vector2(left, safe.position.y + UiTheme.TOUCH_MIN * 2.0 + 32.0)
-	_credits_button.position = Vector2(safe.end.x - UiTheme.TOUCH_MIN - 6.0, safe.position.y + 6.0)
-	_wallet.position = Vector2(left, safe.position.y + 14.0)
-	_wallet.size = Vector2(_credits_button.position.x - left - 8.0, 0)
-	_wallet.clip_text = true
-	_banner.position = Vector2(left, safe.position.y + UiTheme.TOUCH_MIN + 16.0)
-	_banner.size = Vector2(width, UiTheme.TOUCH_MIN + 8.0)
+			bar.position.y - PLAY_HEIGHT - 14.0)
+	var half := floorf((play_width - 8.0) * 0.5)
+	var row_y := _play.position.y - UiTheme.TOUCH_MIN - 10.0
+	for k: int in range(2):
+		var b: Button = [_logbook, _city][k]
+		b.size = Vector2(half, UiTheme.TOUCH_MIN)
+		b.position = Vector2(_play.position.x + k * (half + 8.0), row_y)
+	# Altura do aviso pelo texto quebrado na largura útil (rótulo com quebra não sabe a própria altura
+	# antes de ter largura).
+	var text_w := column - 24.0
+	var font_size := _toast_label.get_theme_font_size("font_size")
+	var text_h := _toast_label.get_theme_font("font").get_multiline_string_size(_toast_label.text,
+			HORIZONTAL_ALIGNMENT_CENTER, text_w, font_size).y
+	_toast_label.custom_minimum_size = Vector2(text_w, text_h)
+	_toast.size = Vector2(column, 0.0)
+	_toast.reset_size()
+	_toast.position = Vector2(col_left, _banner.position.y + banner_h + 10.0)
 
 
 func _on_tab(tab: StringName) -> void:
@@ -226,7 +341,7 @@ func _on_tab(tab: StringName) -> void:
 
 
 func layout_controls() -> Array[Control]:
-	return [_wallet, _credits_button, _banner, _play, _tabs, _options, _logbook, _city]
+	return [_wallet, _credits_button, _options, _banner, _play, _tabs, _logbook, _city]
 
 
 ## Volta para o título.

@@ -278,6 +278,13 @@ def mini_end(ch, boss_id):
                       beat(4, [(0.0, {"op": "end"})])]
 
 
+## Trilha por capítulo (redesenho 1.6, .ai/05-pesquisa-redesign-ui-gameplay.md): cada mar com cara própria.
+CHAPTER_MUSIC = {
+    1: "mintodog_ocean_trance", 2: "prosensory_binary_village", 3: "ansimuz_cyber_runner",
+    4: "magnesus_hostile_territory", 5: "hydrogene_space_shooter", 6: "mintodog_ocean_trance",
+    7: "ansimuz_cyber_runner", 8: "magnesus_deadly_contracts", 9: "magnesus_deadly_contracts",
+    10: "prosensory_binary_village",
+}
 BACKDROP = {4: "volcanic", 5: "city", 6: "ice", 7: "stratosphere", 8: "orbit", 9: "core"}
 MOMENT = {
     4: hazard("lava", [0.2, 0.8, 0.5, 0.35, 0.65]),
@@ -392,7 +399,7 @@ def build(mission_id: str, spec: dict) -> dict:
             ev["t"] = round(t + dt, 2)
             events.append(ev)
         t += seconds
-    out = {"id": mission_id, "chapter": spec["chapter"], "name_key": spec["name"], "music": spec["music"],
+    out = {"id": mission_id, "chapter": spec["chapter"], "name_key": spec["name"], "music": CHAPTER_MUSIC.get(spec["chapter"], spec["music"]),
            "scroll_speed": spec["scroll"], "backdrop": spec["backdrop"], "seed_salt": sum(map(ord, mission_id)),
            "objective": spec["objective"], "length_s": round(t, 1), "events": events}
     for key in ("secret", "route", "score_mult", "weapon_lock", "tutorial", "secret_mission", "dark"):

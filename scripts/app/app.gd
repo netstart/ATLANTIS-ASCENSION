@@ -27,6 +27,13 @@ const SCREENS := {
 	&"records": preload("res://scripts/app/screens/records_screen.gd"),
 }
 const ROOT_SCREEN := &"boot"
+## Música dos menus (Deep Sea, Umplix, CC0): água funda e calma entre as missões.
+const MENU_MUSIC := "umplix_deep_sea"
+## Humor do fundo por tela (AbyssBackdrop.MOODS); as que não estão aqui usam o padrão.
+const MOODS := {
+	&"boot": &"title", &"map": &"map", &"results": &"gold", &"shop": &"gold", &"story": &"calm",
+	&"credits": &"calm", &"events": &"danger",
+}
 
 ## Data de hoje "AAAA-MM-DD" (os testes fixam um calendário).
 static var today_override: String = ""
@@ -44,6 +51,7 @@ var _replay_return: StringName = &""
 
 var _layer: CanvasLayer
 var _root: Control
+var _backdrop: AbyssBackdrop
 var _screens: Dictionary = {}
 var _history: Array[StringName] = []
 
@@ -51,6 +59,7 @@ var _history: Array[StringName] = []
 func _ready() -> void:
 	InputSetup.ensure_actions()
 	TouchScroll.install(get_tree())
+	UiFx.install(get_tree())
 	_layer = CanvasLayer.new()
 	add_child(_layer)
 	_root = Control.new()
@@ -60,6 +69,10 @@ func _ready() -> void:
 	UiTheme.text_scale = float(Settings.get_value("text_scale"))
 	_root.theme = UiTheme.build(Locale.font)
 	_layer.add_child(_root)
+	_backdrop = AbyssBackdrop.new()
+	_backdrop.name = "Backdrop"
+	_backdrop.reduce_motion = bool(Settings.get_value("reduce_motion"))
+	_root.add_child(_backdrop)
 	Settings.changed.connect(_on_setting_changed)
 	Locale.language_changed.connect(_on_language_changed)
 	var args := OS.get_cmdline_user_args()
@@ -102,7 +115,16 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 			screen.connect("watch", func(key: String) -> void: watch_replay(key))
 		_root.add_child(screen)
 		_screens[screen_name] = screen
+	var changed := current != screen_name
 	current = screen_name
+	_backdrop.set_mood(MOODS.get(screen_name, &"default"))
+	_backdrop.scroll = 0.0
+	_backdrop.drift = Vector2.ZERO
+	_backdrop.ruins = 1.0
+	if game == null:
+		AudioManager.play_music(MENU_MUSIC)
+	if changed:
+		UiFx.enter(_screens[screen_name] as CanvasItem)
 	(_screens[screen_name] as Screen).on_show(self)
 	Events.screen_changed.emit(screen_name)
 
@@ -263,6 +285,11 @@ func screen(screen_name: StringName) -> Screen:
 	return _screens.get(screen_name) as Screen
 
 
+## Fundo vivo compartilhado (o mapa liga a rolagem nele).
+func backdrop() -> AbyssBackdrop:
+	return _backdrop
+
+
 ## Raiz das telas (testes ajustam o tamanho para simular cada aparelho).
 func root() -> Control:
 	return _root
@@ -295,6 +322,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 ## Escala de texto nova: recria as telas (os rótulos guardam o tamanho) e volta para a mesma tela.
 func _on_setting_changed(key: String) -> void:
+	if key == "reduce_motion":
+		_backdrop.reduce_motion = bool(Settings.get_value("reduce_motion"))
 	if key != "text_scale":
 		return
 	UiTheme.text_scale = float(Settings.get_value("text_scale"))

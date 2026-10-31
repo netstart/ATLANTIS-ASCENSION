@@ -102,7 +102,7 @@
     "source_url": "https://kenney.nl/assets/pixel-shmup",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "notice_file": "res://licenses/notices/kenney_License.txt",
-    "files_count": 1
+    "files_count": 30
   },
   {
     "id": "kenney_fonts",
@@ -259,5 +259,103 @@
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
     "files_count": 46
+  },
+  {
+    "id": "exo2_font",
+    "name": "Exo 2 (variable)",
+    "author": "Natanael Gama (The Exo 2 Project Authors)",
+    "license_id": "OFL-1.1",
+    "category": "font",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "modifications": "none (Google Fonts variable TTF, renamed only)",
+    "source_url": "https://github.com/google/fonts/tree/main/ofl/exo2",
+    "license_file": "res://licenses/texts/OFL-1.1.txt",
+    "notice_file": "res://licenses/notices/exo2_OFL.txt",
+    "files_count": 2
+  },
+  {
+    "id": "umplix_deep_sea_music",
+    "name": "Deep Sea",
+    "author": "Umplix",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/deep-sea",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "mintodog_ocean_trance_music",
+    "name": "Ocean Trance",
+    "author": "MintoDog",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/ocean-trance",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "prosensory_binary_village_music",
+    "name": "Binary Underwater Village (Loop)",
+    "author": "Pro Sensory",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/binary-underwater-village-loop",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "ansimuz_cyber_runner_music",
+    "name": "Cyber Runner Music",
+    "author": "Luis Zuno (ansimuz)",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/cyber-runner-music",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "hydrogene_strong_boss_music",
+    "name": "8-bit Danger!! Strong Boss",
+    "author": "HydroGene",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/8-bit-danger-strong-boss",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "killerfishred_boss_fight_music",
+    "name": "Boss Stage Synth Track",
+    "author": "killerfishred",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/boss-stage-synth-track",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "magnesus_synthwave_music",
+    "name": "Retro Synthwave Loops (Deadly Contracts, Hostile Territory)",
+    "author": "Magnesus",
+    "license_id": "CC-BY-4.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/retro-synthwave-loops",
+    "license_file": "res://licenses/texts/CC-BY-4.0.txt",
+    "files_count": 2
   }
 ]

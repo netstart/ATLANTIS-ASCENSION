@@ -1,0 +1,7 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "hydrogene_strong_boss_music",
+	"files": {
+		"strong-boss/8-bit_danger_strong_boss.mp3": "audio/music/hydrogene_strong_boss.mp3"
+	}
+}

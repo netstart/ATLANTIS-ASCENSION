@@ -1,0 +1,8 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "magnesus_synthwave_music",
+	"files": {
+		"retro-synthwave-loops/deadly_contracts-loop1.ogg": "audio/music/magnesus_deadly_contracts.ogg",
+		"retro-synthwave-loops/hostile_territory-loop1.ogg": "audio/music/magnesus_hostile_territory.ogg"
+	}
+}

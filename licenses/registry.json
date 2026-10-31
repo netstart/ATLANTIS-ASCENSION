@@ -512,7 +512,7 @@
     "ai_generated": false,
     "modifications": "",
     "files": [
-      "assets/audio/music/hydrogene_*"
+      "assets/audio/music/hydrogene_space_shooter*"
     ],
     "sha256": {
       "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
@@ -576,5 +576,225 @@
     "verified_at": "2026-10-30",
     "verified_by": "Claude (Fase 1); revisão final por Clayton antes do lançamento",
     "snapshot_file": "docs/licenses/atlantis_generated_2026-10-30.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": true,
+    "author": "Natanael Gama (The Exo 2 Project Authors)",
+    "category": "font",
+    "commercial_use": true,
+    "files": [
+      "assets/fonts/exo2_*",
+      "assets/licenses_src/exo2_OFL.txt"
+    ],
+    "id": "exo2_font",
+    "license_file": "licenses/texts/OFL-1.1.txt",
+    "license_id": "OFL-1.1",
+    "license_url": "https://openfontlicense.org/documents/OFL.txt",
+    "modifications": "none (Google Fonts variable TTF, renamed only)",
+    "name": "Exo 2 (variable)",
+    "snapshot_url": "https://github.com/google/fonts/tree/main/ofl/exo2",
+    "source_url": "https://github.com/google/fonts/tree/main/ofl/exo2",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "notice_source": "assets/licenses_src/exo2_OFL.txt",
+    "notice_file": "licenses/notices/exo2_OFL.txt",
+    "sha256": {
+      "license_file": "1d361a8f8e8ce6e68457dcd93fb56e162e6baa3bbb7e7573a290d44399f6b57e",
+      "notice_file": "7f95a8eeecc6904ffc81cd10cc8ebc7fcee72a67922924bf45f02dff03b88127",
+      "snapshot_file": "afa6d90c6b7b7e7cd86fc95d7dc78ea1c7976127e56d033dc44a231832101958"
+    },
+    "snapshot_file": "docs/licenses/exo2_font_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "Umplix",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/umplix_*"
+    ],
+    "id": "umplix_deep_sea_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Deep Sea",
+    "snapshot_url": "https://opengameart.org/content/deep-sea",
+    "source_url": "https://opengameart.org/content/deep-sea",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "9f4a2f00e8433a18f109236bd2c86c5768bccc078417d94dcfdbf2694ed0bc05"
+    },
+    "snapshot_file": "docs/licenses/umplix_deep_sea_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "MintoDog",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/mintodog_*"
+    ],
+    "id": "mintodog_ocean_trance_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Ocean Trance",
+    "snapshot_url": "https://opengameart.org/content/ocean-trance",
+    "source_url": "https://opengameart.org/content/ocean-trance",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "84a9bff4a9cfb16d4bab2fdca1d19107a8eb09b35656ce4c7b22cac20a0816e4"
+    },
+    "snapshot_file": "docs/licenses/mintodog_ocean_trance_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "Pro Sensory",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/prosensory_*"
+    ],
+    "id": "prosensory_binary_village_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Binary Underwater Village (Loop)",
+    "snapshot_url": "https://opengameart.org/content/binary-underwater-village-loop",
+    "source_url": "https://opengameart.org/content/binary-underwater-village-loop",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "b69447badd7b98944d6c5a5b1a71f67e4bb9cf5bea76e979a4f456bbd9ea20c9"
+    },
+    "snapshot_file": "docs/licenses/prosensory_binary_village_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "Luis Zuno (ansimuz)",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/ansimuz_*"
+    ],
+    "id": "ansimuz_cyber_runner_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Cyber Runner Music",
+    "snapshot_url": "https://opengameart.org/content/cyber-runner-music",
+    "source_url": "https://opengameart.org/content/cyber-runner-music",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "e8a8bac40ccccac98e7513648000f81f538a39c016c5aa37d3d49cea5fd12670"
+    },
+    "snapshot_file": "docs/licenses/ansimuz_cyber_runner_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "HydroGene",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/hydrogene_strong_*"
+    ],
+    "id": "hydrogene_strong_boss_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "8-bit Danger!! Strong Boss",
+    "snapshot_url": "https://opengameart.org/content/8-bit-danger-strong-boss",
+    "source_url": "https://opengameart.org/content/8-bit-danger-strong-boss",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "aba4a7bad191638e8f2ee31a1549d6b3b7271767fb1e77a0c2e506cf98d1f6c9"
+    },
+    "snapshot_file": "docs/licenses/hydrogene_strong_boss_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "killerfishred",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/killerfishred_*"
+    ],
+    "id": "killerfishred_boss_fight_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Boss Stage Synth Track",
+    "snapshot_url": "https://opengameart.org/content/boss-stage-synth-track",
+    "source_url": "https://opengameart.org/content/boss-stage-synth-track",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "05eeebf4cb5c949fdbf1733a11c573f88d85747ddc5d0e85165aa4652db85481"
+    },
+    "snapshot_file": "docs/licenses/killerfishred_boss_fight_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": true,
+    "author": "Magnesus",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/magnesus_*"
+    ],
+    "id": "magnesus_synthwave_music",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "modifications": "",
+    "name": "Retro Synthwave Loops (Deadly Contracts, Hostile Territory)",
+    "snapshot_url": "https://opengameart.org/content/retro-synthwave-loops",
+    "source_url": "https://opengameart.org/content/retro-synthwave-loops",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "snapshot_file": "92c8081aa1ecea6a748d90fbdd3eb8b0b351f9149526a20a0a65e83d5810e03b"
+    },
+    "snapshot_file": "docs/licenses/magnesus_synthwave_music_2026-10-31.pdf",
+    "downloaded_at": "2026-10-31"
   }
 ]

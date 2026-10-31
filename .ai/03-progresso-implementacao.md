@@ -213,5 +213,13 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ✅ Release Android: preset "Android Play" (AAB, arm64 + armv7 + x86_64) assinado com a chave de upload em
   `C:\src\tools\keys` (fora do repositório, senha só no `.env` de lá); `tools/build_release.ps1` gera APK de debug,
   AAB, zip do Windows e tar.gz do Linux
+- ✅ `1.6.0` Redesenho premium "neon abissal" (pesquisa em `.ai/05-pesquisa-redesign-ui-gameplay.md`, guia em
+  `docs/design/ui-style.md`): interface na resolução física (stretch `canvas_items`), fonte Exo 2 com reserva Fusion
+  Pixel para CJK, tema chanfrado com halo de foco, resposta física em todo botão (`UiFx`), transição entre telas,
+  fundo abissal 2,5D compartilhado em shader (raios, cáusticas, 3 terraços de ruínas em parallax, neve marinha) a
+  30 Hz num SubViewport lógico, título com logo e nave, hub com pedestal holográfico e barra de abas com ícones
+  (Kenney Game Icons, CC0), mapa com parallax ligado ao fundo e humor por estrato (redesenho só com a câmera
+  andando), músicas novas por capítulo e de menu (Umplix, MintoDog, Pro Sensory, ansimuz, HydroGene, killerfishred:
+  CC0; Magnesus: CC BY 4.0), músicas em laço
 - ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
   (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`

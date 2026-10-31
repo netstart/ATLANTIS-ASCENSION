@@ -27,6 +27,14 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | 8-bit Epic Space Shooter Music | HydroGene | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-epic-space-shooter-music |
 | Epic Boss Battle (Seamlessly Looping) | Juhani Junkala (SubspaceAudio) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/boss-battle-music |
 | Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos) | Clayton K. N. Passos | MIT | tools/gen_sprites.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
+| Exo 2 (variable) | Natanael Gama (The Exo 2 Project Authors) | OFL-1.1 |  | sim | sim | `licenses/texts/OFL-1.1.txt` | https://github.com/google/fonts/tree/main/ofl/exo2 |
+| Deep Sea | Umplix | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/deep-sea |
+| Ocean Trance | MintoDog | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/ocean-trance |
+| Binary Underwater Village (Loop) | Pro Sensory | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/binary-underwater-village-loop |
+| Cyber Runner Music | Luis Zuno (ansimuz) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/cyber-runner-music |
+| 8-bit Danger!! Strong Boss | HydroGene | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-danger-strong-boss |
+| Boss Stage Synth Track | killerfishred | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/boss-stage-synth-track |
+| Retro Synthwave Loops (Deadly Contracts, Hostile Territory) | Magnesus | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/retro-synthwave-loops |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

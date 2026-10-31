@@ -88,6 +88,7 @@ func _ready() -> void:
 	_backdrop = OceanBackdrop.new()
 	_backdrop.detail = GfxQuality.level()
 	_backdrop.kind = StringName(String(sim.mission.get("backdrop", "ocean")))
+	_backdrop.foreground_on_top = true
 	add_child(_backdrop)
 	_clip = Control.new()
 	_clip.clip_contents = true
@@ -97,6 +98,7 @@ func _ready() -> void:
 	_world.reduce_flashes = bool(Settings.get_value("reduce_flashes"))
 	_world.colorblind = String(Settings.get_value("colorblind"))
 	_world.fx_level = GfxQuality.level()
+	_world.reduce_motion = bool(Settings.get_value("reduce_motion"))
 	_world.setup(sim)
 	if _ghost_sim != null:
 		_world.ghost_sim = _ghost_sim
@@ -140,6 +142,7 @@ func relayout_for(view: Vector2) -> void:
 	var layout := Playfield.layout(view, safe)
 	var field: Rect2 = layout["field"]
 	_backdrop.set_view(view)
+	_backdrop.set_field(field)
 	_clip.position = field.position
 	_clip.size = field.size
 	_hud.size = view
@@ -303,7 +306,9 @@ func _process(delta: float) -> void:
 	var jitter := Vector2(sin(Time.get_ticks_msec() * 0.09), cos(Time.get_ticks_msec() * 0.11)) * amount
 	_world.position = jitter.round()
 	_world.touching = not _touch_ids.is_empty() or Input.is_action_pressed(&"precise")
-	_backdrop.apply(sim.scroll, _emerge, Vector2.ZERO, bool(Settings.get_value("reduce_motion")))
+	# Câmera 2,5D: o chão acompanha a nave na horizontal (só visual; a Sim não lê nada daqui).
+	var cam_tilt := Vector2(clampf(sim.player.pos.x / Playfield.FIELD.x * 2.0 - 1.0, -1.0, 1.0), 0.0)
+	_backdrop.apply(sim.scroll, _emerge, cam_tilt, bool(Settings.get_value("reduce_motion")))
 	_backdrop.set_drift(sim.gravity if sim.drift_frames > 0 else Vector2.ZERO)
 	_world.refresh(delta)
 	_hud.refresh(sim, delta)

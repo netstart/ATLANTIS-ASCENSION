@@ -1,16 +1,26 @@
 class_name WorldView
 extends Node2D
 ## Desenho do campo de jogo a partir da Sim (só leitura). Camadas, de baixo para cima:
-##   entidades (sombras, inimigos, chefe, coletáveis) → tiros do jogador → nave e laser →
+##   sombras no chão → entidades (inimigos, chefe, coletáveis) → tiros do jogador → nave e laser →
 ##   efeitos de baixo (feixes, explosões, duelo) → balas inimigas (sempre por cima: leitura) →
 ##   efeitos de cima (faíscas, graze, anéis).
 ## Só texturas e retângulos por quadro (docs/policies/qualidade.md). Efeitos vivem aqui, não na Sim:
 ## qualidade gráfica e "reduzir flashes" nunca mudam a partida.
+## 2,5D: cada nave tem uma sombra (cópia escura do sprite, 80%, deslocada (+6, +10)) desenhada no chão,
+## abaixo de tudo; inimigos que sobem do fundo (SimEnemy.depth < 1, ainda sem colisão na Sim) crescem
+## de 35% a 100% saindo da neblina, e a sombra se separa deles conforme sobem. A nave inclina nas
+## curvas (some com "reduzir movimento") e o dano pisca em branco (shaders/sprite_flash.gdshader).
 
 const ANIM_FPS := 12.0
 const EXPLOSION_TIME := 0.6
-const SHADOW_OFFSET := Vector2(7, 11)
-const WATER_TINT := Color(0.45, 0.72, 0.92, 0.6)
+const SHADOW_OFFSET := Vector2(6, 10)
+const SHADOW_SCALE := 0.8
+const SHADOW_COLOR := Color(0.0, 0.02, 0.05, 0.35)
+## Escala visual de quem sobe do fundo (0,35 → 1,0 enquanto a Sim leva depth de DEPTH_START a 1).
+const RISE_SCALE := 0.35
+## Inclinação da nave nas curvas: rotação máxima (rad) e quanto a largura encolhe.
+const BANK_ROT := 0.1
+const BANK_SQUEEZE := 0.22
 const LASER_COLOR := Color(0.55, 0.97, 1.0, 0.95)
 const BEAM_COLOR := Color(1.0, 0.42, 0.45, 0.95)
 const WARN_COLOR := Color(1.0, 0.42, 0.45, 0.7)
@@ -33,11 +43,14 @@ var sim: Sim
 var time: float = 0.0
 var touching: bool = false
 var reduce_flashes: bool = false
+## "Reduzir movimento": sem inclinação da nave nas curvas.
+var reduce_motion: bool = false
 var fx_level: int = 2
 var explosions: Array[Dictionary] = []
 var sparks: Array[Dictionary] = []
 var rings: Array[Dictionary] = []
 
+var _shadows: _Layer
 var _entities: _Layer
 var _player: _Layer
 var _fx_below: _Layer
@@ -61,6 +74,10 @@ var _capsule: Texture2D
 var _drone: Texture2D
 var _rocket: Texture2D
 var _ship_tint := Color(1, 1, 1)
+## Cor da neblina do cenário (inimigos que sobem do fundo saem dela).
+var _depth_tint := Color(0.45, 0.72, 0.92, 0.6)
+var _bank: float = 0.0
+var _wing_bank: float = 0.0
 
 
 func setup(p_sim: Sim) -> void:
@@ -88,12 +105,23 @@ func setup(p_sim: Sim) -> void:
 	_engine_idle = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_idle.png")
 	_engine_power = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_powering.png")
 	_shield = SpriteBank.texture("res://assets/art/void/main_ship/shield_invincibility.png")
+	var scenery := OceanBackdrop.palette_of(StringName(String(sim.mission.get("backdrop", "ocean"))))
+	var mid: Color = scenery["mid"]
+	_depth_tint = Color(mid.lightened(0.35), 0.55)
+	var flash := ShaderMaterial.new()
+	flash.shader = load("res://shaders/sprite_flash.gdshader") as Shader
+	_shadows = _Layer.new(self, _draw_shadows)
+	# No espaço não há chão para receber sombra.
+	_shadows.visible = bool(scenery.get("shadows", true))
+	add_child(_shadows)
 	_entities = _Layer.new(self, _draw_entities)
+	_entities.material = flash
 	add_child(_entities)
 	_player_bullets = BulletRenderer.new()
 	_player_bullets.setup(BulletKinds.PLAYER, sim.player_bullets.capacity)
 	add_child(_player_bullets)
 	_player = _Layer.new(self, _draw_player)
+	_player.material = flash
 	add_child(_player)
 	_fx_below = _Layer.new(self, _draw_fx_below)
 	add_child(_fx_below)
@@ -120,6 +148,11 @@ func refresh(delta: float) -> void:
 		i -= 1
 	_player_bullets.render(sim.player_bullets)
 	_enemy_bullets.render(sim.enemy_bullets)
+	var ease := 1.0 - exp(-delta * 12.0)
+	_bank = lerpf(_bank, _bank_target(sim.player), ease)
+	if sim.wing != null:
+		_wing_bank = lerpf(_wing_bank, _bank_target(sim.wing), ease)
+	_shadows.queue_redraw()
 	_entities.queue_redraw()
 	_player.queue_redraw()
 	_fx_below.queue_redraw()
@@ -181,6 +214,64 @@ func _burst(at: Vector2, count: int, color: Color) -> void:
 				"color": color})
 
 
+# --- Sombras no chão (2,5D) ------------------------------------------------------------------
+
+## Inclinação desejada da nave: o passo lateral da Sim (unidades/passo), limitado a -1..1.
+func _bank_target(pl: SimPlayer) -> float:
+	if reduce_motion or not pl.alive:
+		return 0.0
+	return clampf(pl.last_move.x / 2.5, -1.0, 1.0)
+
+
+## Quanto um inimigo já subiu do fundo (0 = no chão, 1 = no campo de jogo), suavizado.
+static func rise_of(depth: float) -> float:
+	var u := clampf((depth - SimEnemy.DEPTH_START) / (1.0 - SimEnemy.DEPTH_START), 0.0, 1.0)
+	return u * u * (3.0 - 2.0 * u)
+
+
+func _draw_shadows(ci: CanvasItem) -> void:
+	for e: SimEnemy in sim.enemies:
+		var rise := rise_of(e.depth)
+		var s := float(e.def.get("scale", 1.0)) * lerpf(RISE_SCALE, 1.0, rise)
+		_shadow(ci, SpriteBank.ship(e.sprite), e.pos, s, rise, PI)
+	for esc: Dictionary in sim.escorts:
+		_shadow(ci, SpriteBank.ship(StringName(String(esc["sprite"]))), esc["pos"], 0.6, 1.0, 0.0)
+	if sim.boss != null:
+		var b := sim.boss
+		var scale := float(b.def.get("scale", 1.0))
+		_shadow(ci, SpriteBank.ship(StringName(String(b.def.get("sprite", "")))), b.pos, scale, 1.6, PI)
+		for part: Dictionary in b.parts:
+			if part.has("sprite") and bool(part["alive"]):
+				_shadow(ci, SpriteBank.ship(StringName(String(part["sprite"]))), b.part_pos(part),
+						float(part.get("part_scale", 1.0)), 1.6, PI)
+	var pl := sim.player
+	if pl.alive:
+		_shadow_tex(ci, _ship_bases[3], pl.pos, Vector2(1.0 - BANK_SQUEEZE * absf(_bank), 1.0), 1.0, _bank * BANK_ROT)
+	if sim.wing != null and sim.wing.alive:
+		_shadow_tex(ci, _ship_bases[3], sim.wing.pos, Vector2(1.0 - BANK_SQUEEZE * absf(_wing_bank), 1.0), 1.0,
+				_wing_bank * BANK_ROT)
+
+
+func _shadow(ci: CanvasItem, ship: Dictionary, pos: Vector2, scale: float, height: float, angle: float) -> void:
+	var base: Texture2D = ship.get("base")
+	if base == null:
+		return
+	var size: int = ship["size"]
+	var s := scale * SHADOW_SCALE
+	ci.draw_set_transform(pos + SHADOW_OFFSET * height, angle, Vector2(s, s))
+	ci.draw_texture_rect_region(base, Rect2(-size * 0.5, -size * 0.5, size, size), Rect2(0, 0, size, size),
+			Color(SHADOW_COLOR, SHADOW_COLOR.a * clampf(height, 0.25, 1.0)))
+	ci.draw_set_transform(Vector2.ZERO)
+
+
+func _shadow_tex(ci: CanvasItem, tex: Texture2D, pos: Vector2, squeeze: Vector2, height: float, angle: float) -> void:
+	if tex == null:
+		return
+	ci.draw_set_transform(pos + SHADOW_OFFSET * height, angle, squeeze * SHADOW_SCALE)
+	ci.draw_texture(tex, -tex.get_size() * 0.5, SHADOW_COLOR)
+	ci.draw_set_transform(Vector2.ZERO)
+
+
 # --- Entidades -------------------------------------------------------------------------------
 
 func _draw_entities(ci: CanvasItem) -> void:
@@ -238,16 +329,15 @@ func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, fl
 	var base: Texture2D = ship["base"]
 	if base == null:
 		return
-	var s := scale * depth
+	var s := scale
 	var modulate := tint
 	if depth < 1.0:
-		var u := (depth - SimEnemy.DEPTH_START) / (1.0 - SimEnemy.DEPTH_START)
-		modulate = WATER_TINT.lerp(tint, u)
+		# Subindo do fundo: pequeno e na cor da neblina; a Sim só liga a colisão em depth 1.
+		var rise := rise_of(depth)
+		s *= lerpf(RISE_SCALE, 1.0, rise)
+		modulate = _depth_tint.lerp(tint, rise)
 	if flash:
 		modulate = Color(1.8, 1.8, 1.8)
-	# Sombra no "chão": deslocada pela altura, maior com a profundidade.
-	ci.draw_texture_rect(_glow, Rect2(pos + SHADOW_OFFSET * depth - Vector2(size, size) * 0.35 * s,
-			Vector2(size, size) * 0.7 * s), false, Color(0, 0.02, 0.06, 0.35))
 	ci.draw_set_transform(pos, 0.0 if up else PI, Vector2(s, s))
 	var half := Vector2(size, size) * 0.5
 	var engine: Texture2D = ship["engine"]
@@ -328,9 +418,11 @@ func _draw_wing(ci: CanvasItem, w: SimPlayer, blink: bool) -> void:
 	var col := Color(Color(String(w.ship.get("tint", "#9fe8ff"))), 0.45 if blink else 1.0)
 	var engine := _engine_power if w.last_move.y < -0.3 else _engine_idle
 	var frames := maxi(1, engine.get_width() / 48)
-	ci.draw_texture_rect_region(engine, Rect2(w.pos - Vector2(24, 24), Vector2(48, 48)),
+	_bank_transform(ci, w.pos, _wing_bank)
+	ci.draw_texture_rect_region(engine, Rect2(-24, -24, 48, 48),
 			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
-	ci.draw_texture(_ship_bases[3], w.pos - Vector2(24, 24), col)
+	ci.draw_texture(_ship_bases[3], Vector2(-24, -24), col)
+	ci.draw_set_transform(Vector2.ZERO)
 	ci.draw_string(Locale.font, w.pos + Vector2(-4, 30), "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
 
 func _draw_player(ci: CanvasItem) -> void:
@@ -360,9 +452,11 @@ func _draw_player(ci: CanvasItem) -> void:
 		ci.draw_texture(_ship_bases[3], ghost_sim.player.pos - Vector2(24, 24), Color(0.5, 1.0, 1.0, 0.3))
 	var engine := _engine_power if pl.last_move.y < -0.3 else _engine_idle
 	var frames := maxi(1, engine.get_width() / 48)
-	ci.draw_texture_rect_region(engine, Rect2(p - Vector2(24, 24), Vector2(48, 48)),
+	_bank_transform(ci, p, _bank)
+	ci.draw_texture_rect_region(engine, Rect2(-24, -24, 48, 48),
 			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
-	ci.draw_texture(base, p - Vector2(24, 24), col)
+	ci.draw_texture(base, Vector2(-24, -24), col)
+	ci.draw_set_transform(Vector2.ZERO)
 	if pl.invuln > 0 and _shield != null:
 		var sf := int(time * ANIM_FPS) % maxi(1, _shield.get_width() / 64)
 		ci.draw_texture_rect_region(_shield, Rect2(p - Vector2(32, 32), Vector2(64, 64)), SpriteBank.frame_rect(sf, 64),
@@ -370,6 +464,11 @@ func _draw_player(ci: CanvasItem) -> void:
 	if touching:
 		ci.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.08, 0.07, 0.09))
 		ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), Color(1, 1, 1))
+
+
+## Nave inclinada na curva: gira um pouco e estreita (a asa de dentro "abaixa").
+func _bank_transform(ci: CanvasItem, at: Vector2, bank: float) -> void:
+	ci.draw_set_transform(at, bank * BANK_ROT, Vector2(1.0 - BANK_SQUEEZE * absf(bank), 1.0))
 
 
 # --- Efeitos -------------------------------------------------------------------------------------

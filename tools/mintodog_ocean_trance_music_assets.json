@@ -1,0 +1,7 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "mintodog_ocean_trance_music",
+	"files": {
+		"ocean-trance/ocean_trance_bpm140.ogg": "audio/music/mintodog_ocean_trance.ogg"
+	}
+}

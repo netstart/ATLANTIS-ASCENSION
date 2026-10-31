@@ -1,0 +1,7 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "ansimuz_cyber_runner_music",
+	"files": {
+		"cyber-runner/Cyber_runer_files/cyber_runner.ogg": "audio/music/ansimuz_cyber_runner.ogg"
+	}
+}

@@ -1,7 +1,8 @@
 extends Node
 ## Idiomas (plano mestre 7.6): lê i18n/strings.csv em tempo de execução e registra uma Translation por
-## idioma no TranslationServer. Também escolhe a variante regional da Fusion Pixel Font, porque os
-## ideogramas têm desenho diferente em ja/ko/zh.
+## idioma no TranslationServer. A fonte da interface é a Exo 2 (variável, latino e cirílico), com a
+## variante regional da Fusion Pixel Font como reserva, porque os ideogramas têm desenho diferente em
+## ja/ko/zh.
 ##
 ## Origem: locale.gd do projeto hyakki (mesmo autor, MIT).
 
@@ -15,9 +16,15 @@ const FONT_FILES := {
 	"zh_CN": "res://assets/fonts/fusion_pixel_12_zh_hans.woff2",
 }
 const DEFAULT_FONT := "res://assets/fonts/fusion_pixel_12_latin.woff2"
+const UI_FONT := "res://assets/fonts/exo2_variable.ttf"
+## Pesos da Exo 2 (eixo wght): texto corrido e títulos.
+const WEIGHT_BODY := 560
+const WEIGHT_BOLD := 800
 
 var current: String = "en"
 var font: Font
+## Mesma família em peso de título (botões principais, cabeçalhos, números grandes).
+var font_bold: Font
 var keys: PackedStringArray = []
 ## Texto por idioma: {"en": {chave: texto}}, usado pelos testes de cobertura.
 var table: Dictionary = {}
@@ -60,6 +67,7 @@ func set_language(code: String, persist: bool = true) -> void:
 	current = code
 	TranslationServer.set_locale(code)
 	font = font_for(code)
+	font_bold = font_for(code, true)
 	if persist:
 		Settings.set_value("language", code)
 	language_changed.emit(code)
@@ -93,20 +101,42 @@ static func group_digits(value: int, lang: String) -> String:
 	return ("-" if value < 0 else "") + out
 
 
-func font_for(code: String) -> Font:
-	var font_path: String = FONT_FILES.get(code, DEFAULT_FONT)
-	if _fonts.has(font_path):
-		return _fonts[font_path]
-	# Pelo ResourceLoader: no APK só existe a fonte importada, não o .woff2 bruto.
-	var file := load(font_path) as FontFile
+func font_for(code: String, bold: bool = false) -> Font:
+	var key := "%s:%s" % [code, bold]
+	if _fonts.has(key):
+		return _fonts[key]
+	var variation := FontVariation.new()
+	var exo := _load_font(UI_FONT, false)
+	var pixel := _load_font(FONT_FILES.get(code, DEFAULT_FONT), true)
+	if exo == null:
+		variation.base_font = pixel if pixel != null else ThemeDB.fallback_font
+	else:
+		variation.base_font = exo
+		variation.variation_opentype = {TextServerManager.get_primary_interface().name_to_tag("wght"):
+				WEIGHT_BOLD if bold else WEIGHT_BODY}
+		if pixel != null:
+			variation.fallbacks = [pixel]
+	_fonts[key] = variation
+	return variation
+
+
+## Fonte importada (no APK só existe a importada, não o arquivo bruto). Pixel: sem suavização.
+func _load_font(path: String, pixel: bool) -> FontFile:
+	if _fonts.has(path):
+		return _fonts[path]
+	var file := load(path) as FontFile
 	if file == null:
-		Log.error("Locale: fonte não carregou: " + font_path)
-		return ThemeDB.fallback_font
-	file.antialiasing = TextServer.FONT_ANTIALIASING_NONE
-	file.hinting = TextServer.HINTING_NONE
-	file.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+		Log.error("Locale: fonte não carregou: " + path)
+		return null
+	if pixel:
+		file.antialiasing = TextServer.FONT_ANTIALIASING_NONE
+		file.hinting = TextServer.HINTING_NONE
+		file.subpixel_positioning = TextServer.SUBPIXEL_POSITIONING_DISABLED
+	else:
+		file.antialiasing = TextServer.FONT_ANTIALIASING_GRAY
+		file.hinting = TextServer.HINTING_LIGHT
 	file.generate_mipmaps = false
-	_fonts[font_path] = file
+	_fonts[path] = file
 	return file
 
 

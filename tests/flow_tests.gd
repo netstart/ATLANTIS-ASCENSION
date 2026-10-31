@@ -101,7 +101,7 @@ func _contrast(check: Callable) -> void:
 		var c := img.get_pixel(img.get_width() / 2, img.get_height() / 2)
 		var waters: Array[Color] = []
 		for palette: Dictionary in OceanBackdrop.PALETTES.values():
-			for key: String in ["deep", "mid", "shoal"]:
+			for key: String in ["deep", "mid", "shoal", "lit"]:
 				waters.append(palette[key])
 		for palette: String in ["off"] + BulletRenderer.COLORBLIND.keys():
 			var tint: Color = (BulletRenderer.COLORBLIND.get(palette, {}) as Dictionary).get(k["id"], Color(1, 1, 1))

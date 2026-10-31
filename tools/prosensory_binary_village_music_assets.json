@@ -1,0 +1,7 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "prosensory_binary_village_music",
+	"files": {
+		"binary-underwater-village/binary_village.mp3": "audio/music/prosensory_binary_village.mp3"
+	}
+}

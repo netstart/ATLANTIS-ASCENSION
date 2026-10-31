@@ -24,6 +24,13 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Kenney — Music Jingles** — Kenney (kenney.nl) (CC0-1.0) — https://kenney.nl/assets/music-jingles
 - **8-bit Epic Space Shooter Music** — HydroGene (CC0-1.0) — https://opengameart.org/content/8-bit-epic-space-shooter-music
 - **Epic Boss Battle (Seamlessly Looping)** — Juhani Junkala (SubspaceAudio) (CC0-1.0) — https://opengameart.org/content/boss-battle-music
+- **Deep Sea** — Umplix (CC0-1.0) — https://opengameart.org/content/deep-sea
+- **Ocean Trance** — MintoDog (CC0-1.0) — https://opengameart.org/content/ocean-trance
+- **Binary Underwater Village (Loop)** — Pro Sensory (CC0-1.0) — https://opengameart.org/content/binary-underwater-village-loop
+- **Cyber Runner Music** — Luis Zuno (ansimuz) (CC0-1.0) — https://opengameart.org/content/cyber-runner-music
+- **8-bit Danger!! Strong Boss** — HydroGene (CC0-1.0) — https://opengameart.org/content/8-bit-danger-strong-boss
+- **Boss Stage Synth Track** — killerfishred (CC0-1.0) — https://opengameart.org/content/boss-stage-synth-track
+- **Retro Synthwave Loops (Deadly Contracts, Hostile Territory)** — Magnesus (CC-BY-4.0) — https://opengameart.org/content/retro-synthwave-loops
 
 ## Efeitos sonoros
 
@@ -36,6 +43,7 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Cubic 11 (Fusion Pixel upstream)** — ACh-K (OFL-1.1) — https://github.com/ACh-K/Cubic-11
 - **Galmuri (Fusion Pixel upstream)** — Lee Minseo (quiple) (OFL-1.1) — https://github.com/quiple/galmuri
 - **Kenney Fonts** — Kenney (kenney.nl) (CC0-1.0) — https://kenney.nl/assets/kenney-fonts
+- **Exo 2 (variable)** — Natanael Gama (The Exo 2 Project Authors) (OFL-1.1) — https://github.com/google/fonts/tree/main/ofl/exo2
 
 ## Tecnologia
 
