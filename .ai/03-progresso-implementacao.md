@@ -24,7 +24,9 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ✅ Fase 2 (Alpha) concluída na versão `0.5.0`. `tools/run_checks.ps1`: 630 verificações de regras (o bot vence
   as 11 missões, mesmo hash em 1x/2x/3x/Baixa), 45.914 de integração, layout (10 telas + HUD + painel de bênçãos nas
   18 resoluções), fluxo E2E e simulação da economia; 326 textos x 11 idiomas; 21 componentes de licença, 168 arquivos.
-- ⬜ Próximo passo: Fase 3 (Beta).
+- ✅ Fase 3 (Beta) concluída na versão `0.9.0`: campanha completa de 9 capítulos (37 missões) vencida pelo bot de
+  ponta a ponta com a carga do hangar; ver o checklist da Fase 3 para os números e o que ficou de fora.
+- ⬜ Próximo passo: Fase 4 (Lançamento).
 
 ## Decisões pendentes do mantenedor
 
@@ -125,18 +127,33 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 
 ## Fase 3 — Beta · `0.9.0`
 
-- ⬜ Capítulos 4 a 9, Sky Leviathan, Poseidon Prime, Leviathan Protocol (que aprende), 3 finais
-- ⬜ 7 rotas de Abismo, Glifos, 4 missões secretas
-- ⬜ Resgate de cápsulas com combo, distritos da Cidade de Thalassa
-- ⬜ 6 aeronaves, 12 alas, 6 especiais, captura biomecânica
-- ⬜ Gravity Breach com Redemoinho, todos os perigos
-- ⬜ Chefe que lembra, Kraken remendado
-- ⬜ Arcade, Boss Rush, Desafio Diário, Sobrevivência, Prática
-- ⬜ Login de 7 dias, diárias e semanais, Núcleo de Oricalco
-- ⬜ Tutorial, acessibilidade, daltonismo, qualidade gráfica
-- ⬜ Otimização: 60 fps em aparelho de entrada na Média
-- ⬜ Monetização simulada (Loja, 6 h, reviver, dobrar)
-- ⬜ Build Steam com GodotSteam
+- ✅ Capítulos 4 a 9 (Vulcões, Cidade Futura, Geleira, Estratosfera, Órbita, Núcleo) com cenário e partículas
+  próprias; 5 mini-chefes (Forja Viva, Arquiteto, Rainha do Gelo, Albatroz de Aço, Portão Orbital) e os chefes de
+  ato Sky Leviathan (serpente de 8 segmentos, faixas seguras), Poseidon Prime (anéis de escudo, Gravity Breach,
+  tridente, dança final) e Leviathan Protocol (colagem das 3 facções, gravidade alternada, núcleo que APRENDE a faixa
+  preferida do jogador). Gerados por `tools/gen_bosses_beta.py`
+- ✅ 3 finais escolhidos no voo (entrar no feixe ou desviar) e o verdadeiro com os 4 Registros Abissais; cenas do
+  fim dos Atos II e III e de cada final
+- ✅ 7 rotas de Abismo (3-3 a 8-3, pontos x1,5), Glifos nas missões 2-1, 4-1, 6-1 e 8-1, 4 missões secretas (só
+  Railgun, escuridão com sonar, gravidade para cima, Ocean Shift contínuo)
+- ✅ Cápsulas de resgate com combo (até x8) e Cidade de Thalassa com 5 distritos e bônus permanentes
+- ✅ 6 aeronaves (Trident e Atlas abertas por fragmentos nos capítulos 4 a 7), 12 alas, 6 especiais.
+  ⚠️ Captura biomecânica fica para o pós-lançamento
+- ✅ Gravity Breach (balas inimigas 100%, do jogador 40%) com bônus Redemoinho (raspões em dobro); lava, prédios
+  que bloqueiam balas, gelo, detritos, raios, ventania e corrente
+- ✅ Chefe que lembra (a faixa preferida do jogador fica no perfil e os chefes de ato começam puxados para ela).
+  ⚠️ Kraken remendado vai com a Segunda Maré (Fase 4)
+- ✅ Modos Arcade, Boss Rush (12 chefes), Desafio Diário (mesma fase para todos no dia, 1 tentativa pontuada),
+  Sobrevivência das Marés (15 estágios) e Prática (sem recompensas), montados por `scripts/core/modes.gd`
+- ✅ Login de 7 dias com escudo semanal, 3 tarefas diárias e 5 semanais sorteadas pela data, Núcleo de Oricalco e
+  baú de 6 h (`scripts/core/live_ops.gd`)
+- ✅ Acessibilidade: 3 modos de daltonismo nas balas (contraste ≥ 4,5:1 testado em todos), tamanho do texto
+  100/115/130%, Brisa, menos clarões, menos movimento, qualidade gráfica
+- ✅ Monetização simulada: Loja (pinturas por Pérolas, Apoiar), baú de 6 h, reviver 1 vez e dobrar créditos com
+  anúncio recompensado opcional (`Store`, `Ads`); na Steam (feature `steam` dos presets) sem anúncios e com tudo
+  incluso. ⚠️ AdMob/UMP e Play Billing reais na Fase 4
+- ⚠️ Build Steam com GodotSteam: os presets Windows/Linux já levam a feature `steam`; falta o mantenedor baixar o
+  Steamworks SDK (licença da Valve) e o GodotSteam com o App ID da página da loja
 
 ## Fase 4 — Lançamento · `1.0.0`
 

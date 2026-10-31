@@ -29,6 +29,10 @@ static func pending(profile: Dictionary) -> Dictionary:
 		var s := row as Dictionary
 		if seen.has(String(s["id"])):
 			continue
+		if s.has("ending"):
+			if (profile["story"]["endings"] as Array).has(String(s["ending"])):
+				return s
+			continue
 		var after: Array = s.get("after_any", [])
 		if after.is_empty():
 			return s

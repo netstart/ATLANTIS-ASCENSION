@@ -17,6 +17,15 @@ const WARN_COLOR := Color(1.0, 0.42, 0.45, 0.7)
 const MAX_SPARKS := 160
 const LIGHTNING_COLOR := Color(0.85, 0.92, 1.0, 0.95)
 const TIDE_COLOR := Color(0.45, 1.0, 0.95, 0.55)
+## Colunas de perigo por tipo (lava do cap. 4, gelo do 6, detritos do 8).
+const HAZARD_COLORS := {"lava": Color(1.0, 0.45, 0.15, 0.95), "icefall": Color(0.75, 0.95, 1.0, 0.9),
+		"debris": Color(0.7, 0.7, 0.75, 0.9)}
+const COVER_COLOR := Color(0.16, 0.2, 0.3, 0.95)
+const COVER_TRIM := Color(0.45, 0.85, 1.0, 0.8)
+const BREACH_COLOR := Color(0.75, 0.55, 1.0, 0.22)
+var dark: bool = false
+## Paleta de daltonismo das balas inimigas (Settings "colorblind").
+var colorblind: String = "off"
 
 var sim: Sim
 var time: float = 0.0
@@ -46,6 +55,7 @@ var _engine_idle: Texture2D
 var _engine_power: Texture2D
 var _shield: Texture2D
 var _log: Texture2D
+var _capsule: Texture2D
 var _drone: Texture2D
 var _rocket: Texture2D
 var _ship_tint := Color(1, 1, 1)
@@ -63,9 +73,14 @@ func setup(p_sim: Sim) -> void:
 	_medal = SpriteBank.generated("pickups/medal")
 	_pearl = SpriteBank.generated("pickups/pearl")
 	_log = SpriteBank.generated("pickups/log")
+	_capsule = SpriteBank.generated("pickups/capsule")
+	dark = bool(sim.mission.get("dark", false))
 	_drone = SpriteBank.generated("fx/drone")
 	_rocket = SpriteBank.texture("res://assets/art/void/main_ship/proj_rocket.png")
 	_ship_tint = Color(String(sim.player.ship.get("tint", "#ffffff")))
+	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
+	if not paint.is_empty():
+		_ship_tint = Color(paint)
 	for name: String in ["base_very_damaged", "base_damaged", "base_slight", "base_full"]:
 		_ship_bases.append(SpriteBank.texture("res://assets/art/void/main_ship/%s.png" % name))
 	_engine_idle = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_idle.png")
@@ -81,6 +96,7 @@ func setup(p_sim: Sim) -> void:
 	_fx_below = _Layer.new(self, _draw_fx_below)
 	add_child(_fx_below)
 	_enemy_bullets = BulletRenderer.new()
+	_enemy_bullets.palette = colorblind
 	_enemy_bullets.setup(BulletKinds.ENEMY, sim.enemy_bullets.capacity)
 	add_child(_enemy_bullets)
 	_fx_above = _Layer.new(self, _draw_fx_above)
@@ -188,6 +204,9 @@ func _draw_entities(ci: CanvasItem) -> void:
 			&"log":
 				_tex_centered(ci, _glow, p, 0.9 + 0.2 * sin(time * 6.0), Color(0.4, 1.0, 0.9, 0.5))
 				_tex_centered(ci, _log, p, 1.0)
+			&"capsule":
+				_tex_centered(ci, _glow, p, 0.8 + 0.2 * sin(time * 8.0), Color(1.0, 0.85, 0.4, 0.55))
+				_tex_centered(ci, _capsule, p, 1.0)
 			_:
 				_tex_centered(ci, _pearl, p, 1.0)
 	for m: Dictionary in sim.missiles:
@@ -235,7 +254,8 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 	var body := b.body_pos()
 	# Tentáculos atrás do corpo: segmentos numa curva da base até a ponta (a ponta é a parte da Sim).
 	for part: Dictionary in b.parts:
-		if not String(part["id"]).begins_with("t"):
+		var tid := String(part["id"])
+		if not tid.begins_with("t") or not tid.substr(1).is_valid_int():
 			continue
 		var tip := b.part_pos(part)
 		var root := body + Vector2((part["base"] as Vector2).x * 0.32, 18.0)
@@ -251,7 +271,8 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 			_tex_centered(ci, _seg, p, 1.0 - u * 0.25, color)
 		if alive:
 			_tex_centered(ci, _tip, tip, 1.0, color)
-	_draw_ship(ci, ship, b.pos, 1.0, b.flash > 0, scale)
+	_draw_boss_parts(ci, b, body)
+	_draw_ship(ci, ship, b.pos, 1.0, b.flash > 0, scale, Color(String(b.def.get("tint", "#ffffff"))))
 	var pulse := 0.6 + 0.4 * sin(time * 9.0)
 	for part: Dictionary in b.parts:
 		var pid := String(part["id"])
@@ -260,6 +281,29 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 			_tex_centered(ci, _glow, b.part_pos(part), 0.6 + float(part.get("radius", 10.0)) / 20.0, col)
 	if b.state == SimBoss.State.DYING and fx_level >= 1 and int(time * 20.0) % 3 == 0:
 		_burst(body + Vector2(sin(time * 13.0) * 60.0, cos(time * 7.0) * 30.0), 3, Color(1.0, 0.8, 0.4))
+
+
+## Partes genéricas dos chefes do Beta: corrente de segmentos (Sky Leviathan) ligada do corpo à
+## cauda, anéis de escudo girando (Poseidon Prime) e núcleos com sprite próprio (Leviathan Protocol).
+func _draw_boss_parts(ci: CanvasItem, b: SimBoss, body: Vector2) -> void:
+	var prev := body
+	for part: Dictionary in b.parts:
+		var at := b.part_pos(part)
+		var alive := bool(part["alive"])
+		var color := Color(1.8, 1.8, 1.8) if int(part["flash"]) > 0 else Color(String(b.def.get("tint", "#ffffff")))
+		if not alive:
+			color = Color(0.4, 0.38, 0.45)
+		if bool(part.get("chain", false)):
+			for k: int in range(1, 4):
+				_tex_centered(ci, _seg, prev.lerp(at, k / 4.0), 0.8, Color(color, 0.9))
+			prev = at
+		if part.has("sprite") and (alive or bool(part.get("chain", false))):
+			var s := float(part.get("part_scale", 1.0))
+			_draw_ship(ci, SpriteBank.ship(StringName(String(part["sprite"]))), at, 1.0, int(part["flash"]) > 0, s, color)
+		elif bool(part.get("ring", false)) and alive:
+			ci.draw_set_transform(at, time * (2.0 if b.part_active(part) else 0.4), Vector2(0.5, 0.5))
+			ci.draw_texture(_ring, -_ring.get_size() * 0.5, Color(1.0, 0.85, 0.4, 0.9 if b.part_active(part) else 0.35))
+			ci.draw_set_transform(Vector2.ZERO)
 
 
 # --- Jogador -----------------------------------------------------------------------------------
@@ -302,6 +346,14 @@ func _draw_player(ci: CanvasItem) -> void:
 # --- Efeitos -------------------------------------------------------------------------------------
 
 func _draw_fx_below(ci: CanvasItem) -> void:
+	for c: Dictionary in sim.covers:
+		var r := Hazards.cover_rect(c)
+		ci.draw_rect(r, COVER_COLOR)
+		ci.draw_rect(Rect2(r.position, Vector2(r.size.x, 2.0)), COVER_TRIM)
+		for wy: int in range(int(r.position.y) + 8, int(r.end.y) - 4, 12):
+			ci.draw_rect(Rect2(r.position.x + 5.0, wy, r.size.x - 10.0, 2.0), Color(1.0, 0.85, 0.5, 0.35))
+	if sim.breach_frames > 0:
+		_draw_breach(ci)
 	for b: Dictionary in sim.beams:
 		var x := float(b["x"])
 		var y := float(b["y"])
@@ -315,6 +367,10 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 			ci.draw_rect(Rect2(x - 0.5, y, 1.0, length), Color(WARN_COLOR, a * 0.5))
 		elif String(b.get("kind", "")) == "lightning":
 			_draw_lightning(ci, x, y, w, length, int(b["age"]))
+		elif HAZARD_COLORS.has(String(b.get("kind", ""))):
+			var hc: Color = HAZARD_COLORS[String(b["kind"])]
+			var wob := 0.85 + 0.15 * sin(time * 30.0 + x)
+			ci.draw_texture_rect(_beam, Rect2(x - w * 0.6, y, w * 1.2, length), false, Color(hc, hc.a * wob))
 		else:
 			ci.draw_texture_rect(_beam, Rect2(x - w * 0.6, y, w * 1.2, length), false, BEAM_COLOR)
 	if sim.boss != null and sim.boss.state == SimBoss.State.DUEL:
@@ -330,6 +386,22 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 		ci.draw_set_transform(e["pos"], PI, Vector2(s, s))
 		ci.draw_texture_rect_region(e["tex"], Rect2(-size * 0.5, -size * 0.5, size, size), SpriteBank.frame_rect(f, size))
 		ci.draw_set_transform(Vector2.ZERO)
+
+
+## Gravity Breach: grade que escorre na direção da força e uma seta no centro (aviso de leitura).
+func _draw_breach(ci: CanvasItem) -> void:
+	var dir := sim.breach_dir.normalized()
+	var shift := fposmod(time * 40.0, 24.0)
+	for k: int in range(-1, int(Playfield.FIELD.x / 24.0) + 2):
+		var gx := k * 24.0 + dir.x * shift
+		ci.draw_rect(Rect2(gx, 0, 1.0, Playfield.FIELD.y), BREACH_COLOR)
+	for k: int in range(-1, int(Playfield.FIELD.y / 24.0) + 2):
+		var gy := k * 24.0 + dir.y * shift
+		ci.draw_rect(Rect2(0, gy, Playfield.FIELD.x, 1.0), BREACH_COLOR)
+	var c := Playfield.FIELD * 0.5
+	for k: int in range(5):
+		var p := c + dir * (k * 6.0 - 12.0)
+		ci.draw_rect(Rect2(p - Vector2(2, 2), Vector2(4, 4)), Color(0.85, 0.7, 1.0, 0.25 + 0.12 * k))
 
 
 ## Raio da tempestade: zigue-zague de segmentos (retângulos) com brilho, sorteado por passo.
@@ -362,6 +434,8 @@ func _draw_duel(ci: CanvasItem, b: SimBoss) -> void:
 
 
 func _draw_fx_above(ci: CanvasItem) -> void:
+	if dark and sim.player.alive:
+		_draw_dark(ci)
 	for s: Dictionary in sparks:
 		var life := float(s["life"])
 		var c: Color = s["color"]
@@ -373,6 +447,20 @@ func _draw_fx_above(ci: CanvasItem) -> void:
 		var col: Color = r["color"]
 		ci.draw_texture_rect(_ring, Rect2((r["pos"] as Vector2) - Vector2(radius, radius), Vector2(radius, radius) * 2.0),
 				false, Color(col, alpha))
+
+
+## Escuridão do Registro Abissal: só um halo em volta da nave e o pulso do sonar a cada 2 s.
+func _draw_dark(ci: CanvasItem) -> void:
+	var p := sim.player.pos
+	var halo := 70.0
+	var shade := Color(0.0, 0.01, 0.03, 0.86)
+	var f := Playfield.FIELD
+	ci.draw_rect(Rect2(0, 0, f.x, maxf(0.0, p.y - halo)), shade)
+	ci.draw_rect(Rect2(0, p.y + halo, f.x, maxf(0.0, f.y - p.y - halo)), shade)
+	ci.draw_rect(Rect2(0, p.y - halo, maxf(0.0, p.x - halo), halo * 2.0), shade)
+	ci.draw_rect(Rect2(p.x + halo, p.y - halo, maxf(0.0, f.x - p.x - halo), halo * 2.0), shade)
+	var ping := fmod(time, 2.0) / 2.0
+	_tex_centered(ci, _ring, p, 1.0 + ping * 9.0, Color(0.4, 1.0, 0.9, 0.5 * (1.0 - ping)))
 
 
 func _tex_centered(ci: CanvasItem, tex: Texture2D, at: Vector2, scale: float, color: Color = Color(1, 1, 1)) -> void:

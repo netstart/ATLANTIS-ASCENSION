@@ -16,6 +16,10 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+# Saída do Godot e do Python em UTF-8 (sem isto o PowerShell 5.1 lê em ANSI e os filtros por
+# "verificações" não casam).
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$env:PYTHONIOENCODING = 'utf-8'
 $project = Split-Path -Parent $PSScriptRoot
 $failed = $false
 

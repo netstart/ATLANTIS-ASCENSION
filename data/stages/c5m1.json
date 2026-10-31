@@ -1,0 +1,480 @@
+{
+	"id": "c5m1",
+	"chapter": 5,
+	"name_key": "stage.c5m1",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 24,
+	"backdrop": "city",
+	"seed_salt": 310,
+	"objective": {
+		"type": "capsule_combo",
+		"count": 4,
+		"text_key": "objective.capsule_combo"
+	},
+	"length_s": 124.8,
+	"events": [
+		{
+			"op": "wave",
+			"enemy": "sower",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 50,
+				"stop_y": 140,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 0.0
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 42
+			},
+			"spacing": 110,
+			"t": 3.6
+		},
+		{
+			"op": "wave",
+			"enemy": "sower",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 50,
+				"stop_y": 140,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 7.2
+		},
+		{
+			"op": "wave",
+			"enemy": "sower",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 50,
+				"stop_y": 140,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 10.8
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 14.4
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 18.0
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 21.6
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 25.2
+		},
+		{
+			"op": "blessing",
+			"t": 27.5
+		},
+		{
+			"op": "cover",
+			"x": 0.25,
+			"height": 160,
+			"duration": 10,
+			"t": 31.0
+		},
+		{
+			"op": "cover",
+			"x": 0.75,
+			"height": 140,
+			"duration": 10,
+			"t": 32.0
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 42
+			},
+			"spacing": 110,
+			"t": 43.0
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 46.27
+		},
+		{
+			"op": "wave",
+			"enemy": "basilica",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 20
+			},
+			"y": -40,
+			"marked": true,
+			"t": 49.55
+		},
+		{
+			"op": "wave",
+			"enemy": "basilica",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "scroll",
+			"params": {
+				"speed": 20
+			},
+			"y": -40,
+			"marked": true,
+			"t": 52.82
+		},
+		{
+			"op": "wave",
+			"enemy": "sower",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 50,
+				"stop_y": 140,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 56.09
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 59.36
+		},
+		{
+			"op": "wave",
+			"enemy": "basilica",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "scroll",
+			"params": {
+				"speed": 20
+			},
+			"y": -40,
+			"marked": true,
+			"t": 62.64
+		},
+		{
+			"op": "wave",
+			"enemy": "sower",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 50,
+				"stop_y": 140,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 65.91
+		},
+		{
+			"op": "log",
+			"x": 0.6656090139546342,
+			"t": 67.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 70.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 73.3
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 76.3
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 42
+			},
+			"spacing": 110,
+			"t": 79.43
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 82.56
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 85.69
+		},
+		{
+			"op": "wave",
+			"enemy": "basilica",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 20
+			},
+			"y": -40,
+			"marked": true,
+			"t": 88.82
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 91.95
+		},
+		{
+			"op": "wave",
+			"enemy": "sower",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 50,
+				"stop_y": 140,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 95.08
+		},
+		{
+			"op": "blessing",
+			"t": 98.4
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 101.9
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 104.9
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 86
+			},
+			"spacing": 36,
+			"t": 107.9
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 62
+			},
+			"drop_last": "capsule",
+			"spacing": 36,
+			"t": 110.9
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 62
+			},
+			"drop_last": "capsule",
+			"spacing": 36,
+			"t": 113.9
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 116.9
+		},
+		{
+			"op": "end",
+			"t": 120.8
+		}
+	]
+}

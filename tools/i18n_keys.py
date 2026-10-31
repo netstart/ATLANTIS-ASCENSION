@@ -27,9 +27,17 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"map.route_{r}" for r in ("surface", "abyss")] + [f"hub.banner_c{c}" for c in (1, 2, 3)] + [
     f"options.{o}" for o in ("music_volume", "sfx_volume", "ui_volume", "screen_shake", "drag_sensitivity", "auto_fire",
                              "vibration", "reduce_flashes", "reduce_motion", "tilt_parallax", "show_fps", "hand_left",
-                             "hand_right")] + [
-    f"log.{m}_{x}" for m in ("c1m1", "c1m2", "c1m3", "c2m1", "c2m2", "c2m3", "c3m1", "c3m2", "c3m3s", "c3m3a", "s1")
-    for x in ("title", "text")] + ["speaker.narrator", "hangar.title", "ships.title"] + [
+                             "hand_right", "cb_off", "cb_protanopia", "cb_deuteranopia", "cb_tritanopia")] + [
+    f"log.{p.stem}_{x}" for p in sorted((ROOT / "data" / "stages").glob("*.json")) for x in ("title", "text")] + [
+    f"map.chapter{c}" for c in range(4, 10)] + [f"hub.banner_c{c}" for c in range(4, 10)] + [
+    f"mode.{m}{x}" for m in ("arcade", "daily", "survival", "boss_rush", "practice") for x in ("", "_desc")] + [
+    f"task.{k}" for k in ("kills", "grazes", "medals", "clears", "rescued", "chain", "stars", "blessings")] + [
+    "events.daily", "events.weekly", "speaker.duarte", "results.new_district", "results.rescued"] + [
+    f"cosmetic.{c}" for c in ("tint_abyss", "tint_coral", "tint_kelp", "tint_orichalcum", "tint_pearl", "tint_storm",
+                              "tint_supporter")] + [
+    f"district.{d}" for d in ("docks", "gardens", "forge", "temple", "observatory")] + [
+    f"city.bonus_{b}" for b in ("credits", "pearls", "discount", "bombs", "orichalcum")] + [
+    f"ending.{e}" for e in ("shattered", "return", "high_tide")] + ["speaker.narrator", "hangar.title", "ships.title"] + [
     f"results.{r}" for r in ("fragments", "log", "new_mission", "new_ship", "new_wing")]
 
 

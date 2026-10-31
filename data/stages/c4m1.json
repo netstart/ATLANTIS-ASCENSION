@@ -1,0 +1,542 @@
+{
+	"id": "c4m1",
+	"chapter": 4,
+	"name_key": "stage.c4m1",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 24,
+	"backdrop": "volcanic",
+	"seed_salt": 309,
+	"objective": {
+		"type": "secret",
+		"text_key": "objective.secret"
+	},
+	"length_s": 138.8,
+	"events": [
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 0.0
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 3.6
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 7.2
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 10.8
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 14.4
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 18.0
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 22.68
+		},
+		{
+			"op": "blessing",
+			"t": 27.5
+		},
+		{
+			"op": "lightning",
+			"kind": "lava",
+			"x": 0.2,
+			"width": 26,
+			"t": 31.0
+		},
+		{
+			"op": "lightning",
+			"kind": "lava",
+			"x": 0.8,
+			"width": 26,
+			"t": 33.5
+		},
+		{
+			"op": "lightning",
+			"kind": "lava",
+			"x": 0.5,
+			"width": 26,
+			"t": 36.0
+		},
+		{
+			"op": "lightning",
+			"kind": "lava",
+			"x": 0.35,
+			"width": 26,
+			"t": 38.5
+		},
+		{
+			"op": "lightning",
+			"kind": "lava",
+			"x": 0.65,
+			"width": 26,
+			"t": 41.0
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 43.0
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 46.27
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"t": 50.53
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 53.8
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 57.07
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 60.35
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 63.62
+		},
+		{
+			"op": "log",
+			"x": 0.444548453951427,
+			"t": 67.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 70.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 73.3
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 70,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"spacing": 36,
+			"t": 76.3
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 79.43
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 83.5
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 86.63
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"t": 89.76
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 92.89
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 96.02
+		},
+		{
+			"op": "wave",
+			"enemy": "glyph",
+			"formation": "single",
+			"count": 1,
+			"x": 0.2,
+			"path": "scroll",
+			"params": {
+				"speed": 22
+			},
+			"glyph": 0,
+			"y": -20,
+			"t": 97.9
+		},
+		{
+			"op": "wave",
+			"enemy": "glyph",
+			"formation": "single",
+			"count": 1,
+			"x": 0.8,
+			"path": "scroll",
+			"params": {
+				"speed": 22
+			},
+			"glyph": 1,
+			"y": -20,
+			"t": 101.9
+		},
+		{
+			"op": "wave",
+			"enemy": "glyph",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 22
+			},
+			"glyph": 2,
+			"y": -20,
+			"t": 105.9
+		},
+		{
+			"op": "blessing",
+			"t": 112.4
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 115.9
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"t": 118.9
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 40
+			},
+			"spacing": 110,
+			"t": 121.9
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"t": 124.9
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 127.9
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 130.9
+		},
+		{
+			"op": "end",
+			"t": 134.8
+		}
+	],
+	"secret": {
+		"glyphs": 3,
+		"mission": "s2"
+	}
+}

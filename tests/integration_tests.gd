@@ -10,6 +10,7 @@ const LayoutTests := preload("res://tests/layout_tests.gd")
 const CreditsScreenTests := preload("res://tests/credits_screen_tests.gd")
 const FlowTests := preload("res://tests/flow_tests.gd")
 const EconomyTests := preload("res://tests/economy_tests.gd")
+const BetaTests := preload("res://tests/beta_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -28,6 +29,7 @@ func _ready() -> void:
 	_test_audio()
 	_test_licenses()
 	EconomyTests.new().run(_check)
+	BetaTests.new().run(_check)
 	DeviceProfiles.check_scaler(self, _check)
 	await LayoutTests.new().run(self, _check)
 	await CreditsScreenTests.new().run(self, _check)

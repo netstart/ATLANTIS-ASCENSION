@@ -1,0 +1,707 @@
+{
+	"id": "c6m3a",
+	"chapter": 6,
+	"name_key": "stage.c6m3a",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 26,
+	"backdrop": "atlantis",
+	"seed_salt": 410,
+	"objective": {
+		"type": "chain",
+		"count": 50,
+		"text_key": "objective.chain_50"
+	},
+	"length_s": 124.8,
+	"events": [
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 0.0
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 2.67
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 5.33
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 8.0
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 10.67
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 13.33
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 16.0
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 18.67
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 21.33
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 24.0
+		},
+		{
+			"op": "blessing",
+			"t": 27.5
+		},
+		{
+			"op": "lightning",
+			"kind": "icefall",
+			"x": 0.3,
+			"width": 20,
+			"t": 31.0
+		},
+		{
+			"op": "lightning",
+			"kind": "icefall",
+			"x": 0.7,
+			"width": 20,
+			"t": 33.0
+		},
+		{
+			"op": "lightning",
+			"kind": "icefall",
+			"x": 0.5,
+			"width": 20,
+			"t": 35.0
+		},
+		{
+			"op": "lightning",
+			"kind": "icefall",
+			"x": 0.15,
+			"width": 20,
+			"t": 37.0
+		},
+		{
+			"op": "lightning",
+			"kind": "icefall",
+			"x": 0.85,
+			"width": 20,
+			"t": 39.0
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 43.0
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 45.42
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 47.85
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 50.27
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 52.7
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 55.12
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 57.55
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 59.97
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 62.39
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 64.82
+		},
+		{
+			"op": "log",
+			"x": 0.3236773730567082,
+			"t": 67.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 70.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 73.3
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 76.3
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 78.62
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 80.94
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 83.26
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 85.58
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 87.89
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 90.21
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 92.53
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 94.85
+		},
+		{
+			"op": "blessing",
+			"t": 98.4
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 101.9
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 104.12
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 106.34
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 70
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 108.57
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 110.79
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 113.01
+		},
+		{
+			"op": "wave",
+			"enemy": "judge",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 115.23
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 60
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 117.46
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 119.68
+		},
+		{
+			"op": "end",
+			"t": 120.8
+		}
+	],
+	"route": "abyss",
+	"score_mult": 1.5
+}

@@ -16,11 +16,47 @@ const CAMPAIGN: Array[Dictionary] = [
 	{"id": &"c2m3", "chapter": 2, "after": [&"c2m2"], "x": 0.4, "y": 2120.0, "kind": &"boss"},
 	{"id": &"c3m1", "chapter": 3, "after": [&"c2m3"], "x": 0.62, "y": 2400.0, "kind": &"mission"},
 	{"id": &"c3m2", "chapter": 3, "after": [&"c3m1"], "x": 0.38, "y": 2630.0, "kind": &"miniboss"},
-	{"id": &"c3m3s", "chapter": 3, "after": [&"c3m2"], "x": 0.72, "y": 2880.0, "kind": &"route"},
-	{"id": &"c3m3a", "chapter": 3, "after": [&"c3m2"], "x": 0.28, "y": 2860.0, "kind": &"route"},
+	{"id": &"c3m3s", "chapter": 3, "after": [&"c3m2"], "x": 0.72, "y": 2880.0, "kind": &"route", "route": &"surface"},
+	{"id": &"c3m3a", "chapter": 3, "after": [&"c3m2"], "x": 0.28, "y": 2860.0, "kind": &"route", "route": &"abyss"},
+	{"id": &"c4m1", "chapter": 4, "after": [&"c3m3s", &"c3m3a"], "x": 0.62, "y": 3180.0, "kind": &"mission"},
+	{"id": &"s2", "chapter": 4, "after": [], "x": 0.86, "y": 3290.0, "kind": &"secret"},
+	{"id": &"c4m2", "chapter": 4, "after": [&"c4m1"], "x": 0.38, "y": 3410.0, "kind": &"miniboss"},
+	{"id": &"c4m3s", "chapter": 4, "after": [&"c4m2"], "x": 0.72, "y": 3660.0, "kind": &"route", "route": &"surface"},
+	{"id": &"c4m3a", "chapter": 4, "after": [&"c4m2"], "x": 0.28, "y": 3640.0, "kind": &"route", "route": &"abyss"},
+	{"id": &"c5m1", "chapter": 5, "after": [&"c4m3s", &"c4m3a"], "x": 0.62, "y": 3940.0, "kind": &"mission"},
+	{"id": &"c5m2", "chapter": 5, "after": [&"c5m1"], "x": 0.38, "y": 4170.0, "kind": &"miniboss"},
+	{"id": &"c5m3s", "chapter": 5, "after": [&"c5m2"], "x": 0.72, "y": 4420.0, "kind": &"boss", "route": &"surface"},
+	{"id": &"c5m3a", "chapter": 5, "after": [&"c5m2"], "x": 0.28, "y": 4400.0, "kind": &"boss", "route": &"abyss"},
+	{"id": &"c6m1", "chapter": 6, "after": [&"c5m3s", &"c5m3a"], "x": 0.62, "y": 4700.0, "kind": &"mission"},
+	{"id": &"s3", "chapter": 6, "after": [], "x": 0.86, "y": 4810.0, "kind": &"secret"},
+	{"id": &"c6m2", "chapter": 6, "after": [&"c6m1"], "x": 0.38, "y": 4930.0, "kind": &"miniboss"},
+	{"id": &"c6m3s", "chapter": 6, "after": [&"c6m2"], "x": 0.72, "y": 5180.0, "kind": &"route", "route": &"surface"},
+	{"id": &"c6m3a", "chapter": 6, "after": [&"c6m2"], "x": 0.28, "y": 5160.0, "kind": &"route", "route": &"abyss"},
+	{"id": &"c7m1", "chapter": 7, "after": [&"c6m3s", &"c6m3a"], "x": 0.62, "y": 5460.0, "kind": &"mission"},
+	{"id": &"c7m2", "chapter": 7, "after": [&"c7m1"], "x": 0.38, "y": 5690.0, "kind": &"miniboss"},
+	{"id": &"c7m3s", "chapter": 7, "after": [&"c7m2"], "x": 0.72, "y": 5940.0, "kind": &"boss", "route": &"surface"},
+	{"id": &"c7m3a", "chapter": 7, "after": [&"c7m2"], "x": 0.28, "y": 5920.0, "kind": &"boss", "route": &"abyss"},
+	{"id": &"c8m1", "chapter": 8, "after": [&"c7m3s", &"c7m3a"], "x": 0.62, "y": 6220.0, "kind": &"mission"},
+	{"id": &"s4", "chapter": 8, "after": [], "x": 0.86, "y": 6330.0, "kind": &"secret"},
+	{"id": &"c8m2", "chapter": 8, "after": [&"c8m1"], "x": 0.38, "y": 6450.0, "kind": &"miniboss"},
+	{"id": &"c8m3s", "chapter": 8, "after": [&"c8m2"], "x": 0.72, "y": 6700.0, "kind": &"route", "route": &"surface"},
+	{"id": &"c8m3a", "chapter": 8, "after": [&"c8m2"], "x": 0.28, "y": 6680.0, "kind": &"route", "route": &"abyss"},
+	{"id": &"c9m1", "chapter": 9, "after": [&"c8m3s", &"c8m3a"], "x": 0.62, "y": 6980.0, "kind": &"mission"},
+	{"id": &"c9m2", "chapter": 9, "after": [&"c9m1"], "x": 0.38, "y": 7210.0, "kind": &"mission"},
+	{"id": &"c9m3", "chapter": 9, "after": [&"c9m2"], "x": 0.5, "y": 7460.0, "kind": &"boss"},
 ]
 ## Fases já lançadas: naves e asas de fases futuras ficam fora das listas.
-const RELEASES: Array[String] = ["alpha"]
+const RELEASES: Array[String] = ["alpha", "beta"]
+## Missões secretas (Registros Abissais): as 4 concluídas levam ao final verdadeiro.
+const SECRETS: Array[StringName] = [&"s1", &"s2", &"s3", &"s4"]
+## Distritos da Cidade de Thalassa (plano mestre 7.2), abertos por atlantes resgatados, com o bônus de cada um.
+const DISTRICTS: Array[Dictionary] = [
+	{"id": &"docks", "rescued": 10, "bonus": &"credits", "value": 0.1},
+	{"id": &"gardens", "rescued": 30, "bonus": &"pearls", "value": 0.2},
+	{"id": &"forge", "rescued": 60, "bonus": &"discount", "value": 0.1},
+	{"id": &"temple", "rescued": 100, "bonus": &"bombs", "value": 1.0},
+	{"id": &"observatory", "rescued": 150, "bonus": &"orichalcum", "value": 0.25},
+]
 const SHIP_MAX_LEVEL := 10
 const SECONDARY_MAX_LEVEL := 5
 const SECONDARIES: Array[StringName] = [&"missiles", &"drones"]
@@ -92,9 +128,10 @@ static func released(def: Dictionary) -> bool:
 
 # --- Hangar ----------------------------------------------------------------------------------------
 
-## Custo em créditos para subir a aeronave do nível `level` para o seguinte.
-static func ship_level_cost(level: int) -> int:
-	return 200 * level + 60 * level * level
+## Custo em créditos para subir a aeronave do nível `level` para o seguinte (a Forja da cidade dá desconto).
+static func ship_level_cost(level: int, profile: Dictionary = {}) -> int:
+	var cost := 150 * level + 40 * level * level
+	return roundi(cost * (1.0 - district_bonus(profile, &"discount"))) if not profile.is_empty() else cost
 
 
 ## Bônus do nível da aeronave: +4% de dano por nível; +1 de casco a partir do 6.
@@ -133,7 +170,7 @@ static func pay(profile: Dictionary, cost: Dictionary) -> bool:
 ## Sobe o nível da aeronave se houver créditos. Devolve se subiu.
 static func upgrade_ship(profile: Dictionary, ship: StringName) -> bool:
 	var level := ship_level(profile, ship)
-	if level >= SHIP_MAX_LEVEL or not pay(profile, {"credits": ship_level_cost(level)}):
+	if level >= SHIP_MAX_LEVEL or not pay(profile, {"credits": ship_level_cost(level, profile)}):
 		return false
 	profile["hangar"]["ship_levels"][String(ship)] = level + 1
 	return true
@@ -183,7 +220,28 @@ static func loadout(profile: Dictionary) -> Dictionary:
 	var level := secondary_level(profile, secondary)
 	return {"ship": String(ship), "secondary": String(secondary) if level > 0 else "", "secondary_level": maxi(1, level),
 			"wings": (sel.get("wings", []) as Array).duplicate(), "damage": bonus["damage"], "hull": bonus["hull"],
-			"speed": 0.0, "difficulty": String(sel.get("difficulty", "normal"))}
+			"speed": 0.0, "difficulty": String(sel.get("difficulty", "normal")),
+			"bombs": int(district_bonus(profile, &"bombs")), "abyss_records": abyss_records(profile),
+			"memory_lane": int((profile.get("boss_memory", {}) as Dictionary).get("lane", -1)),
+			"cosmetic": String(sel.get("cosmetic", ""))}
+
+
+## Registros Abissais: missões secretas já concluídas.
+static func abyss_records(profile: Dictionary) -> int:
+	var n := 0
+	for s: StringName in SECRETS:
+		n += 1 if cleared(profile, s) else 0
+	return n
+
+
+## Soma dos bônus dos distritos abertos de um tipo.
+static func district_bonus(profile: Dictionary, bonus: StringName) -> float:
+	var total := 0.0
+	var rescued := int(profile.get("rescued_total", 0))
+	for d: Dictionary in DISTRICTS:
+		if d["bonus"] == bonus and rescued >= int(d["rescued"]):
+			total += float(d["value"])
+	return total
 
 
 # --- Recompensas -----------------------------------------------------------------------------------
@@ -212,8 +270,19 @@ static func apply_result(profile: Dictionary, result: Dictionary, ships: Array, 
 	record["best_score"] = maxi(int(record["best_score"]), score)
 	var won := bool(result.get("cleared", false))
 	var credits := CREDITS_BASE + floori(score / float(CREDITS_PER_SCORE)) + CREDITS_PER_STAR * fresh
+	credits = roundi(credits * (1.0 + district_bonus(profile, &"credits")))
 	var orichalcum := int(result.get("orichalcum", 0)) if won else 0
+	orichalcum = roundi(orichalcum * (1.0 + district_bonus(profile, &"orichalcum")))
 	var pearls := floori(int(result.get("pearls", 0)) / float(PEARLS_PER_WALLET))
+	pearls = roundi(pearls * (1.0 + district_bonus(profile, &"pearls")))
+	var districts_before := int(profile.get("rescued_total", 0))
+	profile["rescued_total"] = districts_before + int(result.get("rescued", 0))
+	if int(result.get("bosses_met", 0)) > 0:
+		# Chefe que lembra: a faixa preferida do jogador diante de um chefe de ato fica no perfil.
+		profile["boss_memory"] = {"lane": int(result.get("lane", 1))}
+	var ending := String(result.get("ending", ""))
+	if won and not ending.is_empty() and not (profile["story"]["endings"] as Array).has(ending):
+		(profile["story"]["endings"] as Array).append(ending)
 	_earn(profile, "credits", credits)
 	_earn(profile, "orichalcum", orichalcum)
 	_earn(profile, "pearls", pearls)
@@ -260,6 +329,11 @@ static func apply_result(profile: Dictionary, result: Dictionary, ships: Array, 
 	out["new_wings"] = new_wings
 	out["new_missions"] = new_missions
 	out["log"] = log_new
+	var new_districts: Array[StringName] = []
+	for d: Dictionary in DISTRICTS:
+		if districts_before < int(d["rescued"]) and int(profile["rescued_total"]) >= int(d["rescued"]):
+			new_districts.append(d["id"])
+	out["new_districts"] = new_districts
 	return out
 
 

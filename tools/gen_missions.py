@@ -43,6 +43,52 @@ POOLS = {
         ("gold_lance", "line", 4, "stop_go", {"speed": 85, "stop_y": 130, "hold": 2.0}, {"spacing": 54, "drop_last": "orb"}),
         ("prism_jelly", "line", 2, "sine", {"amp": 50, "freq": 0.2, "speed": 36}, {"spacing": 100}),
     ],
+    4: [
+        ("magma_larva", "line", 3, "stop_go", {"speed": 70, "stop_y": 150, "hold": 2.5}, {"spacing": 70, "from_depth": True}),
+        ("hunter", "line", 2, "sine", {"amp": 60, "freq": 0.2, "speed": 40}, {"spacing": 110}),
+        ("bulwark", "single", 1, "stop_go", {"speed": 40, "stop_y": 90, "hold": 5}, {}),
+        ("tide_wasp", "v", 5, "dive", {"side": 1, "amp": 70, "speed": 70}, {"mirror": True, "drop_last": "orb"}),
+        ("herald", "single", 1, "stop_go", {"speed": 60, "stop_y": 120, "hold": 4}, {}),
+        ("spark_swarm", "column", 10, "sine", {"amp": 70, "freq": 0.6, "speed": 110}, {"interval": 6, "drop_last": "capsule"}),
+    ],
+    5: [
+        ("sower", "single", 1, "stop_go", {"speed": 50, "stop_y": 140, "hold": 5}, {}),
+        ("basilica", "single", 1, "scroll", {"speed": 20}, {"y": -40}),
+        ("gold_lance", "line", 4, "stop_go", {"speed": 85, "stop_y": 120, "hold": 2.0}, {"spacing": 54, "drop_last": "orb"}),
+        ("phalanx", "v", 5, "straight", {"speed": 62}, {"drop_last": "capsule"}),
+        ("hunter", "line", 2, "sine", {"amp": 60, "freq": 0.2, "speed": 42}, {"spacing": 110}),
+        ("skiff", "v", 7, "straight", {"speed": 86}, {}),
+    ],
+    6: [
+        ("ice_fan", "line", 3, "sine", {"amp": 80, "freq": 0.5, "speed": 60}, {"spacing": 80}),
+        ("judge", "single", 1, "stop_go", {"speed": 60, "stop_y": 110, "hold": 4}, {}),
+        ("glass_siren", "single", 1, "stop_go", {"speed": 40, "stop_y": 130, "hold": 5}, {"from_depth": True}),
+        ("tide_wasp", "v", 5, "dive", {"side": -1, "amp": 80, "speed": 70}, {"mirror": True, "drop_last": "orb"}),
+        ("prism_jelly", "line", 3, "sine", {"amp": 40, "freq": 0.25, "speed": 36}, {"spacing": 80, "drop_last": "capsule"}),
+    ],
+    7: [
+        ("aegis", "single", 1, "stop_go", {"speed": 45, "stop_y": 100, "hold": 5}, {}),
+        ("nautilus", "single", 1, "sine", {"amp": 50, "freq": 0.15, "speed": 26}, {}),
+        ("gold_lance", "line", 4, "stop_go", {"speed": 85, "stop_y": 130, "hold": 2.0}, {"spacing": 54, "drop_last": "orb"}),
+        ("volt_ray", "line", 2, "dive", {"side": 1, "amp": 60, "speed": 50}, {"mirror": True, "spacing": 90}),
+        ("phalanx", "v", 5, "straight", {"speed": 64}, {"drop_last": "capsule"}),
+    ],
+    8: [
+        ("trireme", "single", 1, "scroll", {"speed": 18}, {"y": -40}),
+        ("bulwark", "single", 1, "stop_go", {"speed": 40, "stop_y": 90, "hold": 5}, {}),
+        ("hunter", "line", 2, "sine", {"amp": 60, "freq": 0.2, "speed": 44}, {"spacing": 110}),
+        ("spark_swarm", "column", 12, "sine", {"amp": 80, "freq": 0.6, "speed": 115}, {"interval": 6, "drop_last": "capsule"}),
+        ("ice_fan", "line", 3, "sine", {"amp": 80, "freq": 0.5, "speed": 62}, {"spacing": 80, "drop_last": "orb"}),
+        ("squid_probe", "column", 4, "sine", {"amp": 50, "freq": 0.3, "speed": 72}, {"interval": 14, "from_depth": True}),
+    ],
+    9: [
+        ("protocol_shard", "single", 1, "stop_go", {"speed": 55, "stop_y": 120, "hold": 4}, {}),
+        ("protocol_shard", "line", 2, "sine", {"amp": 50, "freq": 0.2, "speed": 34}, {"spacing": 120}),
+        ("herald", "single", 1, "stop_go", {"speed": 60, "stop_y": 110, "hold": 4}, {}),
+        ("glass_siren", "single", 1, "stop_go", {"speed": 40, "stop_y": 130, "hold": 5}, {}),
+        ("tide_wasp", "v", 5, "dive", {"side": 1, "amp": 80, "speed": 72}, {"mirror": True, "drop_last": "orb"}),
+        ("spark_swarm", "column", 10, "sine", {"amp": 70, "freq": 0.6, "speed": 115}, {"interval": 6, "drop_last": "capsule"}),
+    ],
 }
 XS = [0.25, 0.35, 0.5, 0.65, 0.75]
 # Trechos de ondas esticados para cada missão durar de 2 a 5 min (plano mestre 5).
@@ -70,7 +116,8 @@ def fill(chapter: int, seconds: float, rng: random.Random, density: float = 1.0,
         x = rng.choice(XS) if formation in ("single", "column") else 0.5
         if "spacing" not in kw and formation in ("line", "v"):
             kw["spacing"] = 36
-        if enemy in ("sentinel_buoy", "trawler", "coral_turret", "herald", "volt_ray", "basilica"):
+        if enemy in ("sentinel_buoy", "trawler", "coral_turret", "herald", "volt_ray", "basilica", "bulwark", "sower",
+                     "judge", "aegis", "nautilus", "trireme", "glass_siren"):
             kw.setdefault("marked", True)
         out.append((round(t, 2), wave(enemy, formation, count, path, params, x, **kw)))
         t += step * (1.3 if enemy in ("trawler", "herald", "coral_turret") else 1.0)
@@ -182,6 +229,125 @@ MISSIONS = {
 }
 
 
+def hazard(kind, xs, gap=2.5, width=26):
+    """Colunas de perigo com aviso (raio, lava, gelo, detritos) em sequência."""
+    return [(k * gap, {"op": "lightning", "kind": kind, "x": x, "width": width}) for k, x in enumerate(xs)]
+
+
+def capsules(*xs):
+    return [(k * 3.0, {"op": "capsule", "x": x}) for k, x in enumerate(xs)]
+
+
+def glyphs(mission):
+    return [(0.0, wave("glyph", "single", 1, "scroll", {"speed": 22}, 0.2, glyph=0, y=-20)),
+            (4.0, wave("glyph", "single", 1, "scroll", {"speed": 22}, 0.8, glyph=1, y=-20)),
+            (8.0, wave("glyph", "single", 1, "scroll", {"speed": 22}, 0.5, glyph=2, y=-20))]
+
+
+def chapter_mission(ch, moment, extra=None, density=1.0, end=None, depth=False):
+    """Missão comum: abertura, ondas, momento da fase, bênção, registro, ondas, (extra), bênção, fim."""
+    def beats(r):
+        out = [fill(ch, 20, r, density, depth), beat(4, [(0.5, {"op": "blessing"})]), beat(12, moment),
+               fill(ch, 18, r, density * 1.1, depth), beat(3, [(0.0, {"op": "log", "x": 0.3 + 0.4 * r.random()})]),
+               beat(6, capsules(0.3, 0.7)), fill(ch, 16, r, density * 1.15, depth)]
+        if extra:
+            out += extra(r)
+        out += [beat(4, [(0.5, {"op": "blessing"})])]
+        out += end(r) if end else [fill(ch, 14, r, density * 1.2, depth), beat(4, [(0.0, {"op": "end"})])]
+        return out
+    return beats
+
+
+def boss_end(boss_id, line):
+    return lambda r: [beat(4, [(0.0, dialogue(line))]), beat(2, [(0.0, {"op": "boss", "id": boss_id})]),
+                      beat(2, [(0.0, {"op": "end"})])]
+
+
+def mini_end(ch, boss_id):
+    return lambda r: [beat(3, [(0.0, {"op": "miniboss", "id": boss_id})]), fill(ch, 10, r, 1.0),
+                      beat(4, [(0.0, {"op": "end"})])]
+
+
+BACKDROP = {4: "volcanic", 5: "city", 6: "ice", 7: "stratosphere", 8: "orbit", 9: "core"}
+MOMENT = {
+    4: hazard("lava", [0.2, 0.8, 0.5, 0.35, 0.65]),
+    5: [(0.0, {"op": "cover", "x": 0.25, "height": 160, "duration": 10}),
+        (1.0, {"op": "cover", "x": 0.75, "height": 140, "duration": 10})],
+    6: hazard("icefall", [0.3, 0.7, 0.5, 0.15, 0.85], gap=2.0, width=20),
+    7: [(0.0, {"op": "gravity_breach", "dx": 1, "dy": 0, "strength": 30, "duration": 10})],
+    8: hazard("debris", [0.25, 0.75, 0.5, 0.4, 0.6], gap=2.0, width=22),
+    9: [(0.0, {"op": "gravity_breach", "dx": 0, "dy": 1, "strength": 34, "duration": 10, "flip": True})],
+}
+
+
+def add_chapter(ch, mini_id, boss=None, boss_line="", glyph_secret=""):
+    music = "hydrogene_space_shooter"
+    obj_route = {"type": "rescue", "count": 6, "text_key": "objective.rescue"}
+    m1 = dict(chapter=ch, name=f"stage.c{ch}m1", music=music, backdrop=BACKDROP[ch], scroll=24,
+              objective={"type": "secret", "text_key": "objective.secret"} if glyph_secret else
+              {"type": "capsule_combo", "count": 4, "text_key": "objective.capsule_combo"},
+              beats=chapter_mission(ch, MOMENT[ch], extra=(lambda r: [beat(14, glyphs(""))]) if glyph_secret else None))
+    if glyph_secret:
+        m1["secret"] = {"glyphs": 3, "mission": glyph_secret}
+    MISSIONS[f"c{ch}m1"] = m1
+    MISSIONS[f"c{ch}m2"] = dict(chapter=ch, name=f"stage.c{ch}m2", music=music, backdrop=BACKDROP[ch], scroll=24,
+                                objective={"type": "miniboss_time", "seconds": 60,
+                                           "text_key": f"objective.miniboss_{mini_id}"},
+                                beats=chapter_mission(ch, MOMENT[ch], density=1.1, end=mini_end(ch, mini_id)))
+    if ch == 9:
+        MISSIONS["c9m3"] = dict(chapter=9, name="stage.c9m3", music=music, backdrop="core", scroll=22,
+                                objective={"type": "boss_time", "seconds": 150, "text_key": "objective.boss_time"},
+                                beats=chapter_mission(9, MOMENT[9], density=1.2, end=boss_end(boss, boss_line)))
+        return
+    end = boss_end(boss, boss_line) if boss else None
+    for route, mult, dens, depth in (("s", 1.0, 1.15, False), ("a", 1.5, 1.35, True)):
+        spec = dict(chapter=ch, name=f"stage.c{ch}m3{route}", music=music,
+                    backdrop=BACKDROP[ch] if route == "s" else "atlantis", scroll=26,
+                    route="surface" if route == "s" else "abyss",
+                    objective=obj_route if route == "s" else {"type": "chain", "count": 50,
+                                                              "text_key": "objective.chain_50"},
+                    beats=chapter_mission(ch, MOMENT[ch], density=dens, end=end, depth=depth))
+        if mult != 1.0:
+            spec["score_mult"] = mult
+        MISSIONS[f"c{ch}m3{route}"] = spec
+
+
+add_chapter(4, "forge", glyph_secret="s2")
+add_chapter(5, "architect", boss="sky_leviathan", boss_line="sky_leviathan_intro")
+add_chapter(6, "ice_queen", glyph_secret="s3")
+add_chapter(7, "steel_albatross", boss="poseidon_prime", boss_line="poseidon_intro")
+add_chapter(8, "orbital_gate", glyph_secret="s4")
+add_chapter(9, "orbital_gate", boss="leviathan_protocol", boss_line="protocol_intro")
+# O capítulo 9 não tem mini-chefe próprio: a 9-2 é a travessia do núcleo, com Gravity Breach alternada.
+MISSIONS["c9m2"] = dict(chapter=9, name="stage.c9m2", music="hydrogene_space_shooter", backdrop="core", scroll=26,
+                        objective={"type": "grazes", "count": 120, "text_key": "objective.grazes_120"},
+                        beats=chapter_mission(9, MOMENT[9], density=1.25,
+                                              extra=lambda r: [beat(12, [(0.0, {"op": "gravity_breach", "dx": 1, "dy": 0,
+                                                                                 "strength": 36, "duration": 10,
+                                                                                 "flip": True})])]))
+MISSIONS["s2"] = dict(chapter=4, name="stage.s2", music="hydrogene_space_shooter", backdrop="volcanic", scroll=20,
+                      dark=True, secret_mission=True, stretch=1.5, objective={"type": "log", "text_key": "objective.log"},
+                      beats=lambda r: [beat(2, [(0.5, dialogue("s2_intro"))]), fill(4, 30, r, 0.9),
+                                       beat(4, [(0.5, {"op": "blessing"})]), beat(3, [(0.0, {"op": "log", "x": 0.6})]),
+                                       fill(4, 30, r, 1.0), beat(4, [(0.0, {"op": "end"})])])
+MISSIONS["s3"] = dict(chapter=6, name="stage.s3", music="hydrogene_space_shooter", backdrop="ice", scroll=20,
+                      secret_mission=True, stretch=1.5, objective={"type": "log", "text_key": "objective.log"},
+                      beats=lambda r: [beat(2, [(0.5, dialogue("s3_intro"))]),
+                                       beat(1, [(0.0, {"op": "gravity_breach", "dx": 0, "dy": -1, "strength": 24,
+                                                       "duration": 150})]),
+                                       fill(6, 30, r, 0.9), beat(4, [(0.5, {"op": "blessing"})]),
+                                       beat(3, [(0.0, {"op": "log", "x": 0.4})]), fill(6, 30, r, 1.0),
+                                       beat(4, [(0.0, {"op": "end"})])])
+MISSIONS["s4"] = dict(chapter=8, name="stage.s4", music="hydrogene_space_shooter", backdrop="atlantis", scroll=20,
+                      secret_mission=True, stretch=1.2, objective={"type": "log", "text_key": "objective.log"},
+                      beats=lambda r: [beat(2, [(0.5, dialogue("s4_intro"))])] + [
+                          beat(16, [(0.0, {"op": "ocean_shift", "to": "ruins" if k % 2 == 0 else "flood", "warn": 2.0,
+                                           "duration": 6.0}), (8.0, {"op": "capsule", "x": 0.3 + 0.1 * k})])
+                          for k in range(3)] + [fill(8, 24, r, 1.0), beat(3, [(0.0, {"op": "log", "x": 0.5})]),
+                                                beat(4, [(0.5, {"op": "blessing"})]), fill(8, 20, r, 1.1),
+                                                beat(4, [(0.0, {"op": "end"})])])
+
+
 def build(mission_id: str, spec: dict) -> dict:
     global FILL_SCALE
     FILL_SCALE = 1.35 * spec.get("stretch", 1.0)
@@ -197,7 +363,7 @@ def build(mission_id: str, spec: dict) -> dict:
     out = {"id": mission_id, "chapter": spec["chapter"], "name_key": spec["name"], "music": spec["music"],
            "scroll_speed": spec["scroll"], "backdrop": spec["backdrop"], "seed_salt": sum(map(ord, mission_id)),
            "objective": spec["objective"], "length_s": round(t, 1), "events": events}
-    for key in ("secret", "route", "score_mult", "weapon_lock", "tutorial", "secret_mission"):
+    for key in ("secret", "route", "score_mult", "weapon_lock", "tutorial", "secret_mission", "dark"):
         if key in spec:
             out[key] = spec[key]
     return out

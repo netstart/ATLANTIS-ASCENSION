@@ -14,6 +14,10 @@ const SHAKE_DECAY := 18.0
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
+## Missão montada em tempo de execução (modos); vazia = ler data/stages/<mission_id>.json.
+var mission_data: Dictionary = {}
+## O jogador ainda pode reviver nesta missão (campanha e sobrevivência; desligado nos testes do bot).
+var can_revive: bool = false
 ## Carga do hangar (Economy.loadout) ou só o id da aeronave.
 var loadout: Variant = &"falcon"
 var seed_value: int = 7
@@ -47,8 +51,12 @@ var _reported: bool = false
 
 
 ## Configura antes de entrar na árvore.
-func configure(p_mission: StringName, p_loadout: Variant, p_seed: int, bot: bool) -> void:
-	mission_id = p_mission
+func configure(p_mission: Variant, p_loadout: Variant, p_seed: int, bot: bool) -> void:
+	if typeof(p_mission) == TYPE_DICTIONARY:
+		mission_data = p_mission
+		mission_id = StringName(String(mission_data.get("id", "")))
+	else:
+		mission_id = StringName(String(p_mission))
 	loadout = p_loadout
 	seed_value = p_seed
 	use_bot = bot
@@ -60,7 +68,8 @@ func _ready() -> void:
 			quit_at = float(arg.trim_prefix("--quit-at="))
 		elif arg.begins_with("--stress="):
 			stress = int(arg.trim_prefix("--stress="))
-	sim.setup(Sim.load_mission(mission_id), Sim.load_tables(), loadout, seed_value,
+	sim.setup(mission_data if not mission_data.is_empty() else Sim.load_mission(mission_id), Sim.load_tables(),
+			loadout, seed_value,
 			float(Settings.get_value("drag_sensitivity")))
 	if use_bot:
 		_bot = BotPilot.new()
@@ -74,6 +83,7 @@ func _ready() -> void:
 	add_child(_clip)
 	_world = WorldView.new()
 	_world.reduce_flashes = bool(Settings.get_value("reduce_flashes"))
+	_world.colorblind = String(Settings.get_value("colorblind"))
 	_world.fx_level = GfxQuality.level()
 	_world.setup(sim)
 	_clip.add_child(_world)
@@ -89,6 +99,7 @@ func _ready() -> void:
 	_hud.special_pressed.connect(func() -> void: _want_special = true)
 	_hud.bomb_pressed.connect(func() -> void: _want_bomb = true)
 	_hud.tide_pressed.connect(func() -> void: _want_tide = true)
+	_hud.revive_chosen.connect(_on_revive_choice)
 	_hud.blessing_chosen.connect(func(index: int) -> void: _choice = index)
 	_hud.setup_mission(sim)
 	get_viewport().size_changed.connect(relayout)
@@ -236,6 +247,12 @@ func _process(delta: float) -> void:
 	if sim.finished:
 		if use_bot and quit_at > 0.0:
 			_report_and_quit()
+		if can_revive and not sim.cleared and not use_bot:
+			can_revive = false
+			_hud.show_revive()
+			return
+		if _hud.revive_visible():
+			return
 		if _done < 0.0:
 			_done = FINISH_DELAY
 		_done -= delta
@@ -325,6 +342,19 @@ func _on_event(ev: Dictionary) -> void:
 		&"secret":
 			AudioManager.play("kenney_jingle_victory")
 			_hud.show_banner(tr("hud.secret"))
+		&"gravity_breach":
+			AudioManager.play("kenney_ocean_shift", 0.6, 0.0, -4.0)
+			_hud.show_banner(tr("hud.gravity_breach"))
+		&"capsule":
+			AudioManager.play("kenney_medal", 1.0 + 0.08 * float(ev.get("combo", 1)))
+			if int(ev.get("combo", 1)) >= 2:
+				_hud.show_radio_text(tr("hud.capsule_combo") % int(ev["combo"]), UiTheme.GOLD)
+		&"cover":
+			AudioManager.play("kenney_ocean_shift", 1.4, 0.0, -10.0)
+		&"boss_remember":
+			_hud.show_radio_text(tr("hud.boss_remember"), UiTheme.CORAL)
+		&"boss_learn":
+			_hud.show_radio_text(tr("hud.boss_learn"), UiTheme.CORAL)
 		&"ocean_shift":
 			AudioManager.play("kenney_ocean_shift")
 			_emerge_from = _emerge
@@ -336,6 +366,17 @@ func _on_event(ev: Dictionary) -> void:
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)
+
+
+func _on_revive_choice(accept: bool) -> void:
+	_hud.hide_revive()
+	if not accept:
+		return
+	Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
+		if granted:
+			sim.revive()
+			AudioManager.play("kenney_weapon_up")
+			_hud.show_banner(tr("hud.revived")))
 
 
 func _finish(quit: bool) -> void:

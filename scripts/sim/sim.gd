@@ -72,6 +72,8 @@ var laser_to_y: float = 0.0
 var finished: bool = false
 var cleared: bool = false
 var miniboss_seconds: float = -1.0
+## Tempo do chefe de ato (da entrada ao golpe final), para o objetivo "boss_time".
+var boss_seconds: float = -1.0
 var secondary: StringName = &""
 var secondary_level: int = 1
 var special_kind: StringName = &""
@@ -85,10 +87,23 @@ var glyph_progress: int = 0
 var secret_found: StringName = &""
 var bosses_killed: int = 0
 var fury_stacks: int = 0
+## Beta (Hazards): Gravity Breach, prédios de cobertura, cápsulas, faixas do jogador e final.
+var breach_dir := Vector2.ZERO
+var breach_frames: int = 0
+var breach_flip: bool = false
+var covers: Array[Dictionary] = []
+var rescued: int = 0
+var capsule_combo: int = 0
+var max_capsule_combo: int = 0
+var lanes := PackedInt32Array([0, 0, 0])
+var ending: StringName = &""
+var revives: int = 0
+var bosses_met: int = 0
 var _coral_grazes: int = 0
 var _bubble_timer: int = 0
 var _finish_timer: int = -1
 var _miniboss_start: int = -1
+var _boss_start: int = -1
 var _columns: Array = []
 
 
@@ -139,6 +154,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	var diff: Dictionary = DIFFICULTY[difficulty]
 	player.max_hull = maxi(1, player.max_hull + mods.extra_hull + int(diff["hull"]))
 	player.hull = player.max_hull
+	player.bombs += int(loadout.get("bombs", 0))
 	player.hitbox *= mods.hitbox_mult
 	player.precise_mult = 0.5 * mods.precise_mult
 	player.invuln_bonus = mods.invuln_bonus
@@ -155,6 +171,22 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	stage.setup(mission)
 	for c: int in range(COLUMNS):
 		_columns.append([])
+
+
+## Reviver (anúncio recompensado ou grátis na Steam): volta com 1 de casco, balas apagadas e 3 s de
+## invulnerabilidade. Só depois de uma derrota e uma vez por missão (o App controla).
+func revive() -> void:
+	if not finished or cleared:
+		return
+	finished = false
+	player.alive = true
+	player.hull = 1
+	player.invuln = 180
+	_finish_timer = -1
+	revives += 1
+	pearls_from(enemy_bullets.cancel_all())
+	beams.clear()
+	emit(&"revive", {"pos": player.pos})
 
 
 func take_events() -> Array[Dictionary]:
@@ -220,6 +252,7 @@ func step(input: SimInput) -> void:
 	SecondaryFire.step(self)
 	Specials.step(self)
 	stage.step(self)
+	Hazards.step(self)
 	for e: SimEnemy in enemies:
 		e.step(self)
 	if boss != null:
@@ -228,8 +261,8 @@ func step(input: SimInput) -> void:
 		boss.step(self)
 		if boss.state == SimBoss.State.DEAD:
 			boss = null
-	enemy_bullets.step(STEP, BOUNDS, gravity, Specials.frozen(self))
-	player_bullets.step(STEP, BOUNDS)
+	enemy_bullets.step(STEP, BOUNDS, gravity + breach_dir, Specials.frozen(self))
+	player_bullets.step(STEP, BOUNDS, breach_dir * Hazards.BREACH_PLAYER_SHARE)
 	if tide_frames > 0:
 		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_RADIUS))
 	_beams_step()
@@ -393,6 +426,9 @@ func spawn_boss(boss_id: StringName, final: bool) -> void:
 	boss.setup(def, tables["patterns"])
 	if not final:
 		_miniboss_start = frame
+	else:
+		_boss_start = frame
+		bosses_met += 1
 	emit(&"boss_intro", {"id": boss_id, "name_key": String(def.get("name_key", "")), "final": final})
 
 
@@ -405,8 +441,23 @@ func on_boss_phase(b: SimBoss, ph: Dictionary, transition: bool) -> void:
 	var intro: Dictionary = ph.get("intro", {})
 	emit(&"boss_phase", {"id": b.id, "phase": String(ph.get("id", "")), "index": b.phase_index,
 			"dialogue": String(intro.get("dialogue", "")), "event": String(intro.get("event", ""))})
-	if String(intro.get("event", "")) == "ocean_shift_reverse":
-		emit(&"ocean_shift", {"to": "flood", "duration": 4.0, "warn": 0.0})
+	match String(intro.get("event", "")):
+		"ocean_shift_reverse":
+			emit(&"ocean_shift", {"to": "flood", "duration": 4.0, "warn": 0.0})
+		"gravity_breach":
+			Hazards.breach(self, Vector2(0, 1), 36.0, 10.0, false)
+		"gravity_flip":
+			Hazards.breach(self, Vector2(1, 0), 34.0, 60.0, true)
+	var memory := int(loadout.get("memory_lane", -1))
+	if b.is_final and not transition and memory >= 0:
+		# Chefe que lembra: já viu o jogador antes e começa puxado para a faixa preferida dele.
+		var lane_x := (memory + 0.5) * Playfield.FIELD.x / Hazards.LANES
+		b.home.x = lerpf(b.home.x, lane_x, 0.4)
+		emit(&"boss_remember", {"lane": memory})
+	if bool(ph.get("learn", false)):
+		# O Protocolo aprendeu onde o jogador gosta de voar e se posiciona ali.
+		b.home.x = Hazards.favorite_lane_x(self)
+		emit(&"boss_learn", {"x": b.home.x})
 
 
 func on_boss_part_destroyed(b: SimBoss, part: Dictionary) -> void:
@@ -432,6 +483,11 @@ func on_boss_defeated(b: SimBoss) -> void:
 	if _miniboss_start >= 0 and not b.is_final:
 		miniboss_seconds = (frame - _miniboss_start) * STEP
 		_miniboss_start = -1
+	if _boss_start >= 0 and b.is_final:
+		boss_seconds = (frame - _boss_start) * STEP
+		_boss_start = -1
+	if bool(b.def.get("ending", false)):
+		ending = Hazards.ending_for(self, b)
 	for k: int in range(int(b.def.get("medals", 6))):
 		_spawn_pickup(&"medal", b.body_pos() + Vector2(rng.randf_in(&"drops", -60.0, 60.0),
 				rng.randf_in(&"drops", -30.0, 30.0)))
@@ -457,10 +513,13 @@ func on_stage_event(ev: Dictionary) -> void:
 		&"lightning":
 			var x := float(ev.get("x", 0.5)) * Playfield.FIELD.x
 			beams.append({"x": x, "y": -20.0, "width": float(ev.get("width", 26.0)), "warn": int(ev.get("warn", 45)),
-					"frames": int(ev.get("frames", 24)), "age": 0, "kind": "lightning"})
-			emit(&"beam_warn", {"pos": Vector2(x, 0), "width": float(ev.get("width", 26.0)), "kind": "lightning"})
+					"frames": int(ev.get("frames", 24)), "age": 0, "kind": String(ev.get("kind", "lightning"))})
+			emit(&"beam_warn", {"pos": Vector2(x, 0), "width": float(ev.get("width", 26.0)),
+					"kind": String(ev.get("kind", "lightning"))})
 		&"blessing":
 			offer_blessings()
+		&"gravity_breach", &"cover", &"capsule":
+			Hazards.on_event(self, ev)
 		&"log":
 			pickups.append({"kind": &"log", "pos": Vector2(float(ev.get("x", 0.5)) * Playfield.FIELD.x, -12.0),
 					"vel": Vector2(0, 34), "frames": 0})
@@ -652,6 +711,9 @@ func _graze(p: Vector2) -> void:
 	scoring.add_pressure(mods.graze_bonus)
 	player.special_charge = minf(1.0, player.special_charge + SimPlayer.GRAZE_CHARGE * (1.0 + mods.graze_bonus))
 	emit(&"graze", {"pos": p})
+	if breach_frames > 0:
+		# Redemoinho: durante a Gravity Breach cada raspão conta duas vezes.
+		scoring.on_graze()
 	if mods.coral_heal > 0:
 		_coral_grazes += 1
 		if _coral_grazes >= mods.coral_heal:
@@ -663,6 +725,7 @@ func _graze(p: Vector2) -> void:
 
 func _player_hit(cause: StringName) -> void:
 	fury_stacks = 0
+	capsule_combo = 0
 	if mods.bubbles > 0:
 		mods.bubbles -= 1
 		player.invuln = maxi(player.invuln, 60)
@@ -697,7 +760,7 @@ func _kill_enemy(e: SimEnemy) -> void:
 	var drop := e.drop
 	if drop == &"" and mods.orb_luck > 0.0 and rng.stream(&"drops").randf() < mods.orb_luck:
 		drop = &"orb"
-	if drop != &"" and player.weapon_lock == &"" or drop == &"medal":
+	if drop != &"" and (player.weapon_lock == &"" or drop != &"orb"):
 		_spawn_pickup(drop, e.pos)
 
 
@@ -775,6 +838,8 @@ func _pickups_step() -> void:
 			else:
 				if kind == &"medal":
 					scoring.on_medal_missed()
+				elif kind == &"capsule":
+					capsule_combo = 0
 					emit(&"medal_missed", {})
 				pickups.remove_at(i)
 		i -= 1
@@ -797,6 +862,8 @@ func _collect(kind: StringName, frames: int) -> void:
 		&"log":
 			log_found = true
 			emit(&"log", {})
+		&"capsule":
+			Hazards.collect_capsule(self)
 
 
 func _cleanup() -> void:
@@ -844,6 +911,12 @@ func stars() -> Array[bool]:
 			objective = secret_found != &""
 		&"score":
 			objective = scoring.score >= int(obj.get("count", 100000))
+		&"rescue":
+			objective = rescued >= int(obj.get("count", 10))
+		&"capsule_combo":
+			objective = max_capsule_combo >= int(obj.get("count", 5))
+		&"boss_time":
+			objective = boss_seconds >= 0.0 and boss_seconds <= float(obj.get("seconds", 90.0))
 	var all_marked := scoring.marked_killed >= scoring.marked_total
 	return [cleared, cleared and scoring.hull_lost == 0, cleared and all_marked, cleared and objective]
 
@@ -857,6 +930,8 @@ func result() -> Dictionary:
 		"seconds": frame * STEP, "miniboss_seconds": miniboss_seconds, "log_found": log_found,
 		"secret": String(secret_found), "blessings": mods.taken.duplicate(), "difficulty": String(difficulty),
 		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
+		"rescued": rescued, "max_capsule_combo": max_capsule_combo, "ending": String(ending), "revives": revives,
+		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met,
 	}
 
 
@@ -864,7 +939,8 @@ func result() -> Dictionary:
 func state_hash() -> String:
 	var parts := PackedStringArray([str(frame), str(scoring.score), str(scoring.grazes), str(player.hull),
 			"%.3f,%.3f" % [player.pos.x, player.pos.y], str(enemy_bullets.count), str(player_bullets.count),
-			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken)])
+			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken),
+			str(rescued), str(breach_frames)])
 	for e: SimEnemy in enemies:
 		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
 	var sum := Vector2.ZERO

@@ -212,6 +212,26 @@ def capsule_log(size: int) -> list:
     return px
 
 
+def rescue_pod(w: int, h: int) -> list:
+    """Cápsula de resgate atlante: casco claro em retângulo arredondado, janela ciano e faixa dourada."""
+    px = canvas(w, h)
+    for y in range(h):
+        for x in range(w):
+            corner = (x in (0, w - 1)) and (y in (0, 1, h - 2, h - 1))
+            if corner:
+                continue
+            edge = x in (0, w - 1) or y in (0, h - 1)
+            if edge:
+                px[y * w + x] = OUTLINE
+            elif 3 <= y <= 6 and 2 <= x <= w - 3:
+                px[y * w + x] = (120, 245, 255, 255)
+            elif y == h // 2 + 2:
+                px[y * w + x] = (232, 184, 74, 255)
+            else:
+                px[y * w + x] = (214, 226, 236, 255)
+    return px
+
+
 def tentacle(size: int, tip: bool) -> list:
     """Segmento de tentáculo em metal escuro, sem núcleo claro: nunca se parece com bala."""
     px = canvas(size, size)
@@ -251,6 +271,7 @@ SPRITES = {
     "pickups/orb_plasma.png": (18, 18, lambda: weapon_orb(18, "violet", "pulsar")),
     "pickups/orb_railgun.png": (18, 18, lambda: weapon_orb(18, "coral", "laser")),
     "pickups/log.png": (14, 14, lambda: capsule_log(14)),
+    "pickups/capsule.png": (12, 16, lambda: rescue_pod(12, 16)),
     "fx/drone.png": (10, 10, lambda: orb(10, "cyan")),
     "enemies/glyph.png": (20, 20, lambda: glyph(20)),
     "pickups/orb_pulsar.png": (18, 18, lambda: weapon_orb(18, "blue", "pulsar")),

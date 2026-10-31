@@ -1,0 +1,392 @@
+{
+	"id": "s4",
+	"chapter": 8,
+	"name_key": "stage.s4",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 20,
+	"backdrop": "atlantis",
+	"seed_salt": 167,
+	"objective": {
+		"type": "log",
+		"text_key": "objective.log"
+	},
+	"length_s": 132.3,
+	"events": [
+		{
+			"op": "dialogue",
+			"id": "s4_intro",
+			"t": 0.5
+		},
+		{
+			"op": "ocean_shift",
+			"to": "ruins",
+			"warn": 2.0,
+			"duration": 6.0,
+			"t": 2.0
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 10.0
+		},
+		{
+			"op": "ocean_shift",
+			"to": "flood",
+			"warn": 2.0,
+			"duration": 6.0,
+			"t": 18.0
+		},
+		{
+			"op": "capsule",
+			"x": 0.4,
+			"t": 26.0
+		},
+		{
+			"op": "ocean_shift",
+			"to": "ruins",
+			"warn": 2.0,
+			"duration": 6.0,
+			"t": 34.0
+		},
+		{
+			"op": "capsule",
+			"x": 0.5,
+			"t": 42.0
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"t": 50.0
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 53.6
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 57.2
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"t": 60.8
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"t": 64.4
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"t": 68.0
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 71.6
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 75.2
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 78.8
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 82.4
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 86.0
+		},
+		{
+			"op": "log",
+			"x": 0.5,
+			"t": 88.88
+		},
+		{
+			"op": "blessing",
+			"t": 92.38
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"t": 95.88
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 99.15
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 102.43
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"t": 105.7
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 108.97
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"t": 112.24
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"t": 115.52
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"t": 118.79
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.25,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 122.06
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"t": 125.33
+		},
+		{
+			"op": "end",
+			"t": 128.28
+		}
+	],
+	"secret_mission": true
+}

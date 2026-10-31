@@ -8,5 +8,17 @@
 	{"id": "c2_intro", "speaker": "thalassa", "text_key": "dialogue.c2_intro", "color": "#c79bff"},
 	{"id": "c3_intro", "speaker": "farol", "text_key": "dialogue.c3_intro", "color": "#8fe8ff"},
 	{"id": "s1_intro", "speaker": "thalassa", "text_key": "dialogue.s1_intro", "color": "#c79bff"},
-	{"id": "storm_eye", "speaker": "mare", "text_key": "dialogue.storm_eye", "color": "#ffe08a"}
+	{"id": "storm_eye", "speaker": "mare", "text_key": "dialogue.storm_eye", "color": "#ffe08a"},
+	{"id": "sky_leviathan_intro", "speaker": "farol", "text_key": "dialogue.sky_leviathan_intro", "color": "#8fe8ff"},
+	{"id": "sky_leviathan_storm", "speaker": "mare", "text_key": "dialogue.sky_leviathan_storm", "color": "#ffe08a"},
+	{"id": "poseidon_intro", "speaker": "thalassa", "text_key": "dialogue.poseidon_intro", "color": "#c79bff"},
+	{"id": "poseidon_gravity", "speaker": "farol", "text_key": "dialogue.poseidon_gravity", "color": "#8fe8ff"},
+	{"id": "poseidon_guardian", "speaker": "thalassa", "text_key": "dialogue.poseidon_guardian", "color": "#c79bff"},
+	{"id": "protocol_intro", "speaker": "protocol", "text_key": "dialogue.protocol_intro", "color": "#ff7a7e"},
+	{"id": "protocol_collage", "speaker": "protocol", "text_key": "dialogue.protocol_collage", "color": "#ff7a7e"},
+	{"id": "protocol_architecture", "speaker": "protocol", "text_key": "dialogue.protocol_architecture", "color": "#ff7a7e"},
+	{"id": "protocol_core", "speaker": "thalassa", "text_key": "dialogue.protocol_core", "color": "#c79bff"},
+	{"id": "s2_intro", "speaker": "farol", "text_key": "dialogue.s2_intro", "color": "#8fe8ff"},
+	{"id": "s3_intro", "speaker": "thalassa", "text_key": "dialogue.s3_intro", "color": "#c79bff"},
+	{"id": "s4_intro", "speaker": "thalassa", "text_key": "dialogue.s4_intro", "color": "#c79bff"}
 ]

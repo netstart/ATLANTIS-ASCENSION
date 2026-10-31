@@ -19,12 +19,24 @@ const SCREENS := {
 	&"options": preload("res://scripts/app/screens/options_screen.gd"),
 	&"logbook": preload("res://scripts/app/screens/logbook_screen.gd"),
 	&"story": preload("res://scripts/app/screens/story_screen.gd"),
+	&"events": preload("res://scripts/app/screens/events_screen.gd"),
+	&"shop": preload("res://scripts/app/screens/shop_screen.gd"),
+	&"city": preload("res://scripts/app/screens/city_screen.gd"),
+	&"practice": preload("res://scripts/app/screens/practice_screen.gd"),
 }
 const ROOT_SCREEN := &"boot"
+
+## Data de hoje "AAAA-MM-DD" (os testes fixam um calendário).
+static var today_override: String = ""
 
 var current: StringName = &""
 var game: Game
 var last_result: Dictionary = {}
+## Corrida de um modo (Arcade, Boss Rush, Diário, Sobrevivência) ou &"" na campanha; &"practice" não paga.
+var run_mode: StringName = &""
+var run_queue: Array[Dictionary] = []
+var run_score: int = 0
+var _run_loadout: Dictionary = {}
 
 var _layer: CanvasLayer
 var _root: Control
@@ -41,8 +53,10 @@ func _ready() -> void:
 	_root.name = "Root"
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	UiTheme.text_scale = float(Settings.get_value("text_scale"))
 	_root.theme = UiTheme.build(Locale.font)
 	_layer.add_child(_root)
+	Settings.changed.connect(_on_setting_changed)
 	Locale.language_changed.connect(_on_language_changed)
 	var args := OS.get_cmdline_user_args()
 	var mission := ""
@@ -77,7 +91,9 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 		var screen := (SCREENS[screen_name] as GDScript).new() as Screen
 		screen.name = String(screen_name).capitalize().replace(" ", "")
 		screen.navigate.connect(go)
-		screen.play.connect(func(mission_id: StringName) -> void: play(mission_id))
+		screen.play.connect(_play_from_screen)
+		screen.play_mode.connect(func(mode: StringName) -> void: start_mode(mode))
+		screen.play_practice.connect(practice)
 		_root.add_child(screen)
 		_screens[screen_name] = screen
 	current = screen_name
@@ -85,15 +101,60 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	Events.screen_changed.emit(screen_name)
 
 
+## Jogar pedido por uma tela: "Tentar de novo" no resultado de um modo recomeça o modo; o resto é campanha.
+func _play_from_screen(mission_id: StringName) -> void:
+	if current == &"results" and run_mode not in [&"", &"practice"]:
+		start_mode(run_mode)
+		return
+	if current == &"results" and String(last_result.get("mode", "")) == "practice":
+		practice(mission_id)
+		return
+	run_mode = &""
+	play(mission_id)
+
+
+static func today() -> String:
+	return today_override if not today_override.is_empty() else Time.get_date_string_from_system()
+
+
+## Começa um modo: monta a fila (Modes.run) e joga a primeira missão. Arcade, Boss Rush e Diário usam a
+## aeronave escolhida sem o hangar (todos em pé de igualdade); a Sobrevivência usa o hangar.
+func start_mode(mode: StringName, bot: bool = false) -> void:
+	run_mode = mode
+	run_score = 0
+	run_queue = Modes.run(mode, SaveManager.data, today(), Modes.date_seed(today()))
+	var ship := StringName(String(SaveManager.data["selected"]["ship"]))
+	_run_loadout = Economy.loadout(SaveManager.data) if mode == &"survival" else Sim.default_loadout(ship)
+	_next_in_run(bot)
+
+
+## Prática: missão concluída sem recompensas (nem estrelas nem moedas).
+func practice(mission_id: StringName) -> void:
+	run_mode = &"practice"
+	run_queue = []
+	run_score = 0
+	play(mission_id)
+
+
+func _next_in_run(bot: bool = false) -> void:
+	var mission: Dictionary = run_queue.pop_front()
+	play_mission(mission, bot, Modes.date_seed(today()) % 100000 if run_mode == &"daily" else -1, _run_loadout)
+
+
 ## Inicia uma missão: esconde os menus e cria a cena Game.
 func play(mission_id: StringName, bot: bool = false, seed: int = -1, loadout: Dictionary = {}) -> void:
+	play_mission(Sim.load_mission(mission_id), bot, seed, loadout)
+
+
+## Inicia uma missão a partir do dicionário (data/stages ou montada pelos Modes).
+func play_mission(mission: Dictionary, bot: bool = false, seed: int = -1, loadout: Dictionary = {}) -> void:
 	if game != null:
 		game.queue_free()
 	_layer.visible = false
 	game = GAME_SCENE.instantiate() as Game
 	var run_seed := seed if seed >= 0 else int(Time.get_unix_time_from_system()) % 100000
-	game.configure(mission_id, loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data), run_seed,
-			bot)
+	game.configure(mission, loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data), run_seed, bot)
+	game.can_revive = not bot and run_mode in [&"", &"survival"]
 	game.finished.connect(_on_mission_finished)
 	add_child(game)
 	AudioManager.play_ui("kenney_ui_confirm")
@@ -105,20 +166,39 @@ func _on_mission_finished(result: Dictionary) -> void:
 	game = null
 	_layer.visible = true
 	if bool(result.get("restart", false)):
-		play(mission_id)
+		if run_mode in [&"", &"practice"]:
+			play(mission_id)
+		else:
+			start_mode(run_mode)
 		return
 	if bool(result.get("quit", false)):
 		AudioManager.play_music("")
-		go(&"map")
+		var back_to := &"events" if run_mode not in [&"", &"practice"] else &"map"
+		run_mode = &""
+		go(back_to)
 		return
-	last_result = record_result(result)
+	run_score += int(result.get("score", 0))
+	if run_mode not in [&"", &"practice"] and bool(result.get("cleared", false)) and not run_queue.is_empty():
+		_next_in_run()
+		return
+	result["mode"] = String(run_mode)
+	result["run_score"] = run_score
+	last_result = record_result(result, run_mode)
+	run_mode = &"" if run_mode == &"practice" else run_mode
 	go(&"results")
 
 
 ## Grava o resultado no save (Economy.apply_result: estrelas, recorde, moedas, fragmentos, asas,
 ## missões abertas, registros) e as estatísticas; devolve o resultado com as recompensas.
-static func record_result(result: Dictionary) -> Dictionary:
-	var out := Economy.apply_result(SaveManager.data, result, DB.rows("ships"), DB.rows("wings"))
+static func record_result(result: Dictionary, mode: StringName = &"") -> Dictionary:
+	var out := result.duplicate(true)
+	if mode == &"":
+		out = Economy.apply_result(SaveManager.data, result, DB.rows("ships"), DB.rows("wings"))
+	elif mode != &"practice":
+		out = Modes.apply_result(SaveManager.data, mode, result)
+	if mode != &"practice":
+		LiveOps.refresh(SaveManager.data, today())
+		LiveOps.track(SaveManager.data, out)
 	SaveManager.add_stat("missions_played", 1)
 	SaveManager.add_stat("kills", float(result.get("kills", 0)))
 	SaveManager.add_stat("grazes", float(result.get("grazes", 0)))
@@ -129,8 +209,8 @@ static func record_result(result: Dictionary) -> Dictionary:
 	else:
 		SaveManager.add_stat("deaths", 1)
 	SaveManager.save_profile()
-	for ship: StringName in out["new_ships"]:
-		SaveManager.unlocked.emit("ships", ship)
+	for ship: Variant in out.get("new_ships", []):
+		SaveManager.unlocked.emit("ships", StringName(String(ship)))
 	return out
 
 
@@ -167,6 +247,20 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 		AudioManager.play_ui("kenney_ui_back")
 		back()
+
+
+## Escala de texto nova: recria as telas (os rótulos guardam o tamanho) e volta para a mesma tela.
+func _on_setting_changed(key: String) -> void:
+	if key != "text_scale":
+		return
+	UiTheme.text_scale = float(Settings.get_value("text_scale"))
+	_root.theme = UiTheme.build(Locale.font)
+	var here := current
+	for screen: Node in _screens.values():
+		screen.queue_free()
+	_screens.clear()
+	current = &""
+	go(here, false)
 
 
 func _on_language_changed(_code: String) -> void:

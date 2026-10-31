@@ -1,0 +1,665 @@
+{
+	"id": "c8m3a",
+	"chapter": 8,
+	"name_key": "stage.c8m3a",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 26,
+	"backdrop": "atlantis",
+	"seed_salt": 412,
+	"objective": {
+		"type": "chain",
+		"count": 50,
+		"text_key": "objective.chain_50"
+	},
+	"length_s": 124.8,
+	"events": [
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"from_depth": true,
+			"t": 0.0
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"from_depth": true,
+			"t": 2.67
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 5.33
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"from_depth": true,
+			"t": 8.0
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 10.67
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 13.33
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 16.0
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.25,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 18.67
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 21.33
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 24.0
+		},
+		{
+			"op": "blessing",
+			"t": 27.5
+		},
+		{
+			"op": "lightning",
+			"kind": "debris",
+			"x": 0.25,
+			"width": 22,
+			"t": 31.0
+		},
+		{
+			"op": "lightning",
+			"kind": "debris",
+			"x": 0.75,
+			"width": 22,
+			"t": 33.0
+		},
+		{
+			"op": "lightning",
+			"kind": "debris",
+			"x": 0.5,
+			"width": 22,
+			"t": 35.0
+		},
+		{
+			"op": "lightning",
+			"kind": "debris",
+			"x": 0.4,
+			"width": 22,
+			"t": 37.0
+		},
+		{
+			"op": "lightning",
+			"kind": "debris",
+			"x": 0.6,
+			"width": 22,
+			"t": 39.0
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 43.0
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 45.42
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 47.85
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 50.27
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 52.7
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 55.12
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 57.55
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 59.97
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 62.39
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 64.82
+		},
+		{
+			"op": "log",
+			"x": 0.43256452490291974,
+			"t": 67.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 70.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 73.3
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"from_depth": true,
+			"t": 76.3
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.25,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 78.62
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 80.94
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 83.26
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 85.58
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"from_depth": true,
+			"t": 87.89
+		},
+		{
+			"op": "wave",
+			"enemy": "hunter",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 60,
+				"freq": 0.2,
+				"speed": 44
+			},
+			"spacing": 110,
+			"from_depth": true,
+			"t": 90.21
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"interval": 6,
+			"drop_last": "capsule",
+			"from_depth": true,
+			"t": 92.53
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 94.85
+		},
+		{
+			"op": "blessing",
+			"t": 98.4
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 101.9
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 104.12
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 106.34
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.25,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 108.57
+		},
+		{
+			"op": "wave",
+			"enemy": "trireme",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 18
+			},
+			"y": -40,
+			"marked": true,
+			"t": 110.79
+		},
+		{
+			"op": "wave",
+			"enemy": "ice_fan",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.5,
+				"speed": 62
+			},
+			"spacing": 80,
+			"drop_last": "orb",
+			"from_depth": true,
+			"t": 113.01
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 115.23
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 117.46
+		},
+		{
+			"op": "wave",
+			"enemy": "bulwark",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 90,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 119.68
+		},
+		{
+			"op": "end",
+			"t": 120.8
+		}
+	],
+	"route": "abyss",
+	"score_mult": 1.5
+}

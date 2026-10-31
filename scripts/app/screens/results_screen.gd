@@ -15,6 +15,7 @@ var _stars: Array[Label] = []
 var _stats: Label
 var _credits: Label
 var _rewards: Label
+var _double: Button
 var _retry: Button
 var _continue: Button
 
@@ -52,6 +53,11 @@ func _build() -> void:
 	_rewards = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.CYAN, true)
 	_rewards.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_box.add_child(_rewards)
+	_double = Button.new()
+	_double.name = "DoubleCredits"
+	_double.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
+	_double.pressed.connect(_on_double)
+	_box.add_child(_double)
 	_retry = Button.new()
 	_retry.name = "Retry"
 	_retry.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
@@ -61,7 +67,11 @@ func _build() -> void:
 	_continue.name = "Continue"
 	_continue.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
 	_continue.pressed.connect(func() -> void:
-		navigate.emit(&"story" if not StoryScreen.pending(SaveManager.data).is_empty() else &"map"))
+		var mode := String(result.get("mode", ""))
+		if not mode.is_empty() and mode != "practice":
+			navigate.emit(&"events")
+		else:
+			navigate.emit(&"story" if not StoryScreen.pending(SaveManager.data).is_empty() else &"map"))
 	_box.add_child(_continue)
 
 
@@ -90,6 +100,12 @@ func refresh_texts() -> void:
 			tr("results.medals"), int(result.get("medals", 0))]
 	_credits.text = tr("results.credits") % Locale.format_number(int(result.get("credits", 0)))
 	_rewards.text = "\n".join(reward_lines(result))
+	var mode := String(result.get("mode", ""))
+	if not mode.is_empty():
+		_title.text = "%s · %s" % [tr("mode." + mode), _title.text]
+		_score.text = Locale.format_number(int(result.get("run_score", result.get("score", 0))))
+	_double.visible = int(result.get("credits", 0)) > 0 and not bool(result.get("doubled", false))
+	_double.text = tr("results.double_ad") if Store.ads_allowed(SaveManager.data) else tr("results.double_free")
 	_retry.text = tr("results.retry")
 	_continue.text = tr("results.continue")
 	relayout()
@@ -109,11 +125,28 @@ static func reward_lines(r: Dictionary) -> PackedStringArray:
 		lines.append(_t("results.new_ship") % _t("ship." + String(ship)))
 	for wing: Variant in r.get("new_wings", []):
 		lines.append(_t("results.new_wing") % _t("wing." + String(wing)))
+	for d: Variant in r.get("new_districts", []):
+		lines.append(_t("results.new_district") % _t("district." + String(d)))
+	if int(r.get("rescued", 0)) > 0:
+		lines.append(_t("results.rescued") % int(r["rescued"]))
+	if not String(r.get("ending", "")).is_empty():
+		lines.append(_t("ending." + String(r["ending"])))
 	for m: Variant in r.get("new_missions", []):
 		lines.append(_t("results.new_mission") % _t("stage." + String(m)))
 	if bool(r.get("log", false)):
 		lines.append(_t("results.log"))
 	return lines
+
+
+## Dobrar créditos: anúncio recompensado opcional (ou grátis na Steam e para quem apoiou), 1 vez.
+func _on_double() -> void:
+	Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
+		if granted and not bool(result.get("doubled", false)):
+			result["doubled"] = true
+			SaveManager.add_currency("credits", int(result.get("credits", 0)))
+			result["credits"] = int(result.get("credits", 0)) * 2
+			SaveManager.save_profile()
+			refresh_texts())
 
 
 static func _t(key: String) -> String:

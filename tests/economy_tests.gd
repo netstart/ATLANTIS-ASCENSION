@@ -1,6 +1,6 @@
 extends RefCounted
 ## Economia e progressão (Economy, plano mestre 4.9): regras do grafo da campanha, custos, fragmentos,
-## asas, segredo e a simulação da economia — o bot joga a campanha inteira do Alpha com a carga do
+## asas, segredo e a simulação da economia — o bot joga a campanha inteira (9 capítulos) com a carga do
 ## hangar, gastando os créditos como um jogador faria, e o ritmo das recompensas tem de ficar na faixa
 ## planejada. Chamado por tests/integration_tests.gd (precisa do perfil padrão do SaveManager).
 
@@ -50,7 +50,7 @@ func _rules(check: Callable) -> void:
 			"Economia: comprar mísseis")
 	p["selected"]["secondary"] = "missiles"
 	check.call(Economy.toggle_wing(p, &"wing_magnet", wings), "Economia: equipar asa liberada")
-	check.call(not Economy.toggle_wing(p, &"wing_tide", wings), "Economia: asa do Beta não aparece no Alpha")
+	check.call(not Economy.toggle_wing(p, &"wing_tide", wings), "Economia: asa sem estrelas suficientes não equipa")
 	var load := Economy.loadout(p)
 	check.call(load["secondary"] == "missiles" and (load["wings"] as Array).has("wing_magnet")
 			and is_equal_approx(float(load["damage"]), 0.04), "Economia: carga leva nível, secundária e asa")
@@ -60,15 +60,21 @@ func _rules(check: Callable) -> void:
 	check.call(Economy.ship_level(p, &"falcon") == Economy.SHIP_MAX_LEVEL, "Economia: nível para no máximo")
 
 
-## Campanha do Alpha jogada pelo bot com a carga do hangar: depois de cada missão o "jogador" sobe
-## a aeronave sempre que puder. Faixa planejada (plano mestre 18.1): ao fim do Alpha a aeronave
-## está entre o nível 3 e o 7 — dá para sentir o progresso sem zerar a oficina.
+## Campanha inteira jogada pelo bot com a carga do hangar: depois de cada missão o "jogador" sobe a
+## aeronave sempre que puder e entra nas secretas que abriu. Faixas planejadas (plano mestre 18.1): ao
+## fim do Ato I (3-3) a aeronave está no nível 3 a 7; ao fim da campanha, no 6 ou mais, com as 6
+## aeronaves abertas e um final escolhido.
 func _campaign(check: Callable) -> void:
 	var p := SaveManagerScript.default_profile()
 	var tables := Sim.load_tables()
 	var order: Array[StringName] = [&"c1m1", &"c1m2", &"c1m3", &"c2m1", &"s1", &"c2m2", &"c2m3", &"c3m1", &"c3m2",
-			&"c3m3a"]
+			&"c3m3a", &"c4m1", &"s2", &"c4m2", &"c4m3a", &"c5m1", &"c5m2", &"c5m3s", &"c6m1", &"s3", &"c6m2", &"c6m3a",
+			&"c7m1", &"c7m2", &"c7m3s", &"c8m1", &"s4", &"c8m2", &"c8m3a", &"c9m1", &"c9m2", &"c9m3"]
+	var act1_level := 0
+	var ending := ""
 	for id: StringName in order:
+		if Economy.node(id)["kind"] == &"secret" and not Economy.mission_unlocked(p, id):
+			continue
 		check.call(Economy.mission_unlocked(p, id), "Economia: %s aberta na hora certa" % id)
 		var sim := Sim.new()
 		sim.setup(Sim.load_mission(id), tables, Economy.loadout(p), 7)
@@ -76,12 +82,19 @@ func _campaign(check: Callable) -> void:
 		while not sim.finished and sim.frame < 60 * 60 * 10:
 			sim.step(bot.decide(sim))
 		check.call(sim.cleared, "Economia: o bot vence %s com a carga do hangar" % id)
-		Economy.apply_result(p, sim.result(), DB.rows("ships"), DB.rows("wings"))
+		var r := Economy.apply_result(p, sim.result(), DB.rows("ships"), DB.rows("wings"))
+		ending = String(r.get("ending", ending)) if not String(r.get("ending", "")).is_empty() else ending
 		while Economy.upgrade_ship(p, &"falcon"):
 			pass
+		if id == &"c3m3a":
+			act1_level = Economy.ship_level(p, &"falcon")
 	var level := Economy.ship_level(p, &"falcon")
 	if "--verbose" in OS.get_cmdline_user_args():
-		print("Economia: nível %d, carteira %s, estrelas %d" % [level, p["wallet"], Economy.total_stars(p)])
-	check.call(level >= 3 and level <= 7, "Economia: aeronave no nível 3 a 7 ao fim do Alpha (%d)" % level)
-	check.call(Economy.total_stars(p) >= 20, "Economia: o bot junta ≥ 20 estrelas (%d)" % Economy.total_stars(p))
-	check.call((p["unlocked"]["ships"] as Array).size() >= 3, "Economia: ≥ 3 aeronaves abertas no Alpha")
+		print("Economia: Ato I nível %d; fim nível %d, carteira %s, estrelas %d, resgatados %d, secretas %d" % [
+				act1_level, level, p["wallet"], Economy.total_stars(p), p["rescued_total"], Economy.abyss_records(p)])
+	check.call(act1_level >= 3 and act1_level <= 7, "Economia: aeronave no nível 3 a 7 ao fim do Ato I (%d)" % act1_level)
+	check.call(level >= 6, "Economia: aeronave no nível 6+ ao fim da campanha (%d)" % level)
+	check.call(Economy.total_stars(p) >= 60, "Economia: o bot junta ≥ 60 estrelas (%d)" % Economy.total_stars(p))
+	check.call((p["unlocked"]["ships"] as Array).size() == 6, "Economia: as 6 aeronaves abrem na campanha")
+	check.call(int(p["rescued_total"]) >= 10, "Economia: resgates reerguem ao menos as Docas (%d)" % p["rescued_total"])
+	check.call(not ending.is_empty(), "Economia: a campanha termina com um final (%s)" % ending)

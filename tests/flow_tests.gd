@@ -39,6 +39,7 @@ func run(host: Node, check: Callable) -> void:
 	check.call(StoryScreen.pending(SaveManager.data).is_empty(), "Fluxo: o prólogo não volta a aparecer")
 	var map := app.screen(&"map") as MapScreen
 	check.call(map.selected == &"c1m1", "Fluxo: o mapa foca a missão 1-1")
+	var credits_before := SaveManager.currency("credits")
 	app.play(&"c1m1", true, 7, Sim.default_loadout(&"falcon"))
 	await host.get_tree().process_frame
 	check.call(app.game != null, "Fluxo: a missão começou")
@@ -54,7 +55,7 @@ func run(host: Node, check: Callable) -> void:
 	var record := SaveManager.mission_record(&"c1m1")
 	check.call(bool(record["cleared"]) and int(record["best_score"]) > 0, "Fluxo: resultado gravado no save")
 	check.call(SaveManager.currency("credits") > 0, "Fluxo: créditos ganhos (%d)" % SaveManager.currency("credits"))
-	check.call(int(app.last_result.get("credits", 0)) == SaveManager.currency("credits"),
+	check.call(int(app.last_result.get("credits", 0)) == SaveManager.currency("credits") - credits_before,
 			"Fluxo: créditos do resultado = save")
 	(app.screen(&"results").find_child("Retry", true, false) as Button).pressed.emit()
 	await host.get_tree().process_frame
@@ -102,9 +103,12 @@ func _contrast(check: Callable) -> void:
 		for palette: Dictionary in OceanBackdrop.PALETTES.values():
 			for key: String in ["deep", "mid", "shoal"]:
 				waters.append(palette[key])
-		for water: Color in waters:
-			var ratio := contrast(c, water)
-			check.call(ratio >= 4.5, "Leitura: %s sobre a água %s com contraste %.1f:1" % [k["id"], water.to_html(false), ratio])
+		for palette: String in ["off"] + BulletRenderer.COLORBLIND.keys():
+			var tint: Color = (BulletRenderer.COLORBLIND.get(palette, {}) as Dictionary).get(k["id"], Color(1, 1, 1))
+			for water: Color in waters:
+				var ratio := contrast(c * tint, water)
+				check.call(ratio >= 4.5, "Leitura: %s (%s) sobre a água %s com contraste %.1f:1" % [k["id"], palette,
+						water.to_html(false), ratio])
 
 
 static func contrast(a: Color, b: Color) -> float:

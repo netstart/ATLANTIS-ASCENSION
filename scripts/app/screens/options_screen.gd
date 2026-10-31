@@ -36,6 +36,23 @@ func _fill() -> void:
 		Settings.set_value("handedness", "left" if Settings.get_value("handedness") == "right" else "right")
 		refill())
 	add_row(tr("options.handedness"), hand)
+	var cb := Button.new()
+	cb.name = "Colorblind"
+	cb.text = tr("options.cb_" + String(Settings.get_value("colorblind")))
+	cb.pressed.connect(func() -> void:
+		var modes := ["off", "protanopia", "deuteranopia", "tritanopia"]
+		var i := modes.find(String(Settings.get_value("colorblind")))
+		Settings.set_value("colorblind", modes[(i + 1) % modes.size()])
+		refill())
+	add_row(tr("options.colorblind"), cb)
+	var ts := Button.new()
+	ts.name = "TextScale"
+	ts.text = "%d%%" % roundi(float(Settings.get_value("text_scale")) * 100.0)
+	ts.pressed.connect(func() -> void:
+		var steps := [1.0, 1.15, 1.3]
+		var i := steps.find(snappedf(float(Settings.get_value("text_scale")), 0.01))
+		Settings.set_value("text_scale", steps[(i + 1) % steps.size()]))
+	add_row(tr("options.text_scale"), ts)
 	add_heading(tr("options.audio_controls"))
 	for entry: Array in SLIDERS:
 		var key: String = entry[0]

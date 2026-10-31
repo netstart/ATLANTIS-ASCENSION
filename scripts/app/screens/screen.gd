@@ -7,6 +7,10 @@ extends Control
 signal navigate(screen: StringName)
 ## Pede para começar uma missão.
 signal play(mission_id: StringName)
+## Pede para começar um modo (Arcade, Boss Rush, Diário, Sobrevivência).
+signal play_mode(mode: StringName)
+## Pede uma missão de prática (sem recompensas).
+signal play_practice(mission_id: StringName)
 
 ## Área segura atual (fora do recorte da câmera), em coordenadas da própria tela.
 var safe := Rect2()

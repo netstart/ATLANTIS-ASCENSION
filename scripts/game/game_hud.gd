@@ -8,6 +8,8 @@ signal pause_pressed
 signal special_pressed
 signal bomb_pressed
 signal tide_pressed
+## Reviver depois da derrota (true) ou desistir (false).
+signal revive_chosen(accept: bool)
 ## Bênção escolhida no painel de oferta (0 a 2).
 signal blessing_chosen(index: int)
 signal resume_pressed
@@ -39,6 +41,10 @@ var _objective: Label
 var _offer_panel: PanelContainer
 var _offer_title: Label
 var _offer_buttons: Array[Button] = []
+var _revive_panel: PanelContainer
+var _revive_text: Label
+var _revive_yes: Button
+var _revive_no: Button
 var _radio: Label
 var _banner: Label
 var _prompt: Label
@@ -105,6 +111,7 @@ func _ready() -> void:
 	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_build_offer_panel()
+	_build_revive_panel()
 	_build_pause_panel()
 	refresh_texts()
 
@@ -170,6 +177,57 @@ func _build_offer_panel() -> void:
 		_offer_buttons.append(b)
 	_offer_panel.visible = false
 	add_child(_offer_panel)
+
+
+func _build_revive_panel() -> void:
+	_revive_panel = PanelContainer.new()
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color(UiTheme.ABYSS, 0.95)
+	box.border_color = UiTheme.CORAL
+	box.set_border_width_all(1)
+	box.set_content_margin_all(14)
+	_revive_panel.add_theme_stylebox_override("panel", box)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 10)
+	_revive_panel.add_child(list)
+	_revive_text = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.CORAL, true)
+	_revive_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	list.add_child(_revive_text)
+	_revive_yes = Button.new()
+	_revive_yes.name = "Revive"
+	_revive_yes.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
+	_revive_yes.pressed.connect(func() -> void: revive_chosen.emit(true))
+	list.add_child(_revive_yes)
+	_revive_no = Button.new()
+	_revive_no.name = "GiveUp"
+	_revive_no.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
+	_revive_no.pressed.connect(func() -> void: revive_chosen.emit(false))
+	list.add_child(_revive_no)
+	_revive_panel.visible = false
+	add_child(_revive_panel)
+
+
+func show_revive() -> void:
+	_revive_text.text = tr("hud.revive_title")
+	_revive_yes.text = tr("hud.revive_ad") if Store.ads_allowed(SaveManager.data) else tr("hud.revive_free")
+	_revive_no.text = tr("hud.give_up")
+	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
+	var width := field.size.x - 32.0
+	_revive_text.custom_minimum_size.x = width - 28.0
+	_revive_panel.size = Vector2(width, 0)
+	_revive_panel.reset_size()
+	_revive_panel.size.x = width
+	_revive_panel.position = (field.get_center() - _revive_panel.size * 0.5).floor()
+	_revive_panel.visible = true
+	_revive_yes.grab_focus()
+
+
+func hide_revive() -> void:
+	_revive_panel.visible = false
+
+
+func revive_visible() -> bool:
+	return _revive_panel.visible
 
 
 func _build_pause_panel() -> void:

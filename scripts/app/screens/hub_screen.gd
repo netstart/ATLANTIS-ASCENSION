@@ -2,12 +2,14 @@ class_name HubScreen
 extends Screen
 ## Hub interativo (plano mestre 7.2, no espírito do menu de Star Wars: Galaxy of Heroes, sem copiar
 ## nada dele): cena viva do hangar em parallax, saldo no topo, banner de destaque, botão JOGAR na zona
-## do polegar e abas embaixo. No Alpha: Hangar (oficina), Campanha e Naves; Eventos e Loja no Beta.
+## do polegar e abas embaixo: Hangar (oficina), Campanha, Naves, Eventos e Loja. Ao abrir no dia, o login
+## de 7 dias entrega a recompensa num aviso que some sozinho.
 
 const TAB_HEIGHT := 48.0
 const PLAY_HEIGHT := 52.0
 const TABS: Array[StringName] = [&"hangar", &"campaign", &"ships", &"events", &"shop"]
-const OPEN_TABS: Array[StringName] = [&"hangar", &"campaign", &"ships"]
+const OPEN_TABS: Array[StringName] = [&"hangar", &"campaign", &"ships", &"events", &"shop"]
+const TOAST_SECONDS := 4.0
 
 var _stage: HangarStage
 var _wallet: Label
@@ -16,6 +18,9 @@ var _banner: Button
 var _play: Button
 var _options: Button
 var _logbook: Button
+var _city: Button
+var _toast: Label
+var _toast_left: float = 0.0
 var _tabs: HBoxContainer
 var _tab_buttons: Dictionary = {}
 var _banner_index: int = 0
@@ -56,6 +61,13 @@ func _build() -> void:
 	add_child(_play)
 	_options = _small_button("Options", func() -> void: navigate.emit(&"options"))
 	_logbook = _small_button("Logbook", func() -> void: navigate.emit(&"logbook"))
+	_city = _small_button("City", func() -> void: navigate.emit(&"city"))
+	_toast = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.GOLD, true)
+	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast.add_theme_color_override("font_outline_color", UiTheme.VOLCANIC)
+	_toast.add_theme_constant_override("outline_size", 4)
+	_toast.visible = false
+	add_child(_toast)
 	_tabs = HBoxContainer.new()
 	_tabs.add_theme_constant_override("separation", 2)
 	add_child(_tabs)
@@ -107,10 +119,35 @@ func _gold_box(hot: bool) -> StyleBoxFlat:
 
 func on_show(_app: Node) -> void:
 	_stage.reduce_motion = bool(Settings.get_value("reduce_motion"))
+	var reward := LiveOps.login(SaveManager.data, App.today())
+	if not reward.is_empty():
+		SaveManager.save_profile()
+		AudioManager.play_ui("kenney_ui_confirm")
+		show_toast(tr("hub.login_reward") % [int(SaveManager.data["login"]["streak"]), reward_text(reward)])
 	refresh_texts()
 
 
+## "+400 Créditos, +10 Pérolas".
+static func reward_text(reward: Dictionary) -> String:
+	var parts := PackedStringArray()
+	for k: String in reward:
+		if k != "core":
+			parts.append("+%d %s" % [int(reward[k]), TranslationServer.translate("currency." + k)])
+	return ", ".join(parts)
+
+
+func show_toast(text: String) -> void:
+	_toast.text = text
+	_toast.visible = true
+	_toast_left = TOAST_SECONDS
+	relayout()
+
+
 func _process(delta: float) -> void:
+	if _toast_left > 0.0:
+		_toast_left -= delta
+		_toast.modulate.a = clampf(_toast_left, 0.0, 1.0)
+		_toast.visible = _toast_left > 0.0
 	_banner_timer += delta
 	if _banner_timer > 6.0:
 		_banner_timer = 0.0
@@ -130,6 +167,7 @@ func refresh_texts() -> void:
 	_play.text = tr("hub.play") % MapScreen.node_label(Economy.node(next))
 	_options.text = tr("options.title")
 	_logbook.text = tr("logbook.title")
+	_city.text = tr("city.title")
 	for tab: StringName in TABS:
 		var b: Button = _tab_buttons[tab]
 		b.text = tr("hub.tab_" + String(tab))
@@ -155,11 +193,15 @@ func _layout() -> void:
 	_play.size = Vector2(play_width, PLAY_HEIGHT)
 	_play.position = Vector2(floorf(safe.position.x + (safe.size.x - play_width) * 0.5),
 			_tabs.position.y - PLAY_HEIGHT - 12.0)
-	var half := floorf((play_width - 8.0) * 0.5)
-	_logbook.size = Vector2(half, UiTheme.TOUCH_MIN)
-	_options.size = Vector2(half, UiTheme.TOUCH_MIN)
-	_logbook.position = Vector2(_play.position.x, _play.position.y - UiTheme.TOUCH_MIN - 8.0)
-	_options.position = Vector2(_play.position.x + play_width - half, _logbook.position.y)
+	var third := floorf((play_width - 16.0) / 3.0)
+	var row_y := _play.position.y - UiTheme.TOUCH_MIN - 8.0
+	for k: int in range(3):
+		var b: Button = [_logbook, _city, _options][k]
+		b.size = Vector2(third, UiTheme.TOUCH_MIN)
+		b.position = Vector2(_play.position.x + k * (third + 8.0), row_y)
+	_toast.custom_minimum_size.x = width
+	_toast.size = Vector2(width, 0)
+	_toast.position = Vector2(left, safe.position.y + UiTheme.TOUCH_MIN * 2.0 + 32.0)
 	_credits_button.position = Vector2(safe.end.x - UiTheme.TOUCH_MIN - 6.0, safe.position.y + 6.0)
 	_wallet.position = Vector2(left, safe.position.y + 14.0)
 	_wallet.size = Vector2(_credits_button.position.x - left - 8.0, 0)
@@ -177,10 +219,14 @@ func _on_tab(tab: StringName) -> void:
 			navigate.emit(&"hangar")
 		&"ships":
 			navigate.emit(&"ships")
+		&"events":
+			navigate.emit(&"events")
+		&"shop":
+			navigate.emit(&"shop")
 
 
 func layout_controls() -> Array[Control]:
-	return [_wallet, _credits_button, _banner, _play, _tabs, _options, _logbook]
+	return [_wallet, _credits_button, _banner, _play, _tabs, _options, _logbook, _city]
 
 
 ## Volta para o título.

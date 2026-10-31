@@ -114,6 +114,12 @@
   "sha256": "34478d49c39d48fe0165a93a7e945fb261886b2c7820188f7b6bcce658d8d5f6"
  },
  {
+  "file": "assets/art/generated/pickups/capsule.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "60e9febad592ac409f722267e37efb9918684d1bdcc5c263a2bc3c2961b6211e"
+ },
+ {
   "file": "assets/art/generated/pickups/log.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",

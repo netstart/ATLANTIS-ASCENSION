@@ -6,6 +6,19 @@ extends Node2D
 
 ## Floats por instância no buffer 2D: duas linhas de 4 (base x, base y, origem).
 const STRIDE := 8
+## Modos de daltonismo (plano mestre 2.4 e 6.1): as cores das balas trocam juntas, mantendo o núcleo
+## claro e o contorno escuro (o contraste continua ≥ 4,5:1). Tinta multiplicada sobre a textura.
+const COLORBLIND := {
+	"protanopia": {&"orb_coral_l": Color(1.0, 0.95, 0.45), &"orb_violet_m": Color(0.55, 0.75, 1.0),
+			&"orb_gold_m": Color(1.0, 1.0, 1.0)},
+	"deuteranopia": {&"orb_coral_l": Color(1.0, 0.9, 0.4), &"orb_violet_m": Color(0.5, 0.7, 1.0),
+			&"orb_gold_m": Color(1.0, 1.0, 1.0)},
+	"tritanopia": {&"orb_cyan_s": Color(1.0, 0.65, 0.8), &"orb_cyan_m": Color(1.0, 0.65, 0.8),
+			&"orb_gold_m": Color(1.0, 0.72, 0.72), &"needle_gold": Color(1.0, 0.72, 0.72)},
+}
+
+## Paleta de daltonismo ativa ("off" = cores originais).
+var palette: String = "off"
 
 var _kinds: Array[Dictionary] = []
 var _instances: Array[MultiMeshInstance2D] = []
@@ -29,6 +42,7 @@ func setup(kinds: Array[Dictionary], capacity: int) -> void:
 		var node := MultiMeshInstance2D.new()
 		node.multimesh = mm
 		node.texture = tex
+		node.modulate = (COLORBLIND.get(palette, {}) as Dictionary).get(k["id"], Color(1, 1, 1))
 		add_child(node)
 		_instances.append(node)
 		var buf := PackedFloat32Array()

@@ -9,13 +9,15 @@ extends Screen
 ## texturas por quadro, redesenhadas só quando a câmera anda (ou a 30 Hz para o brilho dos nós).
 
 const STRATUM := 760.0
-const STRATA := 5
+const STRATA := 11
 const FACTORS: Array[float] = [0.1, 0.25, 0.5, 1.0, 1.35]
 const FRICTION := 4.0
 const HEADER := 48.0
-const STRATUM_COLORS: Array[Color] = [Color("040b1a"), Color("0b2a4a"), Color("0f4652"), Color("2d5f8a"),
-		Color("0a0f2a")]
-const STRATUM_KEYS: Array[String] = ["", "map.chapter1", "map.chapter2", "map.chapter3", ""]
+const STRATUM_COLORS: Array[Color] = [Color("040b1a"), Color("0b2a4a"), Color("0f4652"), Color("26364a"),
+		Color("3a1410"), Color("141c38"), Color("2c4a5e"), Color("2d5f8a"), Color("0a0f2a"), Color("2a0a26"),
+		Color("05060f")]
+const STRATUM_KEYS: Array[String] = ["", "map.chapter1", "map.chapter2", "map.chapter3", "map.chapter4",
+		"map.chapter5", "map.chapter6", "map.chapter7", "map.chapter8", "map.chapter9", ""]
 ## Rótulo curto do nó por tipo (o tipo também muda a cor do brilho).
 const KIND_MARK := {&"miniboss": " ◆", &"boss": " ♛", &"secret": " ◎", &"route": ""}
 
@@ -129,7 +131,7 @@ static func node_label(n: Dictionary) -> String:
 	if n["kind"] == &"secret":
 		return "◎"
 	var text := "%s-%s" % [id.substr(1, 1), id.substr(3, 1)]
-	if n["kind"] == &"route":
+	if n.has("route"):
 		text += " " + id.substr(4, 1).to_upper()
 	return text + String(KIND_MARK.get(n["kind"], ""))
 
@@ -157,8 +159,8 @@ func _update_card() -> void:
 		_card_stars[i].add_theme_color_override("font_color", UiTheme.GOLD if got else UiTheme.TEXT_DIM)
 	_card_best.text = tr("map.best") % Locale.format_number(int(record["best_score"]))
 	var n := Economy.node(selected)
-	if n["kind"] == &"route":
-		_card_best.text += "\n" + tr("map.route_" + ("abyss" if String(selected).ends_with("a") else "surface"))
+	if n.has("route"):
+		_card_best.text += "\n" + tr("map.route_" + String(n["route"]))
 	elif n["kind"] == &"secret":
 		_card_best.text += "\n" + tr("map.secret_hint")
 	_card_play.disabled = not is_open(selected)

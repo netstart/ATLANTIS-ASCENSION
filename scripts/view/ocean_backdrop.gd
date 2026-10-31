@@ -1,8 +1,8 @@
 class_name OceanBackdrop
 extends Node2D
 ## Cenário das missões em camadas de parallax (plano mestre 8.3). `kind` escolhe a paleta do capítulo:
-## ocean (1, Atlântico), atlantis (2, cidade submersa: água verde-azulada e ruínas meio expostas) e
-## storm (3, tempestade: mar de ardósia e chuva diagonal). Camadas:
+## ocean (1, Atlântico), atlantis (2, cidade submersa), storm (3, chuva), volcanic (4, brasas), city (5, torres
+## emersas), ice (6, neve), stratosphere (7, vento), orbit (8, estrelas) e core (9, faíscas). Camadas:
 ##   0 água (shader ocean_surface, fator 1,0 na própria textura procedural)
 ##   1 ruínas submersas que emergem no Ocean Shift (fator 0,6; mais lentas = mais fundas)
 ##   2 espuma e respingos de primeiro plano (fator 1,4; ≤ 35% de opacidade sobre o campo)
@@ -15,11 +15,32 @@ const TILE := 96.0
 ## Paletas por cenário: fundo, meio, raso, espuma e ruínas emersas de base.
 const PALETTES := {
 	&"ocean": {"deep": Color(0.024, 0.071, 0.165), "mid": Color(0.043, 0.157, 0.302), "shoal": Color(0.051, 0.235, 0.29),
-			"foam": Color(0.7, 0.95, 1.0), "base_emerge": 0.0, "rain": 0.0},
+			"foam": Color(0.7, 0.95, 1.0), "base_emerge": 0.0},
 	&"atlantis": {"deep": Color(0.016, 0.086, 0.11), "mid": Color(0.035, 0.18, 0.2), "shoal": Color(0.09, 0.27, 0.25),
-			"foam": Color(0.75, 1.0, 0.9), "base_emerge": 0.35, "rain": 0.0},
+			"foam": Color(0.75, 1.0, 0.9), "base_emerge": 0.35},
 	&"storm": {"deep": Color(0.035, 0.05, 0.08), "mid": Color(0.08, 0.1, 0.14), "shoal": Color(0.12, 0.16, 0.2),
-			"foam": Color(0.8, 0.85, 0.95), "base_emerge": 0.0, "rain": 1.0},
+			"foam": Color(0.8, 0.85, 0.95), "base_emerge": 0.0, "particles": &"rain"},
+	&"volcanic": {"deep": Color(0.08, 0.02, 0.02), "mid": Color(0.17, 0.05, 0.03), "shoal": Color(0.26, 0.08, 0.03),
+			"foam": Color(1.0, 0.55, 0.2), "base_emerge": 0.25, "particles": &"embers"},
+	&"city": {"deep": Color(0.03, 0.04, 0.09), "mid": Color(0.06, 0.08, 0.16), "shoal": Color(0.1, 0.12, 0.22),
+			"foam": Color(0.6, 0.8, 1.0), "base_emerge": 0.6},
+	&"ice": {"deep": Color(0.06, 0.1, 0.15), "mid": Color(0.11, 0.18, 0.25), "shoal": Color(0.17, 0.27, 0.34),
+			"foam": Color(0.95, 1.0, 1.0), "base_emerge": 0.3, "particles": &"snow"},
+	&"stratosphere": {"deep": Color(0.05, 0.08, 0.18), "mid": Color(0.09, 0.14, 0.27), "shoal": Color(0.13, 0.2, 0.35),
+			"foam": Color(0.9, 0.95, 1.0), "base_emerge": 0.0, "ruins": false, "particles": &"wind"},
+	&"orbit": {"deep": Color(0.01, 0.01, 0.04), "mid": Color(0.03, 0.03, 0.08), "shoal": Color(0.06, 0.05, 0.12),
+			"foam": Color(0.8, 0.8, 1.0), "base_emerge": 0.0, "ruins": false, "particles": &"stars"},
+	&"core": {"deep": Color(0.06, 0.0, 0.06), "mid": Color(0.12, 0.02, 0.1), "shoal": Color(0.19, 0.04, 0.14),
+			"foam": Color(1.0, 0.5, 0.6), "base_emerge": 0.0, "ruins": false, "particles": &"sparks"},
+}
+## Partículas de primeiro plano: cor, comprimento do risco, velocidade (x rolagem), inclinação, passo.
+const PARTICLES := {
+	&"rain": {"color": Color(0.75, 0.85, 1.0, 0.22), "length": 4, "speed": 3.0, "slant": 0.35, "step": 17.0},
+	&"embers": {"color": Color(1.0, 0.6, 0.2, 0.45), "length": 1, "speed": -1.2, "slant": 0.1, "step": 29.0},
+	&"snow": {"color": Color(1.0, 1.0, 1.0, 0.4), "length": 1, "speed": 0.7, "slant": 0.25, "step": 21.0},
+	&"wind": {"color": Color(1.0, 1.0, 1.0, 0.1), "length": 8, "speed": 4.0, "slant": 0.0, "step": 31.0},
+	&"stars": {"color": Color(1.0, 1.0, 1.0, 0.5), "length": 1, "speed": 0.25, "slant": 0.0, "step": 19.0},
+	&"sparks": {"color": Color(1.0, 0.6, 0.7, 0.35), "length": 2, "speed": 1.5, "slant": -0.2, "step": 23.0},
 }
 
 var view_size := Vector2(305, 678)
@@ -35,7 +56,7 @@ var _water: ColorRect
 var _material: ShaderMaterial
 var _ruins: RuinsLayer
 var _spray: SprayLayer
-var _rain: RainLayer
+var _rain: ParticleLayer
 var _drift_offset := Vector2.ZERO
 
 
@@ -50,7 +71,7 @@ func _ready() -> void:
 	add_child(_ruins)
 	_spray = SprayLayer.new()
 	add_child(_spray)
-	_rain = RainLayer.new()
+	_rain = ParticleLayer.new()
 	add_child(_rain)
 	var palette: Dictionary = PALETTES.get(kind, PALETTES[&"ocean"])
 	for key: String in ["deep", "mid", "shoal", "foam"]:
@@ -92,10 +113,16 @@ func apply(p_scroll: float, p_emerge: float, p_tilt: Vector2 = Vector2.ZERO, red
 	_spray.view_size = view_size
 	_spray.amount = 0.5 + 0.5 * emerge
 	_spray.queue_redraw()
-	_rain.visible = float(palette["rain"]) > 0.0 and detail >= 1
+	_ruins.visible = bool(palette.get("ruins", true))
+	var kind_p := StringName(String(palette.get("particles", "")))
+	_rain.visible = PARTICLES.has(kind_p) and detail >= 1
 	if _rain.visible:
-		_rain.offset = scroll * 3.0
-		_rain.slant = 0.35 + drift.x * 0.01
+		var cfg: Dictionary = PARTICLES[kind_p]
+		_rain.color = cfg["color"]
+		_rain.length = int(cfg["length"])
+		_rain.step = float(cfg["step"])
+		_rain.offset = scroll * float(cfg["speed"])
+		_rain.slant = float(cfg["slant"]) + drift.x * 0.01
 		_rain.view_size = view_size
 		_rain.queue_redraw()
 
@@ -176,24 +203,25 @@ class SprayLayer:
 			draw_rect(Rect2(x, y, w, 1.0), COLOR)
 
 
-## Chuva da tempestade (capítulo 3): riscos finos inclinados, rápidos, de primeiro plano.
-class RainLayer:
+## Partículas de primeiro plano (chuva, brasas, neve, vento, estrelas, faíscas): riscos de 1 px em
+## colunas sorteadas por hash da linha, como as outras camadas (iguais em qualquer aparelho).
+class ParticleLayer:
 	extends Node2D
 
-	const COLOR := Color(0.75, 0.85, 1.0, 0.22)
-
+	var color := Color(0.75, 0.85, 1.0, 0.22)
+	var length: int = 4
+	var step: float = 17.0
 	var offset: float = 0.0
 	var slant: float = 0.35
 	var view_size := Vector2(305, 678)
 
 	func _draw() -> void:
-		var step := 17.0
 		var first := floori(-offset / step) - 1
 		var last := first + ceili(view_size.y / step) + 2
 		for i: int in range(first, last):
 			var h := absi(hash(i * 7907))
 			for k: int in range(3):
 				var x := float((h >> (k * 6)) % maxi(1, int(view_size.x) + 40)) - 20.0
-				var y := i * step + offset + float((h >> (k * 4 + 3)) % 17)
-				for s: int in range(4):
-					draw_rect(Rect2(x + slant * s * 3.0, y + s * 3.0, 1.0, 3.0), COLOR)
+				var y := i * step + offset + float((h >> (k * 4 + 3)) % int(step))
+				for s: int in range(length):
+					draw_rect(Rect2(x + slant * s * 3.0, y + s * 3.0, 1.0, 3.0 if length > 1 else 1.0), color)

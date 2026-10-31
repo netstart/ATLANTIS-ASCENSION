@@ -21,10 +21,14 @@ const HEADING_SIZE := 16
 const TOUCH_MIN := 36.0
 
 
+## Escala do texto (opção de acessibilidade: 1,0 / 1,15 / 1,3). Vale para o tema e para os rótulos.
+static var text_scale: float = 1.0
+
+
 static func build(font: Font) -> Theme:
 	var theme := Theme.new()
 	theme.default_font = font
-	theme.default_font_size = FONT_SIZE
+	theme.default_font_size = scaled(FONT_SIZE)
 	theme.set_color("font_color", "Label", TEXT)
 	theme.set_color("font_outline_color", "Label", VOLCANIC)
 	theme.set_constant("outline_size", "Label", 0)
@@ -39,6 +43,10 @@ static func build(font: Font) -> Theme:
 	scroll_bg.bg_color = Color(DEEP_BLUE, 0.0)
 	theme.set_stylebox("panel", "ScrollContainer", scroll_bg)
 	return theme
+
+
+static func scaled(size: int) -> int:
+	return roundi(size * text_scale)
 
 
 static func button_box(state: String) -> StyleBoxFlat:
@@ -66,7 +74,7 @@ static func button_box(state: String) -> StyleBoxFlat:
 static func label(text: String, size: int = FONT_SIZE, color: Color = TEXT, wrap: bool = false) -> Label:
 	var node := Label.new()
 	node.text = text
-	node.add_theme_font_size_override("font_size", size)
+	node.add_theme_font_size_override("font_size", scaled(size))
 	node.add_theme_color_override("font_color", color)
 	if wrap:
 		node.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
