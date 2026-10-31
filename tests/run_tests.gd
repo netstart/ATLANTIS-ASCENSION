@@ -4,6 +4,8 @@ extends SceneTree
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const PixelScalerScript := preload("res://scripts/autoload/pixel_scaler.gd")
+const SimTests := preload("res://tests/sim_tests.gd")
+const ParallaxTests := preload("res://tests/parallax_tests.gd")
 const SEMVER := "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
 
 var _count: int = 0
@@ -19,6 +21,8 @@ func _initialize() -> void:
 	_test_gfx_quality()
 	_test_languages()
 	_test_version()
+	SimTests.new().run_unit(_check)
+	ParallaxTests.new().run_unit(_check)
 	print("%d verificações, %d falhas" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 

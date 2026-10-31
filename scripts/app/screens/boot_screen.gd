@@ -10,6 +10,7 @@ var _background: TextureRect
 var _content: VBoxContainer
 var _title: Label
 var _tagline: Label
+var _play: Button
 var _credits: Button
 var _version: Label
 ## Contorno da área de jogo (só na Fase 0), acima do fundo e abaixo do conteúdo.
@@ -42,6 +43,13 @@ func _build() -> void:
 	var gap := Control.new()
 	gap.custom_minimum_size = Vector2(0, 24)
 	_content.add_child(gap)
+	_play = Button.new()
+	_play.name = "Play"
+	_play.custom_minimum_size = Vector2(160, UiTheme.TOUCH_MIN + 8.0)
+	_play.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_play.add_theme_font_size_override("font_size", UiTheme.HEADING_SIZE)
+	_play.pressed.connect(func() -> void: navigate.emit(&"hub"))
+	_content.add_child(_play)
 	_credits = Button.new()
 	_credits.name = "Credits"
 	_credits.custom_minimum_size = Vector2(160, UiTheme.TOUCH_MIN)
@@ -55,6 +63,7 @@ func _build() -> void:
 
 func refresh_texts() -> void:
 	_tagline.text = tr("boot.tagline")
+	_play.text = tr("boot.play")
 	_credits.text = tr("boot.credits")
 	_version.text = tr("boot.dev_build") % String(ProjectSettings.get_setting("application/config/version"))
 	relayout()
@@ -92,4 +101,4 @@ func _gradient() -> GradientTexture2D:
 
 ## Controles que precisam caber na área segura (testes de layout).
 func layout_controls() -> Array[Control]:
-	return [_title, _tagline, _credits, _version]
+	return [_title, _tagline, _play, _credits, _version]

@@ -1,0 +1,54 @@
+[
+	{"id": "tidebreaker", "name_key": "boss.tidebreaker", "sprite": "klaed_frigate", "scale": 2.0,
+		"hp": 2100, "home_y": 96, "body_radius": 26, "points": 8000, "medals": 5, "duel": false,
+		"music": "", "phases": [
+			{"id": "fans", "until_hp": 0.5, "armor": 1.0, "par_s": 20, "move": {"amp": 46, "freq": 0.16},
+				"patterns": [{"pattern": "tide_fans", "anchor": "body", "delay": 40},
+					{"pattern": "tide_needles", "anchor": "body", "delay": 90}]},
+			{"id": "spiral", "until_hp": 0.0, "armor": 1.0, "par_s": 20, "move": {"amp": 18, "freq": 0.1},
+				"intro": {"hitstop": 8},
+				"patterns": [{"pattern": "tide_spiral", "anchor": "body", "delay": 60}]}
+		]},
+	{"id": "kraken_engine", "name_key": "boss.kraken_engine", "sprite": "klaed_dreadnought", "scale": 1.8,
+		"hp": 6000, "home_y": 104, "body_radius": 40, "body_y": -6, "points": 30000, "medals": 10, "duel": true,
+		"music": "junkala_epic_boss_battle", "enter_from": 160,
+		"parts": [
+			{"id": "t1", "x": -112, "y": 40, "hp": 360, "radius": 11, "share": 0.06, "leak": 0.2, "sway": 14, "freq": 0.31, "phase": 0.0, "points": 2500},
+			{"id": "t2", "x": -80, "y": 70, "hp": 360, "radius": 11, "share": 0.06, "leak": 0.2, "sway": 12, "freq": 0.27, "phase": 0.2, "points": 2500},
+			{"id": "t3", "x": -42, "y": 88, "hp": 360, "radius": 11, "share": 0.06, "leak": 0.2, "sway": 10, "freq": 0.35, "phase": 0.4, "points": 2500},
+			{"id": "t4", "x": 42, "y": 88, "hp": 360, "radius": 11, "share": 0.06, "leak": 0.2, "sway": 10, "freq": 0.33, "phase": 0.6, "points": 2500},
+			{"id": "t5", "x": 80, "y": 70, "hp": 360, "radius": 11, "share": 0.06, "leak": 0.2, "sway": 12, "freq": 0.29, "phase": 0.8, "points": 2500},
+			{"id": "t6", "x": 112, "y": 40, "hp": 360, "radius": 11, "share": 0.06, "leak": 0.2, "sway": 14, "freq": 0.3, "phase": 0.1, "points": 2500},
+			{"id": "eye_l", "x": -24, "y": -14, "radius": 9, "weak": 2.0, "active_in": ["armor_open"]},
+			{"id": "eye_r", "x": 24, "y": -14, "radius": 9, "weak": 2.0, "active_in": ["armor_open"]},
+			{"id": "core", "x": 0, "y": 6, "radius": 14, "weak": 1.6, "active_in": ["overload"]}
+		],
+		"phases": [
+			{"id": "tentacles", "until_hp": 0.65, "armor": 0.25, "par_s": 45, "move": {"amp": 22, "freq": 0.1},
+				"patterns": [
+					{"pattern": "kraken_suction", "anchor": "t1", "delay": 60},
+					{"pattern": "kraken_suction", "anchor": "t6", "delay": 100},
+					{"pattern": "kraken_suction", "anchor": "t2", "delay": 140},
+					{"pattern": "kraken_suction", "anchor": "t5", "delay": 180},
+					{"pattern": "kraken_suction", "anchor": "t3", "delay": 220},
+					{"pattern": "kraken_suction", "anchor": "t4", "delay": 260},
+					{"pattern": "kraken_sweep", "anchor": "body", "delay": 80}
+				]},
+			{"id": "armor_open", "until_hp": 0.3, "armor": 0.6, "par_s": 40, "move": {"amp": 34, "freq": 0.12},
+				"intro": {"hitstop": 8, "dialogue": "kraken_p2"},
+				"patterns": [
+					{"pattern": "kraken_beam", "anchor": "body", "delay": 70},
+					{"pattern": "kraken_spiral_cw", "anchor": "eye_l", "delay": 60},
+					{"pattern": "kraken_spiral_ccw", "anchor": "eye_r", "delay": 60}
+				]},
+			{"id": "overload", "until_hp": 0.0, "armor": 1.0, "par_s": 40, "move": {"amp": 16, "freq": 0.18},
+				"desperation_after_s": 35, "intro": {"hitstop": 10, "dialogue": "kraken_p3", "event": "ocean_shift_reverse"},
+				"patterns": [
+					{"pattern": "kraken_growing_fans", "anchor": "core", "delay": 70},
+					{"pattern": "kraken_rain", "anchor": "t1", "delay": 90},
+					{"pattern": "kraken_rain", "anchor": "t6", "delay": 130},
+					{"pattern": "kraken_rain", "anchor": "t3", "delay": 170},
+					{"pattern": "kraken_rain", "anchor": "t4", "delay": 210}
+				]}
+		]}
+]

@@ -8,6 +8,7 @@ extends Node
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const CreditsScreenTests := preload("res://tests/credits_screen_tests.gd")
+const FlowTests := preload("res://tests/flow_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -28,6 +29,7 @@ func _ready() -> void:
 	DeviceProfiles.check_scaler(self, _check)
 	await LayoutTests.new().run(self, _check)
 	await CreditsScreenTests.new().run(self, _check)
+	await FlowTests.new().run(self, _check)
 	for file: String in SaveManager.TEST_PATHS + [Settings.TEST_PATH]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)
@@ -50,6 +52,7 @@ func _check(condition: bool, label: String) -> void:
 func _test_data() -> void:
 	_check(DB.errors.is_empty(), "Dados: nenhum erro ao carregar (%s)" % [DB.errors])
 	_check(DB.ids("ships").size() == 6, "Dados: 6 aeronaves da 1.0")
+	_check(not Sim.load_tables()["enemies"].is_empty(), "Dados: inimigos carregam")
 	for id: StringName in DB.ids("ships"):
 		var ship := DB.ship(id)
 		_check(not DB.weapon(StringName(String(ship.get("signature", "")))).is_empty(),

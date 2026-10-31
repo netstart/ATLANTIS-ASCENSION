@@ -1,0 +1,9 @@
+{
+	"pack_root": "kenney",
+	"license_id": "kenney_music_jingles",
+	"files": {
+		"music-jingles/Audio/8-Bit jingles/jingles_NES00.ogg": "audio/music/kenney_jingle_victory.ogg",
+		"music-jingles/Audio/8-Bit jingles/jingles_NES03.ogg": "audio/music/kenney_jingle_defeat.ogg",
+		"music-jingles/Audio/8-Bit jingles/jingles_NES08.ogg": "audio/music/kenney_jingle_reward.ogg"
+	}
+}

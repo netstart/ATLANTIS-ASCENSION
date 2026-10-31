@@ -26,6 +26,7 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Ocean Creatures | michael-jay-rov | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://michael-jay-rov.itch.io/ocean-creatures |
 | 8-bit Epic Space Shooter Music | HydroGene | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-epic-space-shooter-music |
 | Epic Boss Battle (Seamlessly Looping) | Juhani Junkala (SubspaceAudio) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/boss-battle-music |
+| Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos) | Clayton K. N. Passos | MIT | tools/gen_sprites.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

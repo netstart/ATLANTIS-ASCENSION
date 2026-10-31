@@ -1,0 +1,66 @@
+[
+	{"id": "wasp_aimed", "bullet": "orb_cyan_m", "steps": [
+		{"op": "aimed", "speed": 92},
+		{"op": "wait", "frames": 110}
+	]},
+	{"id": "buoy_ring", "bullet": "orb_cyan_m", "steps": [
+		{"op": "ring", "count": 8, "speed": 58},
+		{"op": "rotate", "deg": 22.5},
+		{"op": "wait", "frames": 115}
+	]},
+	{"id": "tide_fans", "bullet": "orb_gold_m", "steps": [
+		{"op": "aimed_fan", "count": 5, "spread_deg": 50, "speed": 84},
+		{"op": "wait", "frames": 42},
+		{"op": "aimed_fan", "count": 4, "spread_deg": 36, "speed": 98},
+		{"op": "wait", "frames": 75}
+	]},
+	{"id": "tide_needles", "bullet": "needle_gold", "steps": [
+		{"op": "wait", "frames": 50},
+		{"op": "line", "count": 4, "speed": 105, "speed_step": 18, "aim": true},
+		{"op": "wait", "frames": 70}
+	]},
+	{"id": "tide_spiral", "bullet": "orb_cyan_s", "steps": [
+		{"op": "ring", "count": 5, "speed": 64},
+		{"op": "rotate", "deg": 15},
+		{"op": "wait", "frames": 12},
+		{"op": "repeat", "from": 0, "times": 14},
+		{"op": "wait", "frames": 70}
+	]},
+	{"id": "kraken_suction", "bullet": "orb_violet_m", "steps": [
+		{"op": "ring", "count": 8, "speed": 52},
+		{"op": "wait", "frames": 170}
+	]},
+	{"id": "kraken_sweep", "bullet": "orb_cyan_m", "steps": [
+		{"op": "wait", "frames": 40},
+		{"op": "aimed_fan", "count": 7, "spread_deg": 70, "speed": 78},
+		{"op": "wait", "frames": 100}
+	]},
+	{"id": "kraken_beam", "steps": [
+		{"op": "beam", "warn_frames": 50, "frames": 55, "width": 24, "oy": 34},
+		{"op": "wait", "frames": 170}
+	]},
+	{"id": "kraken_spiral_cw", "bullet": "orb_cyan_s", "steps": [
+		{"op": "ring", "count": 4, "speed": 68},
+		{"op": "rotate", "deg": 17},
+		{"op": "wait", "frames": 10},
+		{"op": "repeat", "from": 0, "times": 18},
+		{"op": "wait", "frames": 90}
+	]},
+	{"id": "kraken_spiral_ccw", "bullet": "orb_cyan_s", "steps": [
+		{"op": "ring", "count": 4, "speed": 68, "offset_deg": 45},
+		{"op": "rotate", "deg": -17},
+		{"op": "wait", "frames": 10},
+		{"op": "repeat", "from": 0, "times": 18},
+		{"op": "wait", "frames": 90}
+	]},
+	{"id": "kraken_growing_fans", "bullet": "orb_coral_l", "steps": [
+		{"op": "fan", "count": 9, "spread_deg": 120, "speed": 52, "accel": 22},
+		{"op": "wait", "frames": 50},
+		{"op": "fan", "count": 8, "spread_deg": 105, "speed": 60, "accel": 22},
+		{"op": "wait", "frames": 65}
+	]},
+	{"id": "kraken_rain", "bullet": "orb_violet_m", "steps": [
+		{"op": "aimed", "speed": 88},
+		{"op": "wait", "frames": 85}
+	]}
+]

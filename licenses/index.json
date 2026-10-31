@@ -113,7 +113,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://kenney.nl/assets/kenney-fonts",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 2
   },
   {
     "id": "kenney_audio",
@@ -124,7 +125,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://kenney.nl/assets/sci-fi-sounds",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 23
   },
   {
     "id": "kenney_music_jingles",
@@ -135,7 +137,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://kenney.nl/assets/music-jingles",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 3
   },
   {
     "id": "foozle_void_main_ship",
@@ -146,7 +149,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://foozlecc.itch.io/void-main-ship",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 10
   },
   {
     "id": "foozle_void_fleet_pack_1",
@@ -157,7 +161,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://foozlecc.itch.io/void-fleet-pack-1",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 15
   },
   {
     "id": "foozle_void_fleet_pack_2",
@@ -190,7 +195,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://foozlecc.itch.io/void-environment-pack",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 2
   },
   {
     "id": "foozle_void_pickups_pack",
@@ -201,7 +207,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://foozlecc.itch.io/void-pickups-pack",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 2
   },
   {
     "id": "ocean_creatures",
@@ -223,7 +230,8 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://opengameart.org/content/8-bit-epic-space-shooter-music",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
   },
   {
     "id": "junkala_boss_battle_music",
@@ -234,6 +242,20 @@
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
     "source_url": "https://opengameart.org/content/boss-battle-music",
-    "license_file": "res://licenses/texts/CC0-1.0.txt"
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "atlantis_generated",
+    "name": "Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)",
+    "author": "Clayton K. N. Passos",
+    "license_id": "MIT",
+    "category": "art",
+    "version": "tools/gen_sprites.py",
+    "downloaded_at": "2026-10-30",
+    "verified_at": "2026-10-30",
+    "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
+    "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
+    "files_count": 18
   }
 ]

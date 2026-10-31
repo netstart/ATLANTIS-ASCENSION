@@ -1,5 +1,455 @@
 [
  {
+  "file": "assets/art/generated/boss/tentacle_segment.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "1cff63f8e2b108f7837e111056d57696a6175f54052dc42305f9e152d942ed47"
+ },
+ {
+  "file": "assets/art/generated/boss/tentacle_tip.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "9f070115934c21babdd277dbbf13d47f5c934c34844adce3a7417fcd95f3807f"
+ },
+ {
+  "file": "assets/art/generated/bullets/needle_gold.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3d79bdafb89c555081bb1f06f871976b779dc6e2dc638fea92479fcaa97bcd73"
+ },
+ {
+  "file": "assets/art/generated/bullets/orb_coral_16.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "b6d4925c6bfc3b775646bea70240b92a3d60318ff63b9ade3febe7ee5e047548"
+ },
+ {
+  "file": "assets/art/generated/bullets/orb_cyan_12.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "e90eeb995e766e1d8ffae8813564e866f036e643b5385c57f0b5eb1e4b462ac3"
+ },
+ {
+  "file": "assets/art/generated/bullets/orb_cyan_8.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6c2715df8ddcb4fe1c2986f66964ecb21e00675473bd7f86805f1ea9a37af0eb"
+ },
+ {
+  "file": "assets/art/generated/bullets/orb_gold_12.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "257bcdc615f775c8c0842f252f6882c56f8606dfe9445c7ff59ac9ee67c63e42"
+ },
+ {
+  "file": "assets/art/generated/bullets/orb_violet_12.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "373314518de6a2025835d82e9b725d4f0c741ee640697667cf6cae473c01387c"
+ },
+ {
+  "file": "assets/art/generated/bullets/shot_pulsar.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "40be34190a112841ba39894631d6fd48527954ba94e4239af6f1eec6def0dc14"
+ },
+ {
+  "file": "assets/art/generated/fx/beam.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "27b0b9fbbcef87e66a6e5ac18b315f681f2786523cd9bb46b9adc69e5764e656"
+ },
+ {
+  "file": "assets/art/generated/fx/glow_32.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3dc623a907203be30538a440fe22dd69de60b139ae54b47304bf5a4f8d7aae26"
+ },
+ {
+  "file": "assets/art/generated/fx/ring_128.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "11b67091742f7aa62adadf5051e0b8bae591b9cbeebe8c5a2249ab29ba5fd00b"
+ },
+ {
+  "file": "assets/art/generated/fx/ring_32.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8361e5bddac77ac2068891402d6200d8c6142373353de4b84c066fa046eff05d"
+ },
+ {
+  "file": "assets/art/generated/fx/spark.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "34478d49c39d48fe0165a93a7e945fb261886b2c7820188f7b6bcce658d8d5f6"
+ },
+ {
+  "file": "assets/art/generated/pickups/medal.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "593368df2a4f0e1f410ed302a3ad5139b49584ac94119ab55e4e7748fd5f814a"
+ },
+ {
+  "file": "assets/art/generated/pickups/orb_laser.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f555b2460a77ee1637105f13194337e8f55fb158698a83a67b78c53a29cfdd36"
+ },
+ {
+  "file": "assets/art/generated/pickups/orb_pulsar.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "50907ea8ecb6dc24470ba81645616215ea75d1979a1a378cdc83676f507d3100"
+ },
+ {
+  "file": "assets/art/generated/pickups/pearl.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "42e54cc1c4bb6f4fda9b2e5c4f9cf37809e60e68aa32f2db2a946e3735538a26"
+ },
+ {
+  "file": "assets/art/void/environment/asteroid_explode.png",
+  "source": "foozle/Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Asteroids/PNGs/Asteroid 01 - Explode.png",
+  "license_id": "foozle_void_environment_pack",
+  "sha256": "bc1b41e4334a84fa01aff6c696437cdee494846fd7bdec5bd6c129efb3928f7c"
+ },
+ {
+  "file": "assets/art/void/environment/planet_earth.png",
+  "source": "foozle/Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Planets/PNGs/Earth-Like planet.png",
+  "license_id": "foozle_void_environment_pack",
+  "sha256": "9deae581a07ad48f254d217acf87c9f06768bbd311051158873f7ed8054be112"
+ },
+ {
+  "file": "assets/art/void/klaed/dreadnought_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Dreadnought - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "9279138454dce73f101dbd0c8301c073adbe7991d1c0c2765c3109b5bb8f3c1f"
+ },
+ {
+  "file": "assets/art/void/klaed/dreadnought_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Dreadnought - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "fd238dd5799d68b34950e09b5eeb102d4ea226eb4866cb4e68dc194aecb48a52"
+ },
+ {
+  "file": "assets/art/void/klaed/dreadnought_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Dreadnought - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "8484c65ccb1d85c47207e8bdc34c5efee24d447ffe020ad927801af0ad603742"
+ },
+ {
+  "file": "assets/art/void/klaed/fighter_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Fighter - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "5471493f0810039def98930c0d404cb92aa7e7c87f314c011c77142d50a8b9d7"
+ },
+ {
+  "file": "assets/art/void/klaed/fighter_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Fighter - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "74ba91259c12038497e18d70676c7762136c9e68b83ef0123caa027af905aa34"
+ },
+ {
+  "file": "assets/art/void/klaed/fighter_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Fighter - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "a2605a73bbc1f13f57928129eb9cb6140a8d19afcea97e2510d98703e639c8b2"
+ },
+ {
+  "file": "assets/art/void/klaed/frigate_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Frigate - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "c853e1d0282eac5728ebe76bdccf97a0cc28973271979fd581a997dc8d206584"
+ },
+ {
+  "file": "assets/art/void/klaed/frigate_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Frigate - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "87db4e148561d3b049010032d062092c43a026138403586ed8f081f14928c65a"
+ },
+ {
+  "file": "assets/art/void/klaed/frigate_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Frigate - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "3e7f8e1aa57e64f5b92cdc6bb630643d1eceb8f870476f1387134e4b6acabc7b"
+ },
+ {
+  "file": "assets/art/void/klaed/scout_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Scout - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "48efffeeece3ae4f727404480addd346c87804813a4523364188c607f9b45168"
+ },
+ {
+  "file": "assets/art/void/klaed/scout_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Scout - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "904bc3b1af660b35ca977a4dd59b534c4d9678434e784285a5c4cb3d53bfbacd"
+ },
+ {
+  "file": "assets/art/void/klaed/scout_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Scout - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "a2605a73bbc1f13f57928129eb9cb6140a8d19afcea97e2510d98703e639c8b2"
+ },
+ {
+  "file": "assets/art/void/klaed/support_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Support ship - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "96fdea7d82abb4843c2abd2886ffef24ea2db3cd6bf60124db9ca99de141386f"
+ },
+ {
+  "file": "assets/art/void/klaed/support_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Support ship - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "92e611cb3381bddf2824b1ec244d920bac10b5fa327b59f28870fc63b1d800d9"
+ },
+ {
+  "file": "assets/art/void/klaed/support_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Support ship - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "9662805eb9426bb027099e7de32e06deaca354c9e6e326485f464dd0b4503ed1"
+ },
+ {
+  "file": "assets/art/void/main_ship/base_damaged.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Damaged.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "35c56f9be50e326800c6653d43ff31ef5958d38461e2438c0e9bbc6ca803ac92"
+ },
+ {
+  "file": "assets/art/void/main_ship/base_full.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "133a1251dd6de0ec7b5762bde499086bff56f1f808988a3f2e77b7f8990e217b"
+ },
+ {
+  "file": "assets/art/void/main_ship/base_slight.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Slight damage.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "ce3f724a5a1e2c4021afa430271330db016235fd3e72036dd1ad23f7a72669a9"
+ },
+ {
+  "file": "assets/art/void/main_ship/base_very_damaged.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Very damaged.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "4b33b0fdb39d5e60f3e6907e1f2163fbc216e93a9b45081050b4246a3c172f3e"
+ },
+ {
+  "file": "assets/art/void/main_ship/engine_base.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engines/PNGs/Main Ship - Engines - Base Engine.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "8a7c214047c980c13255830278d2bee9e70c69b097ff5bea57fb20cfb74694f7"
+ },
+ {
+  "file": "assets/art/void/main_ship/engine_base_idle.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engine Effects/PNGs/Main Ship - Engines - Base Engine - Idle.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "582c5ec41e274e552dd65eee4e34228cb2bf5ac66194ab0e2ea7107b7694d27b"
+ },
+ {
+  "file": "assets/art/void/main_ship/engine_base_powering.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engine Effects/PNGs/Main Ship - Engines - Base Engine - Powering.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "49c769b02229b47e1a7eb1d9b857753caea27ddc316d223a46dcf41486f48861"
+ },
+ {
+  "file": "assets/art/void/main_ship/proj_zapper.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main ship weapons/PNGs/Main ship weapon - Projectile - Zapper.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "23154e5b46d10a5d4b99a6120bd01330f77d79e1a8b3d75c6410ea4530716fbd"
+ },
+ {
+  "file": "assets/art/void/main_ship/shield_invincibility.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Shields/PNGs/Main Ship - Shields - Invincibility Shield.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "18964c68ec8689d39008196cef577136d1c526cd0ef67945b3f2cd79b463e375"
+ },
+ {
+  "file": "assets/art/void/main_ship/shield_round.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Shields/PNGs/Main Ship - Shields - Round Shield.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "64624515bc96fac45bd8f0221aa9c5454646a206a817f96fd1861abf2fe9378b"
+ },
+ {
+  "file": "assets/art/void/pickups/weapon_autocannons.png",
+  "source": "foozle/Foozle_2DS0016_Void_PickupsPack/Foozle_2DS0016_Void_PickupsPack/Weapons/PNGs/Pickup Icon - Weapons - Auto Cannons.png",
+  "license_id": "foozle_void_pickups_pack",
+  "sha256": "b9a02e8ab549b3d20a8048f8fd1616ab9aeed28f8cf601216184d9fa9174e770"
+ },
+ {
+  "file": "assets/art/void/pickups/weapon_zapper.png",
+  "source": "foozle/Foozle_2DS0016_Void_PickupsPack/Foozle_2DS0016_Void_PickupsPack/Weapons/PNGs/Pickup Icon - Weapons - Zapper.png",
+  "license_id": "foozle_void_pickups_pack",
+  "sha256": "7740706b9831d45414ed20c449584bf8c48129cce5bb02cf4fea1be2c06a8c50"
+ },
+ {
+  "file": "assets/audio/music/hydrogene_space_shooter.mp3",
+  "source": "opengameart/8bit-spaceshooter.mp3",
+  "license_id": "hydrogene_space_shooter_music",
+  "sha256": "f8a232f6fc5a52d1ea85705447617a1d6132e63d993d63ad542c253f1b614b93"
+ },
+ {
+  "file": "assets/audio/music/junkala_epic_boss_battle.wav",
+  "source": "opengameart/juhani-junkala-epic-boss-battle-loop.wav",
+  "license_id": "junkala_boss_battle_music",
+  "sha256": "35f75b4381dfbb053992876f7dfc567d9fd959d61b73954d5b1cd519753e7df1"
+ },
+ {
+  "file": "assets/audio/music/kenney_jingle_defeat.ogg",
+  "source": "kenney/music-jingles/Audio/8-Bit jingles/jingles_NES03.ogg",
+  "license_id": "kenney_music_jingles",
+  "sha256": "64b146c4b737d4a74d60316554bdb667cfbe20681a71722948c5f70f83af7d92"
+ },
+ {
+  "file": "assets/audio/music/kenney_jingle_reward.ogg",
+  "source": "kenney/music-jingles/Audio/8-Bit jingles/jingles_NES08.ogg",
+  "license_id": "kenney_music_jingles",
+  "sha256": "ed99f241626d54754c8e73af1b2e9146e04a4a4a6ba353671dd9f1501c6c8109"
+ },
+ {
+  "file": "assets/audio/music/kenney_jingle_victory.ogg",
+  "source": "kenney/music-jingles/Audio/8-Bit jingles/jingles_NES00.ogg",
+  "license_id": "kenney_music_jingles",
+  "sha256": "1010c9b566d6c090ff03a4aaaf7439e26eb4cc4f20373800d0b7e6a9057b795d"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_beam.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/laserLarge_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "a56d95794cd732d6c2d66ce488c14cf557fe526c282897c9a77675c2bd9b77e6"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_beam_warn.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/computerNoise_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "1527944e16eb14b48ee03fe3e7ce6aae94262833a4e1f83928d451a7414fe4e1"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_bomb.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/lowFrequency_explosion_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "cdda50600a4928f2f1b8371224d53c171ac799c1cf2c30b11999508985250b3b"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_boss_alert.ogg",
+  "source": "kenney/digital-audio/Audio/lowThreeTone.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "b4b3bc7420e71bfbec49a6ea13b8c12d76a5751cbdf063d8a8ac017c0b1e1d87"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_explosion_big.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/lowFrequency_explosion_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "3cb48d86dab63140cfb9aaeea4d4a6846abaca5831d157d8adbec0490da26343"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_explosion_medium.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/explosionCrunch_002.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "be2b8ddc62e4a24c91e2e77793de98549ce216faf2f323a917e7d6f34321ff97"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_explosion_small.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/explosionCrunch_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "4b597d658d0ae101f0a030fbeea5fc3a4292ab85f017470a8254a8e7959cbd69"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_graze.ogg",
+  "source": "kenney/digital-audio/Audio/highUp.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "cbc1c3c7ccf5d7903818144a4c3f5b2ed2385095792f29d8d7c76360ba4fa559"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_hit.ogg",
+  "source": "kenney/impact-sounds/Audio/impactMetal_light_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "33b5e6e37c6e9d54e07bf5a89b12c76e879f40c1ea83cdd82714df1d6f9fec6d"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_medal.ogg",
+  "source": "kenney/digital-audio/Audio/pepSound1.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "f2f44effce087e47683f0fea05a71002bd8dca78fb10bf93d9f0b38d49f9590e"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_ocean_shift.ogg",
+  "source": "kenney/digital-audio/Audio/phaseJump1.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "c60069ed7108678dd6a1306404d168a93cc2575cda37b06add9dd6c4d46352a3"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_orb.ogg",
+  "source": "kenney/digital-audio/Audio/powerUp1.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "8c361b624b560c0bc30ea3063b71212bc30caebf425c9df2481c13b25561485c"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_pearl.ogg",
+  "source": "kenney/digital-audio/Audio/pepSound3.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "5e9f2b4a0b14e65a157d0bbcb28cf816926583afa96e753489c722ec3d810a78"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_player_hit.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/explosionCrunch_004.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "9c3a1c73cadf0de5d5a578b31a264f20b1ac7cb6ec9bbd34a203f58402ea5390"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_shield.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/forceField_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "c2916f2a062c8ddd1aca2826d134fe90847037db31342726ffb0f9097afe339c"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_shot_laser.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/laserRetro_002.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "df6112dc4eba5444bc28a1c8b80f6ce942bb2696beb466ac8e736b2ebf3e15b9"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_shot_pulsar.ogg",
+  "source": "kenney/sci-fi-sounds/Audio/laserSmall_000.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "72b589eadd41781257ac859e4f4d030222e623390e4a1a83f6d05329a6e026f1"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_special_ready.ogg",
+  "source": "kenney/digital-audio/Audio/phaserUp3.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "d6edcbde2c7190e275ef3eba08a8886129153a361cd0e16dc0fb58206deb5e53"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_ui_back.ogg",
+  "source": "kenney/interface-sounds/Audio/back_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "07db973f79f6ae0f2edc34561e7592e24d0577455919fb602cb8ecc0da991dcf"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_ui_click.ogg",
+  "source": "kenney/interface-sounds/Audio/click_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "ccfb7fa0cccdd9faec0eb16033c732b1e308d139d80f799161495d58f7adcdb9"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_ui_confirm.ogg",
+  "source": "kenney/interface-sounds/Audio/confirmation_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "063564703b6094d70718a3e787a55cc9141611e4ecd6b6637f8828f79b4a8c3a"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_ui_tab.ogg",
+  "source": "kenney/interface-sounds/Audio/drop_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "692ee3a6f1821402ca649ff735bee9591dc4846c8098fc7d6a90fd15fa57c1af"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_weapon_up.ogg",
+  "source": "kenney/digital-audio/Audio/powerUp10.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "e4d2c7707655361678ccd358048b7956753e4f333e99545b4ae25e07a9b2ef9b"
+ },
+ {
   "file": "assets/fonts/fusion_pixel_12_ja.woff2",
   "source": "fusion-pixel-font/fonts/fusion_pixel_12_ja.woff2",
   "license_id": "fusion_pixel_font",
@@ -28,6 +478,18 @@
   "source": "fusion-pixel-font/fonts/fusion_pixel_12_zh_tw.woff2",
   "license_id": "fusion_pixel_font",
   "sha256": "a7754e7683aec659465e9b8e8f85e96f4c9546172a535bbf466ebb382877354b"
+ },
+ {
+  "file": "assets/fonts/kenney_future_narrow.ttf",
+  "source": "kenney/kenney-fonts/Fonts/Kenney Future Narrow.ttf",
+  "license_id": "kenney_fonts",
+  "sha256": "572a3fc36adedf951365f77fa37011115363c7e8a537a308e563abdb299d7477"
+ },
+ {
+  "file": "assets/fonts/kenney_pixel_square.ttf",
+  "source": "kenney/kenney-fonts/Fonts/Kenney Pixel Square.ttf",
+  "license_id": "kenney_fonts",
+  "sha256": "8170aa2fc3e6a0d1dd0bccccede3af7a75a3c06cf96fed1796ea7d17e5b19d56"
  },
  {
   "file": "assets/licenses_src/fusion_pixel_OFL.txt",

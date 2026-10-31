@@ -79,8 +79,14 @@ python -I tools\check_licenses.py
 python -I tools\sync_assets.py
 # Textos (fonte: tools\i18n\*.py)
 python -I tools\build_i18n.py
-# Capturas das telas para revisão visual
+# Capturas das telas e da partida para revisão visual (com janela)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
+# Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/scroll_bench.tscn -- --strict
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_bench.tscn -- --strict
+# Arte gerada pelo projeto (balas, coletáveis, efeitos)
+python -I tools\gen_sprites.py
 # Android SDK (você aceita as licenças do Google no terminal)
 powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1
 ```

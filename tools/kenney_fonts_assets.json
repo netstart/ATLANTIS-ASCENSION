@@ -1,0 +1,8 @@
+{
+	"pack_root": "kenney",
+	"license_id": "kenney_fonts",
+	"files": {
+		"kenney-fonts/Fonts/Kenney Future Narrow.ttf": "fonts/kenney_future_narrow.ttf",
+		"kenney-fonts/Fonts/Kenney Pixel Square.ttf": "fonts/kenney_pixel_square.ttf"
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"pack_root": "foozle",
+	"license_id": "foozle_void_fleet_pack_1",
+	"note": "Void (Foozle, CC0): só os arquivos usados no Vertical Slice, com nomes limpos.",
+	"files": {
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Scout - Base.png": "art/void/klaed/scout_base.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Scout - Engine.png": "art/void/klaed/scout_engine.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Scout - Destruction.png": "art/void/klaed/scout_destruction.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Fighter - Base.png": "art/void/klaed/fighter_base.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Fighter - Engine.png": "art/void/klaed/fighter_engine.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Fighter - Destruction.png": "art/void/klaed/fighter_destruction.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Support ship - Base.png": "art/void/klaed/support_base.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Support ship - Engine.png": "art/void/klaed/support_engine.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Support ship - Destruction.png": "art/void/klaed/support_destruction.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Frigate - Base.png": "art/void/klaed/frigate_base.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Frigate - Engine.png": "art/void/klaed/frigate_engine.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Frigate - Destruction.png": "art/void/klaed/frigate_destruction.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Dreadnought - Base.png": "art/void/klaed/dreadnought_base.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Dreadnought - Engine.png": "art/void/klaed/dreadnought_engine.png",
+		"Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Dreadnought - Destruction.png": "art/void/klaed/dreadnought_destruction.png"
+	}
+}

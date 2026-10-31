@@ -1,0 +1,9 @@
+[
+	{"id": "skiff", "name_key": "enemy.skiff", "faction": "protocol", "sprite": "klaed_scout",
+		"hp": 3, "radius": 10, "points": 100},
+	{"id": "tide_wasp", "name_key": "enemy.tide_wasp", "faction": "protocol", "sprite": "klaed_fighter",
+		"hp": 7, "radius": 12, "points": 160, "pattern": "wasp_aimed", "pattern_delay": 40},
+	{"id": "sentinel_buoy", "name_key": "enemy.sentinel_buoy", "faction": "protocol", "sprite": "klaed_support",
+		"hp": 26, "radius": 15, "points": 450, "pattern": "buoy_ring", "pattern_delay": 50, "marked": true,
+		"drop": "medal"}
+]

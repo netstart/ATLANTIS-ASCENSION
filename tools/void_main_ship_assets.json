@@ -1,0 +1,17 @@
+{
+	"pack_root": "foozle",
+	"license_id": "foozle_void_main_ship",
+	"note": "Void (Foozle, CC0): só os arquivos usados no Vertical Slice, com nomes limpos.",
+	"files": {
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png": "art/void/main_ship/base_full.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Slight damage.png": "art/void/main_ship/base_slight.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Damaged.png": "art/void/main_ship/base_damaged.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Very damaged.png": "art/void/main_ship/base_very_damaged.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engines/PNGs/Main Ship - Engines - Base Engine.png": "art/void/main_ship/engine_base.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engine Effects/PNGs/Main Ship - Engines - Base Engine - Idle.png": "art/void/main_ship/engine_base_idle.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engine Effects/PNGs/Main Ship - Engines - Base Engine - Powering.png": "art/void/main_ship/engine_base_powering.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Shields/PNGs/Main Ship - Shields - Invincibility Shield.png": "art/void/main_ship/shield_invincibility.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Shields/PNGs/Main Ship - Shields - Round Shield.png": "art/void/main_ship/shield_round.png",
+		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main ship weapons/PNGs/Main ship weapon - Projectile - Zapper.png": "art/void/main_ship/proj_zapper.png"
+	}
+}

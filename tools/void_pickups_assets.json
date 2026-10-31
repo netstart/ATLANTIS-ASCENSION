@@ -1,0 +1,9 @@
+{
+	"pack_root": "foozle",
+	"license_id": "foozle_void_pickups_pack",
+	"note": "Void (Foozle, CC0): só os arquivos usados no Vertical Slice, com nomes limpos.",
+	"files": {
+		"Foozle_2DS0016_Void_PickupsPack/Foozle_2DS0016_Void_PickupsPack/Weapons/PNGs/Pickup Icon - Weapons - Auto Cannons.png": "art/void/pickups/weapon_autocannons.png",
+		"Foozle_2DS0016_Void_PickupsPack/Foozle_2DS0016_Void_PickupsPack/Weapons/PNGs/Pickup Icon - Weapons - Zapper.png": "art/void/pickups/weapon_zapper.png"
+	}
+}

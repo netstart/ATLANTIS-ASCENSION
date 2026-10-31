@@ -1,0 +1,8 @@
+[
+	{"id": "c1m1_intro", "speaker": "farol", "text_key": "dialogue.c1m1_intro", "color": "#8fe8ff"},
+	{"id": "c1m1_shift", "speaker": "farol", "text_key": "dialogue.c1m1_shift", "color": "#8fe8ff"},
+	{"id": "c1m1_breath", "speaker": "mare", "text_key": "dialogue.c1m1_breath", "color": "#ffe08a"},
+	{"id": "c1m1_boss", "speaker": "farol", "text_key": "dialogue.c1m1_boss", "color": "#8fe8ff"},
+	{"id": "kraken_p2", "speaker": "protocol", "text_key": "dialogue.kraken_p2", "color": "#ff7a7e"},
+	{"id": "kraken_p3", "speaker": "thalassa", "text_key": "dialogue.kraken_p3", "color": "#c79bff"}
+]

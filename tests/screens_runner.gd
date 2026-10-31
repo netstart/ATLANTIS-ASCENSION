@@ -6,7 +6,7 @@ extends Node
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
-const SCREENS: Array[StringName] = [&"boot", &"credits"]
+const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits"]
 
 
 func _ready() -> void:
@@ -44,9 +44,14 @@ func _ready() -> void:
 			var app := App.new()
 			add_child(app)
 			await get_tree().process_frame
+			app.last_result = {"mission": "c1m1", "cleared": true, "score": 123456, "record": true,
+					"stars": [true, true, false, true], "kills": 92, "grazes": 41, "max_chain": 33, "medals": 8,
+					"credits": 125}
 			for screen_name: StringName in SCREENS:
 				app.go(screen_name)
 				await LayoutTests.settle(self)
+				for i: int in range(40):
+					await get_tree().process_frame
 				await RenderingServer.frame_post_draw
 				var image := get_viewport().get_texture().get_image()
 				image.save_png("%s/%s_%s_%s.png" % [out, screen_name, r["label"], lang])

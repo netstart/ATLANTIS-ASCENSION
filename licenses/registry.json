@@ -323,7 +323,7 @@
     "ai_generated": false,
     "modifications": "",
     "files": [
-      "assets/art/void/void-main-ship/*"
+      "assets/art/void/main_ship/*"
     ],
     "sha256": {
       "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
@@ -350,7 +350,7 @@
     "ai_generated": false,
     "modifications": "",
     "files": [
-      "assets/art/void/void-fleet-pack-1/*"
+      "assets/art/void/klaed/*"
     ],
     "sha256": {
       "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
@@ -431,7 +431,7 @@
     "ai_generated": false,
     "modifications": "",
     "files": [
-      "assets/art/void/void-environment-pack/*"
+      "assets/art/void/environment/*"
     ],
     "sha256": {
       "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
@@ -458,7 +458,7 @@
     "ai_generated": false,
     "modifications": "",
     "files": [
-      "assets/art/void/void-pickups-pack/*"
+      "assets/art/void/pickups/*"
     ],
     "sha256": {
       "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
@@ -549,5 +549,32 @@
     "verified_at": "2026-10-30",
     "verified_by": "Claude (Fase 0); revisão final por Clayton antes do lançamento",
     "snapshot_file": "docs/licenses/junkala_boss_battle_music_2026-10-30.pdf"
+  },
+  {
+    "id": "atlantis_generated",
+    "name": "Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)",
+    "category": "art",
+    "author": "Clayton K. N. Passos",
+    "version": "tools/gen_sprites.py",
+    "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
+    "license_id": "MIT",
+    "license_url": "https://raw.githubusercontent.com/netstart/ATLANTIS-ASCENSION/main/LICENSE",
+    "license_file": "licenses/texts/MIT-AtlantisAscension.txt",
+    "snapshot_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
+    "attribution_required": false,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "",
+    "files": [
+      "assets/art/generated/*"
+    ],
+    "sha256": {
+      "license_file": "1ab2072c77bfa02b09e6c8bc14df394dea29fb7fde887901b599deff059b9ef3",
+      "snapshot_file": "5c09dc5f0b00d1f8fc2d2310000569ccb6b746ceb74cb12cb3853cd05a2e46bf"
+    },
+    "downloaded_at": "2026-10-30",
+    "verified_at": "2026-10-30",
+    "verified_by": "Claude (Fase 1); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/atlantis_generated_2026-10-30.pdf"
   }
 ]

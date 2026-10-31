@@ -1,0 +1,203 @@
+"""Textos do Vertical Slice: hub, mapa, missão, HUD, rádio, chefes e resultado (plano mestre 7).
+Ordem: pt_BR, en, es, de, fr, ru, id, ja, ko, zh_TW, zh_CN. Falas de rádio curtas (≤ 60 caracteres
+em pt-BR) e sem bloquear a partida.
+"""
+
+STRINGS = {
+    # --- Título e hub ----------------------------------------------------------------------
+    "boot.play": ["Jogar", "Play", "Jugar", "Spielen", "Jouer", "Играть", "Main", "プレイ", "플레이", "開始", "开始"],
+    "hub.play": [
+        "JOGAR · %s", "PLAY · %s", "JUGAR · %s", "SPIELEN · %s", "JOUER · %s", "ИГРАТЬ · %s", "MAIN · %s",
+        "プレイ · %s", "플레이 · %s", "開始 · %s", "开始 · %s",
+    ],
+    "hub.tab_hangar": ["Hangar", "Hangar", "Hangar", "Hangar", "Hangar", "Ангар", "Hanggar", "格納庫", "격납고", "機庫", "机库"],
+    "hub.tab_campaign": [
+        "Campanha", "Campaign", "Campaña", "Kampagne", "Campagne", "Кампания", "Kampanye", "キャンペーン", "캠페인",
+        "戰役", "战役",
+    ],
+    "hub.tab_ships": ["Naves", "Ships", "Naves", "Schiffe", "Vaisseaux", "Корабли", "Kapal", "機体", "기체", "機體", "机体"],
+    "hub.tab_events": ["Eventos", "Events", "Eventos", "Events", "Événements", "События", "Acara", "イベント", "이벤트", "活動", "活动"],
+    "hub.tab_shop": ["Loja", "Shop", "Tienda", "Shop", "Boutique", "Магазин", "Toko", "ショップ", "상점", "商店", "商店"],
+    "hub.soon": ["Em breve", "Soon", "Pronto", "Bald", "Bientôt", "Скоро", "Segera", "近日公開", "곧 공개", "即將推出", "即将推出"],
+    "hub.banner_c1": [
+        "Capítulo 1 · A Halcyon pede socorro", "Chapter 1 · The Halcyon calls for help",
+        "Capítulo 1 · La Halcyon pide ayuda", "Kapitel 1 · Die Halcyon ruft um Hilfe",
+        "Chapitre 1 · La Halcyon appelle à l'aide", "Глава 1 · «Халкион» зовёт на помощь",
+        "Bab 1 · Halcyon meminta bantuan", "第1章・ハルシオンの救難信号", "1장 · 할시온의 구조 요청",
+        "第1章・翠鳥號求救", "第1章・翠鸟号求救",
+    ],
+    "hub.banner_daily": [
+        "Desafio Diário · em breve", "Daily Challenge · soon", "Desafío diario · pronto", "Tägliche Herausforderung · bald",
+        "Défi du jour · bientôt", "Ежедневное испытание · скоро", "Tantangan Harian · segera", "デイリーチャレンジ・近日公開",
+        "일일 도전 · 곧 공개", "每日挑戰・即將推出", "每日挑战・即将推出",
+    ],
+    "currency.credits": ["Créditos", "Credits", "Créditos", "Credits", "Crédits", "Кредиты", "Kredit", "クレジット", "크레딧", "點數", "点数"],
+    "currency.orichalcum": [
+        "Oricalco", "Orichalcum", "Oricalco", "Orichalkum", "Orichalque", "Орихалк", "Orikalkum", "オリハルコン",
+        "오리하르콘", "山銅", "山铜",
+    ],
+    "currency.pearls": ["Pérolas", "Pearls", "Perlas", "Perlen", "Perles", "Жемчуг", "Mutiara", "真珠", "진주", "珍珠", "珍珠"],
+    # --- Mapa -------------------------------------------------------------------------------
+    "map.title": [
+        "Carta da Ascensão", "Ascension Chart", "Carta de la Ascensión", "Karte des Aufstiegs", "Carte de l'Ascension",
+        "Карта Восхождения", "Peta Kenaikan", "昇天の海図", "상승의 해도", "昇天海圖", "升天海图",
+    ],
+    "map.chapter1": [
+        "Capítulo 1 · Oceano Atlântico", "Chapter 1 · Atlantic Ocean", "Capítulo 1 · Océano Atlántico",
+        "Kapitel 1 · Atlantischer Ozean", "Chapitre 1 · Océan Atlantique", "Глава 1 · Атлантический океан",
+        "Bab 1 · Samudra Atlantik", "第1章・大西洋", "1장 · 대서양", "第1章・大西洋", "第1章・大西洋",
+    ],
+    "map.chapter2": [
+        "Capítulo 2 · Atlântida", "Chapter 2 · Atlantis", "Capítulo 2 · Atlántida", "Kapitel 2 · Atlantis",
+        "Chapitre 2 · Atlantide", "Глава 2 · Атлантида", "Bab 2 · Atlantis", "第2章・アトランティス", "2장 · 아틀란티스",
+        "第2章・亞特蘭提斯", "第2章・亚特兰蒂斯",
+    ],
+    "map.locked": ["Bloqueado", "Locked", "Bloqueado", "Gesperrt", "Verrouillé", "Закрыто", "Terkunci", "ロック中", "잠김", "未解鎖", "未解锁"],
+    "map.best": [
+        "Recorde: %s", "Best: %s", "Récord: %s", "Rekord: %s", "Record : %s", "Рекорд: %s", "Terbaik: %s", "ベスト: %s",
+        "최고: %s", "最佳: %s", "最佳: %s",
+    ],
+    "stage.c1m1": [
+        "1-1 · O Despertar", "1-1 · The Awakening", "1-1 · El Despertar", "1-1 · Das Erwachen", "1-1 · L'Éveil",
+        "1-1 · Пробуждение", "1-1 · Kebangkitan", "1-1・目覚め", "1-1 · 각성", "1-1・甦醒", "1-1・苏醒",
+    ],
+    "stage.c1m2": [
+        "1-2 · Plataformas em chamas", "1-2 · Burning Platforms", "1-2 · Plataformas en llamas", "1-2 · Brennende Plattformen",
+        "1-2 · Plateformes en feu", "1-2 · Горящие платформы", "1-2 · Anjungan Terbakar", "1-2・燃える海上基地",
+        "1-2 · 불타는 플랫폼", "1-2・燃燒的平台", "1-2・燃烧的平台",
+    ],
+    "stage.c1m3": [
+        "1-3 · Canais de energia", "1-3 · Energy Channels", "1-3 · Canales de energía", "1-3 · Energiekanäle",
+        "1-3 · Canaux d'énergie", "1-3 · Энергоканалы", "1-3 · Kanal Energi", "1-3・エネルギー水路", "1-3 · 에너지 수로",
+        "1-3・能量水道", "1-3・能量水道",
+    ],
+    # --- Estrelas e resultado --------------------------------------------------------------------
+    "star.clear": [
+        "Concluir a missão", "Clear the mission", "Completar la misión", "Mission abschließen", "Terminer la mission",
+        "Пройти миссию", "Selesaikan misi", "ミッションクリア", "임무 완료", "完成任務", "完成任务",
+    ],
+    "star.no_damage": [
+        "Sem perder casco", "No hull damage", "Sin daño al casco", "Ohne Rumpfschaden", "Sans dégât à la coque",
+        "Без повреждений корпуса", "Tanpa kerusakan lambung", "被弾なし", "선체 피해 없음", "船體無損", "船体无损",
+    ],
+    "star.all_marked": [
+        "Destruir todos os alvos marcados", "Destroy every marked target", "Destruir todos los objetivos marcados",
+        "Alle markierten Ziele zerstören", "Détruire toutes les cibles marquées", "Уничтожить все отмеченные цели",
+        "Hancurkan semua target bertanda", "マーク対象を全破壊", "표시된 목표 전부 파괴", "摧毀所有標記目標", "摧毁所有标记目标",
+    ],
+    "objective.miniboss_time": [
+        "Derrotar o Quebra-Maré em 30 s", "Defeat the Tidebreaker in 30 s", "Derrota al Rompeolas en 30 s",
+        "Den Wellenbrecher in 30 s besiegen", "Vaincre le Brise-Lames en 30 s", "Победить Волнолома за 30 с",
+        "Kalahkan Pemecah Ombak dalam 30 dtk", "タイドブレイカーを30秒で撃破", "타이드브레이커를 30초 안에 격파",
+        "30秒內擊敗破浪者", "30秒内击败破浪者",
+    ],
+    "results.cleared": [
+        "Missão concluída", "Mission complete", "Misión completada", "Mission erfüllt", "Mission accomplie",
+        "Миссия выполнена", "Misi selesai", "ミッションクリア", "임무 완료", "任務完成", "任务完成",
+    ],
+    "results.failed": [
+        "Missão falhou", "Mission failed", "Misión fallida", "Mission gescheitert", "Mission échouée", "Миссия провалена",
+        "Misi gagal", "ミッション失敗", "임무 실패", "任務失敗", "任务失败",
+    ],
+    "results.record": [
+        "Novo recorde!", "New record!", "¡Nuevo récord!", "Neuer Rekord!", "Nouveau record !", "Новый рекорд!",
+        "Rekor baru!", "新記録！", "신기록!", "新紀錄！", "新纪录！",
+    ],
+    "results.kills": ["Abates", "Kills", "Derribos", "Abschüsse", "Abattus", "Сбито", "Kill", "撃墜", "격추", "擊墜", "击坠"],
+    "results.grazes": ["Rasantes", "Grazes", "Roces", "Streifer", "Frôlements", "Касания", "Serempet", "かすり", "그레이즈", "擦彈", "擦弹"],
+    "results.chain": [
+        "Maior corrente", "Best chain", "Mejor cadena", "Beste Kette", "Meilleure chaîne", "Лучшая цепь", "Rantai terbaik",
+        "最大チェイン", "최대 체인", "最高連鎖", "最高连锁",
+    ],
+    "results.medals": ["Medalhas", "Medals", "Medallas", "Medaillen", "Médailles", "Медали", "Medali", "メダル", "메달", "勳章", "勋章"],
+    "results.credits": [
+        "Créditos: +%s", "Credits: +%s", "Créditos: +%s", "Credits: +%s", "Crédits : +%s", "Кредиты: +%s", "Kredit: +%s",
+        "クレジット: +%s", "크레딧: +%s", "點數: +%s", "点数: +%s",
+    ],
+    "results.retry": [
+        "Tentar de novo", "Try again", "Reintentar", "Nochmal", "Réessayer", "Ещё раз", "Coba lagi", "リトライ", "다시 하기",
+        "再試一次", "再试一次",
+    ],
+    "results.continue": ["Continuar", "Continue", "Continuar", "Weiter", "Continuer", "Далее", "Lanjut", "続ける", "계속", "繼續", "继续"],
+    # --- HUD -------------------------------------------------------------------------------------
+    "hud.special": ["SP", "SP", "SP", "SP", "SP", "СП", "SP", "必殺", "필살", "必殺", "必杀"],
+    "hud.bomb": ["BOMBA", "BOMB", "BOMBA", "BOMBE", "BOMBE", "БОМБА", "BOM", "ボム", "폭탄", "炸彈", "炸弹"],
+    "hud.paused": ["Pausa", "Paused", "Pausa", "Pause", "Pause", "Пауза", "Jeda", "ポーズ", "일시정지", "暫停", "暂停"],
+    "hud.resume": ["Continuar", "Resume", "Continuar", "Weiter", "Reprendre", "Продолжить", "Lanjutkan", "再開", "계속", "繼續", "继续"],
+    "hud.restart": ["Recomeçar", "Restart", "Reiniciar", "Neustart", "Recommencer", "Заново", "Ulangi", "やり直す", "재시작", "重來", "重来"],
+    "hud.quit": [
+        "Sair da missão", "Leave mission", "Salir de la misión", "Mission verlassen", "Quitter la mission", "Покинуть миссию",
+        "Keluar misi", "ミッションを出る", "임무 나가기", "離開任務", "离开任务",
+    ],
+    "hud.duel": [
+        "TOQUE RÁPIDO!", "TAP FAST!", "¡TOCA RÁPIDO!", "SCHNELL TIPPEN!", "TAPEZ VITE !", "ЖМИ БЫСТРЕЕ!", "KETUK CEPAT!",
+        "連打！", "연타!", "快速點擊！", "快速点击！",
+    ],
+    "hud.ocean_shift": [
+        "A MARÉ ESTÁ MUDANDO", "THE TIDE IS TURNING", "LA MAREA CAMBIA", "DIE GEZEITEN WENDEN SICH", "LA MARÉE TOURNE",
+        "ПРИЛИВ МЕНЯЕТСЯ", "ARUS BERUBAH", "潮が変わる", "조류가 바뀐다", "潮汐正在改變", "潮汐正在改变",
+    ],
+    # --- Rádio ---------------------------------------------------------------------------------------
+    "speaker.farol": ["Farol", "Beacon", "Faro", "Leuchtfeuer", "Phare", "Маяк", "Mercusuar", "ビーコン", "등대", "燈塔", "灯塔"],
+    "speaker.mare": ["Maré", "Tide", "Marea", "Flut", "Marée", "Прилив", "Pasang", "タイド", "타이드", "潮汐", "潮汐"],
+    "speaker.protocol": [
+        "LEVIATHAN", "LEVIATHAN", "LEVIATHAN", "LEVIATHAN", "LEVIATHAN", "ЛЕВИАФАН", "LEVIATHAN", "リヴァイアサン",
+        "리바이어던", "利維坦", "利维坦",
+    ],
+    "speaker.thalassa": ["Thalassa", "Thalassa", "Thalassa", "Thalassa", "Thalassa", "Таласса", "Thalassa", "タラッサ", "탈라사", "塔拉薩", "塔拉萨"],
+    "dialogue.c1m1_intro": [
+        "Maré, perdemos a superfície. Abra caminho.", "Tide, we lost the surface. Clear a path.",
+        "Marea, perdimos la superficie. Abre camino.", "Flut, Oberfläche verloren. Bahn frei machen.",
+        "Marée, on a perdu la surface. Ouvre la voie.", "Прилив, связь с поверхностью потеряна. Пробивайся.",
+        "Pasang, permukaan hilang. Buka jalan.", "タイド、地上との通信途絶。道を開け。", "타이드, 수면과 끊겼다. 길을 열어.",
+        "潮汐，地表失聯。殺出一條路。", "潮汐，地表失联。杀出一条路。",
+    ],
+    "dialogue.c1m1_shift": [
+        "A água está baixando... algo está emergindo!", "The water is dropping... something is rising!",
+        "El agua baja... ¡algo emerge!", "Das Wasser sinkt... etwas taucht auf!", "L'eau baisse... quelque chose émerge !",
+        "Вода уходит... что-то поднимается!", "Air surut... sesuatu muncul!", "水位が下がる…何かが浮上する！",
+        "물이 빠진다... 뭔가 떠오른다!", "水位下降…有東西浮上來了！", "水位下降…有东西浮上来了！",
+    ],
+    "dialogue.c1m1_breath": [
+        "As ruínas acendem quando eu passo.", "The ruins light up as I pass.", "Las ruinas se encienden a mi paso.",
+        "Die Ruinen leuchten, wenn ich vorbeifliege.", "Les ruines s'allument à mon passage.",
+        "Руины вспыхивают, когда я пролетаю.", "Reruntuhan menyala saat aku lewat.", "通るたびに遺跡が光る。",
+        "내가 지나가면 유적이 빛난다.", "我經過時，遺跡亮了起來。", "我经过时，遗迹亮了起来。",
+    ],
+    "dialogue.c1m1_boss": [
+        "Leitura colossal embaixo de você. Prepare-se!", "Colossal reading below you. Brace!",
+        "Lectura colosal debajo de ti. ¡Prepárate!", "Gewaltiges Signal unter dir. Mach dich bereit!",
+        "Signal colossal sous toi. Prépare-toi !", "Огромная цель под тобой. Готовься!",
+        "Sinyal raksasa di bawahmu. Bersiap!", "真下に巨大反応。備えろ！", "아래에 거대한 반응. 대비해!",
+        "下方有巨大反應。準備！", "下方有巨大反应。准备！",
+    ],
+    "dialogue.kraken_p2": [
+        "AMEAÇA CLASSIFICADA. ABRINDO NÚCLEO.", "THREAT CLASSIFIED. OPENING CORE.", "AMENAZA CLASIFICADA. ABRIENDO NÚCLEO.",
+        "BEDROHUNG EINGESTUFT. KERN ÖFFNET.", "MENACE CLASSÉE. OUVERTURE DU NOYAU.", "УГРОЗА ОПРЕДЕЛЕНА. ЯДРО ОТКРЫТО.",
+        "ANCAMAN TERKLASIFIKASI. INTI DIBUKA.", "脅威を分類。コアを開放。", "위협 분류 완료. 코어 개방.", "威脅已分類。核心開啟。",
+        "威胁已分类。核心开启。",
+    ],
+    "dialogue.kraken_p3": [
+        "...devolva... o céu...", "...return... the sky...", "...devuelve... el cielo...", "...gib... den Himmel... zurück...",
+        "...rends... le ciel...", "...верни... небо...", "...kembalikan... langit...", "…空を…返して…", "…하늘을… 돌려줘…",
+        "…歸還…天空…", "…归还…天空…",
+    ],
+    # --- Inimigos e chefes ------------------------------------------------------------------------
+    "enemy.skiff": ["Esquife", "Skiff", "Esquife", "Skiff", "Esquif", "Ялик", "Sekoci", "スキフ", "스키프", "小艇", "小艇"],
+    "enemy.tide_wasp": [
+        "Vespa de Maré", "Tide Wasp", "Avispa de Marea", "Gezeitenwespe", "Guêpe des marées", "Приливная оса", "Tawon Pasang",
+        "タイドワスプ", "조류 말벌", "潮汐黃蜂", "潮汐黄蜂",
+    ],
+    "enemy.sentinel_buoy": [
+        "Boia Sentinela", "Sentinel Buoy", "Boya Centinela", "Wächterboje", "Bouée sentinelle", "Буй-страж", "Pelampung Penjaga",
+        "センチネルブイ", "감시 부표", "哨兵浮標", "哨兵浮标",
+    ],
+    "boss.tidebreaker": [
+        "QUEBRA-MARÉ", "TIDEBREAKER", "ROMPEOLAS", "WELLENBRECHER", "BRISE-LAMES", "ВОЛНОЛОМ", "PEMECAH OMBAK",
+        "タイドブレイカー", "타이드브레이커", "破浪者", "破浪者",
+    ],
+    "boss.kraken_engine": [
+        "KRAKEN ENGINE", "KRAKEN ENGINE", "KRAKEN ENGINE", "KRAKEN ENGINE", "KRAKEN ENGINE", "КРАКЕН-ДВИГАТЕЛЬ",
+        "KRAKEN ENGINE", "クラーケン・エンジン", "크라켄 엔진", "克拉肯引擎", "克拉肯引擎",
+    ],
+}

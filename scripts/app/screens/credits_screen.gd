@@ -26,7 +26,7 @@ func _build() -> void:
 	_back = Button.new()
 	_back.name = "Back"
 	_back.custom_minimum_size = Vector2(72, UiTheme.TOUCH_MIN)
-	_back.pressed.connect(func() -> void: navigate.emit(&"boot"))
+	_back.pressed.connect(func() -> void: navigate.emit(&"back"))
 	add_child(_back)
 	_title = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
 	_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -92,11 +92,6 @@ func _layout() -> void:
 	_scroll.position = Vector2(left, safe.position.y + HEADER_HEIGHT)
 	_scroll.size = Vector2(width, safe.size.y - HEADER_HEIGHT - 8.0)
 	_list.custom_minimum_size = Vector2(width - 8.0, 0.0)
-
-
-func back() -> bool:
-	navigate.emit(&"boot")
-	return true
 
 
 ## Textos visíveis da lista (teste da tela de créditos).

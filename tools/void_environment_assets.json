@@ -1,0 +1,9 @@
+{
+	"pack_root": "foozle",
+	"license_id": "foozle_void_environment_pack",
+	"note": "Void (Foozle, CC0): só os arquivos usados no Vertical Slice, com nomes limpos.",
+	"files": {
+		"Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Planets/PNGs/Earth-Like planet.png": "art/void/environment/planet_earth.png",
+		"Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Asteroids/PNGs/Asteroid 01 - Explode.png": "art/void/environment/asteroid_explode.png"
+	}
+}

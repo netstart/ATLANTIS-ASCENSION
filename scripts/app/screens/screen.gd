@@ -5,6 +5,8 @@ extends Control
 ## App.
 
 signal navigate(screen: StringName)
+## Pede para começar uma missão.
+signal play(mission_id: StringName)
 
 ## Área segura atual (fora do recorte da câmera), em coordenadas da própria tela.
 var safe := Rect2()
@@ -44,6 +46,12 @@ func refresh_texts() -> void:
 	pass
 
 
-## Volta de nível (botão voltar do Android, Esc, B do controle). Devolve se tratou.
+## A tela ficou visível (o App passa a si mesmo para leitura de estado, como o último resultado).
+func on_show(_app: Node) -> void:
+	pass
+
+
+## Volta de nível (botão voltar do Android, Esc, B do controle). Devolve se tratou; false deixa o
+## App voltar pelo histórico.
 func back() -> bool:
 	return false

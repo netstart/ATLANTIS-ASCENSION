@@ -17,6 +17,7 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Void — Environment Pack** — Foozle (foozle.io) (CC0-1.0) — https://foozlecc.itch.io/void-environment-pack
 - **Void — Pickups Pack** — Foozle (foozle.io) (CC0-1.0) — https://foozlecc.itch.io/void-pickups-pack
 - **Ocean Creatures** — michael-jay-rov (CC-BY-4.0) — https://michael-jay-rov.itch.io/ocean-creatures
+- **Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
 
 ## Música
 

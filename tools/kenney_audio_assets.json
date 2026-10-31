@@ -1,0 +1,30 @@
+{
+	"pack_root": "kenney",
+	"license_id": "kenney_audio",
+	"note": "Kenney Sci-fi, Impact, Digital e Interface Sounds (CC0), renomeados pelo uso.",
+	"files": {
+		"sci-fi-sounds/Audio/laserSmall_000.ogg": "audio/sfx/kenney_shot_pulsar.ogg",
+		"sci-fi-sounds/Audio/laserRetro_002.ogg": "audio/sfx/kenney_shot_laser.ogg",
+		"sci-fi-sounds/Audio/explosionCrunch_000.ogg": "audio/sfx/kenney_explosion_small.ogg",
+		"sci-fi-sounds/Audio/explosionCrunch_002.ogg": "audio/sfx/kenney_explosion_medium.ogg",
+		"sci-fi-sounds/Audio/lowFrequency_explosion_000.ogg": "audio/sfx/kenney_explosion_big.ogg",
+		"sci-fi-sounds/Audio/explosionCrunch_004.ogg": "audio/sfx/kenney_player_hit.ogg",
+		"sci-fi-sounds/Audio/forceField_000.ogg": "audio/sfx/kenney_shield.ogg",
+		"sci-fi-sounds/Audio/lowFrequency_explosion_001.ogg": "audio/sfx/kenney_bomb.ogg",
+		"sci-fi-sounds/Audio/laserLarge_000.ogg": "audio/sfx/kenney_beam.ogg",
+		"sci-fi-sounds/Audio/computerNoise_000.ogg": "audio/sfx/kenney_beam_warn.ogg",
+		"impact-sounds/Audio/impactMetal_light_000.ogg": "audio/sfx/kenney_hit.ogg",
+		"digital-audio/Audio/powerUp1.ogg": "audio/sfx/kenney_orb.ogg",
+		"digital-audio/Audio/powerUp10.ogg": "audio/sfx/kenney_weapon_up.ogg",
+		"digital-audio/Audio/pepSound1.ogg": "audio/sfx/kenney_medal.ogg",
+		"digital-audio/Audio/pepSound3.ogg": "audio/sfx/kenney_pearl.ogg",
+		"digital-audio/Audio/highUp.ogg": "audio/sfx/kenney_graze.ogg",
+		"digital-audio/Audio/lowThreeTone.ogg": "audio/sfx/kenney_boss_alert.ogg",
+		"digital-audio/Audio/phaserUp3.ogg": "audio/sfx/kenney_special_ready.ogg",
+		"digital-audio/Audio/phaseJump1.ogg": "audio/sfx/kenney_ocean_shift.ogg",
+		"interface-sounds/Audio/click_001.ogg": "audio/sfx/kenney_ui_click.ogg",
+		"interface-sounds/Audio/confirmation_001.ogg": "audio/sfx/kenney_ui_confirm.ogg",
+		"interface-sounds/Audio/back_001.ogg": "audio/sfx/kenney_ui_back.ogg",
+		"interface-sounds/Audio/drop_001.ogg": "audio/sfx/kenney_ui_tab.ogg"
+	}
+}

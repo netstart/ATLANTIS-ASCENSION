@@ -5,7 +5,7 @@ Checklist por fase do [plano mestre](01-atlantis-ascension-game-plan.md). Atuali
 
 Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limitação registrada
 
-## Estado atual (30/10/2026)
+## Estado atual (31/10/2026)
 
 - ✅ Planejamento: plano mestre, catálogo de assets, pesquisa de mercado, políticas e AGENTS.md.
 - ✅ Fase 0 concluída (versão `0.0.1`), exceto o Android SDK (⚠️ abaixo). `tools/run_checks.ps1`: `TUDO OK`
@@ -16,7 +16,12 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ⚠️ Android SDK não instalado: o `sdkmanager` exige que o mantenedor aceite as licenças do Google. Rode
   `powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1` (instala os pacotes que o Godot 4.7 pede e
   aponta o editor para o JDK e o SDK). Sem ele, o export Android não roda; o resto da Fase 0 não depende dele.
-- ⬜ Próximo passo: Fase 1 (Vertical Slice).
+- ✅ Fase 1 (Vertical Slice) concluída na versão `0.1.0`, exceto o APK (depende do Android SDK) e o playtest com
+  pessoas. `tools/run_checks.ps1`: `TUDO OK` (534 verificações de regras, 24.876 de integração, layout e fluxo,
+  84 textos x 11 idiomas, 21 componentes de licença e 87 arquivos de assets cobertos, mesmo hash em 1x/2x/3x e na
+  qualidade Baixa). Benchmarks: rolagem 72/72 listas aprovadas nas 18 resoluções (p95 ≤ 2,5 ms); partida com 1.000
+  balas inimigas p95 2,2 ms, pior quadro 20 ms.
+- ⬜ Próximo passo: Fase 2 (Alpha).
 
 ## Decisões pendentes do mantenedor
 
@@ -56,23 +61,33 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 
 ## Fase 1 — Vertical Slice · `0.1.0`
 
-- ⬜ `Sim` em passo fixo, `BulletPool` em MultiMesh, `PatternRunner` com a DSL
-- ⬜ Falcon com Pulsar e Laser, orbes e níveis, casco
-- ⬜ 3 inimigos, ondas em JSON, trajetórias
-- ⬜ `ParallaxRig` com 5 camadas do capítulo 1
-- ⬜ Bot de teste, determinismo 1x/2x/3x
-- ⬜ Pontuação: corrente, medalhas, graze, queima-roupa, pérolas
-- ⬜ Juice: hitstop, tremor, flash, partículas, som em camadas; avisos sonoros
-- ⬜ HUD e resultado com estrelas
-- ⬜ Missão 1-1 com Ocean Shift no compasso
-- ⬜ Mini-chefe Quebra-Maré
-- ⬜ Kraken Engine (3 etapas, duelo de raio)
-- ⬜ Rádio só nos respiros
-- ⬜ Hub mínimo (hangar em parallax, aeronave interativa, Jogar, Hangar, Campanha)
-- ⬜ Mapa com os nós do capítulo 1 em parallax
-- ⬜ pt-BR e en, SFX, trilha temporária, APK
-- ⬜ Layout e benchmarks verdes em todas as resoluções
-- ⬜ Playtest com 10 pessoas (metas da seção 1 do roadmap)
+- ✅ `Sim` pura em passo fixo (`scripts/sim/`), `BulletPool` compactado (2.048 inimigas, 512 do jogador) desenhado
+  em MultiMesh por tipo, `PatternRunner` com a DSL (ring, fan, aimed, aimed_fan, line, beam, wait, rotate, repeat)
+- ✅ Falcon com Pulsar (leque 3/5/7 + traseiros, Ressonância) e Laser (feixe que acerta o alvo mais próximo),
+  orbes que trocam de cor a cada 1,5 s, casco em 3 segmentos, bombas e especial com recarga e graze
+- ✅ 3 inimigos (Esquife, Vespa de Maré, Boia Sentinela), ondas em JSON (linha, V, coluna), 6 trajetórias puras,
+  entrada "do fundo" (profundidade 0,6 → 1,0 sem colisão)
+- ✅ Cenário do capítulo 1 em parallax: água por shader (cáusticas, cristas), ruínas procedurais que emergem no
+  Ocean Shift, espuma de primeiro plano; `ParallaxRig.layer_offset` puro e testado
+- ✅ Bot de teste (`scripts/bot/bot_pilot.gd`) vence a 1-1 com 4 estrelas; mesmo hash em 1x, 2x, 3x e Baixa
+- ✅ Pontuação: corrente (x1 a x16), medalhas de 100 a 10.000, graze, queima-roupa x1,5, pérolas das balas canceladas
+- ✅ Juice: hitstop determinístico, tremor com teto, flash de dano, explosões das folhas Void, faíscas, anéis;
+  sons Kenney por evento; aviso sonoro do feixe e alerta de chefe
+- ⚠️ Som em camadas (impacto + destroços + grave) e Ocean Shift sincronizado ao compasso ficam para o Alpha
+- ✅ HUD (pontuação, corrente, casco, bombas, arma, SP, BOMBA, pausa, rádio, nome do chefe, barra de HP, duelo) e
+  tela de resultado com as 4 estrelas, recorde e créditos gravados no save
+- ✅ Missão 1-1 (`data/stages/c1m1.json`): ~105 s de fase + mini-chefe + chefe, Ocean Shift aos 46 s
+- ✅ Mini-chefe Quebra-Maré (2 etapas) e Kraken Engine (6 tentáculos destrutíveis, olhos, núcleo, 3 etapas, feixe,
+  espirais, maré que volta na sobrecarga, duelo de raio por toques)
+- ✅ Rádio só nos respiros (abertura, antes do Ocean Shift, respiro, antes do chefe, trocas de etapa sem balas)
+- ✅ Hub: hangar vivo em 6 camadas (portal atlante, pilares, nave com reflexo, faíscas), arrastar inclina,
+  tocar a nave pulsa o motor, tocar o fundo solta onda de luz; saldo, banner rotativo, JOGAR, 5 abas (2 abertas)
+- ✅ Mapa "Carta da Ascensão" em 5 camadas de parallax com inércia, nós 1-1/1-2/1-3, cartão com estrelas e recorde
+- ✅ 11 idiomas (84 chaves), SFX Kenney, música CC0 (HydroGene na missão, Junkala no chefe), jingles
+- ⚠️ APK: depende do Android SDK (`tools\setup_android_sdk.ps1`, licenças aceitas pelo mantenedor)
+- ✅ Layout de todas as telas e do HUD nas 18 resoluções (com recorte em cima e embaixo), fluxo E2E título → hub →
+  mapa → missão → resultado → tentar de novo → sair, contraste das balas ≥ 4,5:1, benchmarks de rolagem e partida
+- ⚠️ Playtest com 10 pessoas: precisa de pessoas; roteiro na seção 13 do plano mestre
 
 ## Fase 2 — Alpha · `0.5.0`
 

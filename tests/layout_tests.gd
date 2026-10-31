@@ -5,7 +5,8 @@ extends RefCounted
 ## tests/integration_tests.gd.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
-const SCREENS: Array[StringName] = [&"boot", &"credits"]
+const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits"]
+const GAME := preload("res://scenes/game/Game.tscn")
 
 
 func run(host: Node, check: Callable) -> void:
@@ -26,8 +27,34 @@ func run(host: Node, check: Callable) -> void:
 				check_screen(app.screen(screen_name), safe, check, tag)
 			app.queue_free()
 			await host.get_tree().process_frame
+	await _run_hud(host, check)
 	DeviceProfiles.clear_insets()
 	Locale.set_language("pt_BR", false)
+
+
+## HUD da partida em cada caso (idiomas mais longos): controles na área segura, campo inteiro e
+## HUD cobrindo no máximo 6% do campo.
+func _run_hud(host: Node, check: Callable) -> void:
+	for c: Dictionary in DeviceProfiles.layout_cases():
+		var view: Vector2 = c["view"]
+		var safe := DeviceProfiles.safe_rect(view, c["insets"])
+		DeviceProfiles.simulate_insets(c["insets"])
+		for lang: String in Languages.INSET_LANGS:
+			Locale.set_language(lang, false)
+			var game := GAME.instantiate() as Game
+			game.configure(&"c1m1", &"falcon", 7, true)
+			host.add_child(game)
+			await host.get_tree().process_frame
+			game.relayout_for(view)
+			game.hud().size = view
+			await host.get_tree().process_frame
+			var tag := "Layout HUD %s [%s]" % [lang, c["label"]]
+			var layout: Dictionary = game.hud().layout
+			check.call(Playfield.fits(layout, safe), "%s: campo na área segura" % tag)
+			check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
+			check_screen_controls(game.hud().layout_controls(), safe, check, tag)
+			game.queue_free()
+			await host.get_tree().process_frame
 
 
 ## O teste roda numa janela pequena (headless): a raiz das telas recebe o tamanho lógico do aparelho.
@@ -48,6 +75,10 @@ static func check_screen(screen: Screen, safe: Rect2, check: Callable, tag: Stri
 	if screen == null:
 		return
 	var controls: Array[Control] = screen.call("layout_controls")
+	check_screen_controls(controls, safe, check, tag)
+
+
+static func check_screen_controls(controls: Array[Control], safe: Rect2, check: Callable, tag: String) -> void:
 	var rects: Array[Rect2] = []
 	for control: Control in controls:
 		if not control.is_visible_in_tree():
