@@ -221,5 +221,11 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (Kenney Game Icons, CC0), mapa com parallax ligado ao fundo e humor por estrato (redesenho só com a câmera
   andando), músicas novas por capítulo e de menu (Umplix, MintoDog, Pro Sensory, ansimuz, HydroGene, killerfishred:
   CC0; Magnesus: CC BY 4.0), músicas em laço
+- ✅ `1.6.1` Pronto para a Google Play: release sem plugins não simula compra nem anúncio (loja paga oculta,
+  recompensa direta), backup automático do save, arte da ficha gerada (`tools/build_store_art.ps1`: 8 capturas
+  1080x1920 e destaque 1024x500 nos 11 idiomas), ficha revisada com os números atuais e títulos/descrições curtas
+  nos 11 idiomas (`tools/check_store_texts.py`), política de privacidade 1.1 (offline, sem anúncios) com página
+  HTML (`tools/build_privacy_page.py`) e roteiro com todas as respostas do Play Console em
+  `docs/store/play-console.md`
 - ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
   (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`

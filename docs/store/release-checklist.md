@@ -16,18 +16,32 @@ nome do mantenedor, então ficam com ele. Ordem sugerida:
 
 ## 2. Google Play
 
-1. Criar a conta de desenvolvedor (taxa única) e o app com o pacote definitivo (hoje
-   `io.github.netstart.atlantisascension`; trocar em `export_presets.cfg` se mudar).
-2. Ficha da loja: textos de [listing.md](listing.md), capturas (`tests/screens_runner.tscn` e
-   `tests/game_shots_runner.tscn` geram as telas), ícone 512 px, imagem de destaque 1024x500.
-3. Política de privacidade publicada em URL pública: [privacy-policy.md](privacy-policy.md).
-4. Classificação etária (IARC) e Segurança de dados: respostas em [listing.md](listing.md).
-5. **Teste fechado com 20 testadores por 14 dias** (exigência da Play para contas pessoais novas).
-6. AdMob: criar a conta, o app e o bloco de anúncio **recompensado**; publicar `app-ads.txt` no site do
-   desenvolvedor (modelo em [app-ads.txt](app-ads.txt)); configurar a mensagem de consentimento UMP.
-7. Play Billing: produtos `supporter` (compra única), `season_gold` (trilha dourada) e pinturas avulsas.
-8. Ligar os plugins: com `GodotGooglePlayBilling` e `AdMob` presentes, `Store.simulated()` vira falso e a loja
-   passa a cobrar de verdade (ver `scripts/core/store.gd` e `scripts/core/ads.gd`).
+Roteiro completo, tela a tela, com todas as respostas do Play Console: [play-console.md](play-console.md).
+
+Já pronto no repositório:
+
+- ✅ AAB assinado com a chave de upload (preset "Android Play"): targetSdk 36, 64 bits alinhado em 16 KB, só a
+  permissão `VIBRATE`, backup automático do save ligado.
+- ✅ Build de release sem plugins de pagamento/anúncio não finge cobrança: a loja paga some e as recompensas de
+  "anúncio" saem direto (`Store.simulated`/`Store.purchases_enabled`). Ficha, política e declarações dizem
+  "sem anúncios, sem compras".
+- ✅ Arte da ficha: `toolsuild_store_art.ps1` (8 capturas 1080x1920 e a imagem de destaque 1024x500 em cada
+  um dos 11 idiomas, ícone 512).
+- ✅ Textos da ficha em [listing.md](listing.md) (pt-BR e en completos; título e descrição curta nos 11 idiomas),
+  com limites conferidos por `tools/check_store_texts.py`.
+- ✅ Política de privacidade em [privacy-policy.md](privacy-policy.md) e em HTML (`docs/privacy/index.html`).
+
+Só o mantenedor pode fazer:
+
+1. Criar a conta de desenvolvedor (taxa única, verificação de identidade) e o app; confirmar o pacote
+   `io.github.netstart.atlantisascension` antes do primeiro envio (ele fica fixo para sempre).
+2. Publicar a política de privacidade numa URL pública (GitHub Pages da pasta `docs/` ou o link do GitHub).
+3. Preencher as declarações com as respostas de [play-console.md](play-console.md) e enviar o AAB no teste interno.
+4. **Teste fechado com 12 testadores por 14 dias seguidos** (exigência da Play para contas pessoais novas) e pedir
+   acesso à produção.
+5. Fase 4 (opcional, depois): AdMob com UMP e Play Billing (`supporter`, `season_gold`, pinturas avulsas); com
+   `GodotGooglePlayBilling` e `AdMob` presentes a loja passa a cobrar de verdade (ver `scripts/core/store.gd` e
+   `scripts/core/ads.gd`). Antes, atualizar política, ficha e declarações (fim de [play-console.md](play-console.md)).
 
 ## 3. Steam
 

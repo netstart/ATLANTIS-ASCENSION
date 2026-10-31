@@ -29,7 +29,7 @@ func _fill() -> void:
 		text(note, tr("shop.simulated"), UiTheme.CORAL, UiTheme.SMALL_SIZE)
 	_fill_chest(profile, now)
 	_fill_paints(profile)
-	if not Store.is_steam():
+	if Store.purchases_enabled() or bool(profile["purchases"].get("supporter", false)):
 		add_heading(tr("shop.support"))
 		var box := card(UiTheme.GOLD)
 		text(box, tr("shop.support_desc"), UiTheme.TEXT)
@@ -80,6 +80,8 @@ func _fill_paints(profile: Dictionary) -> void:
 			_paint(shelf, id, name, tint, equipped == id)
 			continue
 		var rare := bool(def.get("supporter", false)) or bool(def.get("season", false))
+		if rare and not Store.purchases_enabled():
+			continue  # Sem compra com dinheiro (release sem Play Billing): pintura impossível de obter não aparece.
 		var box := _tile(shelf, name, tint, UiTheme.VIOLET if rare else UiTheme.GOLD, rare)
 		if rare:
 			var how := tr("shop.supporter_only") if bool(def.get("supporter", false)) else tr("shop.season_only")

@@ -23,7 +23,7 @@ $version = (Select-String -Path (Join-Path $project 'project.godot') -Pattern 'c
 $env:JAVA_HOME = $Java
 # Pastas de exportação limpas: arquivos de versões anteriores não podem entrar nos pacotes.
 Remove-Item (Join-Path $build 'windows'), (Join-Path $build 'linux') -Recurse -Force -ErrorAction SilentlyContinue
-Get-ChildItem $build -File -Include *.zip, *.tar.gz -ErrorAction SilentlyContinue | Remove-Item -Force
+Get-ChildItem (Join-Path $build '*') -File -Include *.zip, *.tar.gz -ErrorAction SilentlyContinue | Remove-Item -Force
 New-Item -ItemType Directory -Force (Join-Path $build 'windows'), (Join-Path $build 'linux') | Out-Null
 $failed = $false
 

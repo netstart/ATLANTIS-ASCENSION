@@ -2,7 +2,7 @@
 #   1. importa o projeto (valida a sintaxe de todos os scripts)
 #   2. lint (gdlint, regras em gdlintrc)
 #   3. testes das regras puras
-#   4. textos (11 idiomas, marcadores) e licenças
+#   4. textos (11 idiomas, marcadores), licenças, a página da política de privacidade e os limites dos textos da loja
 #   5. testes de integração (dados, idiomas, fontes, save, licenças, layout em todas as resoluções)
 #   6. determinismo e estresse da partida (a partir do Vertical Slice)
 #
@@ -69,6 +69,8 @@ if ($LASTEXITCODE -ne 0 -or ($tests -match 'FALHOU|SCRIPT ERROR')) { $failed = $
 Write-Host '== 4. Textos (11 idiomas, marcadores) e licenças' -ForegroundColor Cyan
 if ((Invoke-Python @((Join-Path $PSScriptRoot 'build_i18n.py'), '--check')) -ne 0) { $failed = $true }
 if ((Invoke-Python @((Join-Path $PSScriptRoot 'check_licenses.py'))) -ne 0) { $failed = $true }
+if ((Invoke-Python @((Join-Path $PSScriptRoot 'build_privacy_page.py'), '--check')) -ne 0) { $failed = $true }
+if ((Invoke-Python @((Join-Path $PSScriptRoot 'check_store_texts.py'))) -ne 0) { $failed = $true }
 
 Write-Host '== 5. Testes de integração (dados, idiomas, save, licenças, layout em todas as resoluções)' -ForegroundColor Cyan
 $integration = Invoke-Godot @('res://tests/integration_tests.tscn')

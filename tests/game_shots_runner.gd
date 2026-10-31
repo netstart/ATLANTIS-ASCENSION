@@ -1,7 +1,7 @@
 extends Node
 ## Capturas da partida para revisão visual (não é teste de aprovação). Sem --headless:
 ##   godot --path . res://tests/game_shots_runner.tscn -- --shots=<pasta> [--at=12,50,100] [--res=305x678]
-##     [--mission=c1m1] [--speed=3]
+##     [--mission=c1m1] [--speed=3] [--zoom=4]
 ## O bot joga em velocidade acelerada; em cada segundo de jogo pedido grava <pasta>/game_<s>_<res>.png.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
@@ -19,6 +19,7 @@ func _ready() -> void:
 	InputSetup.ensure_actions()
 	var mission := &"c1m1"
 	var res := "305x678"
+	var zoom := 2
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--shots="):
 			_out = arg.trim_prefix("--shots=")
@@ -27,6 +28,8 @@ func _ready() -> void:
 				_shots.append(float(s))
 		elif arg.begins_with("--res="):
 			res = arg.trim_prefix("--res=")
+		elif arg.begins_with("--zoom="):
+			zoom = int(arg.trim_prefix("--zoom="))
 		elif arg.begins_with("--mission="):
 			mission = StringName(arg.trim_prefix("--mission="))
 	if _shots.is_empty():
@@ -38,7 +41,7 @@ func _ready() -> void:
 			view = r["view"]
 	_label = res
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(Vector2i(view) * 2)
+	DisplayServer.window_set_size(Vector2i(view) * zoom)
 	await get_tree().create_timer(0.3).timeout
 	get_tree().root.get_node(^"PixelScaler").call("_apply")
 	_game = GAME.instantiate() as Game

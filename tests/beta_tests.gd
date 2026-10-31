@@ -110,6 +110,9 @@ func _store(check: Callable) -> void:
 	check.call(not Store.buy(p, "tint_supporter"), "Loja: a pintura do apoiador não se compra")
 	Store.equip(p, "tint_coral")
 	check.call(Economy.loadout(p)["cosmetic"] == "tint_coral", "Loja: pintura vai para a missão")
+	check.call(Store.simulated() == (OS.is_debug_build() and not Engine.has_singleton("GodotGooglePlayBilling")
+			and not Engine.has_singleton("AdMob")), "Loja: só simula em build de desenvolvimento sem plugins")
+	check.call(Store.purchases_enabled() and Store.ads_allowed(p), "Loja: compra e anúncio visíveis no modo simulado")
 	check.call(Store.simulated() and Store.support(p) and not Store.ads_allowed(p), "Apoiar (simulado): tira os anúncios")
 	var granted := [false]
 	Ads.show_rewarded(p, func(ok: bool) -> void: granted[0] = ok)

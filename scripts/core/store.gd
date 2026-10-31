@@ -3,7 +3,8 @@ extends RefCounted
 ## Loja (plano mestre 17): cosméticos por Pérolas de Maré, compra única "Apoiar" e anúncio recompensado
 ## opcional. Nada de poder à venda e nenhuma compra de moeda. Pagamento e anúncio reais ficam para a
 ## Fase 4 (Play Billing, AdMob com UMP): aqui são SIMULADOS — `simulated()` diz quando a loja finge a
-## transação (editor, testes e builds de desenvolvimento) e nenhuma cobrança acontece.
+## transação (editor, testes e builds de desenvolvimento) e nenhuma cobrança acontece. No build de release
+## sem os plugins (o AAB da Play hoje) não há compra nem anúncio: a loja some e a recompensa sai direto.
 ## Steam: premium, sem anúncios; os cosméticos vêm todos inclusos (feature "steam" no preset).
 
 const COSMETICS_PATH := "res://data/cosmetics.json"
@@ -49,14 +50,23 @@ static func is_steam() -> bool:
 	return OS.has_feature("steam")
 
 
-## Anúncios só no Android grátis; nunca na Steam e nunca para quem apoiou.
+## Anúncios só no Android grátis; nunca na Steam, nunca para quem apoiou e nunca sem o AdMob (fora do
+## modo simulado): sem anúncio de verdade, a recompensa é concedida direto.
 static func ads_allowed(profile: Dictionary) -> bool:
-	return not is_steam() and not bool(profile["purchases"].get("supporter", false))
+	return (not is_steam() and not bool(profile["purchases"].get("supporter", false))
+			and (Engine.has_singleton("AdMob") or simulated()))
 
 
-## Sem plugin de pagamento ou de anúncio, a loja simula (Fase 4 liga os reais).
+## Sem plugin de pagamento ou de anúncio, a loja simula (Fase 4 liga os reais) — só em builds de
+## desenvolvimento (editor, testes, APK de debug). Release sem plugin nunca finge uma cobrança.
 static func simulated() -> bool:
-	return not Engine.has_singleton("GodotGooglePlayBilling") and not Engine.has_singleton("AdMob")
+	return (not Engine.has_singleton("GodotGooglePlayBilling") and not Engine.has_singleton("AdMob")
+			and OS.is_debug_build())
+
+
+## Compras com dinheiro aparecem na tela: pagamento real (plugin) ou simulado (desenvolvimento).
+static func purchases_enabled() -> bool:
+	return not is_steam() and (Engine.has_singleton("GodotGooglePlayBilling") or simulated())
 
 
 ## "Apoiar": compra única que remove anúncios e dá a pintura dourada. Simulada até a Fase 4.
