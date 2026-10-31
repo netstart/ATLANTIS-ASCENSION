@@ -3,6 +3,9 @@ extends Node2D
 ## Desenha um BulletPool com um MultiMeshInstance2D por tipo de bala (docs/policies/qualidade.md:
 ## nenhum nó por bala). A cada quadro escreve o buffer de transformações só dos vivos e ajusta o
 ## visible_instance_count; o motor desenha cada tipo numa chamada.
+## Halo (opcional): um segundo MultiMesh por tipo, aditivo e com filtro linear, que reaproveita o
+## mesmo buffer com a textura de clarão maior e a cor "glow" do tipo. Fica atrás das balas: o núcleo e
+## o contorno continuam por cima (leitura), o halo só dá a luz neon.
 
 ## Floats por instância no buffer 2D: duas linhas de 4 (base x, base y, origem).
 const STRIDE := 8
@@ -19,9 +22,13 @@ const COLORBLIND := {
 
 ## Paleta de daltonismo ativa ("off" = cores originais).
 var palette: String = "off"
+## Alfa do halo aditivo (0 = sem halo) e quanto ele é maior que a bala.
+var halo_alpha: float = 0.0
+var halo_scale: float = 3.0
 
 var _kinds: Array[Dictionary] = []
 var _instances: Array[MultiMeshInstance2D] = []
+var _halos: Array[MultiMeshInstance2D] = []
 var _buffers: Array[PackedFloat32Array] = []
 var _counts := PackedInt32Array()
 var _orient := PackedByteArray()
@@ -30,6 +37,15 @@ var _orient := PackedByteArray()
 ## `kinds`: BulletKinds.ENEMY ou PLAYER. `capacity`: tamanho do pool.
 func setup(kinds: Array[Dictionary], capacity: int) -> void:
 	_kinds = kinds
+	var halo_layer: Node2D = null
+	if halo_alpha > 0.0:
+		halo_layer = Node2D.new()
+		var mat := CanvasItemMaterial.new()
+		mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		halo_layer.material = mat
+		halo_layer.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		add_child(halo_layer)
+	var flare := SpriteBank.generated("fx/flare_64")
 	for k: Dictionary in kinds:
 		var tex := SpriteBank.texture(String(k["texture"]))
 		var mesh := QuadMesh.new()
@@ -45,6 +61,21 @@ func setup(kinds: Array[Dictionary], capacity: int) -> void:
 		node.modulate = (COLORBLIND.get(palette, {}) as Dictionary).get(k["id"], Color(1, 1, 1))
 		add_child(node)
 		_instances.append(node)
+		if halo_layer != null:
+			var hmesh := QuadMesh.new()
+			hmesh.size = mesh.size * halo_scale
+			var hmm := MultiMesh.new()
+			hmm.transform_format = MultiMesh.TRANSFORM_2D
+			hmm.mesh = hmesh
+			hmm.instance_count = capacity
+			hmm.visible_instance_count = 0
+			var halo := MultiMeshInstance2D.new()
+			halo.multimesh = hmm
+			halo.texture = flare
+			halo.use_parent_material = true
+			halo.modulate = Color(k.get("glow", Color(1, 1, 1)) as Color, halo_alpha)
+			halo_layer.add_child(halo)
+			_halos.append(halo)
 		var buf := PackedFloat32Array()
 		buf.resize(capacity * STRIDE)
 		_buffers.append(buf)
@@ -85,3 +116,20 @@ func render(pool: BulletPool) -> void:
 		var mm := _instances[k].multimesh
 		mm.buffer = _buffers[k]
 		mm.visible_instance_count = _counts[k]
+		if k < _halos.size():
+			_halos[k].multimesh.buffer = _buffers[k]
+			_halos[k].multimesh.visible_instance_count = _counts[k]
+
+
+## Posições das balas desenhadas no último quadro (até `limit`), lidas do buffer: o cancelamento de
+## balas da bomba precisa de onde elas estavam antes de a Sim apagá-las.
+func last_positions(limit: int) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	for k: int in range(_kinds.size()):
+		var buf := _buffers[k]
+		var n := _instances[k].multimesh.visible_instance_count
+		for i: int in range(n):
+			if out.size() >= limit:
+				return out
+			out.append(Vector2(buf[i * STRIDE + 3], buf[i * STRIDE + 7]))
+	return out

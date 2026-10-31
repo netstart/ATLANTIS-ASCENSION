@@ -1,11 +1,13 @@
 class_name WorldView
 extends Node2D
 ## Desenho do campo de jogo a partir da Sim (só leitura). Camadas, de baixo para cima:
-##   sombras no chão → entidades (inimigos, chefe, coletáveis) → tiros do jogador → nave e laser →
-##   efeitos de baixo (feixes, explosões, duelo) → balas inimigas (sempre por cima: leitura) →
-##   efeitos de cima (faíscas, graze, anéis).
-## Só texturas e retângulos por quadro (docs/policies/qualidade.md). Efeitos vivem aqui, não na Sim:
-## qualidade gráfica e "reduzir flashes" nunca mudam a partida.
+##   sombras no chão → destroços caindo → entidades (inimigos, chefe, coletáveis) → fumaça e estilhaços →
+##   tiros do jogador (com halo) → nave e laser → efeitos de baixo (feixes, explosões, duelo) →
+##   luz aditiva (laser, motores, clarões, anéis de choque) → faíscas e brilhos (CombatFx) →
+##   balas inimigas (sempre por cima: leitura) → efeitos de cima (escuridão, números de pontos).
+## Só texturas e retângulos por quadro (docs/policies/qualidade.md); partículas em MultiMesh
+## (ParticleField). Efeitos vivem aqui, não na Sim: qualidade gráfica e "reduzir flashes" nunca
+## mudam a partida.
 ## 2,5D: cada nave tem uma sombra (cópia escura do sprite, 80%, deslocada (+6, +10)) desenhada no chão,
 ## abaixo de tudo; inimigos que sobem do fundo (SimEnemy.depth < 1, ainda sem colisão na Sim) crescem
 ## de 35% a 100% saindo da neblina, e a sombra se separa deles conforme sobem. A nave inclina nas
@@ -26,7 +28,16 @@ const BANK_SQUEEZE := 0.22
 const LASER_COLOR := Color(0.55, 0.97, 1.0, 0.95)
 const BEAM_COLOR := Color(1.0, 0.42, 0.45, 0.95)
 const WARN_COLOR := Color(1.0, 0.42, 0.45, 0.7)
-const MAX_SPARKS := 160
+## Luz do motor da nave (bocais em ±7, +17 do centro) e do laser.
+const EXHAUST_COLOR := Color(1.0, 0.55, 0.22)
+const NOZZLES: Array[Vector2] = [Vector2(-7, 17), Vector2(7, 17)]
+## Cor da luz de cada arma (impactos, boca do canhão) e dos orbes de arma.
+const WEAPON_TINTS := {&"pulsar": Color(0.55, 0.8, 1.0), &"laser": Color(0.55, 0.97, 1.0),
+		&"plasma": Color(0.8, 0.55, 1.0), &"railgun": Color(1.0, 0.6, 0.45)}
+const ORB_TINTS := {&"pulsar": Color(0.4, 0.65, 1.0), &"laser": Color(1.0, 0.82, 0.35),
+		&"plasma": Color(0.78, 0.5, 1.0), &"railgun": Color(1.0, 0.45, 0.45)}
+## Emissores contínuos (motor, fumaça de avaria, bolhas) rodam a 60 Hz, em qualquer taxa de quadros.
+const EMIT_STEP := 1.0 / 60.0
 const LIGHTNING_COLOR := Color(0.85, 0.92, 1.0, 0.95)
 const TIDE_COLOR := Color(0.45, 1.0, 0.95, 0.55)
 ## Colunas de perigo por tipo (lava do cap. 4, gelo do 6, detritos do 8).
@@ -52,18 +63,25 @@ var reduce_flashes: bool = false
 var reduce_motion: bool = false
 var fx_level: int = 2
 var explosions: Array[Dictionary] = []
-var sparks: Array[Dictionary] = []
+## Anéis de choque: {pos, t, duration, radius, color}.
 var rings: Array[Dictionary] = []
+## Receitas e partículas (explosões, faíscas, fumaça, destroços, números de pontos).
+var fx := CombatFx.new()
 
 var _shadows: _Layer
 var _entities: _Layer
 var _player: _Layer
 var _fx_below: _Layer
+var _fx_add: _Layer
 var _fx_above: _Layer
+var _wrecks: _Layer
 var _player_bullets: BulletRenderer
 var _enemy_bullets: BulletRenderer
 var _glow: Texture2D
 var _ring: Texture2D
+var _flare: Texture2D
+var _shock: Texture2D
+var _sparkle: Texture2D
 var _beam: Texture2D
 var _seg: Texture2D
 var _tip: Texture2D
@@ -88,12 +106,20 @@ var _livery: int = 1
 var _wing_livery: int = 1
 var _wake: Array[Vector2] = []
 var _wake_clock: float = 0.0
+var _emit_clock: float = 0.0
+var _ticks: int = 0
+var _nozzle: int = 0
+## Clarão da boca do canhão (s restantes).
+var _muzzle: float = 0.0
 
 
 func setup(p_sim: Sim) -> void:
 	sim = p_sim
 	_glow = SpriteBank.generated("fx/glow_32")
 	_ring = SpriteBank.generated("fx/ring_32")
+	_flare = SpriteBank.generated("fx/flare_64")
+	_shock = SpriteBank.generated("fx/shock_64")
+	_sparkle = SpriteBank.generated("fx/sparkle_9")
 	_beam = SpriteBank.generated("fx/beam")
 	_seg = SpriteBank.generated("boss/tentacle_segment")
 	_tip = SpriteBank.generated("boss/tentacle_tip")
@@ -122,14 +148,26 @@ func setup(p_sim: Sim) -> void:
 	_depth_tint = Color(mid.lightened(0.35), 0.55)
 	var flash := ShaderMaterial.new()
 	flash.shader = load("res://shaders/sprite_flash.gdshader") as Shader
+	var budget := int(GfxQuality.budget_at("particles_max", fx_level))
+	fx.level = fx_level
+	fx.reduce_flashes = reduce_flashes
+	fx.ground = bool(scenery.get("shadows", true))
+	fx.water = bool(scenery.get("bubbles", true)) and fx.ground
+	fx.foam = scenery["foam"]
+	fx.setup(int(budget * 0.7), int(budget * 0.3))
 	_shadows = _Layer.new(self, _draw_shadows)
 	# No espaço não há chão para receber sombra.
-	_shadows.visible = bool(scenery.get("shadows", true))
+	_shadows.visible = fx.ground
 	add_child(_shadows)
+	_wrecks = _Layer.new(self, _draw_wrecks)
+	add_child(_wrecks)
 	_entities = _Layer.new(self, _draw_entities)
 	_entities.material = flash
 	add_child(_entities)
+	add_child(fx.matter)
 	_player_bullets = BulletRenderer.new()
+	_player_bullets.halo_alpha = [0.0, 0.6, 0.85][clampi(fx_level, 0, 2)]
+	_player_bullets.halo_scale = 3.6
 	_player_bullets.setup(BulletKinds.PLAYER, sim.player_bullets.capacity)
 	add_child(_player_bullets)
 	_player = _Layer.new(self, _draw_player)
@@ -137,8 +175,18 @@ func setup(p_sim: Sim) -> void:
 	add_child(_player)
 	_fx_below = _Layer.new(self, _draw_fx_below)
 	add_child(_fx_below)
+	_fx_add = _Layer.new(self, _draw_fx_add)
+	var add := CanvasItemMaterial.new()
+	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	_fx_add.material = add
+	_fx_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	add_child(_fx_add)
+	add_child(fx.light)
 	_enemy_bullets = BulletRenderer.new()
 	_enemy_bullets.palette = colorblind
+	# Halo discreto e só em Alta: centenas de balas somando luz não podem lavar o campo.
+	_enemy_bullets.halo_alpha = 0.22 if fx_level >= 2 else 0.0
+	_enemy_bullets.halo_scale = 2.4
 	_enemy_bullets.setup(BulletKinds.ENEMY, sim.enemy_bullets.capacity)
 	add_child(_enemy_bullets)
 	_fx_above = _Layer.new(self, _draw_fx_above)
@@ -150,14 +198,12 @@ func refresh(delta: float) -> void:
 	time += delta
 	_age(explosions, delta)
 	_age(rings, delta)
-	var i := sparks.size() - 1
-	while i >= 0:
-		var s := sparks[i]
-		s["life"] = float(s["life"]) - delta
-		s["pos"] = (s["pos"] as Vector2) + (s["vel"] as Vector2) * delta
-		if float(s["life"]) <= 0.0:
-			sparks.remove_at(i)
-		i -= 1
+	_muzzle = maxf(0.0, _muzzle - delta)
+	_emit_clock = minf(_emit_clock + delta, EMIT_STEP * 4.0)
+	while _emit_clock >= EMIT_STEP:
+		_emit_clock -= EMIT_STEP
+		_emit()
+	fx.advance(delta)
 	_player_bullets.render(sim.player_bullets)
 	_enemy_bullets.render(sim.enemy_bullets)
 	var ease := 1.0 - exp(-delta * 12.0)
@@ -166,45 +212,110 @@ func refresh(delta: float) -> void:
 		_wing_bank = lerpf(_wing_bank, _bank_target(sim.wing), ease)
 	_trail(delta)
 	_shadows.queue_redraw()
+	_wrecks.queue_redraw()
 	_entities.queue_redraw()
 	_player.queue_redraw()
 	_fx_below.queue_redraw()
+	_fx_add.queue_redraw()
 	_fx_above.queue_redraw()
 
 
 func on_event(ev: Dictionary) -> void:
+	var at: Vector2 = ev.get("pos", Vector2.ZERO)
 	match StringName(ev["type"]):
 		&"kill":
 			var ship := SpriteBank.ship(StringName(ev.get("sprite", "")))
+			var big := bool(ev.get("big", false))
 			explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
-					"size": ship["destruction_size"], "pos": ev["pos"], "t": 0.0, "scale": 1.0, "duration": EXPLOSION_TIME})
-			_burst(ev["pos"], 6 if fx_level >= 1 else 2, Color(1.0, 0.75, 0.35))
+					"size": ship["destruction_size"], "pos": at, "t": 0.0, "scale": 1.0, "duration": EXPLOSION_TIME})
+			fx.explosion(at, 1.7 if big else 1.0)
+			fx.wreck(ship["base"], ship["size"], at, at + SHADOW_OFFSET * 1.4, 1.0)
+			fx.popup(at, int(ev.get("points", 0)), UiTheme.GOLD if big else Color(1.0, 0.95, 0.82))
+			_ring_at(at, 0.35, 46.0 if big else 28.0, Color(1.0, 0.7, 0.4))
 		&"hit":
-			if fx_level >= 1 and sparks.size() < MAX_SPARKS:
-				_burst(ev["pos"], 1, Color(0.9, 1.0, 1.0))
+			fx.impact(at, _weapon_tint())
 		&"graze":
-			_burst(ev["pos"], 2, Color(0.4, 0.95, 1.0))
+			fx.graze(at)
+		&"shot":
+			_muzzle = 0.06
 		&"player_hit":
-			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.5, "radius": 70.0, "color": Color(1.0, 0.4, 0.4)})
-			_burst(ev["pos"], 14, Color(1.0, 0.55, 0.4))
+			_ring_at(at, 0.5, 70.0, Color(1.0, 0.4, 0.4))
+			fx.explosion(at, 0.8, Color(1.0, 0.4, 0.35, 0.9))
 		&"capture":
-			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.45, "radius": 50.0, "color": Color(0.4, 1.0, 1.0)})
-			_burst(ev["pos"], 10, Color(0.4, 1.0, 1.0))
+			_ring_at(at, 0.45, 50.0, Color(0.4, 1.0, 1.0))
+			fx.collect(at, Color(0.4, 1.0, 1.0), true)
 		&"bomb", &"special":
-			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.7, "radius": 340.0, "color": Color(0.6, 1.0, 1.0)})
+			_ring_at(at, 0.7, 340.0, Color(0.6, 1.0, 1.0))
+			_ring_at(at, 0.45, 160.0, Color(1.0, 1.0, 1.0))
+			# Balas que estavam na tela e a Sim apagou neste passo viram brilho, em onda.
+			var seen := _enemy_bullets.last_positions(180)
+			if sim.enemy_bullets.count * 2 < seen.size():
+				fx.cancel_wave(at, seen)
 		&"boss_part":
-			_burst(ev["pos"], 18, Color(0.85, 0.55, 1.0))
-			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.4, "radius": 60.0, "color": Color(0.85, 0.6, 1.0)})
+			fx.explosion(at, 2.0, Color(0.85, 0.55, 1.0, 0.9))
+			fx.chain(at, Vector2(18, 14), 3, 0.3, 1.0)
+			_ring_at(at, 0.4, 60.0, Color(0.85, 0.6, 1.0))
 		&"boss_dead":
 			var ship := SpriteBank.ship(StringName((sim.tables["bosses"] as Dictionary).get(StringName(ev["id"]), {})
 					.get("sprite", "")))
 			for k: int in range(5):
 				var off := Vector2(cos(k * 2.4) * 40.0, sin(k * 1.7) * 28.0)
 				explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
-						"size": ship["destruction_size"], "pos": (ev["pos"] as Vector2) + off, "t": -k * 0.18, "scale": 1.6,
+						"size": ship["destruction_size"], "pos": at + off, "t": -k * 0.18, "scale": 1.6,
 						"duration": 0.9})
-			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 1.0, "radius": 400.0, "color": Color(1, 1, 1)})
-			_burst(ev["pos"], 40, Color(1.0, 0.85, 0.5))
+			fx.explosion(at, 2.5)
+			fx.chain(at, Vector2(60, 36), 6 + fx_level * 3, 1.3, 1.5)
+			fx.later(1.35, fx.explosion.bind(at, 3.5, CombatFx.FIRE))
+			_ring_at(at, 1.0, 400.0, Color(1, 1, 1))
+			fx.later(1.35, _ring_at.bind(at, 0.9, 300.0, Color(1.0, 0.85, 0.5)))
+		&"orb":
+			var up := bool(ev.get("up", false))
+			fx.collect(at, ORB_TINTS.get(StringName(ev.get("weapon", "")), Color(1, 1, 1)), up)
+			if up:
+				_ring_at(at, 0.4, 44.0, Color(1.0, 0.9, 0.5))
+		&"medal":
+			fx.collect(at, UiTheme.GOLD, false)
+			fx.popup(at + Vector2(0, -12), int(ev.get("value", 0)), UiTheme.GOLD)
+		&"pearl":
+			fx.light.spawn(CombatFx.FLARE, at, Vector2.ZERO, 0.12, 0.15, 0.35, Color(0.6, 1.0, 1.0, 0.6),
+					Color(0.6, 1.0, 1.0, 0.0))
+		&"bomb_pickup", &"capsule", &"log", &"heal", &"revive":
+			fx.collect(at, Color(0.5, 1.0, 0.9), true)
+			_ring_at(at, 0.4, 40.0, Color(0.5, 1.0, 0.9))
+		&"splash":
+			_ring_at(at, 0.25, float(ev.get("radius", 20.0)), Color(0.8, 0.55, 1.0))
+
+
+func _ring_at(at: Vector2, duration: float, radius: float, color: Color) -> void:
+	rings.append({"pos": at, "t": 0.0, "duration": duration, "radius": radius, "color": color})
+
+
+func _weapon_tint() -> Color:
+	return WEAPON_TINTS.get(sim.player.weapon, Color(0.7, 0.9, 1.0))
+
+
+## Emissores contínuos a 60 Hz: motor da nave, faíscas do laser, fumaça de quem está avariado e
+## bolhas de quem sobe do fundo do mar.
+func _emit() -> void:
+	_ticks += 1
+	var pl := sim.player
+	if pl.alive and fx_level >= 1:
+		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
+		_nozzle = 1 - _nozzle
+		fx.exhaust(pl.pos + NOZZLES[_nozzle], EXHAUST_COLOR, thrust)
+		if sim.laser_active and _ticks % 2 == 0:
+			fx.impact(Vector2(pl.pos.x, sim.laser_to_y), WEAPON_TINTS[&"laser"])
+	if fx_level < 1:
+		return
+	for e: SimEnemy in sim.enemies:
+		if e.depth < 1.0:
+			if fx.water and (_ticks + e.frames) % 5 == 0:
+				fx.bubbles(e.pos)
+		elif e.hp < e.max_hp * 0.4 and (_ticks + e.frames) % 6 == 0:
+			fx.damage_smoke(e.pos)
+	if sim.boss != null and sim.boss.state == SimBoss.State.DYING and _ticks % 7 == 0:
+		var body := sim.boss.body_pos()
+		fx.explosion(body + Vector2(sin(time * 13.0) * 60.0, cos(time * 7.0) * 30.0), 0.8)
 
 
 func _age(list: Array[Dictionary], delta: float) -> void:
@@ -215,16 +326,6 @@ func _age(list: Array[Dictionary], delta: float) -> void:
 		if float(e["t"]) >= float(e["duration"]):
 			list.remove_at(i)
 		i -= 1
-
-
-func _burst(at: Vector2, count: int, color: Color) -> void:
-	for k: int in range(count):
-		if sparks.size() >= MAX_SPARKS:
-			return
-		var a := (k * 2.399963) + time * 3.0
-		var speed := 40.0 + float((k * 37) % 90)
-		sparks.append({"pos": at, "vel": Vector2.from_angle(a) * speed, "life": 0.25 + float(k % 4) * 0.08,
-				"color": color})
 
 
 # --- Sombras no chão (2,5D) ------------------------------------------------------------------
@@ -392,8 +493,6 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 		if (pid.begins_with("eye") or pid == "core") and b.part_active(part):
 			var col := Color(1.0, 0.35, 0.4, pulse) if pid.begins_with("eye") else Color(0.4, 1.0, 1.0, pulse)
 			_tex_centered(ci, _glow, b.part_pos(part), 0.6 + float(part.get("radius", 10.0)) / 20.0, col)
-	if b.state == SimBoss.State.DYING and fx_level >= 1 and int(time * 20.0) % 3 == 0:
-		_burst(body + Vector2(sin(time * 13.0) * 60.0, cos(time * 7.0) * 30.0), 3, Color(1.0, 0.8, 0.4))
 
 
 ## Partes genéricas dos chefes do Beta: corrente de segmentos (Sky Leviathan) ligada do corpo à
@@ -450,9 +549,10 @@ func _draw_player(ci: CanvasItem) -> void:
 		var w := sim.laser_width * 1.6
 		var top := sim.laser_to_y
 		var flicker := 0.85 + 0.15 * sin(time * 50.0)
+		# Só o núcleo; o brilho largo e os pulsos vêm da camada aditiva (_draw_fx_add).
 		ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.5, top, w, p.y - 14.0 - top), false,
 				Color(LASER_COLOR, LASER_COLOR.a * flicker))
-		_tex_centered(ci, _glow, Vector2(p.x, top), 0.5, Color(0.6, 1.0, 1.0, 0.8))
+		ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.18, top, w * 0.36, p.y - 14.0 - top), false, Color(1, 1, 1, 0.9))
 	var hull_frac := float(pl.hull) / maxf(1.0, float(pl.max_hull))
 	var base := _ship_bases[clampi(int(ceil(hull_frac * 3.0)), 0, 3)]
 	var blink := pl.invuln > 0 and int(time * 20.0) % 2 == 0
@@ -600,24 +700,109 @@ func _draw_duel(ci: CanvasItem, b: SimBoss) -> void:
 	ci.draw_texture_rect(_beam, Rect2(top.x - 16.0 + shake, top.y, 32.0, meet.y - top.y), false, BEAM_COLOR)
 	ci.draw_texture_rect(_beam, Rect2(bottom.x - 18.0 - shake, meet.y, 36.0, bottom.y - meet.y), false, LASER_COLOR)
 	_tex_centered(ci, _glow, meet, 1.4 + 0.3 * sin(time * 30.0), Color(1, 1, 1, 0.95))
-	if int(time * 30.0) % 2 == 0:
-		_burst(meet, 2, Color(1.0, 0.9, 0.6))
+	if int(time * 30.0) % 3 == 0:
+		fx.impact(meet, Color(1.0, 0.9, 0.6))
 
 
-func _draw_fx_above(ci: CanvasItem) -> void:
-	if dark and sim.player.alive:
-		_draw_dark(ci)
-	for s: Dictionary in sparks:
-		var life := float(s["life"])
-		var c: Color = s["color"]
-		ci.draw_rect(Rect2(s["pos"], Vector2(2, 2)), Color(c, clampf(life * 4.0, 0.0, 1.0)))
+## Luz aditiva, abaixo das balas inimigas: laser, motores, boca do canhão, halos dos coletáveis, luz
+## das explosões, brilho dos feixes e anéis de choque. Soma luz, nunca escurece; o filtro linear deixa
+## os clarões macios por cima da pixel art.
+func _draw_fx_add(ci: CanvasItem) -> void:
+	var pl := sim.player
+	var flicker := 0.85 + 0.15 * sin(time * 50.0)
+	if pl.alive:
+		var p := pl.pos
+		if sim.laser_active:
+			var w := sim.laser_width * 1.6
+			var top := sim.laser_to_y
+			var length := p.y - 14.0 - top
+			ci.draw_texture_rect(_beam, Rect2(p.x - w * 2.2, top, w * 4.4, length), false,
+					Color(0.25, 0.75, 1.0, 0.4 * flicker))
+			ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.9, top, w * 1.8, length), false, Color(0.6, 1.0, 1.0, 0.6))
+			# Pulsos correndo para cima ao longo do feixe.
+			if fx_level >= 1:
+				for k: int in range(8):
+					var y := p.y - 14.0 - fposmod(time * 520.0 + k * 41.0, maxf(1.0, length))
+					_tex_centered(ci, _flare, Vector2(p.x, y), w / 40.0, Color(0.6, 1.0, 1.0, 0.45))
+			_tex_centered(ci, _flare, Vector2(p.x, top), (w / 20.0) * (0.9 + 0.2 * sin(time * 40.0)),
+					Color(0.6, 1.0, 1.0, 0.9))
+			_tex_centered(ci, _flare, Vector2(p.x, p.y - 16.0), w / 24.0, Color(0.8, 1.0, 1.0, 0.8))
+		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
+		for n: Vector2 in NOZZLES:
+			_tex_centered(ci, _flare, p + n, (0.28 + 0.12 * thrust) * (0.85 + 0.15 * sin(time * 37.0 + n.x)),
+					Color(EXHAUST_COLOR, 0.75))
+		if _muzzle > 0.0:
+			var tint := _weapon_tint()
+			_tex_centered(ci, _flare, p + Vector2(0, -21), 0.42, Color(tint, 0.9 * _muzzle / 0.06))
+			_tex_centered(ci, _sparkle, p + Vector2(0, -21), 1.6, Color(1, 1, 1, _muzzle / 0.06))
+	if fx_level >= 1:
+		for e: SimEnemy in sim.enemies:
+			if e.depth >= 1.0:
+				var size := float(SpriteBank.ship(e.sprite)["size"]) * float(e.def.get("scale", 1.0))
+				_tex_centered(ci, _flare, e.pos + Vector2(0, -size * 0.36), size / 150.0,
+						Color(1.0, 0.45, 0.3, 0.35 * flicker))
+	for pk: Dictionary in sim.pickups:
+		var at: Vector2 = pk["pos"]
+		match StringName(pk["kind"]):
+			&"orb":
+				var tint: Color = ORB_TINTS.get(Sim.orb_weapon(int(pk["frames"])), Color(1, 1, 1))
+				_tex_centered(ci, _flare, at, 0.55 + 0.08 * sin(time * 8.0), Color(tint, 0.6))
+			&"medal":
+				_tex_centered(ci, _flare, at, 0.35, Color(UiTheme.GOLD, 0.45))
+				var glint := fposmod(time * 1.6 + at.x * 0.05, 1.0)
+				if glint < 0.25:
+					_tex_centered(ci, _sparkle, at + Vector2(-3, -3), 1.5 * sin(glint / 0.25 * PI), Color(1, 1, 1, 0.9))
+			&"pearl":
+				_tex_centered(ci, _flare, at, 0.18, Color(0.6, 1.0, 1.0, 0.45))
+	for e: Dictionary in explosions:
+		var t := float(e["t"])
+		if t >= 0.0:
+			var u := t / float(e["duration"])
+			_tex_centered(ci, _flare, e["pos"], float(e["scale"]) * (1.2 + u), Color(1.0, 0.55, 0.2, 0.5 * (1.0 - u)))
+	for b: Dictionary in sim.beams:
+		if int(b["age"]) >= int(b["warn"]) and String(b.get("kind", "")) != "lightning":
+			var hc: Color = HAZARD_COLORS.get(String(b.get("kind", "")), BEAM_COLOR)
+			var bw := float(b["width"])
+			var by := float(b["y"])
+			ci.draw_texture_rect(_beam, Rect2(float(b["x"]) - bw * 1.4, by, bw * 2.8, Playfield.FIELD.y + 40.0 - by),
+					false, Color(hc, 0.3 * flicker))
 	for r: Dictionary in rings:
 		var u := float(r["t"]) / float(r["duration"])
 		var radius := float(r["radius"]) * (1.0 - (1.0 - u) * (1.0 - u))
-		var alpha := (1.0 - u) * (0.5 if reduce_flashes else 0.9)
-		var col: Color = r["color"]
-		ci.draw_texture_rect(_ring, Rect2((r["pos"] as Vector2) - Vector2(radius, radius), Vector2(radius, radius) * 2.0),
-				false, Color(col, alpha))
+		var alpha := (1.0 - u) * (0.5 if reduce_flashes else 0.95)
+		ci.draw_texture_rect(_shock, Rect2((r["pos"] as Vector2) - Vector2(radius, radius), Vector2(radius, radius) * 2.0),
+				false, Color(r["color"] as Color, alpha))
+
+
+## Destroços caindo: a nave abatida gira, encolhe e escurece até a sombra no chão (CombatFx.wreck).
+func _draw_wrecks(ci: CanvasItem) -> void:
+	for w: Dictionary in fx.wrecks:
+		var u := minf(1.0, float(w["t"]) / CombatFx.WRECK_TIME)
+		var size: int = w["size"]
+		var s := float(w["scale"]) * lerpf(0.9, 0.4, u)
+		var shade := lerpf(0.55, 0.12, u)
+		ci.draw_set_transform(w["pos"], PI + float(w["spin"]) * float(w["t"]), Vector2(s, s))
+		ci.draw_texture_rect_region(w["tex"], Rect2(-size * 0.5, -size * 0.5, size, size), Rect2(0, 0, size, size),
+				Color(shade, shade * 1.05, shade * 1.15, 1.0 - u * 0.6))
+	ci.draw_set_transform(Vector2.ZERO)
+
+
+## Por cima das balas só o que não atrapalha a leitura: a escuridão do Registro Abissal e os números
+## de pontos (pequenos, sobem e somem em 0,75 s).
+func _draw_fx_above(ci: CanvasItem) -> void:
+	if dark and sim.player.alive:
+		_draw_dark(ci)
+	for pop: Dictionary in fx.popups:
+		var u := float(pop["t"]) / 0.75
+		var pop_scale := 1.0 + 0.5 * maxf(0.0, 1.0 - u * 6.0)
+		var col: Color = pop["color"]
+		var alpha := 1.0 - maxf(0.0, u - 0.55) / 0.45
+		var text := String(pop["text"])
+		var size := int(round(8.0 * pop_scale))
+		var at := (pop["pos"] as Vector2) + Vector2(-40, 3)
+		ci.draw_string_outline(Locale.font, at, text, HORIZONTAL_ALIGNMENT_CENTER, 80, size, 3,
+				Color(0.02, 0.04, 0.08, 0.8 * alpha))
+		ci.draw_string(Locale.font, at, text, HORIZONTAL_ALIGNMENT_CENTER, 80, size, Color(col, alpha))
 
 
 ## Escuridão do Registro Abissal: só um halo em volta da nave e o pulso do sonar a cada 2 s.

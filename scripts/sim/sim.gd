@@ -978,18 +978,18 @@ func _collect(kind: StringName, frames: int, who: SimPlayer = null) -> void:
 			if who == wing and weapon == &"laser":
 				weapon = &"pulsar"
 			var up := who.collect_orb(weapon)
-			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up})
+			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos})
 		&"medal":
-			emit(&"medal", {"value": scoring.on_medal()})
+			emit(&"medal", {"value": scoring.on_medal(), "pos": who.pos})
 		&"pearl":
 			scoring.on_pearl()
-			emit(&"pearl", {})
+			emit(&"pearl", {"pos": who.pos})
 		&"bomb":
 			player.bombs = mini(player.bombs + 1, 4)
-			emit(&"bomb_pickup", {})
+			emit(&"bomb_pickup", {"pos": who.pos})
 		&"log":
 			log_found = true
-			emit(&"log", {})
+			emit(&"log", {"pos": who.pos})
 		&"capsule":
 			Hazards.collect_capsule(self)
 

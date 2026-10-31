@@ -2,22 +2,33 @@ class_name BulletKinds
 extends RefCounted
 ## Tipos de projétil: id numérico (usado no BulletPool e no MultiMesh), raio de colisão e textura.
 ## Balas inimigas têm contorno escuro e núcleo claro (leitura, docs/policies/qualidade.md); o raio
-## de colisão é menor que o desenho, como manda o gênero.
+## de colisão é menor que o desenho, como manda o gênero. "glow": cor do halo aditivo (BulletRenderer).
 
 const ENEMY: Array[Dictionary] = [
-	{"id": &"orb_cyan_s", "radius": 2.5, "texture": "res://assets/art/generated/bullets/orb_cyan_8.png"},
-	{"id": &"orb_cyan_m", "radius": 3.5, "texture": "res://assets/art/generated/bullets/orb_cyan_12.png"},
-	{"id": &"orb_gold_m", "radius": 3.5, "texture": "res://assets/art/generated/bullets/orb_gold_12.png"},
-	{"id": &"orb_violet_m", "radius": 3.5, "texture": "res://assets/art/generated/bullets/orb_violet_12.png"},
-	{"id": &"orb_coral_l", "radius": 5.0, "texture": "res://assets/art/generated/bullets/orb_coral_16.png"},
-	{"id": &"needle_gold", "radius": 2.0, "texture": "res://assets/art/generated/bullets/needle_gold.png"},
+	{"id": &"orb_cyan_s", "radius": 2.5, "texture": "res://assets/art/generated/bullets/orb_cyan_8.png",
+			"glow": Color(0.25, 0.9, 1.0)},
+	{"id": &"orb_cyan_m", "radius": 3.5, "texture": "res://assets/art/generated/bullets/orb_cyan_12.png",
+			"glow": Color(0.25, 0.9, 1.0)},
+	{"id": &"orb_gold_m", "radius": 3.5, "texture": "res://assets/art/generated/bullets/orb_gold_12.png",
+			"glow": Color(1.0, 0.75, 0.25)},
+	{"id": &"orb_violet_m", "radius": 3.5, "texture": "res://assets/art/generated/bullets/orb_violet_12.png",
+			"glow": Color(0.75, 0.4, 1.0)},
+	{"id": &"orb_coral_l", "radius": 5.0, "texture": "res://assets/art/generated/bullets/orb_coral_16.png",
+			"glow": Color(1.0, 0.35, 0.4)},
+	{"id": &"needle_gold", "radius": 2.0, "texture": "res://assets/art/generated/bullets/needle_gold.png",
+			"glow": Color(1.0, 0.75, 0.25)},
 ]
 const PLAYER: Array[Dictionary] = [
-	{"id": &"shot_pulsar", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_pulsar.png"},
-	{"id": &"shot_back", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_pulsar.png"},
-	{"id": &"plasma_s", "radius": 6.0, "texture": "res://assets/art/generated/bullets/plasma_10.png"},
-	{"id": &"plasma_l", "radius": 10.0, "texture": "res://assets/art/generated/bullets/plasma_18.png"},
-	{"id": &"rail", "radius": 3.0, "texture": "res://assets/art/generated/bullets/rail.png"},
+	{"id": &"shot_pulsar", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_pulsar.png",
+			"glow": Color(0.4, 0.7, 1.0)},
+	{"id": &"shot_back", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_pulsar.png",
+			"glow": Color(0.4, 0.7, 1.0)},
+	{"id": &"plasma_s", "radius": 6.0, "texture": "res://assets/art/generated/bullets/plasma_10.png",
+			"glow": Color(0.75, 0.45, 1.0)},
+	{"id": &"plasma_l", "radius": 10.0, "texture": "res://assets/art/generated/bullets/plasma_18.png",
+			"glow": Color(0.75, 0.45, 1.0)},
+	{"id": &"rail", "radius": 3.0, "texture": "res://assets/art/generated/bullets/rail.png",
+			"glow": Color(1.0, 0.5, 0.35)},
 ]
 
 

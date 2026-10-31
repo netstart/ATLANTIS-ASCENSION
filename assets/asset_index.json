@@ -84,10 +84,22 @@
   "sha256": "27b0b9fbbcef87e66a6e5ac18b315f681f2786523cd9bb46b9adc69e5764e656"
  },
  {
+  "file": "assets/art/generated/fx/debris_6.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "ebe6a2697af4d39e14e3f13fe4debf343e798f34227b9db71faf3aa0f86d556d"
+ },
+ {
   "file": "assets/art/generated/fx/drone.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "57c4c923a4e68c26679c80dee56c0b089ed84fc63df7d0860e883897e8698f6b"
+ },
+ {
+  "file": "assets/art/generated/fx/flare_64.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "b24e935c56187b452414cd6f6d155cbd426293f41b9e3cfbf46ba184d68c95c6"
  },
  {
   "file": "assets/art/generated/fx/glow_32.png",
@@ -108,10 +120,34 @@
   "sha256": "8361e5bddac77ac2068891402d6200d8c6142373353de4b84c066fa046eff05d"
  },
  {
+  "file": "assets/art/generated/fx/shock_64.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "fd2b02be2c0dbcd861ba87af49e6c1f5ad194b1bee5e4f1e8273983c94cf5cb1"
+ },
+ {
+  "file": "assets/art/generated/fx/smoke_16.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "49e5244e4767d311ff0d94b197d567fce83bb7de44569cfcb5c73c33aa5458f6"
+ },
+ {
   "file": "assets/art/generated/fx/spark.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "34478d49c39d48fe0165a93a7e945fb261886b2c7820188f7b6bcce658d8d5f6"
+ },
+ {
+  "file": "assets/art/generated/fx/sparkle_9.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8bb979f70538940a7d6f6080b8bb20cb723aa8d7d2f99b691956f659bf096ec2"
+ },
+ {
+  "file": "assets/art/generated/fx/streak.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "afefcc0d8d776a4f08cd077b2cf903f9257867638a013e890d4cb535181b5ae0"
  },
  {
   "file": "assets/art/generated/icon/adaptive_background_432.png",

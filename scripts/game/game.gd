@@ -11,6 +11,9 @@ signal finished(result: Dictionary)
 const FINISH_DELAY := 1.6
 const DOUBLE_TAP_MS := 280
 const SHAKE_DECAY := 18.0
+## Hitstop (congelar a partida por um instante no golpe forte): parte do chefe e morte do chefe.
+const HITSTOP_PART := 0.05
+const HITSTOP_BOSS := 0.14
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
@@ -37,6 +40,7 @@ var _ghost_sim: Sim
 var _backdrop: OceanBackdrop
 var _clip: Control
 var _world: WorldView
+var _screen: ScreenFx
 var _layer: CanvasLayer
 var _hud: GameHud
 var _drag := Vector2.ZERO
@@ -48,6 +52,7 @@ var _choice: int = -1
 var _touch_ids: Dictionary = {}
 var _last_tap_ms: int = -10000
 var _shake: float = 0.0
+var _hitstop: float = 0.0
 var _emerge: float = 0.0
 var _emerge_from: float = 0.0
 var _emerge_to: float = 0.0
@@ -103,6 +108,10 @@ func _ready() -> void:
 	if _ghost_sim != null:
 		_world.ghost_sim = _ghost_sim
 	_clip.add_child(_world)
+	_screen = ScreenFx.new()
+	_screen.reduce_flashes = _world.reduce_flashes
+	_screen.fx_level = _world.fx_level
+	_clip.add_child(_screen)
 	_layer = CanvasLayer.new()
 	add_child(_layer)
 	_hud = GameHud.new()
@@ -302,6 +311,9 @@ func _process(delta: float) -> void:
 		var u := _emerge_t * _emerge_t * (3.0 - 2.0 * _emerge_t)
 		_emerge = lerpf(_emerge_from, _emerge_to, u)
 	_shake = maxf(0.0, _shake - SHAKE_DECAY * delta)
+	_tick_hitstop(delta)
+	_screen.set_danger(1.0 if sim.player.alive and sim.player.hull <= 1 and sim.player.max_hull > 1 else 0.0)
+	_screen.advance(delta)
 	var amount := _shake * float(Settings.get_value("screen_shake")) * float(GfxQuality.budget("screen_shake"))
 	var jitter := Vector2(sin(Time.get_ticks_msec() * 0.09), cos(Time.get_ticks_msec() * 0.11)) * amount
 	_world.position = jitter.round()
@@ -338,7 +350,7 @@ func _on_event(ev: Dictionary) -> void:
 		&"kill":
 			AudioManager.play("kenney_explosion_medium" if bool(ev.get("big", false)) else "kenney_explosion_small",
 					1.0, 0.08, -6.0)
-			_shake = maxf(_shake, 3.0 if bool(ev.get("big", false)) else 0.0)
+			_shake = maxf(_shake, 3.0 if bool(ev.get("big", false)) else 0.8)
 		&"hit":
 			AudioManager.play("kenney_hit", 1.0, 0.1, -16.0)
 		&"graze":
@@ -353,10 +365,14 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_player_hit")
 			Settings.vibrate(80)
 			_shake = 7.0
+			_screen.flash(0.35, Color(1.0, 0.3, 0.3))
+			_screen.shockwave(ev["pos"], 0.012)
 		&"bomb", &"special":
 			AudioManager.play("kenney_bomb")
 			Settings.vibrate(50)
 			_shake = 6.0
+			_screen.flash(0.45, Color(0.75, 1.0, 1.0))
+			_screen.shockwave(ev["pos"], 0.03)
 		&"beam_warn":
 			AudioManager.play("kenney_beam_warn", 1.0, 0.0, -6.0)
 		&"boss_intro":
@@ -371,6 +387,8 @@ func _on_event(ev: Dictionary) -> void:
 		&"boss_part":
 			AudioManager.play("kenney_explosion_medium")
 			_shake = maxf(_shake, 4.0)
+			_screen.shockwave(ev["pos"], 0.015)
+			_hitstop_for(HITSTOP_PART)
 		&"duel_start":
 			AudioManager.play("kenney_beam")
 			_hud.show_banner(tr("hud.duel"))
@@ -378,6 +396,9 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_explosion_big")
 			Settings.vibrate(150)
 			_shake = 10.0
+			_screen.flash(0.8)
+			_screen.shockwave(ev["pos"], 0.045)
+			_hitstop_for(HITSTOP_BOSS)
 			if bool(ev.get("final", false)):
 				AudioManager.play_music("kenney_jingle_victory", 0.3)
 		&"dialogue":
@@ -443,6 +464,24 @@ func _on_event(ev: Dictionary) -> void:
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)
+
+
+## Congela a Sim por `seconds` de tempo real (o desenho continua: faíscas e anéis seguem). A partida
+## não muda, só atrasa; o bot e os replays não param.
+func _hitstop_for(seconds: float) -> void:
+	if use_bot or playback != null:
+		return
+	_hitstop = maxf(_hitstop, seconds)
+
+
+func _tick_hitstop(delta: float) -> void:
+	if _hitstop <= 0.0:
+		return
+	_hitstop -= delta
+	if paused or sim.finished or _reported:
+		_hitstop = 0.0
+		return
+	GameClock.paused = _hitstop > 0.0
 
 
 func _on_revive_choice(accept: bool) -> void:

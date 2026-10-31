@@ -234,5 +234,13 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   pixel a pixel à nave e com acento oposto à tinta (legível em toda pintura). Hangar anuncia a próxima peça,
   revela a nova com onda de luz e selo, e lista as nove em "Evolução da nave"; coleção e loja mostram a nave
   vestida; vale em todo modo e na ala do co-op, sem mudar a partida (hash igual)
+- ✅ `1.8.0` Efeitos de combate premium (pesquisa em `.ai/06-pesquisa-efeitos-visuais.md`): luz aditiva em tudo
+  que brilha (halo neon nos tiros, laser em três camadas com pulsos, luz dos motores, boca do canhão, halos dos
+  coletáveis), explosões em camadas (clarão, fogo, faíscas alinhadas, fumaça, estilhaços, anel de choque), impacto
+  com faíscas, fumaça de avaria, destroços 2,5D que caem até a sombra e espirram na água, bolhas de quem sobe do
+  fundo, números de pontos, cancelamento de balas em onda na bomba, cadeia de explosões e hitstop nos chefes,
+  vinheta, borda de perigo com o casco no fim, clarão e onda de choque com distorção (Média e Alta). Partículas em
+  MultiMesh (`ParticleField`, teto `particles_max`), receitas em `CombatFx`, tela em `ScreenFx`; nenhum plugin de
+  terceiros (avaliação na pesquisa). "Reduzir flashes" e qualidade Baixa reduzem a dose; hash da partida igual
 - ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
   (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`

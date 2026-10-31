@@ -117,6 +117,96 @@ def glow(size: int) -> list:
     return px
 
 
+def flare(size: int) -> list:
+    """Clarão aditivo: núcleo branco quente e halo largo (explosões, boca do canhão, impactos).
+    Desenhado com filtro linear, escalado à vontade; branco para ser tingido."""
+    px = canvas(size, size)
+    c = (size - 1) / 2.0
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c) / (size / 2.0)
+            if d < 1.0:
+                a = 0.55 * (1.0 - d) ** 3 + 0.45 * max(0.0, 1.0 - d * 3.2) ** 2
+                px[y * size + x] = (255, 255, 255, int(255 * min(1.0, a * 1.6)))
+    return px
+
+
+def streak(w: int, h: int) -> list:
+    """Faísca alongada (alinhada à velocidade): ponta clara, cauda que some."""
+    px = canvas(w, h)
+    cx = (w - 1) / 2.0
+    for y in range(h):
+        v = y / (h - 1)
+        for x in range(w):
+            t = abs(x - cx) / (w / 2.0)
+            a = max(0.0, 1.0 - t * t) * (1.0 - v) ** 1.4
+            if a > 0.02:
+                px[y * w + x] = (255, 255, 255, int(255 * a))
+    return px
+
+
+def smoke(size: int) -> list:
+    """Fumaça em pixel art: três bolhas sobrepostas, sombreadas de cima para baixo (tingida em cena)."""
+    px = canvas(size, size)
+    lobes = ((0.38, 0.55, 0.30), (0.62, 0.5, 0.28), (0.5, 0.36, 0.3))
+    for y in range(size):
+        for x in range(size):
+            u, v = (x + 0.5) / size, (y + 0.5) / size
+            inside = max(1.0 - math.hypot(u - lx, v - ly) / r for lx, ly, r in lobes)
+            if inside <= 0.0:
+                continue
+            shade = 0.55 + 0.45 * (1.0 - v)
+            a = min(1.0, inside * 3.0)
+            g = int(255 * shade)
+            px[y * size + x] = (g, g, g, int(255 * a))
+    return px
+
+
+def debris(size: int) -> list:
+    """Estilhaço irregular com contorno escuro (cai girando para o chão)."""
+    px = canvas(size, size)
+    pts = ((1, 0), (size - 1, 1), (size - 2, size - 2), (2, size - 1), (0, 3))
+    for y in range(size):
+        for x in range(size):
+            inside = True
+            for i, (ax, ay) in enumerate(pts):
+                bx, by = pts[(i + 1) % len(pts)]
+                if (bx - ax) * (y - ay) - (by - ay) * (x - ax) < -0.5:
+                    inside = False
+                    break
+            if inside:
+                edge = x == 0 or y == 0 or x == size - 1 or y == size - 1
+                px[y * size + x] = (90, 96, 110, 255) if edge else (200, 208, 220, 255)
+    return px
+
+
+def sparkle(size: int) -> list:
+    """Brilho de quatro pontas (coletáveis): cruz fina com centro claro."""
+    px = canvas(size, size)
+    c = size // 2
+    for i in range(size):
+        a = int(255 * (1.0 - abs(i - c) / (c + 1)) ** 1.5)
+        px[c * size + i] = (255, 255, 255, a)
+        px[i * size + c] = (255, 255, 255, a)
+    px[c * size + c] = WHITE
+    return px
+
+
+def shock(size: int) -> list:
+    """Onda de choque: anel de borda macia (aditivo, linear), mais claro por dentro."""
+    px = canvas(size, size)
+    c = (size - 1) / 2.0
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c) / (size / 2.0)
+            band = max(0.0, 1.0 - abs(d - 0.86) / 0.14)
+            inner = 0.18 * max(0.0, 1.0 - abs(d - 0.7) / 0.3)
+            a = min(1.0, band ** 1.5 + inner)
+            if a > 0.01 and d < 1.0:
+                px[y * size + x] = (255, 255, 255, int(255 * a))
+    return px
+
+
 def medal(size: int) -> list:
     light, dark = PALETTE["gold"]
     px = orb(size, "gold")
@@ -421,6 +511,12 @@ SPRITES = {
     "fx/ring_128.png": (128, 128, lambda: ring(128, 3.0, WHITE)),
     "fx/glow_32.png": (32, 32, lambda: glow(32)),
     "fx/beam.png": (16, 4, lambda: beam(16, 4)),
+    "fx/flare_64.png": (64, 64, lambda: flare(64)),
+    "fx/streak.png": (4, 16, lambda: streak(4, 16)),
+    "fx/smoke_16.png": (16, 16, lambda: smoke(16)),
+    "fx/debris_6.png": (6, 6, lambda: debris(6)),
+    "fx/sparkle_9.png": (9, 9, lambda: sparkle(9)),
+    "fx/shock_64.png": (64, 64, lambda: shock(64)),
     "boss/tentacle_segment.png": (14, 14, lambda: tentacle(14, False)),
     "boss/tentacle_tip.png": (18, 18, lambda: tentacle(18, True)),
     "icon/icon_512.png": (512, 512, lambda: icon_full(512)),

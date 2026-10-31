@@ -122,6 +122,11 @@ func _draw() -> void:
 	var frame := SpriteBank.frame_rect(int(_time * 12.0) % frames, 48)
 	draw_set_transform(ship_center, lean, Vector2(k, k))
 	draw_texture_rect_region(_engine, Rect2(-24, -24, 48, 48), frame, Color(1, 1, 1, 0.75 + 0.25 * _pulse))
+	# Luz quente dos bocais (a mesma da partida, WorldView.NOZZLES), pulsando com o toque na nave.
+	for nozzle: Vector2 in WorldView.NOZZLES:
+		var r := (5.0 + 3.0 * _pulse) * (0.9 + 0.1 * sin(_time * 31.0 + nozzle.x))
+		draw_texture_rect(_glow, Rect2(nozzle + Vector2(-r, -r * 0.6), Vector2(r * 2.0, r * 2.2)), false,
+				Color(WorldView.EXHAUST_COLOR, 0.55 + 0.3 * _pulse))
 	draw_texture(_ship, Vector2(-24, -24))
 	draw_set_transform(Vector2.ZERO)
 	# Varredura de scanner subindo pela nave (holograma do hangar).
