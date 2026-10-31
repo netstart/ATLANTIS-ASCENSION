@@ -21,6 +21,9 @@ $project = Split-Path -Parent $PSScriptRoot
 $build = Join-Path $project 'build'
 $version = (Select-String -Path (Join-Path $project 'project.godot') -Pattern 'config/version="([^"]+)"').Matches[0].Groups[1].Value
 $env:JAVA_HOME = $Java
+# Pastas de exportação limpas: arquivos de versões anteriores não podem entrar nos pacotes.
+Remove-Item (Join-Path $build 'windows'), (Join-Path $build 'linux') -Recurse -Force -ErrorAction SilentlyContinue
+Get-ChildItem $build -File -Include *.zip, *.tar.gz -ErrorAction SilentlyContinue | Remove-Item -Force
 New-Item -ItemType Directory -Force (Join-Path $build 'windows'), (Join-Path $build 'linux') | Out-Null
 $failed = $false
 
