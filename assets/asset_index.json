@@ -48,16 +48,46 @@
   "sha256": "373314518de6a2025835d82e9b725d4f0c741ee640697667cf6cae473c01387c"
  },
  {
+  "file": "assets/art/generated/bullets/plasma_10.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3e06edeb2c0671e7b9f7b904dd614243e2d03b4a20260b9d0e0f3535250eaae4"
+ },
+ {
+  "file": "assets/art/generated/bullets/plasma_18.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "443e0b4af7416a8e8710e92b0f3e56c2aa4e2ef25b72b4f013d773b592a90e90"
+ },
+ {
+  "file": "assets/art/generated/bullets/rail.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "e604b2956cbd6166eccc672acb835d3b60ad9f7f589253c4f0d485acccab1409"
+ },
+ {
   "file": "assets/art/generated/bullets/shot_pulsar.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "40be34190a112841ba39894631d6fd48527954ba94e4239af6f1eec6def0dc14"
  },
  {
+  "file": "assets/art/generated/enemies/glyph.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "5a69f74ec2a7a3ad362adb10b180a82ad8c50284e5b104b11b8969e57f3ac9e5"
+ },
+ {
   "file": "assets/art/generated/fx/beam.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "27b0b9fbbcef87e66a6e5ac18b315f681f2786523cd9bb46b9adc69e5764e656"
+ },
+ {
+  "file": "assets/art/generated/fx/drone.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "57c4c923a4e68c26679c80dee56c0b089ed84fc63df7d0860e883897e8698f6b"
  },
  {
   "file": "assets/art/generated/fx/glow_32.png",
@@ -84,6 +114,12 @@
   "sha256": "34478d49c39d48fe0165a93a7e945fb261886b2c7820188f7b6bcce658d8d5f6"
  },
  {
+  "file": "assets/art/generated/pickups/log.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "d63b2f56f4da7bd40c9b8ce35aa98ffc3393e0f3d85336249e035d51150d3a14"
+ },
+ {
   "file": "assets/art/generated/pickups/medal.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
@@ -96,10 +132,22 @@
   "sha256": "f555b2460a77ee1637105f13194337e8f55fb158698a83a67b78c53a29cfdd36"
  },
  {
+  "file": "assets/art/generated/pickups/orb_plasma.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "1cac7ee1e63c5d25fec5fd07ee87633fdecfe635cb739bd1136262889a40e57e"
+ },
+ {
   "file": "assets/art/generated/pickups/orb_pulsar.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "50907ea8ecb6dc24470ba81645616215ea75d1979a1a378cdc83676f507d3100"
+ },
+ {
+  "file": "assets/art/generated/pickups/orb_railgun.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "20cc8633aed41033c730d8dafe45bd9eb0496b5a1c013df9cb57d26e8886c892"
  },
  {
   "file": "assets/art/generated/pickups/pearl.png",
@@ -118,6 +166,42 @@
   "source": "foozle/Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Planets/PNGs/Earth-Like planet.png",
   "license_id": "foozle_void_environment_pack",
   "sha256": "9deae581a07ad48f254d217acf87c9f06768bbd311051158873f7ed8054be112"
+ },
+ {
+  "file": "assets/art/void/klaed/battlecruiser_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Battlecruiser - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "72af65bd7696a924745a25970de69a87cd845bdd569a65a0bf548db92dc07e4f"
+ },
+ {
+  "file": "assets/art/void/klaed/battlecruiser_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Battlecruiser - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "81db4efae582a50e9c9d0728e115d5743f4eba495ab0e9ec49d47720f1d365e4"
+ },
+ {
+  "file": "assets/art/void/klaed/battlecruiser_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Battlecruiser - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "874cd74f19cbc0fc5232fc8e7674e2d3fb5340ae351479757285b25ac8cc0b35"
+ },
+ {
+  "file": "assets/art/void/klaed/bomber_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Bomber - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "b297c4e98b4a342c86136da574e910ac7f8d5186d5201575a257dd5791a54846"
+ },
+ {
+  "file": "assets/art/void/klaed/bomber_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Bomber - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "801a270bf1189fd3dc62749145a5c5abb03e981a03b39a08f95bddc488e8880d"
+ },
+ {
+  "file": "assets/art/void/klaed/bomber_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Bomber - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "f28f26619a5a17c56cf8e7154bf52a34d303132c695ef74ae5b7d13ad7f520fa"
  },
  {
   "file": "assets/art/void/klaed/dreadnought_base.png",
@@ -174,6 +258,36 @@
   "sha256": "3e7f8e1aa57e64f5b92cdc6bb630643d1eceb8f870476f1387134e4b6acabc7b"
  },
  {
+  "file": "assets/art/void/klaed/proj_big_bullet.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Projectiles/PNGs/Kla'ed - Big Bullet.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "95030274e64946b4883c996a88858c14c7bc07b3d7a6c5220311bd7c900bdab0"
+ },
+ {
+  "file": "assets/art/void/klaed/proj_bullet.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Projectiles/PNGs/Kla'ed - Bullet.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "63f994d653a9e810e76669acc0d4126d3c2b0ecbd3816d77c6447514bf2fd9b9"
+ },
+ {
+  "file": "assets/art/void/klaed/proj_ray.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Projectiles/PNGs/Kla'ed - Ray.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "e3eedd11c806cf3a9c8d4898a6c3d4d5afbadb8861590810e15fb266a092a37b"
+ },
+ {
+  "file": "assets/art/void/klaed/proj_torpedo.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Projectiles/PNGs/Kla'ed - Torpedo.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "34c4915b96324737f4a699ebdeb150f765192f21b93a94102080047c483f9e37"
+ },
+ {
+  "file": "assets/art/void/klaed/proj_wave.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Projectiles/PNGs/Kla'ed - Wave.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "914fd72d606c860ab86a6c9fd5dc78923a2a4ad5a5acdce92c49e9d6348f921b"
+ },
+ {
   "file": "assets/art/void/klaed/scout_base.png",
   "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Scout - Base.png",
   "license_id": "foozle_void_fleet_pack_1",
@@ -208,6 +322,24 @@
   "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Support ship - Engine.png",
   "license_id": "foozle_void_fleet_pack_1",
   "sha256": "9662805eb9426bb027099e7de32e06deaca354c9e6e326485f464dd0b4503ed1"
+ },
+ {
+  "file": "assets/art/void/klaed/torpedo_base.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Base/PNGs/Kla'ed - Torpedo Ship - Base.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "28233d26cdce2da29acc47ab08cedf49c4a34a002629f0a8a282df5b9af4771f"
+ },
+ {
+  "file": "assets/art/void/klaed/torpedo_destruction.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Destruction/PNGs/Kla'ed - Torpedo Ship - Destruction.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "5fe4848901b308ba39e3f3af0a86a27601bcfbb9749454f317bb42f49af3df26"
+ },
+ {
+  "file": "assets/art/void/klaed/torpedo_engine.png",
+  "source": "foozle/Foozle_2DS0012_Void_FleetPack_1/Foozle_2DS0012_Void_EnemyFleet_1/Kla'ed/Engine/PNGs/Kla'ed - Torpedo Ship - Engine.png",
+  "license_id": "foozle_void_fleet_pack_1",
+  "sha256": "365bfcbccb9aed890ceaf9e14930ea253e863060925461e458e0e7aed6b5bc26"
  },
  {
   "file": "assets/art/void/main_ship/base_damaged.png",
@@ -252,6 +384,12 @@
   "sha256": "49c769b02229b47e1a7eb1d9b857753caea27ddc316d223a46dcf41486f48861"
  },
  {
+  "file": "assets/art/void/main_ship/proj_rocket.png",
+  "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main ship weapons/PNGs/Main ship weapon - Projectile - Rocket.png",
+  "license_id": "foozle_void_main_ship",
+  "sha256": "1a9d21faa41b8147184955103a336f29827c0d5e1713452e8053efe73c305944"
+ },
+ {
   "file": "assets/art/void/main_ship/proj_zapper.png",
   "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main ship weapons/PNGs/Main ship weapon - Projectile - Zapper.png",
   "license_id": "foozle_void_main_ship",
@@ -268,6 +406,354 @@
   "source": "foozle/Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Shields/PNGs/Main Ship - Shields - Round Shield.png",
   "license_id": "foozle_void_main_ship",
   "sha256": "64624515bc96fac45bd8f0221aa9c5454646a206a817f96fd1861abf2fe9378b"
+ },
+ {
+  "file": "assets/art/void/nairan/battlecruiser_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Battlecruiser - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "e455c6801ca8eb817cd63e42651668fb3f53649b8489717ca3b0bcbcec069e25"
+ },
+ {
+  "file": "assets/art/void/nairan/battlecruiser_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Battlecruiser  -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "dff34d70702735fd50dea9fe0c3f1a647f22b9892b6d28476ecf15d3cfa86726"
+ },
+ {
+  "file": "assets/art/void/nairan/battlecruiser_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Battlecruiser - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "605d940511991a749be1c0b0b85fa2468cb723279a90e7bb7508ba5c4fe5e3bf"
+ },
+ {
+  "file": "assets/art/void/nairan/bomber_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Bomber - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "09fb47910d1996e51c9d44ef76eede29c70017ec7baf13c231b7fbb35fd73c0b"
+ },
+ {
+  "file": "assets/art/void/nairan/bomber_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Bomber -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "05f9afefc8fe6ad5933634b60dd456ecb0ace0d163ca37f79969e8fdbee08ff5"
+ },
+ {
+  "file": "assets/art/void/nairan/bomber_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Bomber - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "078d6fa8d6c271acf14c4676ea4ef97a0e201faf1d13a5db07156be0baa3c462"
+ },
+ {
+  "file": "assets/art/void/nairan/dreadnought_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Dreadnought - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "b1ce40cbda5265ce4856f7e4a4f5fb4f038f3b19bda7c66d8b827bcad4bda4d0"
+ },
+ {
+  "file": "assets/art/void/nairan/dreadnought_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Dreadnought -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "9c7952c52d7eefaa8ac7385a5845b49df7020f72d401e0be7d060637d6d55a5a"
+ },
+ {
+  "file": "assets/art/void/nairan/dreadnought_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Dreadnought - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "d3e5e9c4cba48b4318e838553b4534d267a4db254657aefeca32997d051dea48"
+ },
+ {
+  "file": "assets/art/void/nairan/fighter_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Fighter - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "73416859889c618d78520dff32a1e36e2c3663d3f95ffd7905d905927bae9285"
+ },
+ {
+  "file": "assets/art/void/nairan/fighter_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Fighter -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "cc8e322767292086544a4578c83e7179f1fcbb8e79303e20d22d016b253282d4"
+ },
+ {
+  "file": "assets/art/void/nairan/fighter_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Fighter - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "8b2f9169543c8d1122cf070a827471e37689eb25e457d7e191ac8c6e828c81d2"
+ },
+ {
+  "file": "assets/art/void/nairan/frigate_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Frigate - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "d0ccfb0a5cb9f057ad7a09848419c19277a631ce2c0d7be3be548195fca5cb79"
+ },
+ {
+  "file": "assets/art/void/nairan/frigate_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Frigate -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "34a810384ff341bfba0cef1b63cb2efa1c11cdd05730af658e54fe457c96aa0d"
+ },
+ {
+  "file": "assets/art/void/nairan/frigate_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Frigate - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "10c6e62dd08df44ef505317baefdbac1cfb5ec86e1bcce2022cb184b1460956c"
+ },
+ {
+  "file": "assets/art/void/nairan/proj_bolt.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Weapon Effects - Projectiles/PNGs/Nairan - Bolt.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "3111cd2afbb7d14faed6b5c9e4dc3d2eaac45698f89df1ac0ae88cdf59532d7d"
+ },
+ {
+  "file": "assets/art/void/nairan/proj_ray.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Weapon Effects - Projectiles/PNGs/Nairan - Ray.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "1b57f778db75c0efcd1cc445ccf1db1a4e4fad034b464fb8a15ac2d8705cc1db"
+ },
+ {
+  "file": "assets/art/void/nairan/proj_rocket.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Weapon Effects - Projectiles/PNGs/Nairan - Rocket.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "b793eb72d43e2b0e66b3cfcec2f1f3e4643546d53ee3a84fbf1a5f83de9c3689"
+ },
+ {
+  "file": "assets/art/void/nairan/proj_torpedo.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Weapon Effects - Projectiles/PNGs/Nairan - Torpedo.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "f99a1c5a7b957d099ef1767fde364c0a221ab7d791e0cea93ec1dd72becdfbb5"
+ },
+ {
+  "file": "assets/art/void/nairan/scout_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Scout - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "599d87f30658ada0a9f01acca434c59f27b6146c08ea148eef31ba6c0d9195e4"
+ },
+ {
+  "file": "assets/art/void/nairan/scout_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Scout -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "7b8acae6388ac7718bc88ed24ac78479cd7e6ad10b5da82e2447e026bb4d88d2"
+ },
+ {
+  "file": "assets/art/void/nairan/scout_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Scout - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "4adabdc506da50d43e91a41d0b7dd8f01835757333ac324e5fb86bdd25c206ad"
+ },
+ {
+  "file": "assets/art/void/nairan/support_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Support Ship - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "716fa487fe4d94404217b636ebb319b531d3eb4553357241a69f105866782a33"
+ },
+ {
+  "file": "assets/art/void/nairan/support_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Support Ship -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "a3a7057346fe8e41e140411f00ab9ff0e0344a6fc0722a242b8e655e86d9a04c"
+ },
+ {
+  "file": "assets/art/void/nairan/support_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Support Ship - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "b7be76be52304120ff7170b7c0964c9990c2e06e16ea2cdd5fffb50f41aa6a35"
+ },
+ {
+  "file": "assets/art/void/nairan/torpedo_base.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Designs - Base/PNGs/Nairan - Torpedo Ship - Base.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "f1b8ef3d186feaddab35a55518ae00fde497dfe5561fe1037fafc596c96c1b39"
+ },
+ {
+  "file": "assets/art/void/nairan/torpedo_destruction.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Destruction/PNGs/Nairan - Torpedo Ship -  Destruction.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "c2c0e8e96f0f72f0e14a3bc12a6fbfcb972dc1e3289f9e2cd473f8d19f842d17"
+ },
+ {
+  "file": "assets/art/void/nairan/torpedo_engine.png",
+  "source": "foozle/Foozle_2DS0013_Void_FleetPack_2/Foozle_2DS0013_Void_EnemyFleet_2/Nairan/Engine Effects/PNGs/Nairan - Torpedo Ship - Engine.png",
+  "license_id": "foozle_void_fleet_pack_2",
+  "sha256": "e543258b1a7bcf2f0825086c3c747b3e1f510d35f7fa9392f9a8aa55202388cc"
+ },
+ {
+  "file": "assets/art/void/nautolan/battlecruiser_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Battlecruiser - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "f5590b5afcc4125092d19398d08297ec89bcc4cd6fba212941340e96c0920d44"
+ },
+ {
+  "file": "assets/art/void/nautolan/battlecruiser_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Battlecruiser.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "f55838619c16d301540add04571ec39fc05629e435611af3a0a9dfc9834792a8"
+ },
+ {
+  "file": "assets/art/void/nautolan/battlecruiser_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Battlecruiser - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "6153fdcbc28136859c07f83b953b4c4be0f4fc41122d3801d138d6c185480fc8"
+ },
+ {
+  "file": "assets/art/void/nautolan/bomber_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Bomber - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "594cf5e4a3eda5e01d9cce96a294aa9c7510f892575b5d4e28f2a7e1b7cac271"
+ },
+ {
+  "file": "assets/art/void/nautolan/bomber_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Bomber.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "ce211d1ca46e92be6e70aabd5abc4ff9a139751b7aa12c5eb9183f0258fe2fa4"
+ },
+ {
+  "file": "assets/art/void/nautolan/bomber_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Bomber - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "05c8e719447634a47789fe990b66d2c805e8b6c4789cf0f951a1cffa65fdbd1e"
+ },
+ {
+  "file": "assets/art/void/nautolan/dreadnought_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Dreadnought - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "ee40f66945596afacc040bbcf028e660001d815cbc9ea3bf4db9aa5b88c89251"
+ },
+ {
+  "file": "assets/art/void/nautolan/dreadnought_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Dreadnought.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "d376ffa59904da251f93f831e51cb05b1f654d8cc32bdd3fa97bbe52355c49f3"
+ },
+ {
+  "file": "assets/art/void/nautolan/dreadnought_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Dreadnought - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "692c0669b4e84f6173d2cea1c37880ab9150b7bf838406c17e7b63235813368c"
+ },
+ {
+  "file": "assets/art/void/nautolan/fighter_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Fighter - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "ca6871d468d84549ba7cca98a12899ae8ff1c79db185af4a25403d70940db6e8"
+ },
+ {
+  "file": "assets/art/void/nautolan/fighter_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Fighter.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "c159bbe9cfb5d640dd8148941c78ca8f2930e66a4e77f1afe32f52a645a725c0"
+ },
+ {
+  "file": "assets/art/void/nautolan/fighter_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Fighter - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "431f9539162fac8ca3de8b56c63189d8d2e2216607cd5324425cbc53bb1e2b04"
+ },
+ {
+  "file": "assets/art/void/nautolan/frigate_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Frigate - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "e6f8181039cef9f894df343290105f7abaf0f81d388823f0195c5e73b1fe29ea"
+ },
+ {
+  "file": "assets/art/void/nautolan/frigate_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Frigate.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "f925f1722cab797be988fa45f0c0942f74b50672713cb0fee0e5a75f56c7ad56"
+ },
+ {
+  "file": "assets/art/void/nautolan/frigate_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Frigate - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "8132922bc146c3a71c263bbd959b4dbdd956e2579af9427089258e294a42d301"
+ },
+ {
+  "file": "assets/art/void/nautolan/proj_bomb.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Weapon Effects - Projectiles/PNGs/Nautolan - Bomb.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "9d7dca99cd4c33ee428a3fd3530b18060bd38bcffea744369d22cb6cfeb96ce5"
+ },
+ {
+  "file": "assets/art/void/nautolan/proj_bullet.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Weapon Effects - Projectiles/PNGs/Nautolan - Bullet.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "b97b51c808144778aabc289fab593c86a72d691ed45744858df6c9eaff737751"
+ },
+ {
+  "file": "assets/art/void/nautolan/proj_ray.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Weapon Effects - Projectiles/PNGs/Nautolan - Ray.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "b0b335f1418bb6e265d5e791330e36e3bd0a8d1ab01f35387c2d36dc8d770230"
+ },
+ {
+  "file": "assets/art/void/nautolan/proj_rocket.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Weapon Effects - Projectiles/PNGs/Nautolan - Rocket.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "df35741d0afe1b4e3b88c678644718f013b1071d147741e950294f700d0bb7c9"
+ },
+ {
+  "file": "assets/art/void/nautolan/proj_spinning_bullet.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Weapon Effects - Projectiles/PNGs/Nautolan - Spinning Bullet.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "f54456f7e79dacdb91a3ca7e0c7181d298a1aecb313b2161fb94e77beead4cfb"
+ },
+ {
+  "file": "assets/art/void/nautolan/proj_wave.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Weapon Effects - Projectiles/PNGs/Nautolan - Wave.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "cc145039b0a9d0d6a1d0e1431e1fc18f3a721244682e22e1956e8b6326ea9340"
+ },
+ {
+  "file": "assets/art/void/nautolan/scout_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Scout - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "440b0655bc218db7882298b7240b637c92816da37b2ef14423fd0c683f350156"
+ },
+ {
+  "file": "assets/art/void/nautolan/scout_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Scout.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "95a913d4258f9c62ef4742ab69b20fede2238dc903d0dd12ce7427fd098796c3"
+ },
+ {
+  "file": "assets/art/void/nautolan/scout_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Scout - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "885932cc20f2eb21aa091dc1ce85b7a2a38e99b3040e6c855d713fc80fd74687"
+ },
+ {
+  "file": "assets/art/void/nautolan/support_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Support - Base.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "e63318511a6a6c558e055584344c061b4f33bf24f9cb46df537db8caf70ec845"
+ },
+ {
+  "file": "assets/art/void/nautolan/support_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Support.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "8921260c7df36ba42cf84ab055a08ccac5ccb8abb9bd265bad5e20c34d8b4ee7"
+ },
+ {
+  "file": "assets/art/void/nautolan/support_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Support - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "39be51ecf98faeb58e8cebd53d2306fcf6248b81e36d53edb3b2518ab3fcad75"
+ },
+ {
+  "file": "assets/art/void/nautolan/torpedo_base.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Designs - Base/PNGs/Nautolan Ship - Torpedo Ship.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "188cbeb3eca0baff25b0c39d57099c796719f195714fc1648f90991ccd2a59b8"
+ },
+ {
+  "file": "assets/art/void/nautolan/torpedo_destruction.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Destruction/PNGs/Nautolan Ship - Torpedo Ship.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "3b5bea28a4729c9e0c4c3a424d0b08002ca7c5d891453d519ae56a6c95782440"
+ },
+ {
+  "file": "assets/art/void/nautolan/torpedo_engine.png",
+  "source": "foozle/Foozle_2DS0014_Void_FleetPack_3/Foozle_2DS0014_Void_EnemyFleet_3/Nautolan/Engine Effects/PNGs/Nautolan Ship - Torpedo Ship - Engine Effect.png",
+  "license_id": "foozle_void_fleet_pack_3",
+  "sha256": "32d9ee0315ebd7f9f2cd75cf1d0df001c0a43df665ea2b0a8e99f70d19469375"
  },
  {
   "file": "assets/art/void/pickups/weapon_autocannons.png",

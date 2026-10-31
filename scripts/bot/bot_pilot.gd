@@ -25,6 +25,9 @@ func _init() -> void:
 func decide(sim: Sim) -> SimInput:
 	var input := SimInput.new()
 	input.fire = true
+	if not sim.offer.is_empty():
+		input.choice = pick_blessing(sim)
+		return input
 	var me := sim.player.pos
 	var near := PackedVector2Array()
 	var near_vel := PackedVector2Array()
@@ -52,6 +55,7 @@ func decide(sim: Sim) -> SimInput:
 	var danger_now := _danger(sim, me, near, near_vel, near_r)
 	input.bomb = danger_now > 60.0 and sim.player.bombs > 0 and sim.player.vulnerable()
 	input.special = sim.player.special_charge >= 1.0 and near.size() > 25
+	input.tide = sim.scoring.pressure >= Scoring.PRESSURE_MAX and (near.size() > 15 or sim.boss != null)
 	if sim.boss != null and sim.boss.state == SimBoss.State.DUEL:
 		input.taps = 1 if sim.frame % 3 == 0 else 0
 	return input
@@ -107,3 +111,20 @@ func _pickup_pull(sim: Sim, c: Vector2) -> float:
 		if d < 90.0:
 			pull += (90.0 - d) * 0.02
 	return pull
+
+
+## Escolha determinística: prefere sinergia (deus já escolhido), depois proteção, depois dano.
+func pick_blessing(sim: Sim) -> int:
+	var best := 0
+	var best_score := -INF
+	var table: Dictionary = sim.tables.get("blessings", {})
+	for i: int in range(sim.offer.size()):
+		var def: Dictionary = table.get(sim.offer[i], {})
+		var deity := StringName(String(def.get("deity", "")))
+		var score := float(sim.mods.deity_count(deity)) * 2.0
+		if deity == &"tethys":
+			score += 1.0
+		if score > best_score:
+			best_score = score
+			best = i
+	return best

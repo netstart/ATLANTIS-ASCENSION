@@ -22,6 +22,9 @@ var kind := PackedInt32Array()
 var grazed := PackedByteArray()
 ## Passos de vida (balas que vencem pelo tempo, como as do chefe em sobrecarga).
 var age := PackedInt32Array()
+## Tiros do jogador: alvos que ainda atravessa (Railgun) e raio do dano em área (Plasma).
+var pierce := PackedInt32Array()
+var splash := PackedFloat32Array()
 
 
 func _init(p_capacity: int) -> void:
@@ -35,6 +38,8 @@ func _init(p_capacity: int) -> void:
 	kind.resize(capacity)
 	grazed.resize(capacity)
 	age.resize(capacity)
+	pierce.resize(capacity)
+	splash.resize(capacity)
 
 
 ## Cria uma bala; devolve o índice ou -1 se o pool está cheio.
@@ -52,6 +57,8 @@ func spawn(p: Vector2, v: Vector2, r: float, k: int, dmg: float = 1.0, p_turn: f
 	accel[i] = p_accel
 	grazed[i] = 0
 	age[i] = 0
+	pierce[i] = 0
+	splash[i] = 0.0
 	count += 1
 	return i
 
@@ -70,14 +77,19 @@ func kill(i: int) -> void:
 		accel[i] = accel[count]
 		grazed[i] = grazed[count]
 		age[i] = age[count]
+		pierce[i] = pierce[count]
+		splash[i] = splash[count]
 
 
 func clear() -> void:
 	count = 0
 
 
-## Move todas as balas um passo; mata as que saem de `bounds`. `gravity` vem do Gravity Breach.
-func step(dt: float, bounds: Rect2, gravity: Vector2 = Vector2.ZERO) -> void:
+## Move todas as balas um passo; mata as que saem de `bounds`. `gravity` vem do Gravity Breach e do
+## vento. `frozen` (Pulso EMP) segura todas no lugar sem envelhecer.
+func step(dt: float, bounds: Rect2, gravity: Vector2 = Vector2.ZERO, frozen: bool = false) -> void:
+	if frozen:
+		return
 	var i := count - 1
 	var has_gravity := gravity != Vector2.ZERO
 	while i >= 0:
@@ -117,4 +129,22 @@ func cancel_near(center: Vector2, dist: float) -> PackedVector2Array:
 func cancel_all() -> PackedVector2Array:
 	var out := pos.slice(0, count)
 	count = 0
+	return out
+
+
+## Puxa as balas a menos de `radius` de `center` (Fenda gravitacional); devolve as que chegaram ao
+## centro (viram pérolas).
+func pull(center: Vector2, radius: float, strength: float, dt: float) -> PackedVector2Array:
+	var out := PackedVector2Array()
+	var r2 := radius * radius
+	var i := count - 1
+	while i >= 0:
+		var p: Vector2 = pos[i]
+		var d2 := p.distance_squared_to(center)
+		if d2 <= 64.0:
+			out.append(p)
+			kill(i)
+		elif d2 <= r2:
+			vel[i] = (vel[i] as Vector2).lerp((center - p).normalized() * strength, minf(1.0, dt * 6.0))
+		i -= 1
 	return out

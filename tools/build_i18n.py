@@ -15,7 +15,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LANGS = ["pt_BR", "en", "es", "de", "fr", "ru", "id", "ja", "ko", "zh_TW", "zh_CN"]
-MODULES = ["ui", "game"]
+MODULES = ["ui", "game", "alpha"]
 PLACEHOLDER = re.compile(r"%[sd]")
 
 

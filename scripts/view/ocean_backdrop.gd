@@ -1,6 +1,8 @@
 class_name OceanBackdrop
 extends Node2D
-## Cenário do capítulo 1 (Oceano Atlântico) em camadas de parallax (plano mestre 8.3):
+## Cenário das missões em camadas de parallax (plano mestre 8.3). `kind` escolhe a paleta do capítulo:
+## ocean (1, Atlântico), atlantis (2, cidade submersa: água verde-azulada e ruínas meio expostas) e
+## storm (3, tempestade: mar de ardósia e chuva diagonal). Camadas:
 ##   0 água (shader ocean_surface, fator 1,0 na própria textura procedural)
 ##   1 ruínas submersas que emergem no Ocean Shift (fator 0,6; mais lentas = mais fundas)
 ##   2 espuma e respingos de primeiro plano (fator 1,4; ≤ 35% de opacidade sobre o campo)
@@ -10,17 +12,31 @@ extends Node2D
 const RUIN_FACTOR := 0.6
 const SPRAY_FACTOR := 1.4
 const TILE := 96.0
+## Paletas por cenário: fundo, meio, raso, espuma e ruínas emersas de base.
+const PALETTES := {
+	&"ocean": {"deep": Color(0.024, 0.071, 0.165), "mid": Color(0.043, 0.157, 0.302), "shoal": Color(0.051, 0.235, 0.29),
+			"foam": Color(0.7, 0.95, 1.0), "base_emerge": 0.0, "rain": 0.0},
+	&"atlantis": {"deep": Color(0.016, 0.086, 0.11), "mid": Color(0.035, 0.18, 0.2), "shoal": Color(0.09, 0.27, 0.25),
+			"foam": Color(0.75, 1.0, 0.9), "base_emerge": 0.35, "rain": 0.0},
+	&"storm": {"deep": Color(0.035, 0.05, 0.08), "mid": Color(0.08, 0.1, 0.14), "shoal": Color(0.12, 0.16, 0.2),
+			"foam": Color(0.8, 0.85, 0.95), "base_emerge": 0.0, "rain": 1.0},
+}
 
 var view_size := Vector2(305, 678)
 var scroll: float = 0.0
 var emerge: float = 0.0
 var tilt := Vector2.ZERO
 var detail: int = 2
+var kind: StringName = &"ocean"
+## Corrente ou vento atual (unidades/s): a espuma e a chuva derivam junto.
+var drift := Vector2.ZERO
 
 var _water: ColorRect
 var _material: ShaderMaterial
 var _ruins: RuinsLayer
 var _spray: SprayLayer
+var _rain: RainLayer
+var _drift_offset := Vector2.ZERO
 
 
 func _ready() -> void:
@@ -34,7 +50,16 @@ func _ready() -> void:
 	add_child(_ruins)
 	_spray = SprayLayer.new()
 	add_child(_spray)
+	_rain = RainLayer.new()
+	add_child(_rain)
+	var palette: Dictionary = PALETTES.get(kind, PALETTES[&"ocean"])
+	for key: String in ["deep", "mid", "shoal", "foam"]:
+		_material.set_shader_parameter(key, palette[key])
 	set_view(view_size)
+
+
+func set_drift(value: Vector2) -> void:
+	drift = value
 
 
 func set_view(size: Vector2) -> void:
@@ -46,7 +71,11 @@ func set_view(size: Vector2) -> void:
 
 func apply(p_scroll: float, p_emerge: float, p_tilt: Vector2 = Vector2.ZERO, reduce_motion: bool = false) -> void:
 	scroll = p_scroll
-	emerge = clampf(p_emerge, 0.0, 1.0)
+	var palette: Dictionary = PALETTES.get(kind, PALETTES[&"ocean"])
+	var base := float(palette["base_emerge"])
+	emerge = clampf(base + p_emerge * (1.0 - base), 0.0, 1.0)
+	if not reduce_motion:
+		_drift_offset += drift * 0.02
 	tilt = Vector2.ZERO if reduce_motion else p_tilt
 	_material.set_shader_parameter("scroll", scroll)
 	_material.set_shader_parameter("shallow", emerge)
@@ -59,9 +88,16 @@ func apply(p_scroll: float, p_emerge: float, p_tilt: Vector2 = Vector2.ZERO, red
 	_spray.visible = detail >= 1
 	_spray.offset = scroll * SPRAY_FACTOR
 	_spray.position = ParallaxRig.layer_offset(0.0, SPRAY_FACTOR, 0.0, tilt, 1.2, reduce_motion)
+	_spray.position.x += fposmod(_drift_offset.x, 24.0) - 12.0
 	_spray.view_size = view_size
 	_spray.amount = 0.5 + 0.5 * emerge
 	_spray.queue_redraw()
+	_rain.visible = float(palette["rain"]) > 0.0 and detail >= 1
+	if _rain.visible:
+		_rain.offset = scroll * 3.0
+		_rain.slant = 0.35 + drift.x * 0.01
+		_rain.view_size = view_size
+		_rain.queue_redraw()
 
 
 ## Ruínas atlantes procedurais: colunas, arcos e escadarias por bloco de TILE unidades, sorteados por
@@ -138,3 +174,26 @@ class SprayLayer:
 			var y := i * step + offset
 			var w := 6.0 + float((h >> 7) % 14)
 			draw_rect(Rect2(x, y, w, 1.0), COLOR)
+
+
+## Chuva da tempestade (capítulo 3): riscos finos inclinados, rápidos, de primeiro plano.
+class RainLayer:
+	extends Node2D
+
+	const COLOR := Color(0.75, 0.85, 1.0, 0.22)
+
+	var offset: float = 0.0
+	var slant: float = 0.35
+	var view_size := Vector2(305, 678)
+
+	func _draw() -> void:
+		var step := 17.0
+		var first := floori(-offset / step) - 1
+		var last := first + ceili(view_size.y / step) + 2
+		for i: int in range(first, last):
+			var h := absi(hash(i * 7907))
+			for k: int in range(3):
+				var x := float((h >> (k * 6)) % maxi(1, int(view_size.x) + 40)) - 20.0
+				var y := i * step + offset + float((h >> (k * 4 + 3)) % 17)
+				for s: int in range(4):
+					draw_rect(Rect2(x + slant * s * 3.0, y + s * 3.0, 1.0, 3.0), COLOR)

@@ -1,66 +1,831 @@
 [
-	{"id": "wasp_aimed", "bullet": "orb_cyan_m", "steps": [
-		{"op": "aimed", "speed": 92},
-		{"op": "wait", "frames": 110}
-	]},
-	{"id": "buoy_ring", "bullet": "orb_cyan_m", "steps": [
-		{"op": "ring", "count": 8, "speed": 58},
-		{"op": "rotate", "deg": 22.5},
-		{"op": "wait", "frames": 115}
-	]},
-	{"id": "tide_fans", "bullet": "orb_gold_m", "steps": [
-		{"op": "aimed_fan", "count": 5, "spread_deg": 50, "speed": 84},
-		{"op": "wait", "frames": 42},
-		{"op": "aimed_fan", "count": 4, "spread_deg": 36, "speed": 98},
-		{"op": "wait", "frames": 75}
-	]},
-	{"id": "tide_needles", "bullet": "needle_gold", "steps": [
-		{"op": "wait", "frames": 50},
-		{"op": "line", "count": 4, "speed": 105, "speed_step": 18, "aim": true},
-		{"op": "wait", "frames": 70}
-	]},
-	{"id": "tide_spiral", "bullet": "orb_cyan_s", "steps": [
-		{"op": "ring", "count": 5, "speed": 64},
-		{"op": "rotate", "deg": 15},
-		{"op": "wait", "frames": 12},
-		{"op": "repeat", "from": 0, "times": 14},
-		{"op": "wait", "frames": 70}
-	]},
-	{"id": "kraken_suction", "bullet": "orb_violet_m", "steps": [
-		{"op": "ring", "count": 8, "speed": 52},
-		{"op": "wait", "frames": 170}
-	]},
-	{"id": "kraken_sweep", "bullet": "orb_cyan_m", "steps": [
-		{"op": "wait", "frames": 40},
-		{"op": "aimed_fan", "count": 7, "spread_deg": 70, "speed": 78},
-		{"op": "wait", "frames": 100}
-	]},
-	{"id": "kraken_beam", "steps": [
-		{"op": "beam", "warn_frames": 50, "frames": 55, "width": 24, "oy": 34},
-		{"op": "wait", "frames": 170}
-	]},
-	{"id": "kraken_spiral_cw", "bullet": "orb_cyan_s", "steps": [
-		{"op": "ring", "count": 4, "speed": 68},
-		{"op": "rotate", "deg": 17},
-		{"op": "wait", "frames": 10},
-		{"op": "repeat", "from": 0, "times": 18},
-		{"op": "wait", "frames": 90}
-	]},
-	{"id": "kraken_spiral_ccw", "bullet": "orb_cyan_s", "steps": [
-		{"op": "ring", "count": 4, "speed": 68, "offset_deg": 45},
-		{"op": "rotate", "deg": -17},
-		{"op": "wait", "frames": 10},
-		{"op": "repeat", "from": 0, "times": 18},
-		{"op": "wait", "frames": 90}
-	]},
-	{"id": "kraken_growing_fans", "bullet": "orb_coral_l", "steps": [
-		{"op": "fan", "count": 9, "spread_deg": 120, "speed": 52, "accel": 22},
-		{"op": "wait", "frames": 50},
-		{"op": "fan", "count": 8, "spread_deg": 105, "speed": 60, "accel": 22},
-		{"op": "wait", "frames": 65}
-	]},
-	{"id": "kraken_rain", "bullet": "orb_violet_m", "steps": [
-		{"op": "aimed", "speed": 88},
-		{"op": "wait", "frames": 85}
-	]}
+	{
+		"id": "wasp_aimed",
+		"bullet": "orb_cyan_m",
+		"steps": [
+			{
+				"op": "aimed",
+				"speed": 92
+			},
+			{
+				"op": "wait",
+				"frames": 110
+			}
+		]
+	},
+	{
+		"id": "buoy_ring",
+		"bullet": "orb_cyan_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 8,
+				"speed": 58
+			},
+			{
+				"op": "rotate",
+				"deg": 22.5
+			},
+			{
+				"op": "wait",
+				"frames": 115
+			}
+		]
+	},
+	{
+		"id": "tide_fans",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "aimed_fan",
+				"count": 5,
+				"spread_deg": 50,
+				"speed": 84
+			},
+			{
+				"op": "wait",
+				"frames": 42
+			},
+			{
+				"op": "aimed_fan",
+				"count": 4,
+				"spread_deg": 36,
+				"speed": 98
+			},
+			{
+				"op": "wait",
+				"frames": 75
+			}
+		]
+	},
+	{
+		"id": "tide_needles",
+		"bullet": "needle_gold",
+		"steps": [
+			{
+				"op": "wait",
+				"frames": 50
+			},
+			{
+				"op": "line",
+				"count": 4,
+				"speed": 105,
+				"speed_step": 18,
+				"aim": true
+			},
+			{
+				"op": "wait",
+				"frames": 70
+			}
+		]
+	},
+	{
+		"id": "tide_spiral",
+		"bullet": "orb_cyan_s",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 5,
+				"speed": 64
+			},
+			{
+				"op": "rotate",
+				"deg": 15
+			},
+			{
+				"op": "wait",
+				"frames": 12
+			},
+			{
+				"op": "repeat",
+				"from": 0,
+				"times": 14
+			},
+			{
+				"op": "wait",
+				"frames": 70
+			}
+		]
+	},
+	{
+		"id": "kraken_suction",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 8,
+				"speed": 52
+			},
+			{
+				"op": "wait",
+				"frames": 170
+			}
+		]
+	},
+	{
+		"id": "kraken_sweep",
+		"bullet": "orb_cyan_m",
+		"steps": [
+			{
+				"op": "wait",
+				"frames": 40
+			},
+			{
+				"op": "aimed_fan",
+				"count": 7,
+				"spread_deg": 70,
+				"speed": 78
+			},
+			{
+				"op": "wait",
+				"frames": 100
+			}
+		]
+	},
+	{
+		"id": "kraken_beam",
+		"steps": [
+			{
+				"op": "beam",
+				"warn_frames": 50,
+				"frames": 55,
+				"width": 24,
+				"oy": 34
+			},
+			{
+				"op": "wait",
+				"frames": 170
+			}
+		]
+	},
+	{
+		"id": "kraken_spiral_cw",
+		"bullet": "orb_cyan_s",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 4,
+				"speed": 68
+			},
+			{
+				"op": "rotate",
+				"deg": 17
+			},
+			{
+				"op": "wait",
+				"frames": 10
+			},
+			{
+				"op": "repeat",
+				"from": 0,
+				"times": 18
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "kraken_spiral_ccw",
+		"bullet": "orb_cyan_s",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 4,
+				"speed": 68,
+				"offset_deg": 45
+			},
+			{
+				"op": "rotate",
+				"deg": -17
+			},
+			{
+				"op": "wait",
+				"frames": 10
+			},
+			{
+				"op": "repeat",
+				"from": 0,
+				"times": 18
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "kraken_growing_fans",
+		"bullet": "orb_coral_l",
+		"steps": [
+			{
+				"op": "fan",
+				"count": 9,
+				"spread_deg": 120,
+				"speed": 52,
+				"accel": 22
+			},
+			{
+				"op": "wait",
+				"frames": 50
+			},
+			{
+				"op": "fan",
+				"count": 8,
+				"spread_deg": 105,
+				"speed": 60,
+				"accel": 22
+			},
+			{
+				"op": "wait",
+				"frames": 65
+			}
+		]
+	},
+	{
+		"id": "kraken_rain",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "aimed",
+				"speed": 88
+			},
+			{
+				"op": "wait",
+				"frames": 85
+			}
+		]
+	},
+	{
+		"id": "trawler_fan",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "fan",
+				"count": 5,
+				"spread_deg": 60,
+				"speed": 70
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "turret_burst",
+		"bullet": "needle_gold",
+		"steps": [
+			{
+				"op": "aimed",
+				"speed": 120
+			},
+			{
+				"op": "wait",
+				"frames": 8
+			},
+			{
+				"op": "aimed",
+				"speed": 120
+			},
+			{
+				"op": "wait",
+				"frames": 8
+			},
+			{
+				"op": "aimed",
+				"speed": 120
+			},
+			{
+				"op": "wait",
+				"frames": 110
+			}
+		]
+	},
+	{
+		"id": "bulwark_beam",
+		"steps": [
+			{
+				"op": "beam",
+				"warn_frames": 40,
+				"frames": 40,
+				"width": 16,
+				"oy": 20
+			},
+			{
+				"op": "wait",
+				"frames": 150
+			}
+		]
+	},
+	{
+		"id": "sower_mines",
+		"bullet": "orb_coral_l",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 6,
+				"speed": 60,
+				"accel": -45
+			},
+			{
+				"op": "rotate",
+				"deg": 30
+			},
+			{
+				"op": "wait",
+				"frames": 120
+			}
+		]
+	},
+	{
+		"id": "lance_pair",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "aimed_fan",
+				"count": 2,
+				"spread_deg": 8,
+				"speed": 105
+			},
+			{
+				"op": "wait",
+				"frames": 75
+			}
+		]
+	},
+	{
+		"id": "herald_spiral",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 3,
+				"speed": 70
+			},
+			{
+				"op": "rotate",
+				"deg": 19
+			},
+			{
+				"op": "wait",
+				"frames": 9
+			},
+			{
+				"op": "repeat",
+				"from": 0,
+				"times": 10
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "phalanx_fan",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "fan",
+				"count": 3,
+				"spread_deg": 24,
+				"speed": 90
+			},
+			{
+				"op": "wait",
+				"frames": 100
+			}
+		]
+	},
+	{
+		"id": "hunter_aimed",
+		"bullet": "needle_gold",
+		"steps": [
+			{
+				"op": "aimed",
+				"speed": 140
+			},
+			{
+				"op": "wait",
+				"frames": 45
+			}
+		]
+	},
+	{
+		"id": "basilica_towers",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "aimed",
+				"speed": 90,
+				"ox": -22
+			},
+			{
+				"op": "aimed",
+				"speed": 90
+			},
+			{
+				"op": "aimed",
+				"speed": 90,
+				"ox": 22
+			},
+			{
+				"op": "wait",
+				"frames": 50
+			},
+			{
+				"op": "ring",
+				"count": 12,
+				"speed": 55
+			},
+			{
+				"op": "wait",
+				"frames": 70
+			}
+		]
+	},
+	{
+		"id": "judge_cross",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 4,
+				"speed": 80
+			},
+			{
+				"op": "line",
+				"count": 3,
+				"speed": 70,
+				"speed_step": 14,
+				"aim": true
+			},
+			{
+				"op": "rotate",
+				"deg": 45
+			},
+			{
+				"op": "wait",
+				"frames": 70
+			}
+		]
+	},
+	{
+		"id": "trireme_broadside",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "fan",
+				"count": 12,
+				"spread_deg": 160,
+				"speed": 62
+			},
+			{
+				"op": "wait",
+				"frames": 60
+			},
+			{
+				"op": "aimed_fan",
+				"count": 5,
+				"spread_deg": 30,
+				"speed": 95
+			},
+			{
+				"op": "wait",
+				"frames": 80
+			}
+		]
+	},
+	{
+		"id": "squid_ink",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "aimed_fan",
+				"count": 3,
+				"spread_deg": 22,
+				"speed": 72
+			},
+			{
+				"op": "wait",
+				"frames": 120
+			}
+		]
+	},
+	{
+		"id": "jelly_grow",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 6,
+				"speed": 26,
+				"accel": 32
+			},
+			{
+				"op": "rotate",
+				"deg": 30
+			},
+			{
+				"op": "wait",
+				"frames": 110
+			}
+		]
+	},
+	{
+		"id": "volt_lines",
+		"bullet": "orb_cyan_s",
+		"steps": [
+			{
+				"op": "line",
+				"count": 5,
+				"speed": 80,
+				"speed_step": 16,
+				"aim": true
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "larva_lob",
+		"bullet": "orb_coral_l",
+		"steps": [
+			{
+				"op": "fan",
+				"count": 3,
+				"spread_deg": 50,
+				"speed": 85,
+				"angle_deg": -90,
+				"turn": 140
+			},
+			{
+				"op": "wait",
+				"frames": 100
+			}
+		]
+	},
+	{
+		"id": "ice_split",
+		"bullet": "orb_cyan_m",
+		"steps": [
+			{
+				"op": "aimed_fan",
+				"count": 3,
+				"spread_deg": 30,
+				"speed": 85
+			},
+			{
+				"op": "wait",
+				"frames": 22
+			},
+			{
+				"op": "fan",
+				"count": 6,
+				"spread_deg": 140,
+				"speed": 70
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "siren_rings",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 10,
+				"speed": 45
+			},
+			{
+				"op": "wait",
+				"frames": 20
+			},
+			{
+				"op": "ring",
+				"count": 10,
+				"speed": 45,
+				"offset_deg": 18
+			},
+			{
+				"op": "wait",
+				"frames": 110
+			}
+		]
+	},
+	{
+		"id": "nautilus_spiral",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 3,
+				"speed": 62
+			},
+			{
+				"op": "rotate",
+				"deg": 14
+			},
+			{
+				"op": "wait",
+				"frames": 7
+			},
+			{
+				"op": "repeat",
+				"from": 0,
+				"times": 22
+			},
+			{
+				"op": "wait",
+				"frames": 80
+			}
+		]
+	},
+	{
+		"id": "shard_shift",
+		"bullet": "orb_cyan_m",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 10,
+				"speed": 60
+			},
+			{
+				"op": "wait",
+				"frames": 50
+			},
+			{
+				"op": "aimed_fan",
+				"count": 5,
+				"spread_deg": 40,
+				"speed": 90,
+				"bullet": "orb_gold_m"
+			},
+			{
+				"op": "wait",
+				"frames": 50
+			},
+			{
+				"op": "ring",
+				"count": 4,
+				"speed": 70,
+				"bullet": "orb_violet_m"
+			},
+			{
+				"op": "rotate",
+				"deg": 20
+			},
+			{
+				"op": "wait",
+				"frames": 8
+			},
+			{
+				"op": "repeat",
+				"from": 4,
+				"times": 6
+			},
+			{
+				"op": "wait",
+				"frames": 60
+			}
+		]
+	},
+	{
+		"id": "guardian_wall",
+		"bullet": "orb_gold_m",
+		"steps": [
+			{
+				"op": "fan",
+				"count": 11,
+				"spread_deg": 110,
+				"speed": 58
+			},
+			{
+				"op": "wait",
+				"frames": 34
+			},
+			{
+				"op": "fan",
+				"count": 10,
+				"spread_deg": 100,
+				"speed": 58
+			},
+			{
+				"op": "wait",
+				"frames": 70
+			}
+		]
+	},
+	{
+		"id": "guardian_bloom",
+		"bullet": "orb_coral_l",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 14,
+				"speed": 48,
+				"accel": 18
+			},
+			{
+				"op": "rotate",
+				"deg": 13
+			},
+			{
+				"op": "wait",
+				"frames": 40
+			},
+			{
+				"op": "aimed_fan",
+				"count": 3,
+				"spread_deg": 16,
+				"speed": 100,
+				"bullet": "needle_gold"
+			},
+			{
+				"op": "wait",
+				"frames": 40
+			}
+		]
+	},
+	{
+		"id": "storm_bolts",
+		"steps": [
+			{
+				"op": "beam",
+				"warn_frames": 45,
+				"frames": 30,
+				"width": 20,
+				"ox": -70,
+				"oy": 10
+			},
+			{
+				"op": "wait",
+				"frames": 50
+			},
+			{
+				"op": "beam",
+				"warn_frames": 45,
+				"frames": 30,
+				"width": 20,
+				"ox": 70,
+				"oy": 10
+			},
+			{
+				"op": "wait",
+				"frames": 110
+			}
+		]
+	},
+	{
+		"id": "storm_vortex",
+		"bullet": "orb_cyan_s",
+		"steps": [
+			{
+				"op": "ring",
+				"count": 4,
+				"speed": 60,
+				"turn": 40
+			},
+			{
+				"op": "rotate",
+				"deg": 13
+			},
+			{
+				"op": "wait",
+				"frames": 10
+			},
+			{
+				"op": "repeat",
+				"from": 0,
+				"times": 12
+			},
+			{
+				"op": "wait",
+				"frames": 90
+			}
+		]
+	},
+	{
+		"id": "storm_rain",
+		"bullet": "orb_violet_m",
+		"steps": [
+			{
+				"op": "aimed_fan",
+				"count": 4,
+				"spread_deg": 36,
+				"speed": 88
+			},
+			{
+				"op": "wait",
+				"frames": 75
+			}
+		]
+	}
 ]

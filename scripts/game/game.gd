@@ -14,7 +14,8 @@ const SHAKE_DECAY := 18.0
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
-var ship_id: StringName = &"falcon"
+## Carga do hangar (Economy.loadout) ou só o id da aeronave.
+var loadout: Variant = &"falcon"
 var seed_value: int = 7
 var use_bot: bool = false
 var quit_at: float = -1.0
@@ -31,6 +32,8 @@ var _drag := Vector2.ZERO
 var _taps: int = 0
 var _want_special: bool = false
 var _want_bomb: bool = false
+var _want_tide: bool = false
+var _choice: int = -1
 var _touch_ids: Dictionary = {}
 var _last_tap_ms: int = -10000
 var _shake: float = 0.0
@@ -44,9 +47,9 @@ var _reported: bool = false
 
 
 ## Configura antes de entrar na árvore.
-func configure(p_mission: StringName, p_ship: StringName, p_seed: int, bot: bool) -> void:
+func configure(p_mission: StringName, p_loadout: Variant, p_seed: int, bot: bool) -> void:
 	mission_id = p_mission
-	ship_id = p_ship
+	loadout = p_loadout
 	seed_value = p_seed
 	use_bot = bot
 
@@ -57,12 +60,13 @@ func _ready() -> void:
 			quit_at = float(arg.trim_prefix("--quit-at="))
 		elif arg.begins_with("--stress="):
 			stress = int(arg.trim_prefix("--stress="))
-	sim.setup(Sim.load_mission(mission_id), Sim.load_tables(), ship_id, seed_value,
+	sim.setup(Sim.load_mission(mission_id), Sim.load_tables(), loadout, seed_value,
 			float(Settings.get_value("drag_sensitivity")))
 	if use_bot:
 		_bot = BotPilot.new()
 	_backdrop = OceanBackdrop.new()
 	_backdrop.detail = GfxQuality.level()
+	_backdrop.kind = StringName(String(sim.mission.get("backdrop", "ocean")))
 	add_child(_backdrop)
 	_clip = Control.new()
 	_clip.clip_contents = true
@@ -84,6 +88,9 @@ func _ready() -> void:
 	_hud.quit_pressed.connect(func() -> void: _finish(true))
 	_hud.special_pressed.connect(func() -> void: _want_special = true)
 	_hud.bomb_pressed.connect(func() -> void: _want_bomb = true)
+	_hud.tide_pressed.connect(func() -> void: _want_tide = true)
+	_hud.blessing_chosen.connect(func(index: int) -> void: _choice = index)
+	_hud.setup_mission(sim)
 	get_viewport().size_changed.connect(relayout)
 	MenuKit.on_insets_change(self, relayout)
 	relayout.call_deferred()
@@ -160,6 +167,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_want_special = true
 	elif event.is_action_pressed("bomb"):
 		_want_bomb = true
+	elif event.is_action_pressed("tide"):
+		_want_tide = true
 	elif event.is_action_pressed("fire"):
 		_taps += 1
 
@@ -173,9 +182,13 @@ func _human_input() -> SimInput:
 	input.fire = bool(Settings.get_value("auto_fire")) or Input.is_action_pressed(&"fire") or not _touch_ids.is_empty()
 	input.special = _want_special
 	input.bomb = _want_bomb
+	input.tide = _want_tide
 	input.taps = _taps
+	input.choice = _choice
 	_want_special = false
 	_want_bomb = false
+	_want_tide = false
+	_choice = -1
 	_taps = 0
 	return input
 
@@ -215,6 +228,7 @@ func _process(delta: float) -> void:
 	_world.position = jitter.round()
 	_world.touching = not _touch_ids.is_empty() or Input.is_action_pressed(&"precise")
 	_backdrop.apply(sim.scroll, _emerge, Vector2.ZERO, bool(Settings.get_value("reduce_motion")))
+	_backdrop.set_drift(sim.gravity if sim.drift_frames > 0 else Vector2.ZERO)
 	_world.refresh(delta)
 	_hud.refresh(sim, delta)
 	if quit_at > 0.0 and sim.frame >= int(quit_at * 60.0):
@@ -281,6 +295,36 @@ func _on_event(ev: Dictionary) -> void:
 				AudioManager.play_music("kenney_jingle_victory", 0.3)
 		&"dialogue":
 			_hud.show_radio(String(ev.get("id", "")))
+		&"blessing_offer":
+			AudioManager.play("kenney_weapon_up", 0.8)
+			_hud.show_offer(sim)
+		&"blessing":
+			AudioManager.play("kenney_ui_confirm")
+			_hud.hide_offer()
+			var def: Dictionary = (sim.tables["blessings"] as Dictionary).get(StringName(ev["id"]), {})
+			_hud.show_banner(tr(String(def.get("name_key", ""))))
+			if not String(ev.get("synergy", "")).is_empty():
+				_hud.show_radio_text(tr("hud.synergy") % tr("deity." + String(ev["synergy"])), UiTheme.GOLD)
+		&"tide":
+			AudioManager.play("kenney_ocean_shift", 1.3)
+			Settings.vibrate(60)
+			_shake = 5.0
+			_hud.show_banner(tr("hud.tide"))
+		&"current", &"wind":
+			AudioManager.play("kenney_ocean_shift", 0.7, 0.0, -8.0)
+			_hud.show_banner(tr("hud." + String(ev["type"])))
+		&"log":
+			AudioManager.play("kenney_medal", 0.8)
+			_hud.show_radio_text(tr("hud.log_found"), UiTheme.CYAN)
+		&"glyph":
+			AudioManager.play("kenney_orb", 0.7 + 0.15 * float(ev.get("index", 0)))
+			_hud.show_radio_text(tr("hud.glyph") % [int(ev["index"]) + 1, int(ev["of"])], UiTheme.GOLD)
+		&"glyph_reset":
+			AudioManager.play("kenney_hit", 0.6)
+			_hud.show_radio_text(tr("hud.glyph_reset"), UiTheme.CORAL)
+		&"secret":
+			AudioManager.play("kenney_jingle_victory")
+			_hud.show_banner(tr("hud.secret"))
 		&"ocean_shift":
 			AudioManager.play("kenney_ocean_shift")
 			_emerge_from = _emerge

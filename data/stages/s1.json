@@ -1,0 +1,561 @@
+{
+	"id": "s1",
+	"chapter": 2,
+	"name_key": "stage.s1",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 18,
+	"backdrop": "atlantis",
+	"seed_salt": 164,
+	"objective": {
+		"type": "log",
+		"text_key": "objective.log"
+	},
+	"length_s": 127.8,
+	"events": [
+		{
+			"op": "dialogue",
+			"id": "s1_intro",
+			"t": 0.5
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 2.0
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"from_depth": true,
+			"t": 5.6
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 66
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 9.2
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 70
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 12.8
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 16.4
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"from_depth": true,
+			"t": 20.0
+		},
+		{
+			"op": "wave",
+			"enemy": "trawler",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 28
+			},
+			"marked": true,
+			"t": 23.6
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 28.28
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 31.88
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 70
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 35.48
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 70
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 39.08
+		},
+		{
+			"op": "wave",
+			"enemy": "coral_turret",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 22
+			},
+			"y": -20,
+			"marked": true,
+			"t": 42.68
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 47.36
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 50.96
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 70
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 54.56
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"from_depth": true,
+			"t": 58.16
+		},
+		{
+			"op": "blessing",
+			"t": 59.88
+		},
+		{
+			"op": "log",
+			"x": 0.5,
+			"t": 63.38
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 66
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 66.38
+		},
+		{
+			"op": "wave",
+			"enemy": "trawler",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "straight",
+			"params": {
+				"speed": 28
+			},
+			"marked": true,
+			"t": 69.38
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"from_depth": true,
+			"t": 73.28
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 76.28
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 79.28
+		},
+		{
+			"op": "wave",
+			"enemy": "trawler",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 28
+			},
+			"marked": true,
+			"t": 82.28
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 66
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 86.17
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 89.17
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 92.17
+		},
+		{
+			"op": "wave",
+			"enemy": "coral_turret",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 22
+			},
+			"y": -20,
+			"marked": true,
+			"t": 95.17
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"from_depth": true,
+			"t": 99.08
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 102.08
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"from_depth": true,
+			"t": 105.08
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"from_depth": true,
+			"t": 108.08
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 111.08
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "v",
+			"count": 7,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 82
+			},
+			"from_depth": true,
+			"spacing": 36,
+			"t": 114.08
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 66
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 117.08
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 66
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"from_depth": true,
+			"spacing": 36,
+			"t": 120.08
+		},
+		{
+			"op": "end",
+			"t": 123.75
+		}
+	],
+	"weapon_lock": "railgun",
+	"secret_mission": true
+}

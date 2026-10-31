@@ -15,6 +15,8 @@ const LASER_COLOR := Color(0.55, 0.97, 1.0, 0.95)
 const BEAM_COLOR := Color(1.0, 0.42, 0.45, 0.95)
 const WARN_COLOR := Color(1.0, 0.42, 0.45, 0.7)
 const MAX_SPARKS := 160
+const LIGHTNING_COLOR := Color(0.85, 0.92, 1.0, 0.95)
+const TIDE_COLOR := Color(0.45, 1.0, 0.95, 0.55)
 
 var sim: Sim
 var time: float = 0.0
@@ -43,6 +45,10 @@ var _ship_bases: Array[Texture2D] = []
 var _engine_idle: Texture2D
 var _engine_power: Texture2D
 var _shield: Texture2D
+var _log: Texture2D
+var _drone: Texture2D
+var _rocket: Texture2D
+var _ship_tint := Color(1, 1, 1)
 
 
 func setup(p_sim: Sim) -> void:
@@ -52,9 +58,14 @@ func setup(p_sim: Sim) -> void:
 	_beam = SpriteBank.generated("fx/beam")
 	_seg = SpriteBank.generated("boss/tentacle_segment")
 	_tip = SpriteBank.generated("boss/tentacle_tip")
-	_orbs = {&"pulsar": SpriteBank.generated("pickups/orb_pulsar"), &"laser": SpriteBank.generated("pickups/orb_laser")}
+	for weapon: StringName in Sim.ORB_WEAPONS:
+		_orbs[weapon] = SpriteBank.generated("pickups/orb_" + String(weapon))
 	_medal = SpriteBank.generated("pickups/medal")
 	_pearl = SpriteBank.generated("pickups/pearl")
+	_log = SpriteBank.generated("pickups/log")
+	_drone = SpriteBank.generated("fx/drone")
+	_rocket = SpriteBank.texture("res://assets/art/void/main_ship/proj_rocket.png")
+	_ship_tint = Color(String(sim.player.ship.get("tint", "#ffffff")))
 	for name: String in ["base_very_damaged", "base_damaged", "base_slight", "base_full"]:
 		_ship_bases.append(SpriteBank.texture("res://assets/art/void/main_ship/%s.png" % name))
 	_engine_idle = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_idle.png")
@@ -101,8 +112,8 @@ func on_event(ev: Dictionary) -> void:
 	match StringName(ev["type"]):
 		&"kill":
 			var ship := SpriteBank.ship(StringName(ev.get("sprite", "")))
-			explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"], "size": ship["size"],
-					"pos": ev["pos"], "t": 0.0, "scale": 1.0, "duration": EXPLOSION_TIME})
+			explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
+					"size": ship["destruction_size"], "pos": ev["pos"], "t": 0.0, "scale": 1.0, "duration": EXPLOSION_TIME})
 			_burst(ev["pos"], 6 if fx_level >= 1 else 2, Color(1.0, 0.75, 0.35))
 		&"hit":
 			if fx_level >= 1 and sparks.size() < MAX_SPARKS:
@@ -122,8 +133,9 @@ func on_event(ev: Dictionary) -> void:
 					.get("sprite", "")))
 			for k: int in range(5):
 				var off := Vector2(cos(k * 2.4) * 40.0, sin(k * 1.7) * 28.0)
-				explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"], "size": ship["size"],
-						"pos": (ev["pos"] as Vector2) + off, "t": -k * 0.18, "scale": 1.6, "duration": 0.9})
+				explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
+						"size": ship["destruction_size"], "pos": (ev["pos"] as Vector2) + off, "t": -k * 0.18, "scale": 1.6,
+						"duration": 0.9})
 			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 1.0, "radius": 400.0, "color": Color(1, 1, 1)})
 			_burst(ev["pos"], 40, Color(1.0, 0.85, 0.5))
 
@@ -152,7 +164,13 @@ func _burst(at: Vector2, count: int, color: Color) -> void:
 
 func _draw_entities(ci: CanvasItem) -> void:
 	for e: SimEnemy in sim.enemies:
-		_draw_ship(ci, SpriteBank.ship(e.sprite), e.pos, e.depth, e.flash > 0, 1.0)
+		var tint := Color(String(e.def.get("tint", "#ffffff")))
+		_draw_ship(ci, SpriteBank.ship(e.sprite), e.pos, e.depth, e.flash > 0, float(e.def.get("scale", 1.0)), tint)
+		if e.marked and sim.mods.chart and e.depth >= 1.0:
+			# Carta de Nereu: losango dourado sobre os marcados.
+			var m := e.pos + Vector2(0, -e.radius - 8.0)
+			ci.draw_rect(Rect2(m - Vector2(1, 3), Vector2(2, 6)), UiTheme.GOLD)
+			ci.draw_rect(Rect2(m - Vector2(3, 1), Vector2(6, 2)), UiTheme.GOLD)
 	if sim.boss != null:
 		_draw_boss(ci, sim.boss)
 	for pk: Dictionary in sim.pickups:
@@ -167,20 +185,35 @@ func _draw_entities(ci: CanvasItem) -> void:
 				ci.draw_set_transform(p, 0.0, Vector2(maxf(0.2, squash), 1.0))
 				ci.draw_texture(_medal, -_medal.get_size() * 0.5)
 				ci.draw_set_transform(Vector2.ZERO)
+			&"log":
+				_tex_centered(ci, _glow, p, 0.9 + 0.2 * sin(time * 6.0), Color(0.4, 1.0, 0.9, 0.5))
+				_tex_centered(ci, _log, p, 1.0)
 			_:
 				_tex_centered(ci, _pearl, p, 1.0)
+	for m: Dictionary in sim.missiles:
+		var mp: Vector2 = m["pos"]
+		var angle := (m["vel"] as Vector2).angle() + PI * 0.5
+		if _rocket != null:
+			var rh := _rocket.get_height()
+			ci.draw_set_transform(mp, angle)
+			ci.draw_texture_rect_region(_rocket, Rect2(-rh * 0.5, -rh * 0.5, rh, rh),
+					SpriteBank.frame_rect(int(time * ANIM_FPS) % maxi(1, _rocket.get_width() / rh), rh))
+			ci.draw_set_transform(Vector2.ZERO)
+	for d: Vector2 in sim.drones:
+		_tex_centered(ci, _drone, d, 1.0)
 
 
-func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, flash: bool, scale: float) -> void:
+func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, flash: bool, scale: float,
+		tint: Color = Color(1, 1, 1)) -> void:
 	var size: int = ship["size"]
 	var base: Texture2D = ship["base"]
 	if base == null:
 		return
 	var s := scale * depth
-	var modulate := Color(1, 1, 1)
+	var modulate := tint
 	if depth < 1.0:
 		var u := (depth - SimEnemy.DEPTH_START) / (1.0 - SimEnemy.DEPTH_START)
-		modulate = WATER_TINT.lerp(Color(1, 1, 1), u)
+		modulate = WATER_TINT.lerp(tint, u)
 	if flash:
 		modulate = Color(1.8, 1.8, 1.8)
 	# Sombra no "chão": deslocada pela altura, maior com a profundidade.
@@ -237,7 +270,7 @@ func _draw_player(ci: CanvasItem) -> void:
 		return
 	var p := pl.pos
 	if sim.laser_active:
-		var w := WeaponFire.laser_width(pl.level) * 1.6
+		var w := sim.laser_width * 1.6
 		var top := sim.laser_to_y
 		var flicker := 0.85 + 0.15 * sin(time * 50.0)
 		ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.5, top, w, p.y - 14.0 - top), false,
@@ -246,7 +279,12 @@ func _draw_player(ci: CanvasItem) -> void:
 	var hull_frac := float(pl.hull) / maxf(1.0, float(pl.max_hull))
 	var base := _ship_bases[clampi(int(ceil(hull_frac * 3.0)), 0, 3)]
 	var blink := pl.invuln > 0 and int(time * 20.0) % 2 == 0
-	var col := Color(1, 1, 1, 0.45 if blink else 1.0)
+	var col := Color(_ship_tint, 0.45 if blink else 1.0)
+	if sim.tide_frames > 0:
+		var pulse := 1.0 + 0.15 * sin(time * 12.0)
+		_tex_centered(ci, _ring, p, Sim.TIDE_RADIUS / 14.0 * pulse, TIDE_COLOR)
+	if sim.mods.bubbles > 0:
+		_tex_centered(ci, _ring, p, 1.2, Color(0.7, 0.95, 1.0, 0.45))
 	var engine := _engine_power if pl.last_move.y < -0.3 else _engine_idle
 	var frames := maxi(1, engine.get_width() / 48)
 	ci.draw_texture_rect_region(engine, Rect2(p - Vector2(24, 24), Vector2(48, 48)),
@@ -275,6 +313,8 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 			ci.draw_rect(Rect2(x - w * 0.5, y, 1.0, length), Color(WARN_COLOR, a))
 			ci.draw_rect(Rect2(x + w * 0.5 - 1.0, y, 1.0, length), Color(WARN_COLOR, a))
 			ci.draw_rect(Rect2(x - 0.5, y, 1.0, length), Color(WARN_COLOR, a * 0.5))
+		elif String(b.get("kind", "")) == "lightning":
+			_draw_lightning(ci, x, y, w, length, int(b["age"]))
 		else:
 			ci.draw_texture_rect(_beam, Rect2(x - w * 0.6, y, w * 1.2, length), false, BEAM_COLOR)
 	if sim.boss != null and sim.boss.state == SimBoss.State.DUEL:
@@ -290,6 +330,23 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 		ci.draw_set_transform(e["pos"], PI, Vector2(s, s))
 		ci.draw_texture_rect_region(e["tex"], Rect2(-size * 0.5, -size * 0.5, size, size), SpriteBank.frame_rect(f, size))
 		ci.draw_set_transform(Vector2.ZERO)
+
+
+## Raio da tempestade: zigue-zague de segmentos (retângulos) com brilho, sorteado por passo.
+func _draw_lightning(ci: CanvasItem, x: float, y: float, w: float, length: float, age: int) -> void:
+	var seed := age / 3
+	var steps := 14
+	var prev := Vector2(x, y)
+	if not reduce_flashes and age % 6 < 3:
+		ci.draw_rect(Rect2(x - w, y, w * 2.0, length), Color(LIGHTNING_COLOR, 0.12))
+	for i: int in range(1, steps + 1):
+		var jitter := float(absi(hash(seed * 31 + i * 7)) % 100) / 100.0 - 0.5
+		var next := Vector2(x + jitter * w * 0.9, y + length * i / steps)
+		var top := minf(prev.y, next.y)
+		ci.draw_rect(Rect2(minf(prev.x, next.x) - 1.5, top, absf(next.x - prev.x) + 3.0, 3.0), LIGHTNING_COLOR)
+		ci.draw_rect(Rect2(next.x - 1.5, top, 3.0, next.y - top), LIGHTNING_COLOR)
+		prev = next
+	_tex_centered(ci, _glow, Vector2(x, y + 8.0), 1.0, Color(LIGHTNING_COLOR, 0.6))
 
 
 func _draw_duel(ci: CanvasItem, b: SimBoss) -> void:

@@ -7,6 +7,9 @@ extends Control
 signal pause_pressed
 signal special_pressed
 signal bomb_pressed
+signal tide_pressed
+## Bênção escolhida no painel de oferta (0 a 2).
+signal blessing_chosen(index: int)
 signal resume_pressed
 signal restart_pressed
 signal quit_pressed
@@ -14,6 +17,10 @@ signal quit_pressed
 const RADIO_SECONDS := 4.0
 const BANNER_SECONDS := 2.4
 const BUTTON := 44.0
+const OBJECTIVE_SECONDS := 5.0
+## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
+const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint.orbs"], [1500, "hint.special"],
+		[2100, "hint.tide"], [2700, "hint.marked"]]
 
 var layout := {}
 var safe := Rect2()
@@ -26,6 +33,12 @@ var _weapon: Label
 var _pause: Button
 var _special: Button
 var _bomb: Button
+var _tide: Button
+var _pressure: ProgressBar
+var _objective: Label
+var _offer_panel: PanelContainer
+var _offer_title: Label
+var _offer_buttons: Array[Button] = []
 var _radio: Label
 var _banner: Label
 var _prompt: Label
@@ -37,6 +50,8 @@ var _radio_left: float = 0.0
 var _banner_left: float = 0.0
 var _last_score: int = -1
 var _dialogue: Dictionary = {}
+var _objective_left: float = 0.0
+var _hints: Array = []
 
 
 func _init() -> void:
@@ -84,6 +99,12 @@ func _ready() -> void:
 	_pause = _button("II", func() -> void: pause_pressed.emit())
 	_special = _button("", func() -> void: special_pressed.emit())
 	_bomb = _button("", func() -> void: bomb_pressed.emit())
+	_tide = _button("", func() -> void: tide_pressed.emit())
+	_pressure = _bar(UiTheme.CYAN)
+	_objective = _label(UiTheme.FONT_SIZE, UiTheme.GOLD)
+	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_build_offer_panel()
 	_build_pause_panel()
 	refresh_texts()
 
@@ -105,6 +126,50 @@ func _button(text: String, on_press: Callable) -> Button:
 	b.pressed.connect(on_press)
 	add_child(b)
 	return b
+
+
+func _bar(color: Color) -> ProgressBar:
+	var bar := ProgressBar.new()
+	bar.show_percentage = false
+	bar.max_value = 1.0
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = color
+	var bg := StyleBoxFlat.new()
+	bg.bg_color = Color(UiTheme.ABYSS, 0.8)
+	bar.add_theme_stylebox_override("fill", fill)
+	bar.add_theme_stylebox_override("background", bg)
+	add_child(bar)
+	return bar
+
+
+## Painel das bênçãos (plano mestre 4.11): a fase congela até o jogador escolher 1 de 3.
+func _build_offer_panel() -> void:
+	_offer_panel = PanelContainer.new()
+	var box := StyleBoxFlat.new()
+	box.bg_color = Color(UiTheme.ABYSS, 0.93)
+	box.border_color = UiTheme.GOLD
+	box.set_border_width_all(1)
+	box.set_corner_radius_all(4)
+	box.set_content_margin_all(10)
+	_offer_panel.add_theme_stylebox_override("panel", box)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 8)
+	_offer_panel.add_child(list)
+	_offer_title = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD, true)
+	_offer_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	list.add_child(_offer_title)
+	for i: int in range(3):
+		var b := Button.new()
+		b.name = "Blessing%d" % i
+		b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.custom_minimum_size = Vector2(0, 58)
+		b.pressed.connect(func() -> void: blessing_chosen.emit(i))
+		list.add_child(b)
+		_offer_buttons.append(b)
+	_offer_panel.visible = false
+	add_child(_offer_panel)
 
 
 func _build_pause_panel() -> void:
@@ -136,6 +201,8 @@ func _build_pause_panel() -> void:
 func refresh_texts() -> void:
 	_special.text = tr("hud.special")
 	_bomb.text = tr("hud.bomb")
+	_tide.text = tr("hud.tide_button")
+	_offer_title.text = tr("hud.blessing_title")
 	(_pause_box.get_node("Title") as Label).text = tr("hud.paused")
 	(_pause_box.get_node("Resume") as Button).text = tr("hud.resume")
 	(_pause_box.get_node("Restart") as Button).text = tr("hud.restart")
@@ -149,6 +216,53 @@ func set_paused(paused: bool) -> void:
 		var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
 		_pause_panel.position = (field.get_center() - _pause_panel.size * 0.5).floor()
 		(_pause_box.get_node("Resume") as Button).grab_focus()
+
+
+## Objetivo e dicas da missão (mostrados no começo).
+func setup_mission(sim: Sim) -> void:
+	var obj: Dictionary = sim.mission.get("objective", {})
+	_objective.text = "%s · %s" % [tr(String(sim.mission.get("name_key", ""))), tr(String(obj.get("text_key", "")))]
+	_objective_left = OBJECTIVE_SECONDS
+	_hints = HINTS.duplicate() if bool(sim.mission.get("tutorial", false)) else []
+
+
+func show_offer(sim: Sim) -> void:
+	var table: Dictionary = sim.tables.get("blessings", {})
+	for i: int in range(_offer_buttons.size()):
+		var b := _offer_buttons[i]
+		b.visible = i < sim.offer.size()
+		if b.visible:
+			var def: Dictionary = table.get(sim.offer[i], {})
+			b.text = "%s · %s\n%s" % [tr("deity." + String(def.get("deity", ""))), tr(String(def.get("name_key", ""))),
+					tr(String(def.get("desc_key", "")))]
+	_offer_panel.visible = true
+	_place_offer()
+	_offer_buttons[0].grab_focus()
+
+
+func hide_offer() -> void:
+	_offer_panel.visible = false
+
+
+## Painel das bênçãos (testes de layout).
+func offer_panel() -> Control:
+	return _offer_panel
+
+
+func offer_visible() -> bool:
+	return _offer_panel.visible
+
+
+func _place_offer() -> void:
+	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
+	var width := field.size.x - 16.0
+	for b: Button in _offer_buttons:
+		b.custom_minimum_size.x = width - 20.0
+	_offer_title.custom_minimum_size.x = width - 20.0
+	_offer_panel.size = Vector2(width, 0)
+	_offer_panel.reset_size()
+	_offer_panel.size.x = width
+	_offer_panel.position = (field.get_center() - _offer_panel.size * 0.5).floor()
 
 
 ## Posiciona tudo a partir do Playfield (chamado quando a tela ou a área segura mudam).
@@ -200,6 +314,12 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 		_special.position = Vector2(right_x, buttons_y)
 		_bomb.position = Vector2(_special.position.x + _special.size.x + 8.0, buttons_y)
 	_weapon.position = Vector2(left_x, buttons_y + 14.0)
+	_tide.reset_size()
+	_tide.position = Vector2(_special.position.x + _special.size.x - _tide.size.x, buttons_y - BUTTON - 8.0)
+	_pressure.position = _score.position + Vector2(0, 24 if portrait else 82)
+	_pressure.size = Vector2(minf(90.0, width * 0.3), 3.0)
+	_objective.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.18)
+	_objective.size = Vector2(field.size.x - 16.0, 0)
 	_radio.position = Vector2(field.position.x + 8.0, field.end.y - BUTTON - 64.0)
 	_radio.size = Vector2(field.size.x - 16.0, 0)
 	_banner.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.3)
@@ -210,6 +330,8 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	_boss_bar.size = Vector2(field.size.x - 16.0, 4.0)
 	if _pause_panel.visible:
 		set_paused(true)
+	if _offer_panel.visible:
+		_place_offer()
 
 
 func show_radio(dialogue_id: String) -> void:
@@ -218,6 +340,12 @@ func show_radio(dialogue_id: String) -> void:
 		return
 	_radio.text = "%s: %s" % [tr("speaker." + String(row.get("speaker", ""))), tr(String(row.get("text_key", "")))]
 	_radio.add_theme_color_override("font_color", Color(String(row.get("color", "#dff6ff"))))
+	_radio_left = RADIO_SECONDS
+
+
+func show_radio_text(text: String, color: Color) -> void:
+	_radio.text = text
+	_radio.add_theme_color_override("font_color", color)
 	_radio_left = RADIO_SECONDS
 
 
@@ -238,6 +366,20 @@ func refresh(sim: Sim, delta: float) -> void:
 	_special.modulate = Color(1, 1, 1) if ready else Color(0.6, 0.7, 0.8, 0.8)
 	_special.text = tr("hud.special") if ready else "%d%%" % int(sim.player.special_charge * 100.0)
 	_bomb.disabled = sim.player.bombs <= 0
+	var pressure := sim.scoring.pressure / Scoring.PRESSURE_MAX
+	_pressure.value = pressure if sim.tide_frames == 0 else float(sim.tide_frames) / Sim.TIDE_FRAMES
+	_tide.visible = pressure >= 1.0 or sim.tide_frames > 0
+	_tide.disabled = sim.tide_frames > 0
+	if _tide.visible and not _tide.disabled:
+		_tide.modulate.a = 0.75 + 0.25 * sin(Time.get_ticks_msec() * 0.012)
+	_objective_left -= delta
+	_objective.visible = _objective_left > 0.0
+	_objective.modulate.a = clampf(_objective_left, 0.0, 1.0)
+	if not _hints.is_empty() and sim.frame >= int(_hints[0][0]):
+		show_radio_text(tr(String(_hints[0][1])), UiTheme.CYAN)
+		_hints.pop_front()
+	if _offer_panel.visible and sim.offer.is_empty():
+		hide_offer()
 	var boss := sim.boss
 	_boss_bar.visible = boss != null and boss.state != SimBoss.State.ENTER
 	if _boss_bar.visible:
@@ -257,4 +399,4 @@ func refresh(sim: Sim, delta: float) -> void:
 
 ## Controles que precisam caber na área segura (testes de layout).
 func layout_controls() -> Array[Control]:
-	return [_score, _pause, _special, _bomb, _weapon]
+	return [_score, _pause, _special, _bomb, _weapon, _tide]

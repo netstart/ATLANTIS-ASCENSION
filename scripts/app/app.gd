@@ -14,12 +14,13 @@ const SCREENS := {
 	&"map": preload("res://scripts/app/screens/map_screen.gd"),
 	&"results": preload("res://scripts/app/screens/results_screen.gd"),
 	&"credits": preload("res://scripts/app/screens/credits_screen.gd"),
+	&"hangar": preload("res://scripts/app/screens/hangar_screen.gd"),
+	&"ships": preload("res://scripts/app/screens/ships_screen.gd"),
+	&"options": preload("res://scripts/app/screens/options_screen.gd"),
+	&"logbook": preload("res://scripts/app/screens/logbook_screen.gd"),
+	&"story": preload("res://scripts/app/screens/story_screen.gd"),
 }
 const ROOT_SCREEN := &"boot"
-## Créditos por missão (plano mestre 18.1): base + pontuação / 2.000 + 25 por estrela nova.
-const CREDITS_BASE := 50
-const CREDITS_PER_SCORE := 2000
-const CREDITS_PER_STAR := 25
 
 var current: StringName = &""
 var game: Game
@@ -52,7 +53,9 @@ func _ready() -> void:
 		elif arg.begins_with("--seed="):
 			seed = int(arg.trim_prefix("--seed="))
 	if "--bot" in args or not mission.is_empty():
-		play(StringName(mission if not mission.is_empty() else "c1m1"), "--bot" in args, seed)
+		# Carga padrão: a partida da linha de comando não depende do save (hash reproduzível).
+		play(StringName(mission if not mission.is_empty() else "c1m1"), "--bot" in args, seed,
+				Sim.default_loadout(&"falcon"))
 		return
 	go(ROOT_SCREEN)
 
@@ -83,13 +86,14 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 
 
 ## Inicia uma missão: esconde os menus e cria a cena Game.
-func play(mission_id: StringName, bot: bool = false, seed: int = -1) -> void:
+func play(mission_id: StringName, bot: bool = false, seed: int = -1, loadout: Dictionary = {}) -> void:
 	if game != null:
 		game.queue_free()
 	_layer.visible = false
 	game = GAME_SCENE.instantiate() as Game
 	var run_seed := seed if seed >= 0 else int(Time.get_unix_time_from_system()) % 100000
-	game.configure(mission_id, StringName(String(SaveManager.data["selected"]["ship"])), run_seed, bot)
+	game.configure(mission_id, loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data), run_seed,
+			bot)
 	game.finished.connect(_on_mission_finished)
 	add_child(game)
 	AudioManager.play_ui("kenney_ui_confirm")
@@ -111,35 +115,22 @@ func _on_mission_finished(result: Dictionary) -> void:
 	go(&"results")
 
 
-## Grava o resultado no save (melhor pontuação, estrelas somadas, créditos) e devolve o resultado com
-## os campos de recompensa: credits, new_stars, record.
+## Grava o resultado no save (Economy.apply_result: estrelas, recorde, moedas, fragmentos, asas,
+## missões abertas, registros) e as estatísticas; devolve o resultado com as recompensas.
 static func record_result(result: Dictionary) -> Dictionary:
-	var out := result.duplicate(true)
-	var record := SaveManager.mission_record(StringName(String(result.get("mission", ""))))
-	var stars: Array = record["stars"]
-	var got: Array = result.get("stars", [false, false, false, false])
-	var fresh := 0
-	for i: int in range(mini(stars.size(), got.size())):
-		if bool(got[i]) and not bool(stars[i]):
-			stars[i] = true
-			fresh += 1
-	var score := int(result.get("score", 0))
-	out["record"] = score > int(record["best_score"])
-	record["best_score"] = maxi(int(record["best_score"]), score)
-	if bool(result.get("cleared", false)):
-		record["cleared"] = true
-	var credits := CREDITS_BASE + floori(score / float(CREDITS_PER_SCORE)) + CREDITS_PER_STAR * fresh
-	SaveManager.add_currency("credits", credits)
+	var out := Economy.apply_result(SaveManager.data, result, DB.rows("ships"), DB.rows("wings"))
 	SaveManager.add_stat("missions_played", 1)
 	SaveManager.add_stat("kills", float(result.get("kills", 0)))
 	SaveManager.add_stat("grazes", float(result.get("grazes", 0)))
+	SaveManager.add_stat("bombs_used", float(result.get("bombs_used", 0)))
+	SaveManager.add_stat("time_played", float(result.get("seconds", 0.0)))
 	if bool(result.get("cleared", false)):
 		SaveManager.add_stat("missions_cleared", 1)
 	else:
 		SaveManager.add_stat("deaths", 1)
 	SaveManager.save_profile()
-	out["credits"] = credits
-	out["new_stars"] = fresh
+	for ship: StringName in out["new_ships"]:
+		SaveManager.unlocked.emit("ships", ship)
 	return out
 
 

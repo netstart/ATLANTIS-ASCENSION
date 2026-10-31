@@ -1,0 +1,20 @@
+[
+	{"id": "proteus_blade", "deity": "proteus", "effect": "damage", "value": 0.15, "name_key": "blessing.proteus_blade", "desc_key": "blessing.proteus_blade_desc"},
+	{"id": "proteus_echo", "deity": "proteus", "effect": "fire_rate", "value": 0.2, "name_key": "blessing.proteus_echo", "desc_key": "blessing.proteus_echo_desc"},
+	{"id": "proteus_undertow", "deity": "proteus", "effect": "undertow", "value": 1, "name_key": "blessing.proteus_undertow", "desc_key": "blessing.proteus_undertow_desc"},
+	{"id": "proteus_harpoon", "deity": "proteus", "effect": "harpoon", "value": 1, "name_key": "blessing.proteus_harpoon", "desc_key": "blessing.proteus_harpoon_desc"},
+	{"id": "proteus_fury", "deity": "proteus", "effect": "fury", "value": 1, "name_key": "blessing.proteus_fury", "desc_key": "blessing.proteus_fury_desc"},
+	{"id": "proteus_tide", "deity": "proteus", "effect": "tide_bonus", "value": 180, "name_key": "blessing.proteus_tide", "desc_key": "blessing.proteus_tide_desc"},
+	{"id": "tethys_bubble", "deity": "tethys", "effect": "bubble", "value": 1, "name_key": "blessing.tethys_bubble", "desc_key": "blessing.tethys_bubble_desc"},
+	{"id": "tethys_scale", "deity": "tethys", "effect": "hull", "value": 1, "name_key": "blessing.tethys_scale", "desc_key": "blessing.tethys_scale_desc"},
+	{"id": "tethys_reflux", "deity": "tethys", "effect": "reflux", "value": 1, "name_key": "blessing.tethys_reflux", "desc_key": "blessing.tethys_reflux_desc"},
+	{"id": "tethys_calm", "deity": "tethys", "effect": "invuln", "value": 30, "name_key": "blessing.tethys_calm", "desc_key": "blessing.tethys_calm_desc"},
+	{"id": "tethys_coral", "deity": "tethys", "effect": "coral_heal", "value": 300, "name_key": "blessing.tethys_coral", "desc_key": "blessing.tethys_coral_desc"},
+	{"id": "tethys_anchor", "deity": "tethys", "effect": "hitbox", "value": 0.2, "name_key": "blessing.tethys_anchor", "desc_key": "blessing.tethys_anchor_desc"},
+	{"id": "nereus_magnet", "deity": "nereus", "effect": "magnet", "value": 90, "name_key": "blessing.nereus_magnet", "desc_key": "blessing.nereus_magnet_desc"},
+	{"id": "nereus_luck", "deity": "nereus", "effect": "orb_luck", "value": 0.12, "name_key": "blessing.nereus_luck", "desc_key": "blessing.nereus_luck_desc"},
+	{"id": "nereus_chart", "deity": "nereus", "effect": "chart", "value": 1, "name_key": "blessing.nereus_chart", "desc_key": "blessing.nereus_chart_desc"},
+	{"id": "nereus_net", "deity": "nereus", "effect": "medal_net", "value": 1, "name_key": "blessing.nereus_net", "desc_key": "blessing.nereus_net_desc"},
+	{"id": "nereus_sailor", "deity": "nereus", "effect": "chain_window", "value": 12, "name_key": "blessing.nereus_sailor", "desc_key": "blessing.nereus_sailor_desc"},
+	{"id": "nereus_oracle", "deity": "nereus", "effect": "oracle", "value": 1, "name_key": "blessing.nereus_oracle", "desc_key": "blessing.nereus_oracle_desc"}
+]

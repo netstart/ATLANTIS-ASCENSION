@@ -14,6 +14,7 @@ var _record: Label
 var _stars: Array[Label] = []
 var _stats: Label
 var _credits: Label
+var _rewards: Label
 var _retry: Button
 var _continue: Button
 
@@ -48,6 +49,9 @@ func _build() -> void:
 	_credits = UiTheme.label("", UiTheme.HEADING_SIZE, UiTheme.GOLD)
 	_credits.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_box.add_child(_credits)
+	_rewards = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.CYAN, true)
+	_rewards.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_box.add_child(_rewards)
 	_retry = Button.new()
 	_retry.name = "Retry"
 	_retry.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
@@ -56,7 +60,8 @@ func _build() -> void:
 	_continue = Button.new()
 	_continue.name = "Continue"
 	_continue.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN + 6.0)
-	_continue.pressed.connect(func() -> void: navigate.emit(&"map"))
+	_continue.pressed.connect(func() -> void:
+		navigate.emit(&"story" if not StoryScreen.pending(SaveManager.data).is_empty() else &"map"))
 	_box.add_child(_continue)
 
 
@@ -84,9 +89,35 @@ func refresh_texts() -> void:
 			tr("results.grazes"), int(result.get("grazes", 0)), tr("results.chain"), int(result.get("max_chain", 0)),
 			tr("results.medals"), int(result.get("medals", 0))]
 	_credits.text = tr("results.credits") % Locale.format_number(int(result.get("credits", 0)))
+	_rewards.text = "\n".join(reward_lines(result))
 	_retry.text = tr("results.retry")
 	_continue.text = tr("results.continue")
 	relayout()
+
+
+## Linhas das recompensas além dos créditos: oricalco, pérolas, fragmentos, aeronaves, asas,
+## missões abertas e registro.
+static func reward_lines(r: Dictionary) -> PackedStringArray:
+	var lines := PackedStringArray()
+	if int(r.get("orichalcum_gain", 0)) > 0 or int(r.get("pearls_gain", 0)) > 0:
+		lines.append("%s +%d   %s +%d" % [_t("currency.orichalcum"), int(r.get("orichalcum_gain", 0)),
+				_t("currency.pearls"), int(r.get("pearls_gain", 0))])
+	var fragments: Dictionary = r.get("fragments", {})
+	for ship: Variant in fragments:
+		lines.append(_t("results.fragments") % [int(fragments[ship]), _t("ship." + String(ship))])
+	for ship: Variant in r.get("new_ships", []):
+		lines.append(_t("results.new_ship") % _t("ship." + String(ship)))
+	for wing: Variant in r.get("new_wings", []):
+		lines.append(_t("results.new_wing") % _t("wing." + String(wing)))
+	for m: Variant in r.get("new_missions", []):
+		lines.append(_t("results.new_mission") % _t("stage." + String(m)))
+	if bool(r.get("log", false)):
+		lines.append(_t("results.log"))
+	return lines
+
+
+static func _t(key: String) -> String:
+	return TranslationServer.translate(key)
 
 
 func _layout() -> void:
@@ -96,6 +127,7 @@ func _layout() -> void:
 	_scroll.position = Vector2(floorf(safe.position.x + (safe.size.x - width) * 0.5), safe.position.y + 12.0)
 	_scroll.size = Vector2(width, safe.size.y - 24.0)
 	_box.custom_minimum_size = Vector2(width - 8.0, 0)
+	_rewards.custom_minimum_size.x = width - 8.0
 
 
 func back() -> bool:

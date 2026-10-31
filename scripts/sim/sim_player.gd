@@ -30,6 +30,12 @@ var invuln: int = 0
 var special_charge: float = 0.0
 var bombs: int = START_BOMBS
 var alive: bool = true
+## Modificadores do hangar e das bênçãos (SimMods).
+var precise_mult: float = 0.5
+var invuln_bonus: int = 0
+var cap_bonus: int = 0
+## Arma travada (missão secreta "só Railgun"): orbes não trocam a arma.
+var weapon_lock: StringName = &""
 ## Velocidade do último passo (inclinação da nave no desenho).
 var last_move := Vector2.ZERO
 
@@ -45,7 +51,7 @@ func setup(p_ship: Dictionary, sensitivity: float) -> void:
 
 
 func max_level() -> int:
-	return 4 if weapon == signature else 3
+	return (4 if weapon == signature else 3) + cap_bonus
 
 
 func move(input: SimInput) -> void:
@@ -55,7 +61,7 @@ func move(input: SimInput) -> void:
 		drag = drag.normalized() * MAX_DRAG_STEP
 	var axis := input.axis.limit_length(1.0) * AXIS_SPEED * float(ship.get("speed", 1.0))
 	if input.precise:
-		axis *= 0.5
+		axis *= precise_mult
 	pos += drag + axis
 	pos.x = clampf(pos.x, MARGIN.x, Playfield.FIELD.x - MARGIN.x)
 	pos.y = clampf(pos.y, MARGIN.y, Playfield.FIELD.y - MARGIN.y)
@@ -76,7 +82,7 @@ func vulnerable() -> bool:
 func take_hit() -> bool:
 	hull -= 1
 	level = maxi(1, level - 1)
-	invuln = HIT_INVULN
+	invuln = HIT_INVULN + invuln_bonus
 	if hull <= 0:
 		alive = false
 	return not alive
@@ -84,6 +90,8 @@ func take_hit() -> bool:
 
 ## Orbe coletado: mesma cor sobe o nível; outra cor troca a arma e mantém o nível.
 func collect_orb(orb_weapon: StringName) -> bool:
+	if weapon_lock != &"":
+		orb_weapon = weapon_lock
 	if orb_weapon == weapon:
 		var before := level
 		level = mini(level + 1, max_level())

@@ -15,6 +15,9 @@ const ENEMY: Array[Dictionary] = [
 const PLAYER: Array[Dictionary] = [
 	{"id": &"shot_pulsar", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_pulsar.png"},
 	{"id": &"shot_back", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_pulsar.png"},
+	{"id": &"plasma_s", "radius": 6.0, "texture": "res://assets/art/generated/bullets/plasma_10.png"},
+	{"id": &"plasma_l", "radius": 10.0, "texture": "res://assets/art/generated/bullets/plasma_18.png"},
+	{"id": &"rail", "radius": 3.0, "texture": "res://assets/art/generated/bullets/rail.png"},
 ]
 
 

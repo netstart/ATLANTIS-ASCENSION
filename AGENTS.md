@@ -77,6 +77,8 @@ python -I tools\build_license_index.py
 python -I tools\check_licenses.py
 # Assets: copiar de c:\src\downloads\assets só o que os manifestos tools\*_assets.json pedem
 python -I tools\sync_assets.py
+# Missões (fonte: tools\gen_missions.py -> data\stages\*.json)
+python -I tools\gen_missions.py
 # Textos (fonte: tools\i18n\*.py)
 python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)

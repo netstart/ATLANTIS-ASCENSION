@@ -13,15 +13,11 @@ const STRATA := 5
 const FACTORS: Array[float] = [0.1, 0.25, 0.5, 1.0, 1.35]
 const FRICTION := 4.0
 const HEADER := 48.0
-## Nós do capítulo 1: id da missão, posição no mundo, jogável no Vertical Slice.
-const NODES: Array[Dictionary] = [
-	{"id": &"c1m1", "x": 0.35, "y": 880.0, "open": true},
-	{"id": &"c1m2", "x": 0.68, "y": 1110.0, "open": false},
-	{"id": &"c1m3", "x": 0.4, "y": 1340.0, "open": false},
-]
 const STRATUM_COLORS: Array[Color] = [Color("040b1a"), Color("0b2a4a"), Color("0f4652"), Color("2d5f8a"),
 		Color("0a0f2a")]
-const STRATUM_KEYS: Array[String] = ["", "map.chapter1", "map.chapter2", "", ""]
+const STRATUM_KEYS: Array[String] = ["", "map.chapter1", "map.chapter2", "map.chapter3", ""]
+## Rótulo curto do nó por tipo (o tipo também muda a cor do brilho).
+const KIND_MARK := {&"miniboss": " ◆", &"boss": " ♛", &"secret": " ◎", &"route": ""}
 
 var camera: float = 600.0
 var velocity: float = 0.0
@@ -51,11 +47,10 @@ func _build() -> void:
 	_view = _MapView.new(self)
 	_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_view)
-	for n: Dictionary in NODES:
+	for n: Dictionary in Economy.CAMPAIGN:
 		var b := Button.new()
 		b.name = "Node_" + String(n["id"])
 		b.custom_minimum_size = Vector2(56, 56)
-		b.disabled = not bool(n["open"])
 		b.pressed.connect(_select.bind(n["id"]))
 		add_child(b)
 		_node_buttons[n["id"]] = b
@@ -103,12 +98,10 @@ func _build_card() -> void:
 
 func on_show(_app: Node) -> void:
 	# Câmera desliza até a próxima missão (primeira sem conclusão, ou a última aberta).
-	var focus: Dictionary = NODES[0]
-	for n: Dictionary in NODES:
-		if bool(n["open"]):
-			focus = n
-			if not bool(SaveManager.mission_record(n["id"])["cleared"]):
-				break
+	var focus := Economy.node(Economy.next_mission(SaveManager.data))
+	for n: Dictionary in Economy.CAMPAIGN:
+		var b: Button = _node_buttons[n["id"]]
+		b.disabled = not is_open(n["id"])
 	_focus_y = float(focus["y"])
 	_select(focus["id"])
 	refresh_texts()
@@ -117,13 +110,28 @@ func on_show(_app: Node) -> void:
 func refresh_texts() -> void:
 	_back.text = tr("credits.back")
 	_title.text = tr("map.title")
-	for n: Dictionary in NODES:
+	for n: Dictionary in Economy.CAMPAIGN:
 		var b: Button = _node_buttons[n["id"]]
-		b.text = String(n["id"]).substr(1, 1) + "-" + String(n["id"]).substr(3)
-		b.tooltip_text = "" if bool(n["open"]) else tr("map.locked")
+		b.text = node_label(n)
+		b.tooltip_text = "" if is_open(n["id"]) else tr("map.locked")
 	_card_play.text = tr("boot.play")
 	_update_card()
 	relayout()
+
+
+func is_open(id: StringName) -> bool:
+	return Economy.mission_unlocked(SaveManager.data, id)
+
+
+## "1-2 ◆", "3-3 S", "◎": capítulo-missão e marca do tipo.
+static func node_label(n: Dictionary) -> String:
+	var id := String(n["id"])
+	if n["kind"] == &"secret":
+		return "◎"
+	var text := "%s-%s" % [id.substr(1, 1), id.substr(3, 1)]
+	if n["kind"] == &"route":
+		text += " " + id.substr(4, 1).to_upper()
+	return text + String(KIND_MARK.get(n["kind"], ""))
 
 
 func _select(id: StringName) -> void:
@@ -148,6 +156,13 @@ func _update_card() -> void:
 		_card_stars[i].text = ("★ " if got else "☆ ") + texts[i]
 		_card_stars[i].add_theme_color_override("font_color", UiTheme.GOLD if got else UiTheme.TEXT_DIM)
 	_card_best.text = tr("map.best") % Locale.format_number(int(record["best_score"]))
+	var n := Economy.node(selected)
+	if n["kind"] == &"route":
+		_card_best.text += "\n" + tr("map.route_" + ("abyss" if String(selected).ends_with("a") else "surface"))
+	elif n["kind"] == &"secret":
+		_card_best.text += "\n" + tr("map.secret_hint")
+	_card_play.disabled = not is_open(selected)
+	_card_play.text = tr("boot.play") if is_open(selected) else tr("map.locked")
 
 
 func _layout() -> void:
@@ -201,12 +216,13 @@ func screen_y(world_y: float, factor: float) -> float:
 
 
 func _place_nodes() -> void:
-	for n: Dictionary in NODES:
+	for n: Dictionary in Economy.CAMPAIGN:
 		var b: Button = _node_buttons[n["id"]]
 		b.reset_size()
 		var at := Vector2(size.x * float(n["x"]), screen_y(float(n["y"]), 1.0))
 		b.position = (at - b.size * 0.5).floor()
-		b.visible = at.y - b.size.y * 0.5 > safe.position.y + HEADER and at.y < size.y + 40.0
+		var on_screen := at.y - b.size.y * 0.5 > safe.position.y + HEADER and at.y < size.y + 40.0
+		b.visible = on_screen and (n["kind"] != &"secret" or not b.disabled)
 
 
 func layout_controls() -> Array[Control]:
@@ -255,17 +271,27 @@ func draw_map(ci: CanvasItem) -> void:
 			ci.draw_string(Locale.font, Vector2(safe.position.x + 12.0, ly), tr(STRATUM_KEYS[s]),
 					HORIZONTAL_ALIGNMENT_LEFT, -1, UiTheme.FONT_SIZE, Color(UiTheme.TEXT, 0.75))
 	# 3: rota e nós (fator 1,0).
-	for k: int in range(NODES.size() - 1):
-		var a := Vector2(w * float(NODES[k]["x"]), screen_y(float(NODES[k]["y"]), 1.0))
-		var b := Vector2(w * float(NODES[k + 1]["x"]), screen_y(float(NODES[k + 1]["y"]), 1.0))
-		var open := bool(NODES[k + 1]["open"])
-		for d: int in range(12):
-			var p := a.lerp(b, (d + 0.5) / 12.0)
-			ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), UiTheme.GOLD if open else Color(0.4, 0.5, 0.6, 0.5))
+	for n: Dictionary in Economy.CAMPAIGN:
+		var open := is_open(n["id"])
+		for prev: Variant in n["after"]:
+			var pn := Economy.node(prev)
+			var a := Vector2(w * float(pn["x"]), screen_y(float(pn["y"]), 1.0))
+			var b := Vector2(w * float(n["x"]), screen_y(float(n["y"]), 1.0))
+			for d: int in range(12):
+				var p := a.lerp(b, (d + 0.5) / 12.0)
+				ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), UiTheme.GOLD if open else Color(0.4, 0.5, 0.6, 0.5))
 	var pulse := 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.004)
-	for n: Dictionary in NODES:
+	for n: Dictionary in Economy.CAMPAIGN:
+		var open := is_open(n["id"])
+		if n["kind"] == &"secret" and not open:
+			continue
 		var c := Vector2(w * float(n["x"]), screen_y(float(n["y"]), 1.0))
-		var col := Color(0.3, 0.95, 1.0, 0.5 * pulse) if bool(n["open"]) else Color(0.3, 0.4, 0.5, 0.25)
+		var base := Color(0.3, 0.95, 1.0)
+		if n["kind"] == &"boss":
+			base = UiTheme.CORAL
+		elif n["kind"] == &"secret":
+			base = Color(0.75, 0.55, 1.0)
+		var col := Color(base, 0.5 * pulse) if open else Color(0.3, 0.4, 0.5, 0.25)
 		if n["id"] == selected:
 			col = Color(1.0, 0.85, 0.4, 0.7 * pulse)
 		ci.draw_texture_rect(_glow, Rect2(c - Vector2(44, 44), Vector2(88, 88)), false, col)

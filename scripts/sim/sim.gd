@@ -3,9 +3,9 @@ extends RefCounted
 ## A partida inteira, sem nós (plano mestre 10.3): passo fixo de 1/60 s, determinística pela semente.
 ## A cena (Game) só lê o estado e os eventos e desenha; o bot e os testes rodam a Sim direto.
 ##
-## Ordem de um passo: hitstop → jogador → tiro → roteiro → inimigos e chefe → balas → colisões →
-## coletáveis → limpeza → rank → fim de missão. Eventos para a visualização e o áudio se acumulam em
-## `events` até alguém chamar take_events().
+## Ordem de um passo: escolha de bênção pendente → hitstop → jogador → tiro, secundárias e especial →
+## roteiro → inimigos e chefe → balas → colisões → coletáveis → limpeza → rank → fim de missão.
+## Eventos para a visualização e o áudio se acumulam em `events` até alguém chamar take_events().
 
 const STEP := 1.0 / 60.0
 const BOUNDS := Rect2(-32, -64, 334, 546)
@@ -24,34 +24,69 @@ const SPECIAL_DAMAGE := 40.0
 const FINISH_DELAY := 90
 const MERCY_RADIUS := 64.0
 const RANK_START := 0.3
-const ORB_WEAPONS: Array[StringName] = [&"pulsar", &"laser"]
+const ORB_WEAPONS: Array[StringName] = [&"pulsar", &"laser", &"plasma", &"railgun"]
+const TIDE_FRAMES := 480
+const TIDE_RADIUS := 20.0
+const TIDE_CANCEL := 48.0
+const DIFFICULTY := {
+	&"brisa": {"hull": 2, "bullet": 0.8, "rank": false, "score": 0.5},
+	&"normal": {"hull": 0, "bullet": 1.0, "rank": true, "score": 1.0},
+	&"veteran": {"hull": 0, "bullet": 1.1, "rank": true, "score": 1.3},
+	&"abyssal": {"hull": -2, "bullet": 1.15, "rank": true, "score": 1.6},
+}
+const TABLES: Array[String] = ["enemies", "patterns", "bosses", "weapons", "ships", "blessings", "wings"]
 
 var mission_id: StringName
 var mission: Dictionary = {}
 var tables: Dictionary = {}
+var loadout: Dictionary = {}
+var difficulty: StringName = &"normal"
 var rng: SimRng
 var frame: int = 0
 var player := SimPlayer.new()
 var scoring := Scoring.new()
+var mods := SimMods.new()
 var enemy_bullets := BulletPool.new(2048)
 var player_bullets := BulletPool.new(512)
 var enemies: Array[SimEnemy] = []
 var boss: SimBoss
 var pickups: Array[Dictionary] = []
 var beams: Array[Dictionary] = []
+var missiles: Array[Dictionary] = []
+var drones: Array[Vector2] = []
 var stage := StageScript.new()
 var events: Array[Dictionary] = []
 var hitstop: int = 0
 var no_fire: int = 0
+## Vento e corrente (capítulos 2 e 3) e, depois, Gravity Breach: aceleração das balas inimigas.
 var gravity := Vector2.ZERO
+## Deriva da nave (u/s) sob corrente ou vento, e quantos passos ainda dura.
+var drift := Vector2.ZERO
+var drift_frames: int = 0
 var scroll: float = 0.0
 var scroll_speed: float = 22.0
 var rank: float = RANK_START
 var laser_active: bool = false
+var laser_width: float = 0.0
 var laser_to_y: float = 0.0
 var finished: bool = false
 var cleared: bool = false
 var miniboss_seconds: float = -1.0
+var secondary: StringName = &""
+var secondary_level: int = 1
+var special_kind: StringName = &""
+var special_frames: int = 0
+var special_point := Vector2.ZERO
+var tide_frames: int = 0
+## Bênçãos oferecidas e ainda não escolhidas: a Sim espera (sem avançar o tempo) até a escolha.
+var offer: Array[StringName] = []
+var log_found: bool = false
+var glyph_progress: int = 0
+var secret_found: StringName = &""
+var bosses_killed: int = 0
+var fury_stacks: int = 0
+var _coral_grazes: int = 0
+var _bubble_timer: int = 0
 var _finish_timer: int = -1
 var _miniboss_start: int = -1
 var _columns: Array = []
@@ -60,7 +95,7 @@ var _columns: Array = []
 ## Lê as tabelas de data/ sem depender do autoload DB (roda nos testes sem autoloads).
 static func load_tables() -> Dictionary:
 	var out := {}
-	for name: String in ["enemies", "patterns", "bosses", "weapons", "ships"]:
+	for name: String in TABLES:
 		var table := {}
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/%s.json" % name))
 		if typeof(parsed) == TYPE_ARRAY:
@@ -75,14 +110,48 @@ static func load_mission(id: StringName) -> Dictionary:
 	return parsed if typeof(parsed) == TYPE_DICTIONARY else {}
 
 
-func setup(p_mission: Dictionary, p_tables: Dictionary, ship_id: StringName, seed: int,
+## Carga padrão (sem hangar): só a aeronave.
+static func default_loadout(ship_id: StringName) -> Dictionary:
+	return {"ship": String(ship_id), "secondary": "", "secondary_level": 1, "wings": [], "damage": 0.0, "hull": 0,
+			"speed": 0.0, "difficulty": "normal"}
+
+
+## `p_loadout`: id da aeronave (StringName) ou a carga completa do hangar (Dictionary).
+func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed: int,
 		sensitivity: float = 1.0) -> void:
 	mission = p_mission
 	mission_id = StringName(String(mission.get("id", "")))
 	tables = p_tables
+	loadout = default_loadout(p_loadout) if typeof(p_loadout) != TYPE_DICTIONARY else p_loadout
+	difficulty = StringName(String(loadout.get("difficulty", "normal")))
+	if not DIFFICULTY.has(difficulty):
+		difficulty = &"normal"
 	rng = SimRng.new(seed + int(mission.get("seed_salt", 0)))
-	player.setup((tables["ships"] as Dictionary).get(ship_id, {}), sensitivity)
+	mods.apply(&"damage", float(loadout.get("damage", 0.0)))
+	mods.apply(&"hull", float(loadout.get("hull", 0)))
+	mods.apply(&"speed", float(loadout.get("speed", 0.0)))
+	for wing_id: Variant in loadout.get("wings", []):
+		var wing: Dictionary = (tables.get("wings", {}) as Dictionary).get(StringName(String(wing_id)), {})
+		if not wing.is_empty():
+			mods.apply(StringName(String(wing.get("effect", ""))), float(wing.get("value", 0.0)))
+	var ship_id := StringName(String(loadout.get("ship", "falcon")))
+	player.setup((tables["ships"] as Dictionary).get(ship_id, {}), sensitivity * mods.speed_mult)
+	var diff: Dictionary = DIFFICULTY[difficulty]
+	player.max_hull = maxi(1, player.max_hull + mods.extra_hull + int(diff["hull"]))
+	player.hull = player.max_hull
+	player.hitbox *= mods.hitbox_mult
+	player.precise_mult = 0.5 * mods.precise_mult
+	player.invuln_bonus = mods.invuln_bonus
+	var lock := String(mission.get("weapon_lock", ""))
+	if not lock.is_empty():
+		player.weapon_lock = StringName(lock)
+		player.weapon = player.weapon_lock
+	secondary = StringName(String(loadout.get("secondary", "")))
+	secondary_level = clampi(int(loadout.get("secondary_level", 1)), 1, 5)
 	scroll_speed = float(mission.get("scroll_speed", 22.0))
+	scoring.window = Scoring.CHAIN_WINDOW + mods.chain_window
+	scoring.point_mult = float(diff["score"]) * float(mission.get("score_mult", 1.0))
+	_bubble_timer = mods.bubble_recharge
 	stage.setup(mission)
 	for c: int in range(COLUMNS):
 		_columns.append([])
@@ -102,14 +171,25 @@ func emit(type: StringName, data: Dictionary = {}) -> void:
 
 
 func can_fire() -> bool:
-	return no_fire <= 0 and not finished
+	return no_fire <= 0 and not finished and not Specials.frozen(self)
 
 
 func bullet_speed_mult() -> float:
-	var mult := 1.0 + 0.12 * (rank - 0.5) * 2.0
+	var diff: Dictionary = DIFFICULTY[difficulty]
+	var mult := float(diff["bullet"])
+	if bool(diff["rank"]):
+		mult *= 1.0 + 0.12 * (rank - 0.5) * 2.0
 	if boss != null and boss.desperate:
 		mult *= 1.15
 	return mult
+
+
+## Multiplicador de dano do jogador agora (hangar, bênçãos, Fúria e Maré Alta).
+func damage_mult() -> float:
+	var m := mods.dmg_mult * (1.0 + 0.02 * fury_stacks)
+	if tide_frames > 0:
+		m *= 1.25
+	return m
 
 
 # --- Passo -------------------------------------------------------------------------------------
@@ -117,6 +197,10 @@ func bullet_speed_mult() -> float:
 func step(input: SimInput) -> void:
 	if finished:
 		return
+	if not offer.is_empty():
+		if input.choice < 0 or input.choice >= offer.size():
+			return
+		choose_blessing(offer[input.choice])
 	frame += 1
 	if hitstop > 0:
 		hitstop -= 1
@@ -125,10 +209,16 @@ func step(input: SimInput) -> void:
 	scoring.tick()
 	if no_fire > 0:
 		no_fire -= 1
+	_timers()
 	scroll += scroll_speed * STEP
 	if player.alive:
 		player.move(input)
+		if drift_frames > 0:
+			player.pos += drift * STEP
+			player.pos = player.pos.clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
 		_player_actions(input)
+	SecondaryFire.step(self)
+	Specials.step(self)
 	stage.step(self)
 	for e: SimEnemy in enemies:
 		e.step(self)
@@ -138,16 +228,39 @@ func step(input: SimInput) -> void:
 		boss.step(self)
 		if boss.state == SimBoss.State.DEAD:
 			boss = null
-	enemy_bullets.step(STEP, BOUNDS, gravity)
+	enemy_bullets.step(STEP, BOUNDS, gravity, Specials.frozen(self))
 	player_bullets.step(STEP, BOUNDS)
+	if tide_frames > 0:
+		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_RADIUS))
 	_beams_step()
 	_collide_player_bullets()
-	_laser_step(input)
+	if laser_active:
+		_beam_attack(WeaponFire.laser_width(player.level), WeaponFire.dps(
+				(tables["weapons"] as Dictionary).get(&"laser", {}), player.level) * damage_mult())
 	_collide_player()
 	_pickups_step()
 	_cleanup()
-	rank = clampf(rank + 0.002 * STEP + (0.0003 if player.level >= 3 else 0.0), 0.0, 1.0)
+	if bool((DIFFICULTY[difficulty] as Dictionary)["rank"]):
+		rank = clampf(rank + 0.002 * STEP + (0.0003 if player.level >= 3 else 0.0), 0.0, 1.0)
 	_check_finish()
+
+
+func _timers() -> void:
+	if tide_frames > 0:
+		tide_frames -= 1
+		if tide_frames == 0:
+			scoring.tide_mult = 1.0
+	if drift_frames > 0:
+		drift_frames -= 1
+		if drift_frames == 0:
+			gravity = Vector2.ZERO
+	if mods.bubble_recharge > 0:
+		_bubble_timer -= 1
+		if _bubble_timer <= 0:
+			_bubble_timer = mods.bubble_recharge
+			if mods.bubbles < 1:
+				mods.bubbles = 1
+				emit(&"bubble", {})
 
 
 func _player_actions(input: SimInput) -> void:
@@ -156,31 +269,86 @@ func _player_actions(input: SimInput) -> void:
 	if input.fire:
 		if player.weapon == &"laser":
 			laser_active = true
-		elif WeaponFire.fire_pulsar(player, player_bullets, weapon_def, frame) > 0:
+		elif WeaponFire.fire(player, player_bullets, weapon_def, frame, damage_mult(), mods.fire_rate) > 0:
 			emit(&"shot", {"weapon": player.weapon})
 	if input.bomb and player.bombs > 0:
 		player.bombs -= 1
 		scoring.bombs_used += 1
 		scoring.break_chain()
 		player.invuln = maxi(player.invuln, SimPlayer.BOMB_INVULN)
-		_area_blast(BOMB_DAMAGE)
+		area_blast(BOMB_DAMAGE)
 		emit(&"bomb", {"pos": player.pos})
 	elif input.special and player.special_charge >= 1.0:
 		player.special_charge = 0.0
-		player.invuln = maxi(player.invuln, SimPlayer.SPECIAL_INVULN)
-		_area_blast(SPECIAL_DAMAGE)
-		emit(&"special", {"pos": player.pos, "kind": String(player.ship.get("special", ""))})
+		Specials.activate(self, StringName(String(player.ship.get("special", "area_bomb"))))
+	if input.tide and scoring.pressure >= Scoring.PRESSURE_MAX and tide_frames == 0:
+		tide_frames = TIDE_FRAMES + mods.tide_bonus
+		scoring.pressure = 0.0
+		scoring.tide_mult = 2.0
+		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_CANCEL))
+		rank = minf(1.0, rank + 0.1)
+		emit(&"tide", {"pos": player.pos})
 
 
 ## Bomba e especial: todas as balas viram pérolas e todo inimigo na tela leva dano.
-func _area_blast(amount: float) -> void:
-	_pearls_from(enemy_bullets.cancel_all())
+func area_blast(amount: float) -> void:
+	pearls_from(enemy_bullets.cancel_all())
 	for e: SimEnemy in enemies:
 		if e.active() and e.damage(amount):
 			_kill_enemy(e)
 	if boss != null:
 		boss.damage_body(amount, self)
 	beams.clear()
+
+
+## Rajada concentrada (Manta): feixe largo com dano multiplicado, mesmo com outra arma.
+func burst_beam(width: float, mult: float) -> void:
+	laser_active = true
+	laser_width = width
+	var weapon_def: Dictionary = (tables["weapons"] as Dictionary).get(player.weapon, {})
+	_beam_attack(width, WeaponFire.dps(weapon_def, player.level) * mult * damage_mult())
+
+
+# --- Bênçãos -----------------------------------------------------------------------------------
+
+## Sorteia 3 bênçãos ainda não escolhidas (fluxo "blessings" da semente) e espera a escolha.
+func offer_blessings() -> void:
+	var pool: Array[StringName] = []
+	for id: StringName in (tables.get("blessings", {}) as Dictionary):
+		if not id in mods.taken:
+			pool.append(id)
+	offer.clear()
+	var stream := rng.stream(&"blessings")
+	while offer.size() < 3 and not pool.is_empty():
+		offer.append(pool.pop_at(stream.randi_range(0, pool.size() - 1)))
+	if not offer.is_empty():
+		emit(&"blessing_offer", {"ids": offer.duplicate()})
+
+
+func choose_blessing(id: StringName) -> void:
+	var def: Dictionary = (tables.get("blessings", {}) as Dictionary).get(id, {})
+	offer.clear()
+	if def.is_empty():
+		return
+	var synergy := mods.apply_blessing(def)
+	match StringName(String(def.get("effect", ""))):
+		&"hull":
+			player.max_hull += int(def.get("value", 1))
+			player.hull += int(def.get("value", 1))
+		&"hitbox":
+			player.hitbox = maxf(1.5, player.hitbox * (1.0 - float(def.get("value", 0.2))))
+		&"precise":
+			player.precise_mult = 0.5 * mods.precise_mult
+		&"invuln":
+			player.invuln_bonus = mods.invuln_bonus
+		&"chain_window":
+			scoring.window = Scoring.CHAIN_WINDOW + mods.chain_window
+		&"shield_timer":
+			_bubble_timer = mods.bubble_recharge
+	player.cap_bonus = mods.weapon_cap_bonus
+	scoring.base_chain = mods.base_chain
+	scoring.chain = maxi(scoring.chain, scoring.base_chain)
+	emit(&"blessing", {"id": id, "synergy": String(synergy)})
 
 
 # --- Inimigos e chefes ---------------------------------------------------------------------------
@@ -200,8 +368,6 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 		&"v":
 			x += (member - center) * spacing
 			y -= absf(member - center) * 16.0
-		&"column", &"single":
-			pass
 	var e := SimEnemy.new()
 	var params: Dictionary = (spec.get("params", {}) as Dictionary).duplicate()
 	if StringName(String(spec.get("path", ""))) == &"dive" and bool(spec.get("mirror", false)) and member % 2 == 1:
@@ -214,6 +380,8 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 	e.drop = StringName(String(def.get("drop", "")))
 	if member == count - 1 and spec.has("drop_last"):
 		e.drop = StringName(String(spec["drop_last"]))
+	if spec.has("glyph"):
+		e.glyph = int(spec["glyph"])
 	enemies.append(e)
 
 
@@ -231,7 +399,7 @@ func spawn_boss(boss_id: StringName, final: bool) -> void:
 func on_boss_phase(b: SimBoss, ph: Dictionary, transition: bool) -> void:
 	if transition:
 		hitstop = maxi(hitstop, int((ph.get("intro", {}) as Dictionary).get("hitstop", 8)))
-		_pearls_from(enemy_bullets.cancel_all())
+		pearls_from(enemy_bullets.cancel_all())
 		beams.clear()
 	no_fire = maxi(no_fire, SimBoss.PHASE_QUIET)
 	var intro: Dictionary = ph.get("intro", {})
@@ -242,23 +410,24 @@ func on_boss_phase(b: SimBoss, ph: Dictionary, transition: bool) -> void:
 
 
 func on_boss_part_destroyed(b: SimBoss, part: Dictionary) -> void:
-	scoring.add_bonus(int(part.get("points", 2000)))
+	scoring.add_bonus(int(int(part.get("points", 2000)) * scoring.point_mult))
 	hitstop = maxi(hitstop, 3)
 	emit(&"boss_part", {"id": b.id, "part": String(part["id"]), "pos": b.part_pos(part)})
 	_spawn_pickup(&"medal", b.part_pos(part))
 
 
 func on_boss_duel_start(b: SimBoss) -> void:
-	_pearls_from(enemy_bullets.cancel_all())
+	pearls_from(enemy_bullets.cancel_all())
 	beams.clear()
 	hitstop = maxi(hitstop, 12)
 	emit(&"duel_start", {"id": b.id, "pos": b.body_pos()})
 
 
 func on_boss_defeated(b: SimBoss) -> void:
-	_pearls_from(enemy_bullets.cancel_all())
+	pearls_from(enemy_bullets.cancel_all())
 	beams.clear()
-	scoring.add_bonus(b.bonus + int(b.def.get("points", 20000)) + int(b.duel_power * 10000.0))
+	bosses_killed += 1
+	scoring.add_bonus(int((b.bonus + int(b.def.get("points", 20000)) + int(b.duel_power * 10000.0)) * scoring.point_mult))
 	hitstop = maxi(hitstop, 10)
 	if _miniboss_start >= 0 and not b.is_final:
 		miniboss_seconds = (frame - _miniboss_start) * STEP
@@ -278,13 +447,32 @@ func on_stage_event(ev: Dictionary) -> void:
 					"warn": float(ev.get("warn", 2.0))})
 		&"scroll_speed":
 			scroll_speed = float(ev.get("value", scroll_speed))
+		&"current", &"wind":
+			var strength := float(ev.get("strength", 30.0))
+			var dir := Vector2(float(ev.get("dx", 1.0)), float(ev.get("dy", 0.0))).normalized()
+			gravity = dir * strength
+			drift = dir * strength * float(ev.get("drift", 0.6))
+			drift_frames = int(float(ev.get("duration", 8.0)) * 60.0)
+			emit(StringName(String(ev["op"])), {"dir": dir, "duration": float(ev.get("duration", 8.0))})
+		&"lightning":
+			var x := float(ev.get("x", 0.5)) * Playfield.FIELD.x
+			beams.append({"x": x, "y": -20.0, "width": float(ev.get("width", 26.0)), "warn": int(ev.get("warn", 45)),
+					"frames": int(ev.get("frames", 24)), "age": 0, "kind": "lightning"})
+			emit(&"beam_warn", {"pos": Vector2(x, 0), "width": float(ev.get("width", 26.0)), "kind": "lightning"})
+		&"blessing":
+			offer_blessings()
+		&"log":
+			pickups.append({"kind": &"log", "pos": Vector2(float(ev.get("x", 0.5)) * Playfield.FIELD.x, -12.0),
+					"vel": Vector2(0, 34), "frames": 0})
+			emit(&"log_spawn", {})
 		_:
-			var data := ev.duplicate()
-			emit(StringName(String(ev.get("op", "event"))), data)
+			emit(StringName(String(ev.get("op", "event"))), ev.duplicate())
 
 
 func add_beam(origin: Vector2, width: float, warn_frames: int, frames: int) -> void:
-	beams.append({"x": origin.x, "y": origin.y, "width": width, "warn": warn_frames, "frames": frames, "age": 0})
+	# Oráculo de Nereu: avisos de feixe 50% mais longos.
+	var warn := roundi(warn_frames * 1.5) if mods.oracle else warn_frames
+	beams.append({"x": origin.x, "y": origin.y, "width": width, "warn": warn, "frames": frames, "age": 0})
 	emit(&"beam_warn", {"pos": origin, "width": width})
 
 
@@ -322,8 +510,24 @@ func _collide_player_bullets() -> void:
 			hit = _hit_boss(p, r, dmg)
 		if hit:
 			emit(&"hit", {"pos": p})
-			player_bullets.kill(i)
+			var splash: float = player_bullets.splash[i]
+			if splash > 0.0:
+				_splash(p, splash, dmg)
+			if player_bullets.pierce[i] > 0:
+				player_bullets.pierce[i] -= 1
+			else:
+				player_bullets.kill(i)
 		i -= 1
+
+
+## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio.
+func _splash(at: Vector2, radius: float, dmg: float) -> void:
+	for e: SimEnemy in enemies:
+		if e.active() and at.distance_to(e.pos) <= radius + e.radius and e.damage(dmg * 0.5):
+			_kill_enemy(e)
+	if boss != null and boss.fighting() and at.distance_to(boss.body_pos()) <= radius + boss.body_radius():
+		boss.damage_body(dmg * 0.5, self)
+	emit(&"splash", {"pos": at, "radius": radius})
 
 
 func _hit_boss(p: Vector2, r: float, dmg: float) -> bool:
@@ -339,13 +543,40 @@ func _hit_boss(p: Vector2, r: float, dmg: float) -> bool:
 	return false
 
 
-## Laser: feixe vertical que acerta o alvo mais próximo acima da nave.
-func _laser_step(_input: SimInput) -> void:
-	if not laser_active or not player.alive:
+## Golpe genérico num ponto (mísseis): devolve se acertou algo.
+func hit_at(p: Vector2, r: float, dmg: float) -> bool:
+	for e: SimEnemy in enemies:
+		if e.active() and p.distance_squared_to(e.pos) <= (r + e.radius) * (r + e.radius):
+			if e.damage(dmg):
+				_kill_enemy(e)
+			return true
+	return boss != null and boss.fighting() and _hit_boss(p, r, dmg)
+
+
+## Alvo mais próximo para os mísseis (Vector2.INF se não houver).
+func nearest_target(from: Vector2) -> Vector2:
+	var best := Vector2.INF
+	var best_d := INF
+	for e: SimEnemy in enemies:
+		if e.active() and Rect2(Vector2.ZERO, Playfield.FIELD).has_point(e.pos):
+			var d := from.distance_squared_to(e.pos)
+			if d < best_d:
+				best_d = d
+				best = e.pos
+	if boss != null and boss.fighting():
+		var d := from.distance_squared_to(boss.body_pos())
+		if d < best_d:
+			best = boss.body_pos()
+	return best
+
+
+## Feixe vertical (Laser e Rajada): acerta o alvo mais próximo acima da nave.
+func _beam_attack(width: float, dps_value: float) -> void:
+	if not player.alive:
 		return
-	var half := WeaponFire.laser_width(player.level) * 0.5
-	var weapon_def: Dictionary = (tables["weapons"] as Dictionary).get(&"laser", {})
-	var dmg := WeaponFire.dps(weapon_def, player.level) * STEP
+	laser_width = width
+	var half := width * 0.5
+	var dmg := dps_value * STEP
 	var best_y := -BOUNDS.size.y
 	var target: SimEnemy = null
 	for e: SimEnemy in enemies:
@@ -394,9 +625,7 @@ func _collide_player() -> void:
 			break
 		if enemy_bullets.grazed[i] == 0 and d2 <= (hb + r + GRAZE_RANGE) * (hb + r + GRAZE_RANGE):
 			enemy_bullets.grazed[i] = 1
-			scoring.on_graze()
-			player.special_charge = minf(1.0, player.special_charge + SimPlayer.GRAZE_CHARGE)
-			emit(&"graze", {"pos": p})
+			_graze(p)
 	if not hit:
 		for e: SimEnemy in enemies:
 			if e.active() and pp.distance_to(e.pos) <= e.radius * CONTACT_FACTOR + hb:
@@ -418,11 +647,32 @@ func _collide_player() -> void:
 		_player_hit(cause)
 
 
+func _graze(p: Vector2) -> void:
+	scoring.on_graze()
+	scoring.add_pressure(mods.graze_bonus)
+	player.special_charge = minf(1.0, player.special_charge + SimPlayer.GRAZE_CHARGE * (1.0 + mods.graze_bonus))
+	emit(&"graze", {"pos": p})
+	if mods.coral_heal > 0:
+		_coral_grazes += 1
+		if _coral_grazes >= mods.coral_heal:
+			_coral_grazes = 0
+			if player.hull < player.max_hull:
+				player.hull += 1
+				emit(&"heal", {"pos": player.pos})
+
+
 func _player_hit(cause: StringName) -> void:
+	fury_stacks = 0
+	if mods.bubbles > 0:
+		mods.bubbles -= 1
+		player.invuln = maxi(player.invuln, 60)
+		pearls_from(enemy_bullets.cancel_near(player.pos, MERCY_RADIUS))
+		emit(&"bubble_pop", {"pos": player.pos})
+		return
 	scoring.hull_lost += 1
 	scoring.break_chain()
 	var down := player.take_hit()
-	enemy_bullets.cancel_near(player.pos, MERCY_RADIUS)
+	enemy_bullets.cancel_near(player.pos, 120.0 if mods.reflux else MERCY_RADIUS)
 	rank = maxf(0.0, rank - 0.25)
 	hitstop = maxi(hitstop, 6)
 	emit(&"player_hit", {"pos": player.pos, "hull": player.hull, "down": down, "cause": cause})
@@ -432,12 +682,39 @@ func _kill_enemy(e: SimEnemy) -> void:
 	if not e.alive:
 		return
 	e.alive = false
-	var gained := scoring.on_kill(e.points, e.pos.distance_to(player.pos), e.marked)
+	# Carta de Nereu: marcados valem +50%.
+	var points := roundi(e.points * 1.5) if mods.chart and e.marked else e.points
+	var gained := scoring.on_kill(points, e.pos.distance_to(player.pos), e.marked)
 	emit(&"kill", {"pos": e.pos, "id": e.id, "sprite": e.sprite, "points": gained, "big": e.radius >= 20.0})
 	if e.radius >= 20.0:
 		hitstop = maxi(hitstop, 3)
-	if e.drop != &"":
-		_spawn_pickup(e.drop, e.pos)
+	if mods.fury:
+		fury_stacks = mini(10, fury_stacks + 1)
+	if mods.undertow:
+		_splash(e.pos, 30.0, 8.0 * damage_mult())
+	if e.glyph >= 0:
+		_glyph(e.glyph)
+	var drop := e.drop
+	if drop == &"" and mods.orb_luck > 0.0 and rng.stream(&"drops").randf() < mods.orb_luck:
+		drop = &"orb"
+	if drop != &"" and player.weapon_lock == &"" or drop == &"medal":
+		_spawn_pickup(drop, e.pos)
+
+
+## Glifos atlantes: destruídos na ordem certa abrem a missão secreta (plano mestre 5.4).
+func _glyph(index: int) -> void:
+	var secret: Dictionary = mission.get("secret", {})
+	if secret.is_empty():
+		return
+	if index == glyph_progress:
+		glyph_progress += 1
+		emit(&"glyph", {"index": index, "of": int(secret.get("glyphs", 3))})
+		if glyph_progress >= int(secret.get("glyphs", 3)):
+			secret_found = StringName(String(secret.get("mission", "")))
+			emit(&"secret", {"mission": String(secret_found)})
+	else:
+		glyph_progress = 0
+		emit(&"glyph_reset", {})
 
 
 # --- Feixes inimigos, coletáveis e limpeza ------------------------------------------------------------
@@ -457,7 +734,7 @@ func _spawn_pickup(kind: StringName, at: Vector2) -> void:
 	pickups.append({"kind": kind, "pos": at, "vel": vel, "frames": 0})
 
 
-func _pearls_from(points: PackedVector2Array) -> void:
+func pearls_from(points: PackedVector2Array) -> void:
 	for p: Vector2 in points:
 		pickups.append({"kind": &"pearl", "pos": p, "vel": Vector2(0, -30), "frames": 0})
 
@@ -477,6 +754,12 @@ func _pickups_step() -> void:
 		var kind: StringName = pk["kind"]
 		if kind == &"pearl" and frames > PEARL_FLOAT and player.alive:
 			pk["vel"] = (player.pos - p).normalized() * PEARL_SPEED
+		elif mods.magnet_radius > 0.0 and player.alive and kind != &"log" \
+				and p.distance_to(player.pos) <= mods.magnet_radius:
+			pk["vel"] = (player.pos - p).normalized() * 160.0
+		elif kind == &"log" and mods.log_finder and player.alive and p.y > 40.0:
+			# Localizador: o registro vem até a nave assim que entra no campo.
+			pk["vel"] = (player.pos - p).normalized() * 120.0
 		elif kind == &"orb":
 			pk["vel"] = Vector2(sin(frames * 0.05) * 20.0, ORB_FALL)
 		p += (pk["vel"] as Vector2) * STEP
@@ -486,10 +769,14 @@ func _pickups_step() -> void:
 			_collect(kind, frames)
 			pickups.remove_at(i)
 		elif p.y > Playfield.FIELD.y + 24.0 or (kind == &"pearl" and frames > 600):
-			if kind == &"medal":
-				scoring.on_medal_missed()
-				emit(&"medal_missed", {})
-			pickups.remove_at(i)
+			if kind == &"medal" and mods.medal_net and not pk.has("bounced"):
+				pk["bounced"] = true
+				pk["vel"] = Vector2(0, -MEDAL_FALL * 1.6)
+			else:
+				if kind == &"medal":
+					scoring.on_medal_missed()
+					emit(&"medal_missed", {})
+				pickups.remove_at(i)
 		i -= 1
 
 
@@ -498,7 +785,7 @@ func _collect(kind: StringName, frames: int) -> void:
 		&"orb":
 			var weapon := orb_weapon(frames)
 			var up := player.collect_orb(weapon)
-			emit(&"orb", {"weapon": weapon, "level": player.level, "up": up})
+			emit(&"orb", {"weapon": player.weapon, "level": player.level, "up": up})
 		&"medal":
 			emit(&"medal", {"value": scoring.on_medal()})
 		&"pearl":
@@ -507,6 +794,9 @@ func _collect(kind: StringName, frames: int) -> void:
 		&"bomb":
 			player.bombs = mini(player.bombs + 1, 4)
 			emit(&"bomb_pickup", {})
+		&"log":
+			log_found = true
+			emit(&"log", {})
 
 
 func _cleanup() -> void:
@@ -544,6 +834,16 @@ func stars() -> Array[bool]:
 			objective = miniboss_seconds >= 0.0 and miniboss_seconds <= float(obj.get("seconds", 30.0))
 		&"no_bomb":
 			objective = scoring.bombs_used == 0
+		&"log":
+			objective = log_found
+		&"grazes":
+			objective = scoring.grazes >= int(obj.get("count", 100))
+		&"chain":
+			objective = scoring.max_chain >= int(obj.get("count", 40))
+		&"secret":
+			objective = secret_found != &""
+		&"score":
+			objective = scoring.score >= int(obj.get("count", 100000))
 	var all_marked := scoring.marked_killed >= scoring.marked_total
 	return [cleared, cleared and scoring.hull_lost == 0, cleared and all_marked, cleared and objective]
 
@@ -554,7 +854,9 @@ func result() -> Dictionary:
 		"kills": scoring.kills, "marked": [scoring.marked_killed, scoring.marked_total], "grazes": scoring.grazes,
 		"max_chain": scoring.max_chain, "medals": scoring.medals, "max_medal": scoring.max_medal,
 		"pearls": scoring.pearls, "hull_lost": scoring.hull_lost, "bombs_used": scoring.bombs_used,
-		"seconds": frame * STEP, "miniboss_seconds": miniboss_seconds,
+		"seconds": frame * STEP, "miniboss_seconds": miniboss_seconds, "log_found": log_found,
+		"secret": String(secret_found), "blessings": mods.taken.duplicate(), "difficulty": String(difficulty),
+		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
 	}
 
 
@@ -562,7 +864,7 @@ func result() -> Dictionary:
 func state_hash() -> String:
 	var parts := PackedStringArray([str(frame), str(scoring.score), str(scoring.grazes), str(player.hull),
 			"%.3f,%.3f" % [player.pos.x, player.pos.y], str(enemy_bullets.count), str(player_bullets.count),
-			str(enemies.size()), str(pickups.size()), "%.4f" % rank])
+			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken)])
 	for e: SimEnemy in enemies:
 		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
 	var sum := Vector2.ZERO

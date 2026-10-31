@@ -2,18 +2,20 @@ class_name HubScreen
 extends Screen
 ## Hub interativo (plano mestre 7.2, no espírito do menu de Star Wars: Galaxy of Heroes, sem copiar
 ## nada dele): cena viva do hangar em parallax, saldo no topo, banner de destaque, botão JOGAR na zona
-## do polegar e abas embaixo. No Vertical Slice só Hangar e Campanha estão abertas.
+## do polegar e abas embaixo. No Alpha: Hangar (oficina), Campanha e Naves; Eventos e Loja no Beta.
 
 const TAB_HEIGHT := 48.0
 const PLAY_HEIGHT := 52.0
 const TABS: Array[StringName] = [&"hangar", &"campaign", &"ships", &"events", &"shop"]
-const OPEN_TABS: Array[StringName] = [&"hangar", &"campaign"]
+const OPEN_TABS: Array[StringName] = [&"hangar", &"campaign", &"ships"]
 
 var _stage: HangarStage
 var _wallet: Label
 var _credits_button: Button
 var _banner: Button
 var _play: Button
+var _options: Button
+var _logbook: Button
 var _tabs: HBoxContainer
 var _tab_buttons: Dictionary = {}
 var _banner_index: int = 0
@@ -50,8 +52,10 @@ func _build() -> void:
 	_play.add_theme_stylebox_override("hover", _gold_box(true))
 	_play.add_theme_stylebox_override("pressed", _gold_box(true))
 	_play.add_theme_stylebox_override("focus", _gold_box(true))
-	_play.pressed.connect(func() -> void: navigate.emit(&"map"))
+	_play.pressed.connect(_on_play)
 	add_child(_play)
+	_options = _small_button("Options", func() -> void: navigate.emit(&"options"))
+	_logbook = _small_button("Logbook", func() -> void: navigate.emit(&"logbook"))
 	_tabs = HBoxContainer.new()
 	_tabs.add_theme_constant_override("separation", 2)
 	add_child(_tabs)
@@ -74,6 +78,23 @@ func _build() -> void:
 		b.pressed.connect(_on_tab.bind(tab))
 		_tabs.add_child(b)
 		_tab_buttons[tab] = b
+
+
+func _small_button(button_name: String, on_press: Callable) -> Button:
+	var b := Button.new()
+	b.name = button_name
+	b.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
+	b.clip_text = true
+	b.pressed.connect(func() -> void:
+		AudioManager.play_ui("kenney_ui_click")
+		on_press.call())
+	add_child(b)
+	return b
+
+
+## Jogar: a cena de história pendente (prólogo, fim de ato) vem antes do mapa.
+func _on_play() -> void:
+	navigate.emit(&"story" if not StoryScreen.pending(SaveManager.data).is_empty() else &"map")
 
 
 func _gold_box(hot: bool) -> StyleBoxFlat:
@@ -105,7 +126,10 @@ func refresh_texts() -> void:
 	_wallet.text = "%s %s   %s %s   %s %s" % [tr("currency.credits"), Locale.format_number(int(wallet["credits"])),
 			tr("currency.orichalcum"), Locale.format_number(int(wallet["orichalcum"])),
 			tr("currency.pearls"), Locale.format_number(int(wallet["pearls"]))]
-	_play.text = tr("hub.play") % "1-1"
+	var next := Economy.next_mission(SaveManager.data)
+	_play.text = tr("hub.play") % MapScreen.node_label(Economy.node(next))
+	_options.text = tr("options.title")
+	_logbook.text = tr("logbook.title")
 	for tab: StringName in TABS:
 		var b: Button = _tab_buttons[tab]
 		b.text = tr("hub.tab_" + String(tab))
@@ -115,7 +139,8 @@ func refresh_texts() -> void:
 
 
 func _update_banner() -> void:
-	_banner.text = tr("hub.banner_c1") if _banner_index == 0 else tr("hub.banner_daily")
+	var chapter := int(Economy.node(Economy.next_mission(SaveManager.data))["chapter"])
+	_banner.text = tr("hub.banner_c%d" % chapter) if _banner_index == 0 else tr("hub.banner_daily")
 	_banner.disabled = _banner_index != 0
 
 
@@ -130,6 +155,11 @@ func _layout() -> void:
 	_play.size = Vector2(play_width, PLAY_HEIGHT)
 	_play.position = Vector2(floorf(safe.position.x + (safe.size.x - play_width) * 0.5),
 			_tabs.position.y - PLAY_HEIGHT - 12.0)
+	var half := floorf((play_width - 8.0) * 0.5)
+	_logbook.size = Vector2(half, UiTheme.TOUCH_MIN)
+	_options.size = Vector2(half, UiTheme.TOUCH_MIN)
+	_logbook.position = Vector2(_play.position.x, _play.position.y - UiTheme.TOUCH_MIN - 8.0)
+	_options.position = Vector2(_play.position.x + play_width - half, _logbook.position.y)
 	_credits_button.position = Vector2(safe.end.x - UiTheme.TOUCH_MIN - 6.0, safe.position.y + 6.0)
 	_wallet.position = Vector2(left, safe.position.y + 14.0)
 	_wallet.size = Vector2(_credits_button.position.x - left - 8.0, 0)
@@ -140,12 +170,17 @@ func _layout() -> void:
 
 func _on_tab(tab: StringName) -> void:
 	AudioManager.play_ui("kenney_ui_tab")
-	if tab == &"campaign":
-		navigate.emit(&"map")
+	match tab:
+		&"campaign":
+			navigate.emit(&"map")
+		&"hangar":
+			navigate.emit(&"hangar")
+		&"ships":
+			navigate.emit(&"ships")
 
 
 func layout_controls() -> Array[Control]:
-	return [_wallet, _credits_button, _banner, _play, _tabs]
+	return [_wallet, _credits_button, _banner, _play, _tabs, _options, _logbook]
 
 
 ## Volta para o título.

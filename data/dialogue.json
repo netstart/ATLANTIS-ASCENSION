@@ -4,5 +4,9 @@
 	{"id": "c1m1_breath", "speaker": "mare", "text_key": "dialogue.c1m1_breath", "color": "#ffe08a"},
 	{"id": "c1m1_boss", "speaker": "farol", "text_key": "dialogue.c1m1_boss", "color": "#8fe8ff"},
 	{"id": "kraken_p2", "speaker": "protocol", "text_key": "dialogue.kraken_p2", "color": "#ff7a7e"},
-	{"id": "kraken_p3", "speaker": "thalassa", "text_key": "dialogue.kraken_p3", "color": "#c79bff"}
+	{"id": "kraken_p3", "speaker": "thalassa", "text_key": "dialogue.kraken_p3", "color": "#c79bff"},
+	{"id": "c2_intro", "speaker": "thalassa", "text_key": "dialogue.c2_intro", "color": "#c79bff"},
+	{"id": "c3_intro", "speaker": "farol", "text_key": "dialogue.c3_intro", "color": "#8fe8ff"},
+	{"id": "s1_intro", "speaker": "thalassa", "text_key": "dialogue.s1_intro", "color": "#c79bff"},
+	{"id": "storm_eye", "speaker": "mare", "text_key": "dialogue.storm_eye", "color": "#ffe08a"}
 ]

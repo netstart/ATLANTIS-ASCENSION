@@ -5,9 +5,9 @@
 Shoot'em up vertical 2.5D sobre a Atlântida que desperta em 2147. Feito em Godot 4.7.2 para Android (retrato) e
 Steam, só com assets gratuitos e livres para uso comercial.
 
-**Estado:** Vertical Slice (versão 0.1.0): missão 1-1 completa com Ocean Shift, mini-chefe e Kraken Engine, hub
-vivo em parallax, mapa da campanha, resultado com estrelas, 11 idiomas. O export Android depende de
-`tools\setup_android_sdk.ps1`.
+**Estado:** Alpha (versão 0.5.0): capítulos 1 a 3 com 11 missões (bifurcação e missão secreta), 3 mini-chefes e o
+Kraken Engine, 18 Bênçãos das Marés, Maré Alta, 4 aeronaves, oficina do hangar, asas, economia testada pelo bot,
+Diário de Bordo, cenas do Ato I, opções e 11 idiomas. O export Android depende de `tools\setup_android_sdk.ps1`.
 
 ## Documentação
 

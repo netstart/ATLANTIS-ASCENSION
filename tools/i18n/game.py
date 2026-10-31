@@ -86,10 +86,10 @@ STRINGS = {
         "Hancurkan semua target bertanda", "マーク対象を全破壊", "표시된 목표 전부 파괴", "摧毀所有標記目標", "摧毁所有标记目标",
     ],
     "objective.miniboss_time": [
-        "Derrotar o Quebra-Maré em 30 s", "Defeat the Tidebreaker in 30 s", "Derrota al Rompeolas en 30 s",
-        "Den Wellenbrecher in 30 s besiegen", "Vaincre le Brise-Lames en 30 s", "Победить Волнолома за 30 с",
-        "Kalahkan Pemecah Ombak dalam 30 dtk", "タイドブレイカーを30秒で撃破", "타이드브레이커를 30초 안에 격파",
-        "30秒內擊敗破浪者", "30秒内击败破浪者",
+        "Derrotar o Quebra-Maré em 50 s", "Defeat the Tidebreaker in 50 s", "Derrota al Rompeolas en 50 s",
+        "Den Wellenbrecher in 50 s besiegen", "Vaincre le Brise-Lames en 50 s", "Победить Волнолома за 50 с",
+        "Kalahkan Pemecah Ombak dalam 50 dtk", "タイドブレイカーを50秒で撃破", "타이드브레이커를 50초 안에 격파",
+        "50秒內擊敗破浪者", "50秒内击败破浪者",
     ],
     "results.cleared": [
         "Missão concluída", "Mission complete", "Misión completada", "Mission erfüllt", "Mission accomplie",

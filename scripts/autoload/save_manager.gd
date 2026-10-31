@@ -13,7 +13,7 @@ const BACKUP_PATH := "user://save.bak"
 const TEMP_PATH := "user://save.tmp"
 ## Arquivos dos testes (use_test_files): o save do jogador nunca é tocado.
 const TEST_PATHS := ["user://test_save.json", "user://test_save.bak", "user://test_save.tmp"]
-const VERSION := 1
+const VERSION := 2
 ## Moedas do jogo (plano mestre 4.9). Pérolas de Maré só compram cosméticos.
 const CURRENCIES: Array[String] = ["credits", "orichalcum", "pearls"]
 
@@ -34,12 +34,12 @@ static func default_profile() -> Dictionary:
 		"version": VERSION,
 		"wallet": {"credits": 0, "orichalcum": 0, "pearls": 0},
 		"earned": {"credits": 0, "orichalcum": 0, "pearls": 0},
-		"unlocked": {"ships": ["falcon"], "wings": [], "cosmetics": [], "modes": ["campaign"]},
+		"unlocked": {"ships": ["falcon"], "wings": [], "cosmetics": [], "modes": ["campaign"], "missions": []},
 		"selected": {"ship": "falcon", "secondary": "", "wings": [], "difficulty": "normal"},
 		"hangar": {"ship_levels": {"falcon": 1}, "modules": {}, "fragments": {}},
 		# Por missão: {"stars": [bool x4], "best_score": int, "cleared": bool, "route": ""}.
 		"missions": {},
-		"story": {"prologue_seen": false, "endings": [], "logs": [], "glyphs": [], "abyss_records": []},
+		"story": {"prologue_seen": false, "seen": [], "endings": [], "logs": [], "glyphs": [], "abyss_records": []},
 		"rescued_total": 0,
 		"achievements": {},
 		"stats": {"missions_played": 0, "missions_cleared": 0, "deaths": 0, "kills": 0, "grazes": 0,
@@ -74,8 +74,12 @@ func load_profile() -> void:
 
 
 ## Leva saves antigos para a versão atual e completa campos que faltam (idempotente).
+## v1 -> v2: lista de missões secretas abertas e "Créditos" do hangar por nave (níveis já existiam).
 static func migrate(old: Dictionary) -> Dictionary:
 	_fill_missing(old, default_profile())
+	for ship: Variant in (old["unlocked"]["ships"] as Array):
+		if not (old["hangar"]["ship_levels"] as Dictionary).has(String(ship)):
+			old["hangar"]["ship_levels"][String(ship)] = 1
 	old["version"] = VERSION
 	return old
 

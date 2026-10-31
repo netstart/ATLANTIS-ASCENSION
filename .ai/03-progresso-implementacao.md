@@ -21,7 +21,10 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   84 textos x 11 idiomas, 21 componentes de licença e 87 arquivos de assets cobertos, mesmo hash em 1x/2x/3x e na
   qualidade Baixa). Benchmarks: rolagem 72/72 listas aprovadas nas 18 resoluções (p95 ≤ 2,5 ms); partida com 1.000
   balas inimigas p95 2,2 ms, pior quadro 20 ms.
-- ⬜ Próximo passo: Fase 2 (Alpha).
+- ✅ Fase 2 (Alpha) concluída na versão `0.5.0`. `tools/run_checks.ps1`: 630 verificações de regras (o bot vence
+  as 11 missões, mesmo hash em 1x/2x/3x/Baixa), 45.914 de integração, layout (10 telas + HUD + painel de bênçãos nas
+  18 resoluções), fluxo E2E e simulação da economia; 326 textos x 11 idiomas; 21 componentes de licença, 168 arquivos.
+- ⬜ Próximo passo: Fase 3 (Beta).
 
 ## Decisões pendentes do mantenedor
 
@@ -91,20 +94,34 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 
 ## Fase 2 — Alpha · `0.5.0`
 
-- ⬜ Capítulos 1 a 3 (9 missões, 3 mini-chefes)
-- ⬜ Plasma, Railgun, secundárias, 4 especiais, 4 aeronaves
-- ⬜ Bênçãos das Marés (18) e sinergias
-- ⬜ Maré Alta e medidor de Pressão
-- ⬜ Tutorial de pontuação
-- ⬜ Estrutura das rotas Superfície e Abismo
-- ⬜ Hub completo (5 abas, banners, cartões, recompensa), Cidade de Thalassa estática
-- ⬜ Mapa com os estratos 0 a 3
-- ⬜ Economia, hangar, fragmentos de aeronave, 6 alas, estrelas
-- ⬜ Simulação da economia pelo bot (teste obrigatório)
-- ⬜ Assistência e regra de conquistas
-- ⬜ Save com migração, opções, 11 idiomas
-- ⬜ Diário de Bordo, cenas do prólogo e do Ato I, primeira missão secreta
-- ⬜ Protótipo do mergulho entre camadas (decisão)
+- ✅ Capítulos 1 a 3: 9 missões + bifurcação 3-3 (Superfície / Abismo, pontos x1,5) + missão secreta, geradas
+  por `tools/gen_missions.py` (trechos autorais com semente fixa; 2 a 5 min cada, medido pelo bot)
+- ✅ 3 mini-chefes (Quebra-Maré na 1-2, Guardião de Coral na 2-2, Olho da Tempestade na 3-2) e o Kraken Engine na 2-3
+- ✅ Perigos novos: corrente marítima (capítulo 2), ventania e raios com aviso (capítulo 3), glifos atlantes
+- ✅ Cenários por capítulo: Atlântico, Atlântida (água verde-azulada, ruínas expostas) e Tempestade (chuva diagonal,
+  raios em zigue-zague); espuma e chuva derivam com a corrente e o vento
+- ✅ Plasma, Railgun, mísseis e drones (secundárias com 5 níveis), 6 especiais, 4 aeronaves no Alpha (Falcon, Manta,
+  Hydra, Tempest) com tinta própria
+- ✅ Bênçãos das Marés (18, de Proteu, Tétis e Nereu), sinergia com 2 do mesmo deus e Avatar com 3; painel de
+  escolha que congela a fase; Carta Náutica, Oráculo e Localizador implementados
+- ✅ Maré Alta: medidor de Pressão no HUD, botão MARÉ (tecla Espaço / RT), aura e pontos x2
+- ✅ Tutorial em jogo na 1-1 (6 dicas de rádio por tempo: mover, raspar, orbes, SP, Maré, marcados) e objetivo da
+  missão ao entrar
+- ✅ Hub: abas Hangar (oficina), Campanha e Naves abertas; Diário e Opções; banner do capítulo atual; JOGAR mostra a
+  próxima missão. ⚠️ Eventos e Loja abrem no Beta; Cidade de Thalassa fica para o Beta
+- ✅ Mapa com os estratos 0 a 4, 11 nós do grafo `Economy.CAMPAIGN` (pré-requisitos, bifurcação, nó secreto que só
+  aparece aberto), cores por tipo (chefe coral, secreto violeta)
+- ✅ Economia (`scripts/core/economy.gd`, regras puras): créditos, oricalco, pérolas, níveis 1 a 10 da aeronave,
+  secundárias, fragmentos que abrem aeronaves, 6 asas liberadas por estrelas (até 2 equipadas), 4 dificuldades
+- ✅ Simulação da economia pelo bot (`tests/economy_tests.gd`): campanha inteira com a carga do hangar; ao fim do
+  Alpha a Falcon fica no nível 3 a 7 e o bot junta ≥ 20 estrelas (hoje: nível 3, 32 estrelas)
+- ✅ Assistência: dificuldade Brisa (+2 casco, balas lentas, pontos x0,5). ⚠️ Conquistas ficam para o Beta
+- ✅ Save v2 com migração, tela de Opções (idioma, gráficos, mão, volumes, tremor, sensibilidade, tiro automático,
+  vibração, clarões, movimento, inclinação, FPS), 11 idiomas (326 chaves)
+- ✅ Diário de Bordo (11 registros da Halcyon + carreira), cenas do prólogo, de Atlântida e do fim do Ato I,
+  missão secreta "Cofre dos Glifos" (só Railgun) aberta destruindo 3 glifos na ordem na 2-1
+- ✅ Decisão do mergulho entre camadas: a bifurcação Superfície/Abismo da 3-3 substitui o protótipo (mesmo efeito
+  de risco e recompensa, sem custo de troca de camada no meio da fase)
 
 ## Fase 3 — Beta · `0.9.0`
 

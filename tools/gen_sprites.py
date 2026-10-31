@@ -183,6 +183,35 @@ def beam(w: int, h: int) -> list:
     return px
 
 
+def glyph(size: int) -> list:
+    """Pedra atlante com runa dourada: alvo do segredo de rota (nunca parece bala: quadrado)."""
+    px = canvas(size, size)
+    gold = (232, 184, 74, 255)
+    for y in range(size):
+        for x in range(size):
+            edge = x in (0, size - 1) or y in (0, size - 1)
+            px[y * size + x] = OUTLINE if edge else ((70, 92, 98, 255) if (x + y) % 7 else (58, 78, 84, 255))
+    c = size // 2
+    for d in range(-5, 6):
+        px[(c + d) * size + c] = gold
+    for d in range(-3, 4):
+        px[(c - 3) * size + c + d] = gold
+        px[(c + 3) * size + c + d] = gold
+    return px
+
+
+def capsule_log(size: int) -> list:
+    """Cápsula de registro: cristal de dados ciano dentro de moldura dourada."""
+    px = canvas(size, size)
+    c = (size - 1) / 2.0
+    for y in range(size):
+        for x in range(size):
+            d = abs(x - c) + abs(y - c)
+            if d <= c:
+                px[y * size + x] = OUTLINE if d > c - 1.2 else ((232, 184, 74, 255) if d > c - 2.6 else (120, 245, 255, 255))
+    return px
+
+
 def tentacle(size: int, tip: bool) -> list:
     """Segmento de tentáculo em metal escuro, sem núcleo claro: nunca se parece com bala."""
     px = canvas(size, size)
@@ -216,6 +245,14 @@ SPRITES = {
     "bullets/orb_coral_16.png": (16, 16, lambda: orb(16, "coral")),
     "bullets/needle_gold.png": (5, 14, lambda: capsule(5, 14, PALETTE["gold"][0], PALETTE["gold"][1], True)),
     "bullets/shot_pulsar.png": (4, 12, lambda: capsule(4, 12, (226, 236, 255), (150, 170, 220), False)),
+    "bullets/plasma_10.png": (10, 10, lambda: orb(10, "violet")),
+    "bullets/plasma_18.png": (18, 18, lambda: orb(18, "violet")),
+    "bullets/rail.png": (3, 16, lambda: capsule(3, 16, (255, 236, 220), (255, 140, 110), False)),
+    "pickups/orb_plasma.png": (18, 18, lambda: weapon_orb(18, "violet", "pulsar")),
+    "pickups/orb_railgun.png": (18, 18, lambda: weapon_orb(18, "coral", "laser")),
+    "pickups/log.png": (14, 14, lambda: capsule_log(14)),
+    "fx/drone.png": (10, 10, lambda: orb(10, "cyan")),
+    "enemies/glyph.png": (20, 20, lambda: glyph(20)),
     "pickups/orb_pulsar.png": (18, 18, lambda: weapon_orb(18, "blue", "pulsar")),
     "pickups/orb_laser.png": (18, 18, lambda: weapon_orb(18, "gold", "laser")),
     "pickups/medal.png": (12, 12, lambda: medal(12)),

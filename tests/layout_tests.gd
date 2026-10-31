@@ -5,7 +5,8 @@ extends RefCounted
 ## tests/integration_tests.gd.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
-const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits"]
+const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"hangar", &"ships",
+		&"options", &"logbook", &"story"]
 const GAME := preload("res://scenes/game/Game.tscn")
 
 
@@ -53,6 +54,12 @@ func _run_hud(host: Node, check: Callable) -> void:
 			check.call(Playfield.fits(layout, safe), "%s: campo na área segura" % tag)
 			check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
 			check_screen_controls(game.hud().layout_controls(), safe, check, tag)
+			game.sim.offer_blessings()
+			game.hud().show_offer(game.sim)
+			await host.get_tree().process_frame
+			var panel := game.hud().offer_panel()
+			check.call(layout["field"].encloses(panel.get_global_rect()), "%s: bênçãos dentro do campo" % tag)
+			check_screen_controls([panel], safe, check, tag + " bênçãos")
 			game.queue_free()
 			await host.get_tree().process_frame
 

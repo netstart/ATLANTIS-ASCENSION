@@ -1,0 +1,14 @@
+[
+	{"id": "wing_magnet", "effect": "magnet", "value": 70, "stars": 3, "release": "alpha", "name_key": "wing.wing_magnet", "desc_key": "wing.wing_magnet_desc"},
+	{"id": "wing_bubble", "effect": "shield_timer", "value": 1800, "stars": 6, "release": "alpha", "name_key": "wing.wing_bubble", "desc_key": "wing.wing_bubble_desc"},
+	{"id": "wing_rear", "effect": "rear_cover", "value": 1, "stars": 9, "release": "alpha", "name_key": "wing.wing_rear", "desc_key": "wing.wing_rear_desc"},
+	{"id": "wing_graze", "effect": "graze_bonus", "value": 0.1, "stars": 12, "release": "alpha", "name_key": "wing.wing_graze", "desc_key": "wing.wing_graze_desc"},
+	{"id": "wing_finder", "effect": "log_finder", "value": 1, "stars": 15, "release": "alpha", "name_key": "wing.wing_finder", "desc_key": "wing.wing_finder_desc"},
+	{"id": "wing_luck", "effect": "orb_luck", "value": 0.08, "stars": 18, "release": "alpha", "name_key": "wing.wing_luck", "desc_key": "wing.wing_luck_desc"},
+	{"id": "wing_edge", "effect": "damage", "value": 0.05, "stars": 24, "release": "beta", "name_key": "wing.wing_edge", "desc_key": "wing.wing_edge_desc"},
+	{"id": "wing_halo", "effect": "invuln", "value": 20, "stars": 30, "release": "beta", "name_key": "wing.wing_halo", "desc_key": "wing.wing_halo_desc"},
+	{"id": "wing_sailor", "effect": "chain_window", "value": 10, "stars": 36, "release": "beta", "name_key": "wing.wing_sailor", "desc_key": "wing.wing_sailor_desc"},
+	{"id": "wing_net", "effect": "medal_net", "value": 1, "stars": 42, "release": "beta", "name_key": "wing.wing_net", "desc_key": "wing.wing_net_desc"},
+	{"id": "wing_slip", "effect": "hitbox", "value": 0.1, "stars": 50, "release": "beta", "name_key": "wing.wing_slip", "desc_key": "wing.wing_slip_desc"},
+	{"id": "wing_tide", "effect": "tide_bonus", "value": 120, "stars": 60, "release": "beta", "name_key": "wing.wing_tide", "desc_key": "wing.wing_tide_desc"}
+]

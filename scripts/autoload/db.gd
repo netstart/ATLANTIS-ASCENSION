@@ -5,7 +5,7 @@ extends Node
 ## Origem: db.gd do projeto hyakki (mesmo autor, MIT). Tabelas novas entram em FILES conforme as
 ## fases do roadmap (enemies, stages, bosses, blessings...).
 
-const FILES: Array[String] = ["ships", "weapons"]
+const FILES: Array[String] = ["ships", "weapons", "wings", "blessings", "enemies", "bosses"]
 
 var tables: Dictionary = {}
 ## Listas na ordem do arquivo (a ordem importa para menus e sorteios determinísticos).
@@ -61,6 +61,14 @@ func ids(name: String) -> Array[StringName]:
 	var list: Array[StringName] = []
 	list.assign(order.get(name, []))
 	return list
+
+
+## Linhas na ordem do arquivo.
+func rows(name: String) -> Array:
+	var out: Array = []
+	for id: StringName in ids(name):
+		out.append(table(name)[id])
+	return out
 
 
 func row(name: String, id: StringName) -> Dictionary:

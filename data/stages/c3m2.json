@@ -1,0 +1,413 @@
+{
+	"id": "c3m2",
+	"chapter": 3,
+	"name_key": "stage.c3m2",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 26,
+	"backdrop": "storm",
+	"seed_salt": 309,
+	"objective": {
+		"type": "miniboss_time",
+		"seconds": 55,
+		"text_key": "objective.miniboss_time_storm"
+	},
+	"length_s": 108.2,
+	"events": [
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 0.0
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"spacing": 36,
+			"t": 3.27
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"t": 6.55
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 9.82
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"spacing": 36,
+			"t": 13.09
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.25,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"t": 16.36
+		},
+		{
+			"op": "wave",
+			"enemy": "volt_ray",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 60,
+				"speed": 50
+			},
+			"mirror": true,
+			"spacing": 90,
+			"marked": true,
+			"t": 19.64
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 22.91
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 27.16
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 31.42
+		},
+		{
+			"op": "blessing",
+			"t": 36.14
+		},
+		{
+			"op": "wind",
+			"dx": 1,
+			"strength": 34,
+			"duration": 9.0,
+			"t": 39.64
+		},
+		{
+			"op": "lightning",
+			"x": 0.4,
+			"t": 42.64
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"t": 49.64
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.2,
+				"speed": 36
+			},
+			"spacing": 100,
+			"t": 52.64
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 55.64
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 58.64
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"spacing": 36,
+			"t": 61.64
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 64.64
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"t": 68.54
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 71.54
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"t": 74.54
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 10,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 70,
+				"freq": 0.6,
+				"speed": 110
+			},
+			"interval": 6,
+			"t": 77.54
+		},
+		{
+			"op": "log",
+			"x": 0.75,
+			"t": 79.34
+		},
+		{
+			"op": "blessing",
+			"t": 82.84
+		},
+		{
+			"op": "miniboss",
+			"id": "storm_eye",
+			"t": 86.34
+		},
+		{
+			"op": "wave",
+			"enemy": "herald",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "stop_go",
+			"params": {
+				"speed": 60,
+				"stop_y": 110,
+				"hold": 4
+			},
+			"marked": true,
+			"t": 89.34
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"spacing": 36,
+			"t": 94.02
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.2,
+				"speed": 36
+			},
+			"spacing": 100,
+			"t": 97.62
+		},
+		{
+			"op": "wave",
+			"enemy": "volt_ray",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 60,
+				"speed": 50
+			},
+			"mirror": true,
+			"spacing": 90,
+			"marked": true,
+			"t": 101.22
+		},
+		{
+			"op": "end",
+			"t": 104.19
+		}
+	]
+}

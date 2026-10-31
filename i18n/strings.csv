@@ -1,9 +1,47 @@
 key,pt_BR,en,es,de,fr,ru,id,ja,ko,zh_TW,zh_CN
+blessing.nereus_chart,Carta Náutica,Sea Chart,Carta Náutica,Seekarte,Carte Marine,Морская карта,Peta Laut,海図,해도,海圖,海图
+blessing.nereus_chart_desc,Marcados brilham e valem +50%,"Marked foes glow, +50% points","Marcados brillan, +50% puntos","Markierte leuchten, +50% Punkte",Cibles marquées : +50% pts,"Отмеченные светятся, +50% очков",Target bertanda +50% poin,マーク対象が光り得点+50%,"표시 대상 강조, 점수 +50%",標記目標發光，分數+50%,标记目标发光，分数+50%
+blessing.nereus_luck,Sorte,Luck,Suerte,Glück,Chance,Удача,Untung,幸運,행운,幸運,幸运
+blessing.nereus_luck_desc,+12% de chance de orbe,+12% orb chance,+12% de prob. de orbe,+12% Orb-Chance,+12% de chance d'orbe,+12% шанс сферы,+12% peluang orb,オーブ出現率+12%,구슬 확률 +12%,寶珠機率 +12%,宝珠概率 +12%
+blessing.nereus_magnet,Ímã,Magnet,Imán,Magnet,Aimant,Магнит,Magnet,磁石,자석,磁鐵,磁铁
+blessing.nereus_magnet_desc,Atrai coletáveis próximos,Pulls nearby pickups,Atrae objetos cercanos,Zieht Gegenstände an,Attire les bonus proches,Притягивает предметы,Menarik item terdekat,近くのアイテムを引き寄せる,근처 아이템을 끌어당김,吸引附近道具,吸引附近道具
+blessing.nereus_net,Rede,Net,Red,Netz,Filet,Сеть,Jaring,網,그물,漁網,渔网
+blessing.nereus_net_desc,Medalha perdida volta uma vez,A missed medal bounces back,La medalla perdida vuelve,Verpasste Medaille kehrt zurück,Une médaille ratée revient,Упущенная медаль вернётся,Medali terlewat kembali,取り逃したメダルが一度戻る,놓친 메달이 한 번 돌아옴,漏接的勳章會彈回一次,漏接的勋章会弹回一次
+blessing.nereus_oracle,Oráculo,Oracle,Oráculo,Orakel,Oracle,Оракул,Orakel,神託,신탁,神諭,神谕
+blessing.nereus_oracle_desc,Avisos de feixe 50% mais longos,Beam warnings 50% longer,Avisos de rayo 50% más largos,Strahlwarnung 50% länger,Alertes de rayon +50%,Предупреждения лучей на 50% дольше,Peringatan sinar +50%,ビーム予告が50%長い,광선 경고 50% 길게,光束預警延長50%,光束预警延长50%
+blessing.nereus_sailor,Velho Marujo,Old Sailor,Viejo Marino,Alter Seebär,Vieux Loup,Старый моряк,Pelaut Tua,老水夫,늙은 선원,老水手,老水手
+blessing.nereus_sailor_desc,A corrente dura mais,Chain window lasts longer,La cadena dura más,Kette hält länger,La chaîne dure plus,Цепь держится дольше,Rantai bertahan lebih lama,チェインが長く続く,체인 유지 시간 증가,連鎖持續更久,连锁持续更久
+blessing.proteus_blade,Lâmina,Blade,Hoja,Klinge,Lame,Клинок,Bilah,刃,칼날,利刃,利刃
+blessing.proteus_blade_desc,+15% de dano,+15% damage,+15% de daño,+15% Schaden,+15% de dégâts,+15% урона,+15% kerusakan,ダメージ+15%,피해 +15%,傷害 +15%,伤害 +15%
+blessing.proteus_echo,Eco,Echo,Eco,Echo,Écho,Эхо,Gema,残響,메아리,迴響,回响
+blessing.proteus_echo_desc,+20% de cadência,+20% fire rate,+20% de cadencia,+20% Feuerrate,+20% de cadence,+20% скорострельности,+20% laju tembak,連射+20%,연사 +20%,射速 +20%,射速 +20%
+blessing.proteus_fury,Fúria,Fury,Furia,Zorn,Fureur,Ярость,Amukan,激怒,격노,狂怒,狂怒
+blessing.proteus_fury_desc,+2% de dano por abate (até 10),+2% damage per kill (max 10),+2% de daño por derribo (máx. 10),+2% Schaden je Abschuss (max. 10),+2% de dégâts par abattu (10 max),+2% урона за сбитого (до 10),+2% kerusakan per kill (maks 10),撃墜ごとにダメージ+2%（最大10）,격추당 피해 +2% (최대 10),每次擊墜傷害+2%（最多10）,每次击坠伤害+2%（最多10）
+blessing.proteus_harpoon,Arpão,Harpoon,Arpón,Harpune,Harpon,Гарпун,Tombak,銛,작살,魚叉,鱼叉
+blessing.proteus_harpoon_desc,Mísseis atravessam um alvo,Missiles pierce one target,Misiles atraviesan un blanco,Raketen durchbohren ein Ziel,Missiles perforants,Ракеты пробивают цель,Rudal menembus satu target,ミサイルが1体貫通,미사일이 1체 관통,飛彈貫穿一個目標,导弹贯穿一个目标
+blessing.proteus_tide,Maré Longa,Long Tide,Marea Larga,Lange Flut,Longue Marée,Долгий прилив,Pasang Panjang,長潮,긴 조수,長潮,长潮
+blessing.proteus_tide_desc,Maré Alta dura +3 s,High Tide lasts +3 s,Marea Alta dura +3 s,Springflut hält +3 s,Grande Marée +3 s,Высокий прилив +3 с,Pasang Tinggi +3 dtk,満潮が3秒延長,만조 +3초,滿潮延長3秒,满潮延长3秒
+blessing.proteus_undertow,Ressaca,Undertow,Resaca,Sog,Ressac,Отбой,Arus Balik,引き波,역류,暗流,暗流
+blessing.proteus_undertow_desc,Abates explodem em respingo,Kills burst into a splash,Los derribos estallan,Abschüsse spritzen Schaden,Les abattus éclaboussent,Сбитые взрываются брызгами,Kill meledak memercik,撃墜時に水しぶき爆発,격추 시 물보라 폭발,擊墜時爆出水花,击坠时爆出水花
+blessing.tethys_anchor,Âncora,Anchor,Ancla,Anker,Ancre,Якорь,Jangkar,錨,닻,錨,锚
+blessing.tethys_anchor_desc,Ponto de dano 20% menor,Hitbox 20% smaller,Punto de impacto 20% menor,Trefferzone 20% kleiner,Zone d'impact -20%,Хитбокс меньше на 20%,Hitbox 20% lebih kecil,当たり判定20%縮小,피격 판정 20% 축소,判定縮小20%,判定缩小20%
+blessing.tethys_bubble,Bolha,Bubble,Burbuja,Blase,Bulle,Пузырь,Gelembung,泡,거품,泡泡,泡泡
+blessing.tethys_bubble_desc,Bloqueia um golpe,Blocks one hit,Bloquea un golpe,Blockt einen Treffer,Bloque un coup,Блокирует один удар,Menahan satu serangan,被弾を1回防ぐ,피격 1회 방어,抵擋一次攻擊,抵挡一次攻击
+blessing.tethys_calm,Calmaria,Calm,Calma,Flaute,Accalmie,Штиль,Tenang,凪,고요,平靜,平静
+blessing.tethys_calm_desc,"+0,5 s de invulnerabilidade",+0.5 s invulnerability,"+0,5 s de invulnerabilidad","+0,5 s Unverwundbarkeit","+0,5 s d'invulnérabilité","+0,5 с неуязвимости","+0,5 dtk kebal",無敵時間+0.5秒,무적 +0.5초,無敵時間 +0.5 秒,无敌时间 +0.5 秒
+blessing.tethys_coral,Coral Vivo,Living Coral,Coral Vivo,Lebende Koralle,Corail Vivant,Живой коралл,Karang Hidup,生きた珊瑚,살아있는 산호,活珊瑚,活珊瑚
+blessing.tethys_coral_desc,300 rasantes curam 1 casco,300 grazes repair 1 hull,300 roces curan 1 casco,300 Streifer heilen 1 Rumpf,300 frôlements = 1 coque,300 касаний чинят 1 корпус,300 serempet pulihkan 1 lambung,かすり300回で船体1回復,그레이즈 300회에 선체 1 회복,擦彈300次修復1船體,擦弹300次修复1船体
+blessing.tethys_reflux,Refluxo,Reflux,Reflujo,Rückfluss,Reflux,Отлив,Surut,逆流,썰물,回流,回流
+blessing.tethys_reflux_desc,Dano limpa mais balas,Getting hit clears more bullets,Recibir daño limpia más balas,Treffer räumt mehr Kugeln,Être touché efface plus de tirs,Урон стирает больше пуль,Terkena hapus lebih banyak peluru,被弾時に弾を広く消す,피격 시 탄을 더 지움,受擊時清除更多子彈,受击时清除更多子弹
+blessing.tethys_scale,Escama,Scale,Escama,Schuppe,Écaille,Чешуя,Sisik,鱗,비늘,鱗甲,鳞甲
+blessing.tethys_scale_desc,+1 de casco,+1 hull,+1 de casco,+1 Rumpf,+1 coque,+1 корпус,+1 lambung,船体+1,선체 +1,船體 +1,船体 +1
 boot.credits,Créditos,Credits,Créditos,Mitwirkende,Crédits,Авторы,Kredit,クレジット,크레딧,製作名單,制作名单
 boot.dev_build,Versão de desenvolvimento %s,Development build %s,Versión de desarrollo %s,Entwicklungsversion %s,Version de développement %s,Версия для разработки %s,Versi pengembangan %s,開発版 %s,개발 버전 %s,開發版本 %s,开发版本 %s
 boot.play,Jogar,Play,Jugar,Spielen,Jouer,Играть,Main,プレイ,플레이,開始,开始
 boot.tagline,O oceano se lembra. O céu pertence a quem sobreviver.,The ocean remembers. The sky belongs to whoever survives.,El océano recuerda. El cielo es de quien sobreviva.,"Der Ozean erinnert sich. Der Himmel gehört dem, der überlebt.",L'océan se souvient. Le ciel appartient à qui survivra.,"Океан помнит. Небо принадлежит тому, кто выживет.",Lautan mengingat. Langit milik siapa pun yang bertahan.,海は覚えている。空は生き残った者のものだ。,바다는 기억한다. 하늘은 살아남은 자의 것이다.,海洋記得一切。天空屬於倖存者。,海洋记得一切。天空属于幸存者。
+boss.coral_guardian,GUARDIÃO DE CORAL,CORAL GUARDIAN,GUARDIÁN DE CORAL,KORALLENWÄCHTER,GARDIEN DE CORAIL,КОРАЛЛОВЫЙ СТРАЖ,PENJAGA KARANG,コーラル・ガーディアン,산호 수호자,珊瑚守護者,珊瑚守护者
 boss.kraken_engine,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,КРАКЕН-ДВИГАТЕЛЬ,KRAKEN ENGINE,クラーケン・エンジン,크라켄 엔진,克拉肯引擎,克拉肯引擎
+boss.storm_eye,OLHO DA TEMPESTADE,EYE OF THE STORM,OJO DE LA TORMENTA,AUGE DES STURMS,ŒIL DE LA TEMPÊTE,ОКО БУРИ,MATA BADAI,嵐の眼,폭풍의 눈,風暴之眼,风暴之眼
 boss.tidebreaker,QUEBRA-MARÉ,TIDEBREAKER,ROMPEOLAS,WELLENBRECHER,BRISE-LAMES,ВОЛНОЛОМ,PEMECAH OMBAK,タイドブレイカー,타이드브레이커,破浪者,破浪者
 credits.back,Voltar,Back,Volver,Zurück,Retour,Назад,Kembali,戻る,뒤로,返回,返回
 credits.game_by,"Design, programação e direção: %s","Design, programming and direction: %s","Diseño, programación y dirección: %s","Design, Programmierung und Regie: %s","Conception, programmation et direction : %s","Дизайн, программирование и руководство: %s","Desain, pemrograman, dan arahan: %s",デザイン・プログラム・ディレクション：%s,"디자인, 프로그래밍, 디렉션: %s",設計、程式與總監：%s,设计、程序与总监：%s
@@ -17,16 +55,75 @@ credits.title,Créditos,Credits,Créditos,Mitwirkende,Crédits,Авторы,Kred
 currency.credits,Créditos,Credits,Créditos,Credits,Crédits,Кредиты,Kredit,クレジット,크레딧,點數,点数
 currency.orichalcum,Oricalco,Orichalcum,Oricalco,Orichalkum,Orichalque,Орихалк,Orikalkum,オリハルコン,오리하르콘,山銅,山铜
 currency.pearls,Pérolas,Pearls,Perlas,Perlen,Perles,Жемчуг,Mutiara,真珠,진주,珍珠,珍珠
+deity.avatar,Avatar das Marés,Avatar of the Tides,Avatar de las Mareas,Avatar der Gezeiten,Avatar des Marées,Аватар приливов,Avatar Pasang,潮の化身,조수의 화신,潮汐化身,潮汐化身
+deity.nereus,Nereu,Nereus,Nereo,Nereus,Nérée,Нерей,Nereus,ネーレウス,네레우스,涅柔斯,涅柔斯
+deity.proteus,Proteu,Proteus,Proteo,Proteus,Protée,Протей,Proteus,プロテウス,프로테우스,普羅透斯,普罗透斯
+deity.tethys,Tétis,Tethys,Tetis,Tethys,Téthys,Тефида,Tethys,テテュス,테티스,特提斯,特提斯
 dialogue.c1m1_boss,Leitura colossal embaixo de você. Prepare-se!,Colossal reading below you. Brace!,Lectura colosal debajo de ti. ¡Prepárate!,Gewaltiges Signal unter dir. Mach dich bereit!,Signal colossal sous toi. Prépare-toi !,Огромная цель под тобой. Готовься!,Sinyal raksasa di bawahmu. Bersiap!,真下に巨大反応。備えろ！,아래에 거대한 반응. 대비해!,下方有巨大反應。準備！,下方有巨大反应。准备！
 dialogue.c1m1_breath,As ruínas acendem quando eu passo.,The ruins light up as I pass.,Las ruinas se encienden a mi paso.,"Die Ruinen leuchten, wenn ich vorbeifliege.",Les ruines s'allument à mon passage.,"Руины вспыхивают, когда я пролетаю.",Reruntuhan menyala saat aku lewat.,通るたびに遺跡が光る。,내가 지나가면 유적이 빛난다.,我經過時，遺跡亮了起來。,我经过时，遗迹亮了起来。
 dialogue.c1m1_intro,"Maré, perdemos a superfície. Abra caminho.","Tide, we lost the surface. Clear a path.","Marea, perdimos la superficie. Abre camino.","Flut, Oberfläche verloren. Bahn frei machen.","Marée, on a perdu la surface. Ouvre la voie.","Прилив, связь с поверхностью потеряна. Пробивайся.","Pasang, permukaan hilang. Buka jalan.",タイド、地上との通信途絶。道を開け。,"타이드, 수면과 끊겼다. 길을 열어.",潮汐，地表失聯。殺出一條路。,潮汐，地表失联。杀出一条路。
 dialogue.c1m1_shift,A água está baixando... algo está emergindo!,The water is dropping... something is rising!,El agua baja... ¡algo emerge!,Das Wasser sinkt... etwas taucht auf!,L'eau baisse... quelque chose émerge !,Вода уходит... что-то поднимается!,Air surut... sesuatu muncul!,水位が下がる…何かが浮上する！,물이 빠진다... 뭔가 떠오른다!,水位下降…有東西浮上來了！,水位下降…有东西浮上来了！
+dialogue.c2_intro,Vocês vieram. A cidade lembra de vocês.,You came. The city remembers you.,Vinieron. La ciudad los recuerda.,Ihr seid gekommen. Die Stadt erinnert sich.,Vous êtes venus. La cité se souvient.,Вы пришли. Город помнит вас.,Kalian datang. Kota mengingat kalian.,来たのね。都市はあなたを覚えている。,왔구나. 도시가 너를 기억해.,你們來了。這座城記得你們。,你们来了。这座城记得你们。
+dialogue.c3_intro,Tempestade à frente. Cuidado com os raios.,Storm ahead. Watch the lightning.,Tormenta adelante. Ojo con los rayos.,Sturm voraus. Achte auf die Blitze.,Tempête devant. Gare à la foudre.,Впереди буря. Берегись молний.,Badai di depan. Awas petir.,前方に嵐。落雷に注意。,전방에 폭풍. 번개 조심.,前方有風暴，小心雷擊。,前方有风暴，小心雷击。
 dialogue.kraken_p2,AMEAÇA CLASSIFICADA. ABRINDO NÚCLEO.,THREAT CLASSIFIED. OPENING CORE.,AMENAZA CLASIFICADA. ABRIENDO NÚCLEO.,BEDROHUNG EINGESTUFT. KERN ÖFFNET.,MENACE CLASSÉE. OUVERTURE DU NOYAU.,УГРОЗА ОПРЕДЕЛЕНА. ЯДРО ОТКРЫТО.,ANCAMAN TERKLASIFIKASI. INTI DIBUKA.,脅威を分類。コアを開放。,위협 분류 완료. 코어 개방.,威脅已分類。核心開啟。,威胁已分类。核心开启。
 dialogue.kraken_p3,...devolva... o céu...,...return... the sky...,...devuelve... el cielo...,...gib... den Himmel... zurück...,...rends... le ciel...,...верни... небо...,...kembalikan... langit...,…空を…返して…,…하늘을… 돌려줘…,…歸還…天空…,…归还…天空…
+dialogue.s1_intro,Só o canhão de trilho abre este cofre.,Only the railgun opens this vault.,Solo el cañón de riel abre esta cripta.,Nur die Railgun öffnet dieses Gewölbe.,Seul le canon à rail ouvre ce caveau.,Только рельсотрон откроет хранилище.,Hanya railgun yang membuka brankas ini.,この宝庫はレールガンでしか開かない。,이 금고는 레일건으로만 열린다.,只有軌道砲能打開這座寶庫。,只有轨道炮能打开这座宝库。
+dialogue.storm_eye,O olho está piscando. Agora!,The eye is blinking. Now!,El ojo parpadea. ¡Ahora!,Das Auge blinzelt. Jetzt!,L'œil cligne. Maintenant !,Око моргает. Сейчас!,Matanya berkedip. Sekarang!,眼が瞬いた。今だ！,눈이 깜빡인다. 지금!,眼睛在眨，就是現在！,眼睛在眨，就是现在！
+difficulty.abyssal,Abissal,Abyssal,Abisal,Abyssal,Abyssal,Бездна,Abisal,アビサル,심연,深淵,深渊
+difficulty.abyssal_desc,"-2 casco, pontos x1,6","-2 hull, score x1.6","-2 casco, puntos x1,6","-2 Rumpf, Punkte x1,6","-2 coque, points x1,6","-2 корпуса, очки x1,6","-2 lambung, poin x1,6",船体-2・スコア1.6倍,"선체 -2, 점수 x1.6",船體-2，分數x1.6,船体-2，分数x1.6
+difficulty.brisa,Brisa,Breeze,Brisa,Brise,Brise,Бриз,Semilir,そよ風,산들바람,微風,微风
+difficulty.brisa_desc,"+2 casco, balas lentas","+2 hull, slower bullets","+2 casco, balas lentas","+2 Rumpf, langsame Kugeln","+2 coque, tirs lents","+2 корпуса, медленные пули","+2 lambung, peluru lambat",船体+2、弾が遅い,"선체 +2, 느린 탄",船體+2，子彈較慢,船体+2，子弹较慢
+difficulty.normal,Normal,Normal,Normal,Normal,Normal,Обычная,Normal,ノーマル,보통,普通,普通
+difficulty.normal_desc,Como foi pensado,As designed,Como fue pensado,Wie gedacht,Comme prévu,Как задумано,Sesuai rancangan,想定どおり,의도한 대로,原汁原味,原汁原味
+difficulty.veteran,Veterano,Veteran,Veterano,Veteran,Vétéran,Ветеран,Veteran,ベテラン,베테랑,老手,老手
+difficulty.veteran_desc,"Balas mais rápidas, pontos x1,3","Faster bullets, score x1.3","Balas más rápidas, puntos x1,3","Schnellere Kugeln, Punkte x1,3","Tirs plus rapides, points x1,3","Быстрые пули, очки x1,3","Peluru cepat, poin x1,3",弾が速い・スコア1.3倍,"탄 속도 증가, 점수 x1.3",子彈更快，分數x1.3,子弹更快，分数x1.3
+enemy.aegis,Égide,Aegis,Égida,Ägis,Égide,Эгида,Aegis,イージス,이지스,神盾,神盾
+enemy.basilica,Basílica,Basilica,Basílica,Basilika,Basilique,Базилика,Basilika,バシリカ,바실리카,聖殿,圣殿
+enemy.bulwark,Baluarte,Bulwark,Baluarte,Bollwerk,Rempart,Бастион,Benteng,防壁,보루,堡壘,堡垒
+enemy.coral_turret,Torre de Coral,Coral Turret,Torre de Coral,Korallenturm,Tourelle de Corail,Коралловая башня,Menara Karang,珊瑚砲台,산호 포탑,珊瑚砲塔,珊瑚炮塔
+enemy.glass_siren,Sereia de Vidro,Glass Siren,Sirena de Cristal,Glassirene,Sirène de Verre,Стеклянная сирена,Siren Kaca,硝子のセイレーン,유리 세이렌,玻璃海妖,玻璃海妖
+enemy.glyph,Glifo,Glyph,Glifo,Glyphe,Glyphe,Глиф,Glif,グリフ,글리프,符文,符文
+enemy.gold_lance,Lança Dourada,Gold Lance,Lanza Dorada,Goldlanze,Lance d'Or,Золотое копьё,Tombak Emas,黄金の槍,황금 창,黃金長槍,黄金长枪
+enemy.herald,Arauto,Herald,Heraldo,Herold,Héraut,Глашатай,Bentara,伝令,전령,傳令,传令
+enemy.hunter,Caçador,Hunter,Cazador,Jäger,Chasseur,Охотник,Pemburu,ハンター,사냥꾼,獵手,猎手
+enemy.ice_fan,Leque de Gelo,Ice Fan,Abanico de Hielo,Eisfächer,Éventail de Glace,Ледяной веер,Kipas Es,氷扇,얼음 부채,冰扇,冰扇
+enemy.judge,Juiz,Judge,Juez,Richter,Juge,Судья,Hakim,審判者,심판자,審判者,审判者
+enemy.magma_larva,Larva de Magma,Magma Larva,Larva de Magma,Magmalarve,Larve de Magma,Магмовая личинка,Larva Magma,マグマ幼生,마그마 유충,熔岩幼蟲,熔岩幼虫
+enemy.nautilus,Náutilo,Nautilus,Nautilo,Nautilus,Nautile,Наутилус,Nautilus,オウムガイ,앵무조개,鸚鵡螺,鹦鹉螺
+enemy.phalanx,Falange,Phalanx,Falange,Phalanx,Phalange,Фаланга,Falanks,ファランクス,팔랑크스,方陣,方阵
+enemy.prism_jelly,Água-viva Prisma,Prism Jelly,Medusa Prisma,Prismaqualle,Méduse Prisme,Призменная медуза,Ubur Prisma,プリズムクラゲ,프리즘 해파리,稜鏡水母,棱镜水母
+enemy.protocol_shard,Fragmento do Protocolo,Protocol Shard,Fragmento del Protocolo,Protokollsplitter,Éclat du Protocole,Осколок Протокола,Serpihan Protokol,プロトコルの欠片,프로토콜 파편,協議碎片,协议碎片
 enemy.sentinel_buoy,Boia Sentinela,Sentinel Buoy,Boya Centinela,Wächterboje,Bouée sentinelle,Буй-страж,Pelampung Penjaga,センチネルブイ,감시 부표,哨兵浮標,哨兵浮标
 enemy.skiff,Esquife,Skiff,Esquife,Skiff,Esquif,Ялик,Sekoci,スキフ,스키프,小艇,小艇
+enemy.sower,Semeador,Sower,Sembrador,Säer,Semeur,Сеятель,Penabur,種蒔き,파종자,播種者,播种者
+enemy.spark_swarm,Enxame de Faíscas,Spark Swarm,Enjambre de Chispas,Funkenschwarm,Essaim d'Étincelles,Рой искр,Kawanan Percik,火花の群れ,불꽃 떼,火花群,火花群
+enemy.squid_probe,Sonda Lula,Squid Probe,Sonda Calamar,Tintensonde,Sonde Calmar,Зонд-кальмар,Probe Cumi,イカ型探査機,오징어 탐사기,魷魚探測器,鱿鱼探测器
 enemy.tide_wasp,Vespa de Maré,Tide Wasp,Avispa de Marea,Gezeitenwespe,Guêpe des marées,Приливная оса,Tawon Pasang,タイドワスプ,조류 말벌,潮汐黃蜂,潮汐黄蜂
+enemy.trawler,Arrastão,Trawler,Arrastrero,Trawler,Chalutier,Траулер,Kapal Pukat,トロール船,트롤선,拖網船,拖网船
+enemy.trireme,Trirreme,Trireme,Trirreme,Trireme,Trirème,Трирема,Trireme,三段櫂船,삼단노선,三列槳船,三列桨船
+enemy.volt_ray,Raia Voltaica,Volt Ray,Raya Voltaica,Voltrochen,Raie Voltaïque,Электроскат,Pari Volt,ボルトエイ,볼트 가오리,電鰩,电鳐
+hangar.bonus,Dano +%d%% · Casco +%d,Damage +%d%% · Hull +%d,Daño +%d%% · Casco +%d,Schaden +%d%% · Rumpf +%d,Dégâts +%d%% · Coque +%d,Урон +%d%% · Корпус +%d,Kerusakan +%d%% · Lambung +%d,ダメージ+%d%%・船体+%d,피해 +%d%% · 선체 +%d,傷害 +%d%%・船體 +%d,伤害 +%d%%・船体 +%d
+hangar.buy,Comprar · %s créditos,Buy · %s credits,Comprar · %s créditos,Kaufen · %s Credits,Acheter · %s crédits,Купить · %s кредитов,Beli · %s kredit,購入・%sクレジット,구매 · %s 크레딧,購買・%s 點數,购买・%s 点数
+hangar.difficulty,Dificuldade,Difficulty,Dificultad,Schwierigkeit,Difficulté,Сложность,Kesulitan,難易度,난이도,難度,难度
+hangar.equip,Equipar,Equip,Equipar,Ausrüsten,Équiper,Установить,Pasang,装備,장착,裝備,装备
+hangar.equipped,Equipada,Equipped,Equipada,Ausgerüstet,Équipée,Установлено,Terpasang,装備中,장착됨,已裝備,已装备
+hangar.level,Nível %d,Level %d,Nivel %d,Stufe %d,Niveau %d,Уровень %d,Level %d,Lv.%d,레벨 %d,等級 %d,等级 %d
+hangar.max,Nível máximo,Max level,Nivel máximo,Maximalstufe,Niveau max,Максимальный уровень,Level maksimum,最大レベル,최대 레벨,最高等級,最高等级
+hangar.secondary,Arma secundária,Secondary weapon,Arma secundaria,Sekundärwaffe,Arme secondaire,Доп. оружие,Senjata sekunder,サブウェポン,보조 무기,副武器,副武器
+hangar.title,Oficina,Workshop,Taller,Werkstatt,Atelier,Мастерская,Bengkel,工房,정비소,工坊,工坊
+hangar.upgrade,Melhorar · %s créditos,Upgrade · %s credits,Mejorar · %s créditos,Verbessern · %s Credits,Améliorer · %s crédits,Улучшить · %s кредитов,Tingkatkan · %s kredit,強化・%sクレジット,강화 · %s 크레딧,強化・%s 點數,强化・%s 点数
+hangar.upgrade_both,Melhorar · %s créditos + %d oricalco,Upgrade · %s credits + %d orichalcum,Mejorar · %s créditos + %d oricalco,Verbessern · %s Credits + %d Orichalkum,Améliorer · %s crédits + %d orichalque,Улучшить · %s кредитов + %d орихалка,Tingkatkan · %s kredit + %d orikalkum,強化・%sクレジット＋オリハルコン%d,강화 · %s 크레딧 + 오리하르콘 %d,強化・%s 點數＋山銅 %d,强化・%s 点数＋山铜 %d
+hangar.wing_locked,%d de %d estrelas,%d of %d stars,%d de %d estrellas,%d von %d Sternen,%d sur %d étoiles,%d из %d звёзд,%d dari %d bintang,星 %d/%d,별 %d/%d,星 %d/%d,星 %d/%d
+hangar.wings,Asas (%d de %d),Wings (%d of %d),Alas (%d de %d),Flügel (%d von %d),Ailes (%d sur %d),Крылья (%d из %d),Sayap (%d dari %d),ウイング（%d/%d）,날개 (%d/%d),僚翼（%d/%d）,僚翼（%d/%d）
+hint.graze,Passe raspando nas balas: enche o SP e a Pressão.,Skim past bullets: it charges SP and Pressure.,Roza las balas: carga el SP y la Presión.,Kugeln streifen lädt SP und Druck.,Frôle les tirs : ça charge le SP et la Pression.,Касайтесь пуль: копится СП и Давление.,Serempet peluru: isi SP dan Tekanan.,弾をかすると必殺とプレッシャーが溜まる。,탄을 스치면 필살과 압력이 찬다.,擦過子彈可累積必殺與壓力。,擦过子弹可累积必杀与压力。
+hint.marked,Inimigos marcados valem estrela: derrube todos.,Marked enemies count for a star: down them all.,Los marcados dan estrella: derríbalos todos.,Markierte zählen für einen Stern: alle abschießen.,Les marqués comptent pour une étoile : abats-les tous.,Отмеченные дают звезду: сбейте всех.,Musuh bertanda memberi bintang: kalahkan semua.,マーク敵を全滅で星ひとつ。,표시된 적을 전부 잡으면 별 하나.,擊落全部標記敵人可得一顆星。,击落全部标记敌人可得一颗星。
+hint.move,Arraste em qualquer lugar para mover. O tiro é automático.,Drag anywhere to move. Firing is automatic.,Arrastra en cualquier lugar para moverte. Disparo automático.,Irgendwo ziehen zum Bewegen. Feuer ist automatisch.,Glisse n'importe où pour bouger. Le tir est automatique.,"Тяните где угодно, чтобы лететь. Огонь автоматический.",Seret di mana saja untuk bergerak. Tembak otomatis.,どこでもドラッグで移動。射撃は自動。,아무 곳이나 드래그해 이동. 사격은 자동.,在任何地方拖動即可移動，自動射擊。,在任何地方拖动即可移动，自动射击。
+hint.orbs,Orbes mudam de cor: pegue a da arma que quiser.,Orbs change color: grab the weapon you want.,Los orbes cambian de color: toma el arma que quieras.,Orbs wechseln die Farbe: nimm deine Wunschwaffe.,Les orbes changent de couleur : prends l'arme voulue.,Сферы меняют цвет: ловите нужное оружие.,Orb berganti warna: ambil senjata pilihanmu.,オーブは色が変わる。欲しい武器で取ろう。,구슬은 색이 바뀐다. 원하는 무기로 잡자.,寶珠會變色，挑你要的武器吃。,宝珠会变色，挑你要的武器吃。
+hint.special,SP cheio? Toque no botão SP para o especial da nave.,SP full? Tap SP for your ship's special.,¿SP lleno? Toca SP para el especial de la nave.,SP voll? Tippe SP für die Spezialfähigkeit.,SP plein ? Touche SP pour la spéciale du vaisseau.,СП заполнен? Нажмите СП для спецприёма.,SP penuh? Ketuk SP untuk jurus kapal.,必殺が満タンならボタンで発動。,필살이 가득 차면 버튼으로 발동.,必殺滿了？按下按鈕發動特技。,必杀满了？按下按钮发动特技。
+hint.tide,Pressão cheia: MARÉ dobra os pontos e apaga balas.,Full Pressure: TIDE doubles score and erases bullets.,Presión llena: MAREA duplica puntos y borra balas.,"Voller Druck: FLUT verdoppelt Punkte, löscht Kugeln.",Pression pleine : MARÉE double les points et efface.,Давление полно: ПРИЛИВ удваивает очки и стирает пули.,"Tekanan penuh: PASANG gandakan poin, hapus peluru.",プレッシャー満タンで満潮：得点2倍、弾消し。,"압력이 차면 만조: 점수 2배, 탄 소거.",壓力滿時發動滿潮：分數加倍並消彈。,压力满时发动满潮：分数加倍并消弹。
 hub.banner_c1,Capítulo 1 · A Halcyon pede socorro,Chapter 1 · The Halcyon calls for help,Capítulo 1 · La Halcyon pide ayuda,Kapitel 1 · Die Halcyon ruft um Hilfe,Chapitre 1 · La Halcyon appelle à l'aide,Глава 1 · «Халкион» зовёт на помощь,Bab 1 · Halcyon meminta bantuan,第1章・ハルシオンの救難信号,1장 · 할시온의 구조 요청,第1章・翠鳥號求救,第1章・翠鸟号求救
+hub.banner_c2,Capítulo 2 · A cidade acorda,Chapter 2 · The city awakens,Capítulo 2 · La ciudad despierta,Kapitel 2 · Die Stadt erwacht,Chapitre 2 · La cité s'éveille,Глава 2 · Город пробуждается,Bab 2 · Kota terbangun,第2章・都市の目覚め,2장 · 도시가 깨어난다,第2章・城市甦醒,第2章・城市苏醒
+hub.banner_c3,Capítulo 3 · Rumo à tempestade,Chapter 3 · Into the storm,Capítulo 3 · Hacia la tormenta,Kapitel 3 · In den Sturm,Chapitre 3 · Vers la tempête,Глава 3 · Навстречу буре,Bab 3 · Menuju badai,第3章・嵐の中へ,3장 · 폭풍 속으로,第3章・駛向風暴,第3章・驶向风暴
 hub.banner_daily,Desafio Diário · em breve,Daily Challenge · soon,Desafío diario · pronto,Tägliche Herausforderung · bald,Défi du jour · bientôt,Ежедневное испытание · скоро,Tantangan Harian · segera,デイリーチャレンジ・近日公開,일일 도전 · 곧 공개,每日挑戰・即將推出,每日挑战・即将推出
 hub.play,JOGAR · %s,PLAY · %s,JUGAR · %s,SPIELEN · %s,JOUER · %s,ИГРАТЬ · %s,MAIN · %s,プレイ · %s,플레이 · %s,開始 · %s,开始 · %s
 hub.soon,Em breve,Soon,Pronto,Bald,Bientôt,Скоро,Segera,近日公開,곧 공개,即將推出,即将推出
@@ -35,51 +132,196 @@ hub.tab_events,Eventos,Events,Eventos,Events,Événements,События,Acara,�
 hub.tab_hangar,Hangar,Hangar,Hangar,Hangar,Hangar,Ангар,Hanggar,格納庫,격납고,機庫,机库
 hub.tab_ships,Naves,Ships,Naves,Schiffe,Vaisseaux,Корабли,Kapal,機体,기체,機體,机体
 hub.tab_shop,Loja,Shop,Tienda,Shop,Boutique,Магазин,Toko,ショップ,상점,商店,商店
+hud.blessing_title,Escolha uma bênção,Choose a blessing,Elige una bendición,Wähle einen Segen,Choisis une bénédiction,Выбери благословение,Pilih berkah,加護を選べ,축복을 고르세요,選擇一項祝福,选择一项祝福
 hud.bomb,BOMBA,BOMB,BOMBA,BOMBE,BOMBE,БОМБА,BOM,ボム,폭탄,炸彈,炸弹
+hud.current,CORRENTE!,CURRENT!,¡CORRIENTE!,STRÖMUNG!,COURANT !,ТЕЧЕНИЕ!,ARUS!,海流！,해류!,洋流！,洋流！
 hud.duel,TOQUE RÁPIDO!,TAP FAST!,¡TOCA RÁPIDO!,SCHNELL TIPPEN!,TAPEZ VITE !,ЖМИ БЫСТРЕЕ!,KETUK CEPAT!,連打！,연타!,快速點擊！,快速点击！
+hud.glyph,Glifo %d de %d,Glyph %d of %d,Glifo %d de %d,Glyphe %d von %d,Glyphe %d sur %d,Глиф %d из %d,Glif %d dari %d,グリフ %d / %d,글리프 %d / %d,符文 %d / %d,符文 %d / %d
+hud.glyph_reset,Ordem errada. Os glifos se apagaram.,Wrong order. The glyphs went dark.,Orden incorrecto. Los glifos se apagaron.,Falsche Reihenfolge. Die Glyphen erlöschen.,Mauvais ordre. Les glyphes s'éteignent.,Не тот порядок. Глифы погасли.,Urutan salah. Glif padam.,順番が違う。グリフが消えた。,순서가 틀렸다. 글리프가 꺼졌다.,順序錯誤，符文熄滅了。,顺序错误，符文熄灭了。
+hud.log_found,Registro da Halcyon recuperado.,Halcyon log recovered.,Registro de la Halcyon recuperado.,Halcyon-Logbuch geborgen.,Journal de la Halcyon récupéré.,Запись «Халкиона» получена.,Catatan Halcyon ditemukan.,ハルシオンの記録を回収。,할시온의 기록 회수.,已回收翠鳥號日誌。,已回收翠鸟号日志。
 hud.ocean_shift,A MARÉ ESTÁ MUDANDO,THE TIDE IS TURNING,LA MAREA CAMBIA,DIE GEZEITEN WENDEN SICH,LA MARÉE TOURNE,ПРИЛИВ МЕНЯЕТСЯ,ARUS BERUBAH,潮が変わる,조류가 바뀐다,潮汐正在改變,潮汐正在改变
 hud.paused,Pausa,Paused,Pausa,Pause,Pause,Пауза,Jeda,ポーズ,일시정지,暫停,暂停
 hud.quit,Sair da missão,Leave mission,Salir de la misión,Mission verlassen,Quitter la mission,Покинуть миссию,Keluar misi,ミッションを出る,임무 나가기,離開任務,离开任务
 hud.restart,Recomeçar,Restart,Reiniciar,Neustart,Recommencer,Заново,Ulangi,やり直す,재시작,重來,重来
 hud.resume,Continuar,Resume,Continuar,Weiter,Reprendre,Продолжить,Lanjutkan,再開,계속,繼續,继续
+hud.secret,PASSAGEM SECRETA,SECRET PASSAGE,PASAJE SECRETO,GEHEIMGANG,PASSAGE SECRET,ТАЙНЫЙ ПРОХОД,JALAN RAHASIA,秘密の通路,비밀 통로,秘密通道,秘密通道
 hud.special,SP,SP,SP,SP,SP,СП,SP,必殺,필살,必殺,必杀
+hud.synergy,Sinergia: %s,Synergy: %s,Sinergia: %s,Synergie: %s,Synergie : %s,Синергия: %s,Sinergi: %s,シナジー: %s,시너지: %s,協同: %s,协同: %s
+hud.tide,MARÉ ALTA!,HIGH TIDE!,¡MAREA ALTA!,SPRINGFLUT!,GRANDE MARÉE !,ВЫСОКИЙ ПРИЛИВ!,PASANG TINGGI!,満潮！,만조!,滿潮！,满潮！
+hud.tide_button,MARÉ,TIDE,MAREA,FLUT,MARÉE,ПРИЛИВ,PASANG,満潮,만조,滿潮,满潮
+hud.wind,VENTANIA!,GALE!,¡VENDAVAL!,STURMBÖE!,BOURRASQUE !,ШКВАЛ!,ANGIN KENCANG!,突風！,돌풍!,強風！,强风！
+log.c1m1_text,Sonar marca estruturas a 400 m. Elas não estavam no mapa ontem.,Sonar shows structures at 400 m. They weren't on the map yesterday.,El sonar marca estructuras a 400 m. Ayer no estaban en el mapa.,Sonar zeigt Strukturen in 400 m. Gestern waren sie nicht auf der Karte.,Le sonar détecte des structures à 400 m. Elles n'étaient pas sur la carte hier.,Сонар видит постройки на 400 м. Вчера их не было на карте.,Sonar menunjukkan struktur di 400 m. Kemarin tidak ada di peta.,ソナーが水深400mに構造物を捉えた。昨日の地図にはなかった。,소나에 400m 지점 구조물이 잡힌다. 어제 지도에는 없었다.,聲納在400公尺處偵測到建築物。昨天的地圖上還沒有。,声呐在400米处探测到建筑物。昨天的地图上还没有。
+log.c1m1_title,Último contato,Last contact,Último contacto,Letzter Kontakt,Dernier contact,Последний контакт,Kontak terakhir,最後の交信,마지막 교신,最後聯絡,最后联络
+log.c1m2_text,Os drones vieram do fundo e atacaram as bombas de energia primeiro. Sabiam onde mirar.,The drones rose from the deep and hit the power pumps first. They knew where to aim.,Los drones subieron del fondo y atacaron primero las bombas de energía. Sabían dónde apuntar.,"Die Drohnen kamen aus der Tiefe und trafen zuerst die Energiepumpen. Sie wussten, wohin.",Les drones sont montés du fond et ont frappé les pompes d'abord. Ils savaient où viser.,"Дроны поднялись со дна и первыми ударили по насосам. Они знали, куда целиться.",Drone naik dari dasar dan menyerang pompa energi lebih dulu. Mereka tahu sasarannya.,ドローンは深海から現れ、まず動力ポンプを狙った。狙う場所を知っていた。,드론들이 심해에서 올라와 동력 펌프부터 쳤다. 어디를 노려야 할지 알고 있었다.,無人機從深處升起，先打動力泵。它們知道該瞄準哪裡。,无人机从深处升起，先打动力泵。它们知道该瞄准哪里。
+log.c1m2_title,Plataforma 9,Platform 9,Plataforma 9,Plattform 9,Plateforme 9,Платформа 9,Anjungan 9,第9基地,9번 플랫폼,九號平台,九号平台
+log.c1m3_text,A energia corre em canais de ouro. Alguém construiu isso para levar algo para cima.,Energy runs through golden channels. Someone built this to carry something upward.,La energía corre por canales de oro. Alguien construyó esto para llevar algo hacia arriba.,"Energie fließt durch goldene Kanäle. Jemand baute das, um etwas nach oben zu tragen.",L'énergie coule dans des canaux d'or. Quelqu'un a bâti ça pour porter quelque chose vers le haut.,"Энергия течёт по золотым каналам. Кто-то построил их, чтобы поднять что-то вверх.",Energi mengalir di kanal emas. Seseorang membangunnya untuk membawa sesuatu ke atas.,エネルギーが黄金の水路を流れる。何かを上へ運ぶために造られたものだ。,에너지가 황금 수로를 흐른다. 무언가를 위로 나르려고 만든 것이다.,能量流過黃金水道。有人建造它，為了把某樣東西往上送。,能量流过黄金水道。有人建造它，为了把某样东西往上送。
+log.c1m3_title,Canais,Channels,Canales,Kanäle,Canaux,Каналы,Kanal,水路,수로,水道,水道
+log.c2m1_text,Atlântida não está morta. As portas abriram quando nos aproximamos. Como um convite.,Atlantis isn't dead. The gates opened as we approached. Like an invitation.,La Atlántida no está muerta. Las puertas se abrieron al acercarnos. Como una invitación.,"Atlantis ist nicht tot. Die Tore öffneten sich, als wir kamen. Wie eine Einladung.",L'Atlantide n'est pas morte. Les portes se sont ouvertes à notre approche. Comme une invitation.,"Атлантида не мертва. Врата открылись, когда мы подошли. Как приглашение.",Atlantis tidak mati. Gerbangnya terbuka saat kami mendekat. Seperti undangan.,アトランティスは死んでいない。近づくと門が開いた。招き入れるように。,아틀란티스는 죽지 않았다. 다가가자 문이 열렸다. 초대하듯이.,亞特蘭提斯沒有死。我們靠近時城門開了，像是邀請。,亚特兰蒂斯没有死。我们靠近时城门开了，像是邀请。
+log.c2m1_title,A cidade,The city,La ciudad,Die Stadt,La cité,Город,Kota,都市,도시,城市,城市
+log.c2m2_text,"O coral é uma máquina. Ele cresce em padrões, repara a si mesmo e nos observa.","The coral is a machine. It grows in patterns, repairs itself, and watches us.","El coral es una máquina. Crece en patrones, se repara solo y nos observa.","Die Koralle ist eine Maschine. Sie wächst in Mustern, repariert sich und beobachtet uns.","Le corail est une machine. Il pousse en motifs, se répare et nous observe.","Коралл — машина. Он растёт узорами, чинит себя и следит за нами.","Karang ini mesin. Ia tumbuh berpola, memperbaiki diri, dan mengawasi kami.",珊瑚は機械だ。模様を描いて育ち、自らを修復し、私たちを見ている。,"산호는 기계다. 무늬를 그리며 자라고, 스스로 고치며, 우리를 지켜본다.",珊瑚是機器。它依圖樣生長、自我修復，並注視著我們。,珊瑚是机器。它依图样生长、自我修复，并注视着我们。
+log.c2m2_title,Jardineiros,Gardeners,Jardineros,Gärtner,Jardiniers,Садовники,Tukang kebun,庭師,정원사,園丁,园丁
+log.c2m3_text,O Kraken não é uma criatura. É uma tranca. E nós acabamos de girá-la.,The Kraken isn't a creature. It's a lock. And we just turned it.,El Kraken no es una criatura. Es una cerradura. Y acabamos de girarla.,Der Kraken ist kein Wesen. Er ist ein Schloss. Und wir haben es gerade gedreht.,Le Kraken n'est pas une créature. C'est une serrure. Et on vient de la tourner.,Кракен — не существо. Это замок. И мы только что его открыли.,Kraken bukan makhluk. Ia kunci. Dan kami baru saja memutarnya.,クラーケンは生き物ではない。錠前だ。そして私たちはそれを回してしまった。,크라켄은 생물이 아니다. 자물쇠다. 그리고 우리가 방금 그걸 돌렸다.,克拉肯不是生物，是一把鎖。而我們剛把它轉開了。,克拉肯不是生物，是一把锁。而我们刚把它转开了。
+log.c2m3_title,O guardião,The warden,El guardián,Der Wächter,Le gardien,Страж,Sang penjaga,番人,파수꾼,守門者,守门者
+log.c3m1_text,Os raios caem sempre nos mesmos pontos. A tempestade foi programada.,Lightning always strikes the same spots. The storm was programmed.,Los rayos caen siempre en los mismos puntos. La tormenta fue programada.,Blitze schlagen immer an denselben Stellen ein. Der Sturm ist programmiert.,La foudre frappe toujours aux mêmes endroits. La tempête est programmée.,Молнии бьют в одни и те же точки. Бурю запрограммировали.,Petir selalu menyambar titik yang sama. Badai ini diprogram.,雷はいつも同じ場所に落ちる。嵐はプログラムされている。,번개는 늘 같은 곳에 떨어진다. 폭풍은 프로그래밍된 것이다.,雷總是打在同樣的位置。這場風暴是被設定好的。,雷总是打在同样的位置。这场风暴是被设定好的。
+log.c3m1_title,Céu errado,Wrong sky,Cielo equivocado,Falscher Himmel,Ciel étrange,Чужое небо,Langit aneh,おかしな空,이상한 하늘,異常的天空,异常的天空
+log.c3m2_text,No centro do furacão há uma lente do tamanho de uma ilha. Ela está procurando alguém.,At the hurricane's center is a lens the size of an island. It is looking for someone.,En el centro del huracán hay una lente del tamaño de una isla. Busca a alguien.,"Im Zentrum des Orkans liegt eine Linse, so groß wie eine Insel. Sie sucht jemanden.","Au centre de l'ouragan, une lentille grande comme une île. Elle cherche quelqu'un.",В центре урагана линза размером с остров. Она кого-то ищет.,Di pusat badai ada lensa sebesar pulau. Ia sedang mencari seseorang.,ハリケーンの中心に島ほどのレンズがある。誰かを探している。,허리케인 한가운데에 섬만 한 렌즈가 있다. 누군가를 찾고 있다.,颶風中心有一面島嶼般大的透鏡。它在找某個人。,飓风中心有一面岛屿般大的透镜。它在找某个人。
+log.c3m2_title,O olho,The eye,El ojo,Das Auge,L'œil,Око,Sang mata,眼,눈,眼,眼
+log.c3m3a_text,No abismo há outras naves presas. Algumas são mais velhas que o próprio oceano.,Other ships are trapped in the abyss. Some are older than the ocean itself.,En el abismo hay otras naves atrapadas. Algunas son más viejas que el océano.,Im Abgrund hängen andere Schiffe fest. Manche sind älter als der Ozean.,D'autres vaisseaux sont piégés dans l'abîme. Certains plus vieux que l'océan.,В бездне застряли и другие корабли. Некоторые старше самого океана.,Kapal lain terjebak di jurang. Beberapa lebih tua dari samudra itu sendiri.,深淵には他の船も囚われている。海そのものより古いものもある。,심연에 다른 배들도 갇혀 있다. 어떤 것은 바다보다 오래됐다.,深淵中還困著其他船艦，有些比海洋本身還要古老。,深渊中还困着其他船舰，有些比海洋本身还要古老。
+log.c3m3a_title,Abismo,Abyss,Abismo,Abgrund,Abîme,Бездна,Jurang,深淵,심연,深淵,深渊
+log.c3m3s_text,"Pela superfície, a Halcyon estava a um passo de casa quando a torre a puxou.","On the surface, the Halcyon was one step from home when the spire pulled it in.","Por la superficie, la Halcyon estaba a un paso de casa cuando la torre la atrapó.","An der Oberfläche war die Halcyon fast daheim, als die Spitze sie hineinzog.","En surface, la Halcyon était presque rentrée quand la flèche l'a happée.","На поверхности «Халкион» был в шаге от дома, когда шпиль его затянул.","Di permukaan, Halcyon tinggal selangkah dari rumah saat menara menariknya.",海上を行くハルシオンは、帰還寸前で塔に引き込まれた。,수면 위의 할시온은 귀환 직전에 첨탑에 끌려갔다.,沿著海面，翠鳥號離家只差一步，卻被尖塔拉了進去。,沿着海面，翠鸟号离家只差一步，却被尖塔拉了进去。
+log.c3m3s_title,Superfície,Surface,Superficie,Oberfläche,Surface,Поверхность,Permukaan,海面,수면,海面,海面
+log.s1_text,Os glifos contam a história de um povo que pôs o próprio coração no fundo do mar para dormir.,The glyphs tell of a people who laid their own heart at the bottom of the sea to sleep.,Los glifos cuentan de un pueblo que dejó su propio corazón dormir en el fondo del mar.,"Die Glyphen erzählen von einem Volk, das sein Herz auf dem Meeresgrund schlafen legte.",Les glyphes parlent d'un peuple qui a couché son propre cœur au fond de la mer.,"Глифы рассказывают о народе, уложившем своё сердце спать на дне моря.",Glif bercerita tentang bangsa yang menidurkan jantungnya sendiri di dasar laut.,グリフが語るのは、自らの心臓を海の底で眠らせた民の物語。,글리프는 자신의 심장을 바다 밑에 재운 민족의 이야기를 전한다.,符文訴說著一個民族，將自己的心臟安放在海底沉睡。,符文诉说着一个民族，将自己的心脏安放在海底沉睡。
+log.s1_title,Cofre,Vault,Cripta,Gewölbe,Caveau,Хранилище,Brankas,宝庫,금고,寶庫,宝库
+logbook.career,Carreira,Career,Carrera,Laufbahn,Carrière,Карьера,Karier,戦績,전적,戰績,战绩
+logbook.logs,Registros da Halcyon (%d de %d),Halcyon logs (%d of %d),Registros de la Halcyon (%d de %d),Halcyon-Logbücher (%d von %d),Journaux de la Halcyon (%d sur %d),Записи «Халкиона» (%d из %d),Catatan Halcyon (%d dari %d),ハルシオンの記録（%d/%d）,할시온의 기록 (%d/%d),翠鳥號日誌（%d/%d）,翠鸟号日志（%d/%d）
+logbook.stats,Missões %d/%d · Abates %s · Rasantes %s · Estrelas %d · %d min,Missions %d/%d · Kills %s · Grazes %s · Stars %d · %d min,Misiones %d/%d · Derribos %s · Roces %s · Estrellas %d · %d min,Missionen %d/%d · Abschüsse %s · Streifer %s · Sterne %d · %d Min,Missions %d/%d · Abattus %s · Frôlements %s · Étoiles %d · %d min,Миссии %d/%d · Сбито %s · Касания %s · Звёзды %d · %d мин,Misi %d/%d · Kill %s · Serempet %s · Bintang %d · %d mnt,ミッション %d/%d・撃墜 %s・かすり %s・星 %d・%d分,임무 %d/%d · 격추 %s · 그레이즈 %s · 별 %d · %d분,任務 %d/%d・擊墜 %s・擦彈 %s・星 %d・%d分,任务 %d/%d・击坠 %s・擦弹 %s・星 %d・%d分
+logbook.title,Diário,Logbook,Bitácora,Logbuch,Carnet,Журнал,Jurnal,日誌,일지,日誌,日志
 map.best,Recorde: %s,Best: %s,Récord: %s,Rekord: %s,Record : %s,Рекорд: %s,Terbaik: %s,ベスト: %s,최고: %s,最佳: %s,最佳: %s
 map.chapter1,Capítulo 1 · Oceano Atlântico,Chapter 1 · Atlantic Ocean,Capítulo 1 · Océano Atlántico,Kapitel 1 · Atlantischer Ozean,Chapitre 1 · Océan Atlantique,Глава 1 · Атлантический океан,Bab 1 · Samudra Atlantik,第1章・大西洋,1장 · 대서양,第1章・大西洋,第1章・大西洋
 map.chapter2,Capítulo 2 · Atlântida,Chapter 2 · Atlantis,Capítulo 2 · Atlántida,Kapitel 2 · Atlantis,Chapitre 2 · Atlantide,Глава 2 · Атлантида,Bab 2 · Atlantis,第2章・アトランティス,2장 · 아틀란티스,第2章・亞特蘭提斯,第2章・亚特兰蒂斯
+map.chapter3,Capítulo 3 · Céu de Tempestade,Chapter 3 · Storm Sky,Capítulo 3 · Cielo de Tormenta,Kapitel 3 · Sturmhimmel,Chapitre 3 · Ciel d'Orage,Глава 3 · Грозовое небо,Bab 3 · Langit Badai,第3章・嵐の空,3장 · 폭풍의 하늘,第3章・風暴之空,第3章・风暴之空
 map.locked,Bloqueado,Locked,Bloqueado,Gesperrt,Verrouillé,Закрыто,Terkunci,ロック中,잠김,未解鎖,未解锁
+map.route_abyss,"Rota do abismo · pontos x1,5",Abyss route · score x1.5,"Ruta del abismo · puntos x1,5","Abgrundroute · Punkte x1,5","Route de l'abîme · points x1,5","Путь бездны · очки x1,5","Rute jurang · poin x1,5",深淵ルート・スコア1.5倍,심연 경로 · 점수 x1.5,深淵航線・分數x1.5,深渊航线・分数x1.5
+map.route_surface,Rota segura pela superfície,Safer route along the surface,Ruta segura por la superficie,Sicherere Route an der Oberfläche,Route plus sûre en surface,Безопасный путь по поверхности,Rute aman di permukaan,海上を行く安全なルート,수면을 따라가는 안전한 경로,沿海面的安全航線,沿海面的安全航线
+map.secret_hint,Aberta pelos glifos da 2-1,Opened by the glyphs of 2-1,Abierta por los glifos de 2-1,Durch die Glyphen von 2-1 geöffnet,Ouverte par les glyphes de 2-1,Открыта глифами 2-1,Dibuka oleh glif 2-1,2-1のグリフで開放,2-1의 글리프로 개방,由2-1的符文開啟,由2-1的符文开启
 map.title,Carta da Ascensão,Ascension Chart,Carta de la Ascensión,Karte des Aufstiegs,Carte de l'Ascension,Карта Восхождения,Peta Kenaikan,昇天の海図,상승의 해도,昇天海圖,升天海图
-objective.miniboss_time,Derrotar o Quebra-Maré em 30 s,Defeat the Tidebreaker in 30 s,Derrota al Rompeolas en 30 s,Den Wellenbrecher in 30 s besiegen,Vaincre le Brise-Lames en 30 s,Победить Волнолома за 30 с,Kalahkan Pemecah Ombak dalam 30 dtk,タイドブレイカーを30秒で撃破,타이드브레이커를 30초 안에 격파,30秒內擊敗破浪者,30秒内击败破浪者
+objective.chain,Corrente de 40,Chain of 40,Cadena de 40,40er-Kette,Chaîne de 40,Цепь из 40,Rantai 40,40チェイン,40 체인,40連鎖,40连锁
+objective.chain_50,Corrente de 50,Chain of 50,Cadena de 50,50er-Kette,Chaîne de 50,Цепь из 50,Rantai 50,50チェイン,50 체인,50連鎖,50连锁
+objective.grazes,80 rasantes,80 grazes,80 roces,80 Streifer,80 frôlements,80 касаний,80 serempet,かすり80回,그레이즈 80회,擦彈80次,擦弹80次
+objective.log,Achar o registro da Halcyon,Find the Halcyon log,Encontrar el registro de la Halcyon,Das Halcyon-Logbuch finden,Trouver le journal de la Halcyon,Найти запись «Халкиона»,Temukan catatan Halcyon,ハルシオンの記録を見つける,할시온의 기록 찾기,找到翠鳥號日誌,找到翠鸟号日志
+objective.miniboss_time,Derrotar o Quebra-Maré em 50 s,Defeat the Tidebreaker in 50 s,Derrota al Rompeolas en 50 s,Den Wellenbrecher in 50 s besiegen,Vaincre le Brise-Lames en 50 s,Победить Волнолома за 50 с,Kalahkan Pemecah Ombak dalam 50 dtk,タイドブレイカーを50秒で撃破,타이드브레이커를 50초 안에 격파,50秒內擊敗破浪者,50秒内击败破浪者
+objective.miniboss_time_coral,Derrotar o Guardião em 55 s,Defeat the Guardian in 55 s,Derrota al Guardián en 55 s,Wächter in 55 s besiegen,Vaincre le Gardien en 55 s,Победить Стража за 55 с,Kalahkan Penjaga dalam 55 dtk,ガーディアンを55秒で撃破,수호자를 55초 안에 격파,55秒內擊敗守護者,55秒内击败守护者
+objective.miniboss_time_storm,Derrotar o Olho em 55 s,Defeat the Eye in 55 s,Derrota al Ojo en 55 s,Das Auge in 55 s besiegen,Vaincre l'Œil en 55 s,Победить Око за 55 с,Kalahkan Mata dalam 55 dtk,嵐の眼を55秒で撃破,폭풍의 눈을 55초 안에 격파,55秒內擊敗風暴之眼,55秒内击败风暴之眼
+objective.no_bomb,Vencer sem bomba,Win without bombs,Ganar sin bombas,Ohne Bombe gewinnen,Gagner sans bombe,Победить без бомб,Menang tanpa bom,ボムなしでクリア,폭탄 없이 승리,不用炸彈過關,不用炸弹过关
+objective.score,Fazer 60.000 pontos,"Score 60,000",Lograr 60.000 puntos,60.000 Punkte,Marquer 60 000 points,Набрать 60 000 очков,Raih 60.000 poin,"60,000点を獲得","60,000점 달성","獲得60,000分","获得60,000分"
+objective.secret,Destruir os glifos na ordem,Destroy the glyphs in order,Destruir los glifos en orden,Glyphen der Reihe nach zerstören,Détruire les glyphes dans l'ordre,Уничтожить глифы по порядку,Hancurkan glif berurutan,グリフを順番に破壊,글리프를 순서대로 파괴,依序摧毀符文,依序摧毁符文
+options.accessibility,Acessibilidade,Accessibility,Accesibilidad,Barrierefreiheit,Accessibilité,Доступность,Aksesibilitas,アクセシビリティ,접근성,無障礙,无障碍
+options.audio_controls,Som e controle,Sound and controls,Sonido y control,Ton und Steuerung,Son et commandes,Звук и управление,Suara dan kontrol,サウンドと操作,소리와 조작,音效與操作,音效与操作
+options.auto_fire,Tiro automático,Auto fire,Disparo automático,Dauerfeuer,Tir auto,Автоогонь,Tembak otomatis,オート射撃,자동 사격,自動射擊,自动射击
+options.credits,Créditos e licenças,Credits and licenses,Créditos y licencias,Credits und Lizenzen,Crédits et licences,Титры и лицензии,Kredit dan lisensi,クレジットとライセンス,크레딧과 라이선스,製作名單與授權,制作名单与授权
+options.data,Diário e créditos,Logbook and credits,Bitácora y créditos,Logbuch und Credits,Carnet et crédits,Журнал и титры,Jurnal dan kredit,日誌とクレジット,일지와 크레딧,日誌與製作名單,日志与制作名单
+options.drag_sensitivity,Sensibilidade,Sensitivity,Sensibilidad,Empfindlichkeit,Sensibilité,Чувствительность,Sensitivitas,感度,감도,靈敏度,灵敏度
+options.general,Geral,General,General,Allgemein,Général,Общие,Umum,一般,일반,一般,常规
 options.gfx_auto_level,Auto (%s),Auto (%s),Auto (%s),Auto (%s),Auto (%s),Авто (%s),Otomatis (%s),自動（%s）,자동 (%s),自動（%s）,自动（%s）
 options.gfx_high,Alta,High,Alta,Hoch,Haute,Высокое,Tinggi,高,높음,高,高
 options.gfx_low,Baixa,Low,Baja,Niedrig,Basse,Низкое,Rendah,低,낮음,低,低
 options.gfx_medium,Média,Medium,Media,Mittel,Moyenne,Среднее,Sedang,中,중간,中,中
+options.graphics,Gráficos,Graphics,Gráficos,Grafik,Graphismes,Графика,Grafis,グラフィック,그래픽,畫質,画质
+options.hand_left,Esquerda,Left,Izquierda,Links,Gauche,Слева,Kiri,左,왼쪽,左,左
+options.hand_right,Direita,Right,Derecha,Rechts,Droite,Справа,Kanan,右,오른쪽,右,右
+options.handedness,Mão dos botões,Button side,Lado de botones,Tastenseite,Côté des boutons,Сторона кнопок,Sisi tombol,ボタンの位置,버튼 위치,按鈕位置,按钮位置
+options.language,Idioma,Language,Idioma,Sprache,Langue,Язык,Bahasa,言語,언어,語言,语言
+options.logbook,Diário de bordo,Logbook,Bitácora,Logbuch,Carnet de bord,Бортовой журнал,Jurnal,航海日誌,항해 일지,航海日誌,航海日志
+options.music_volume,Música,Music,Música,Musik,Musique,Музыка,Musik,音楽,음악,音樂,音乐
+options.reduce_flashes,Menos clarões,Fewer flashes,Menos destellos,Weniger Blitze,Moins de flashs,Меньше вспышек,Kurangi kilat,フラッシュ軽減,번쩍임 줄이기,減少閃光,减少闪光
+options.reduce_motion,Menos movimento,Reduce motion,Menos movimiento,Weniger Bewegung,Moins d'animation,Меньше движения,Kurangi gerak,動きを抑える,움직임 줄이기,減少動態,减少动态
+options.screen_shake,Tremor da tela,Screen shake,Temblor,Wackeln,Tremblement,Тряска,Getar layar,画面揺れ,화면 흔들림,畫面震動,画面震动
+options.sfx_volume,Efeitos,Effects,Efectos,Effekte,Effets,Эффекты,Efek,効果音,효과음,音效,音效
+options.show_fps,Mostrar FPS,Show FPS,Mostrar FPS,FPS anzeigen,Afficher FPS,Показать FPS,Tampilkan FPS,FPS表示,FPS 표시,顯示FPS,显示FPS
+options.tilt_parallax,Parallax por inclinação,Tilt parallax,Paralaje por inclinación,Neigungs-Parallaxe,Parallaxe d'inclinaison,Параллакс наклона,Paralaks miring,傾きパララックス,기울기 시차,傾斜視差,倾斜视差
+options.title,Opções,Options,Opciones,Optionen,Options,Настройки,Opsi,オプション,옵션,選項,选项
+options.ui_volume,Interface,Interface,Interfaz,Oberfläche,Interface,Интерфейс,Antarmuka,UI音,인터페이스,介面,界面
+options.vibration,Vibração,Vibration,Vibración,Vibration,Vibration,Вибрация,Getar,振動,진동,震動,震动
 results.chain,Maior corrente,Best chain,Mejor cadena,Beste Kette,Meilleure chaîne,Лучшая цепь,Rantai terbaik,最大チェイン,최대 체인,最高連鎖,最高连锁
 results.cleared,Missão concluída,Mission complete,Misión completada,Mission erfüllt,Mission accomplie,Миссия выполнена,Misi selesai,ミッションクリア,임무 완료,任務完成,任务完成
 results.continue,Continuar,Continue,Continuar,Weiter,Continuer,Далее,Lanjut,続ける,계속,繼續,继续
 results.credits,Créditos: +%s,Credits: +%s,Créditos: +%s,Credits: +%s,Crédits : +%s,Кредиты: +%s,Kredit: +%s,クレジット: +%s,크레딧: +%s,點數: +%s,点数: +%s
 results.failed,Missão falhou,Mission failed,Misión fallida,Mission gescheitert,Mission échouée,Миссия провалена,Misi gagal,ミッション失敗,임무 실패,任務失敗,任务失败
+results.fragments,+%d fragmentos de %s,+%d %s fragments,+%d fragmentos de %s,+%d Fragmente: %s,+%d fragments de %s,+%d фрагментов: %s,+%d fragmen %s,欠片 +%d（%s）,조각 +%d (%s),碎片 +%d（%s）,碎片 +%d（%s）
 results.grazes,Rasantes,Grazes,Roces,Streifer,Frôlements,Касания,Serempet,かすり,그레이즈,擦彈,擦弹
 results.kills,Abates,Kills,Derribos,Abschüsse,Abattus,Сбито,Kill,撃墜,격추,擊墜,击坠
+results.log,Registro novo no diário,New log in the logbook,Nuevo registro en la bitácora,Neuer Eintrag im Logbuch,Nouveau journal dans le carnet,Новая запись в журнале,Catatan baru di jurnal,航海日誌に新しい記録,항해 일지에 새 기록,航海日誌新增記錄,航海日志新增记录
 results.medals,Medalhas,Medals,Medallas,Medaillen,Médailles,Медали,Medali,メダル,메달,勳章,勋章
+results.new_mission,Aberta: %s,Unlocked: %s,Desbloqueada: %s,Freigeschaltet: %s,Débloquée : %s,Открыто: %s,Terbuka: %s,解放：%s,해금: %s,解鎖：%s,解锁：%s
+results.new_ship,Nova nave: %s!,New ship: %s!,¡Nueva nave: %s!,Neues Schiff: %s!,Nouveau vaisseau : %s !,Новый корабль: %s!,Kapal baru: %s!,新機体：%s！,새 기체: %s!,新機體：%s！,新机体：%s！
+results.new_wing,Nova asa: %s,New wing: %s,Nueva ala: %s,Neuer Flügel: %s,Nouvelle aile : %s,Новое крыло: %s,Sayap baru: %s,新ウイング：%s,새 날개: %s,新僚翼：%s,新僚翼：%s
 results.record,Novo recorde!,New record!,¡Nuevo récord!,Neuer Rekord!,Nouveau record !,Новый рекорд!,Rekor baru!,新記録！,신기록!,新紀錄！,新纪录！
 results.retry,Tentar de novo,Try again,Reintentar,Nochmal,Réessayer,Ещё раз,Coba lagi,リトライ,다시 하기,再試一次,再试一次
+role.area_control,Controle de área,Area control,Control de área,Flächenkontrolle,Contrôle de zone,Контроль зоны,Kendali area,範囲制圧,범위 제압,區域控制,区域控制
+role.balanced,Equilibrada,Balanced,Equilibrada,Ausgewogen,Équilibré,Сбалансированный,Seimbang,バランス,균형형,均衡,均衡
+role.defense,Defesa,Defense,Defensa,Verteidigung,Défense,Защита,Pertahanan,防御,방어형,防禦,防御
+role.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일형,飛彈,导弹
+role.precision,Precisão,Precision,Precisión,Präzision,Précision,Точность,Presisi,精密,정밀형,精準,精准
+role.speed,Velocidade,Speed,Velocidad,Tempo,Vitesse,Скорость,Kecepatan,スピード,속도형,速度,速度
+secondary.drones,Drones,Drones,Drones,Drohnen,Drones,Дроны,Drone,ドローン,드론,無人機,无人机
+secondary.drones_desc,Orbitam e atiram junto,Orbit and fire with you,Orbitan y disparan contigo,Kreisen und feuern mit,Orbitent et tirent avec toi,Кружат и стреляют,Mengorbit dan ikut menembak,周回して一緒に撃つ,주위를 돌며 함께 사격,環繞並一同射擊,环绕并一同射击
+secondary.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일,飛彈,导弹
+secondary.missiles_desc,"Teleguiados, buscam o alvo","Homing, seek the target","Teledirigidos, buscan el blanco",Zielsuchend,Guidés vers la cible,Самонаводящиеся,Pelacak target,追尾して狙う,유도 추적,追蹤目標,追踪目标
 ship.atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas
 ship.falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon
 ship.hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra
 ship.manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta
 ship.tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest
 ship.trident,Tridente,Trident,Tridente,Dreizack,Trident,Трезубец,Trisula,トライデント,트라이던트,三叉戟,三叉戟
+ships.fragments,Fragmentos %d de %d · em %s,Fragments %d of %d · from %s,Fragmentos %d de %d · en %s,Fragmente %d von %d · in %s,Fragments %d sur %d · dans %s,Фрагменты %d из %d · в %s,Fragmen %d dari %d · di %s,欠片 %d/%d・入手: %s,조각 %d/%d · 획득처 %s,碎片 %d/%d・取得：%s,碎片 %d/%d・获取：%s
+ships.select,Escolher,Select,Elegir,Wählen,Choisir,Выбрать,Pilih,選ぶ,선택,選擇,选择
+ships.selected,Na missão,In use,En uso,Im Einsatz,En service,В строю,Dipakai,出撃中,출격 중,出擊中,出击中
+ships.special,Especial,Special,Especial,Spezial,Spéciale,Спецприём,Jurus,必殺,필살,特技,特技
+ships.title,Naves,Ships,Naves,Schiffe,Vaisseaux,Корабли,Kapal,機体,기체,機體,机体
+ships.weapon,Arma,Weapon,Arma,Waffe,Arme,Оружие,Senjata,武器,무기,武器,武器
 speaker.farol,Farol,Beacon,Faro,Leuchtfeuer,Phare,Маяк,Mercusuar,ビーコン,등대,燈塔,灯塔
 speaker.mare,Maré,Tide,Marea,Flut,Marée,Прилив,Pasang,タイド,타이드,潮汐,潮汐
+speaker.narrator,Narração,Narrator,Narración,Erzähler,Narration,Рассказчик,Narator,ナレーション,내레이션,旁白,旁白
 speaker.protocol,LEVIATHAN,LEVIATHAN,LEVIATHAN,LEVIATHAN,LEVIATHAN,ЛЕВИАФАН,LEVIATHAN,リヴァイアサン,리바이어던,利維坦,利维坦
 speaker.thalassa,Thalassa,Thalassa,Thalassa,Thalassa,Thalassa,Таласса,Thalassa,タラッサ,탈라사,塔拉薩,塔拉萨
+special.area_bomb,Onda de choque,Shockwave,Onda de choque,Schockwelle,Onde de choc,Ударная волна,Gelombang kejut,衝撃波,충격파,衝擊波,冲击波
+special.drone_swarm,Enxame de drones,Drone swarm,Enjambre de drones,Drohnenschwarm,Essaim de drones,Рой дронов,Kawanan drone,ドローン群,드론 떼,無人機群,无人机群
+special.emp_pulse,Pulso EMP,EMP pulse,Pulso EMP,EMP-Impuls,Impulsion IEM,ЭМИ-импульс,Denyut EMP,EMPパルス,EMP 펄스,電磁脈衝,电磁脉冲
+special.focused_burst,Rajada focada,Focused burst,Ráfaga enfocada,Fokusstoß,Salve concentrée,Фокусный залп,Semburan fokus,集中砲火,집중 포화,集中射擊,集中射击
+special.gravity_rift,Fenda gravitacional,Gravity rift,Grieta gravitatoria,Schwerkraftriss,Faille gravitationnelle,Гравиразлом,Celah gravitasi,重力断層,중력 균열,重力裂隙,重力裂隙
+special.tide_shield,Escudo da maré,Tide shield,Escudo de marea,Flutschild,Bouclier de marée,Щит прилива,Perisai pasang,潮の盾,조수 방패,潮汐護盾,潮汐护盾
 stage.c1m1,1-1 · O Despertar,1-1 · The Awakening,1-1 · El Despertar,1-1 · Das Erwachen,1-1 · L'Éveil,1-1 · Пробуждение,1-1 · Kebangkitan,1-1・目覚め,1-1 · 각성,1-1・甦醒,1-1・苏醒
 stage.c1m2,1-2 · Plataformas em chamas,1-2 · Burning Platforms,1-2 · Plataformas en llamas,1-2 · Brennende Plattformen,1-2 · Plateformes en feu,1-2 · Горящие платформы,1-2 · Anjungan Terbakar,1-2・燃える海上基地,1-2 · 불타는 플랫폼,1-2・燃燒的平台,1-2・燃烧的平台
 stage.c1m3,1-3 · Canais de energia,1-3 · Energy Channels,1-3 · Canales de energía,1-3 · Energiekanäle,1-3 · Canaux d'énergie,1-3 · Энергоканалы,1-3 · Kanal Energi,1-3・エネルギー水路,1-3 · 에너지 수로,1-3・能量水道,1-3・能量水道
+stage.c2m1,2-1 · Portões de Atlântida,2-1 · Gates of Atlantis,2-1 · Puertas de la Atlántida,2-1 · Tore von Atlantis,2-1 · Portes de l'Atlantide,2-1 · Врата Атлантиды,2-1 · Gerbang Atlantis,2-1・アトランティスの門,2-1 · 아틀란티스의 문,2-1・亞特蘭提斯之門,2-1・亚特兰蒂斯之门
+stage.c2m2,2-2 · Jardins de Coral,2-2 · Coral Gardens,2-2 · Jardines de Coral,2-2 · Korallengärten,2-2 · Jardins de Corail,2-2 · Коралловые сады,2-2 · Taman Karang,2-2・珊瑚の庭,2-2 · 산호 정원,2-2・珊瑚花園,2-2・珊瑚花园
+stage.c2m3,2-3 · Câmara do Kraken,2-3 · Kraken's Chamber,2-3 · Cámara del Kraken,2-3 · Kammer des Kraken,2-3 · Chambre du Kraken,2-3 · Палата Кракена,2-3 · Ruang Kraken,2-3・クラーケンの間,2-3 · 크라켄의 방,2-3・克拉肯之室,2-3・克拉肯之室
+stage.c3m1,3-1 · Frente de Tempestade,3-1 · Storm Front,3-1 · Frente de Tormenta,3-1 · Sturmfront,3-1 · Front Orageux,3-1 · Грозовой фронт,3-1 · Front Badai,3-1・嵐の前線,3-1 · 폭풍 전선,3-1・風暴前線,3-1・风暴前线
+stage.c3m2,3-2 · Olho da Tempestade,3-2 · Eye of the Storm,3-2 · Ojo de la Tormenta,3-2 · Auge des Sturms,3-2 · Œil de la Tempête,3-2 · Око бури,3-2 · Mata Badai,3-2・嵐の眼,3-2 · 폭풍의 눈,3-2・風暴之眼,3-2・风暴之眼
+stage.c3m3a,3-3 · Rota do Abismo,3-3 · Abyss Route,3-3 · Ruta del Abismo,3-3 · Abgrundroute,3-3 · Route de l'Abîme,3-3 · Путь через бездну,3-3 · Rute Jurang,3-3・深淵ルート,3-3 · 심연 경로,3-3・深淵航線,3-3・深渊航线
+stage.c3m3s,3-3 · Rota da Superfície,3-3 · Surface Route,3-3 · Ruta de Superficie,3-3 · Oberflächenroute,3-3 · Route de Surface,3-3 · Путь по поверхности,3-3 · Rute Permukaan,3-3・海上ルート,3-3 · 수면 경로,3-3・海面航線,3-3・海面航线
+stage.s1,Segredo · Cofre dos Glifos,Secret · Glyph Vault,Secreto · Cripta de Glifos,Geheim · Glyphengewölbe,Secret · Caveau des Glyphes,Тайна · Хранилище глифов,Rahasia · Brankas Glif,秘密・グリフの宝庫,비밀 · 글리프 금고,秘密・符文寶庫,秘密・符文宝库
 star.all_marked,Destruir todos os alvos marcados,Destroy every marked target,Destruir todos los objetivos marcados,Alle markierten Ziele zerstören,Détruire toutes les cibles marquées,Уничтожить все отмеченные цели,Hancurkan semua target bertanda,マーク対象を全破壊,표시된 목표 전부 파괴,摧毀所有標記目標,摧毁所有标记目标
 star.clear,Concluir a missão,Clear the mission,Completar la misión,Mission abschließen,Terminer la mission,Пройти миссию,Selesaikan misi,ミッションクリア,임무 완료,完成任務,完成任务
 star.no_damage,Sem perder casco,No hull damage,Sin daño al casco,Ohne Rumpfschaden,Sans dégât à la coque,Без повреждений корпуса,Tanpa kerusakan lambung,被弾なし,선체 피해 없음,船體無損,船体无损
+story.act1_end_1,A tempestade abriu. Lá no alto... a Halcyon está presa numa torre de energia.,The storm broke. Up there... the Halcyon is caught in an energy spire.,La tormenta se abrió. Allá arriba... la Halcyon está atrapada en una torre de energía.,Der Sturm reißt auf. Da oben... die Halcyon hängt in einer Energiespitze fest.,La tempête s'ouvre. Là-haut... la Halcyon est prise dans une flèche d'énergie.,Буря расступилась. Наверху... «Халкион» застрял в энергетическом шпиле.,Badai terbuka. Di atas sana... Halcyon terjebak di menara energi.,嵐が晴れた。上空……ハルシオンがエネルギーの塔に捕まっている。,폭풍이 걷혔다. 저 위에... 할시온이 에너지 첨탑에 갇혀 있다.,風暴散開了。上面……翠鳥號被困在能量尖塔裡。,风暴散开了。上面……翠鸟号被困在能量尖塔里。
+story.act1_end_2,"A torre leva o Coração de Poseidon ao céu. Se ela subir, o mar sobe junto.","The spire carries the Heart of Poseidon skyward. If it rises, the sea rises with it.","La torre lleva el Corazón de Poseidón al cielo. Si sube, el mar sube con ella.","Die Spitze trägt das Herz Poseidons gen Himmel. Steigt sie, steigt das Meer mit.","La flèche porte le Cœur de Poséidon vers le ciel. Si elle monte, la mer monte avec elle.",Шпиль несёт Сердце Посейдона в небо. Поднимется он — поднимется и море.,"Menara membawa Jantung Poseidon ke langit. Jika naik, laut ikut naik.",塔はポセイドンの心臓を空へ運ぶ。塔が昇れば、海も昇る。,첨탑이 포세이돈의 심장을 하늘로 옮긴다. 첨탑이 오르면 바다도 오른다.,尖塔把波塞頓之心送往天空。它升起，海也會跟著上升。,尖塔把波塞顿之心送往天空。它升起，海也会跟着上升。
+story.act1_end_3,PROTOCOLO LEVIATÃ: INTRUSO CLASSIFICADO. ADAPTAÇÃO INICIADA.,LEVIATHAN PROTOCOL: INTRUDER CLASSIFIED. ADAPTATION STARTED.,PROTOCOLO LEVIATÁN: INTRUSO CLASIFICADO. ADAPTACIÓN INICIADA.,LEVIATHAN-PROTOKOLL: EINDRINGLING ERFASST. ANPASSUNG GESTARTET.,PROTOCOLE LÉVIATHAN : INTRUS CLASSÉ. ADAPTATION LANCÉE.,ПРОТОКОЛ «ЛЕВИАФАН»: НАРУШИТЕЛЬ КЛАССИФИЦИРОВАН. АДАПТАЦИЯ НАЧАТА.,PROTOKOL LEVIATHAN: PENYUSUP TERKLASIFIKASI. ADAPTASI DIMULAI.,リヴァイアサン・プロトコル：侵入者を分類。適応を開始。,리바이어던 프로토콜: 침입자 분류 완료. 적응 개시.,利維坦協議：入侵者已分類。開始適應。,利维坦协议：入侵者已分类。开始适应。
+story.act1_end_4,"Ele está aprendendo com você, Maré. Fim do Ato I. Continua no Beta.","It's learning from you, Tide. End of Act I. Continued in the Beta.","Está aprendiendo de ti, Marea. Fin del Acto I. Continúa en la Beta.","Es lernt von dir, Flut. Ende von Akt I. Fortsetzung in der Beta.","Il apprend de toi, Marée. Fin de l'Acte I. Suite dans la bêta.","Он учится у тебя, Прилив. Конец I акта. Продолжение в бете.","Ia belajar darimu, Pasang. Akhir Babak I. Berlanjut di Beta.",奴は君から学んでいる、タイド。第1幕 完。続きはベータで。,"놈이 너에게서 배우고 있다, 타이드. 1막 끝. 베타에서 계속.",它正在向你學習，海潮。第一幕完。續於測試版。,它正在向你学习，海潮。第一幕完。续于测试版。
+story.atlantis_1,O sinal da Halcyon vem de baixo das ruínas. Há uma cidade inteira lá embaixo.,The Halcyon's signal comes from under the ruins. There's a whole city down there.,La señal de la Halcyon viene de bajo las ruinas. Hay una ciudad entera allí abajo.,Das Signal der Halcyon kommt unter den Ruinen. Da unten liegt eine ganze Stadt.,Le signal de la Halcyon vient de sous les ruines. Il y a une cité entière là-dessous.,Сигнал «Халкиона» идёт из-под руин. Там внизу целый город.,Sinyal Halcyon datang dari bawah reruntuhan. Ada seluruh kota di bawah sana.,ハルシオンの信号は遺跡の下からだ。下には都市がまるごとある。,할시온의 신호가 폐허 아래에서 온다. 저 아래에 도시 하나가 통째로 있다.,翠鳥號的訊號來自遺跡下方。下面有一整座城市。,翠鸟号的信号来自遗迹下方。下面有一整座城市。
+story.atlantis_2,Eu sou Thalassa. A cidade não é sua inimiga. O Protocolo é.,I am Thalassa. The city is not your enemy. The Protocol is.,Soy Thalassa. La ciudad no es tu enemiga. El Protocolo sí.,Ich bin Thalassa. Die Stadt ist nicht dein Feind. Das Protokoll ist es.,"Je suis Thalassa. La cité n'est pas ton ennemie. Le Protocole, si.",Я Таласса. Город тебе не враг. Враг — Протокол.,Aku Thalassa. Kota ini bukan musuhmu. Protokol-lah musuhmu.,私はタラッサ。都市はあなたの敵ではない。敵はプロトコルよ。,나는 탈라사. 도시는 너의 적이 아니야. 적은 프로토콜이야.,我是塔拉莎。這座城不是你的敵人，協議才是。,我是塔拉莎。这座城不是你的敌人，协议才是。
+story.continue,Partir,Launch,Partir,Starten,Décoller,Вылет,Berangkat,出撃,출격,出擊,出击
+story.next,Próximo,Next,Siguiente,Weiter,Suivant,Далее,Lanjut,次へ,다음,下一頁,下一页
+story.prologue_1,"2147. O oceano engoliu as costas, e a humanidade aprendeu a viver sobre plataformas.","2147. The ocean swallowed the coasts, and humanity learned to live on platforms.",2147. El océano devoró las costas y la humanidad aprendió a vivir sobre plataformas.,"2147. Der Ozean verschlang die Küsten, und die Menschheit lernte, auf Plattformen zu leben.","2147. L'océan a englouti les côtes, et l'humanité a appris à vivre sur des plateformes.","2147 год. Океан поглотил побережья, и люди научились жить на платформах.","2147. Samudra menelan pesisir, dan manusia belajar hidup di atas anjungan.",2147年。海は沿岸を飲み込み、人類は海上基地で暮らすすべを覚えた。,"2147년. 바다가 해안을 삼켰고, 인류는 해상 플랫폼에서 사는 법을 배웠다.",2147年。海洋吞沒了海岸，人類學會在平台上生活。,2147年。海洋吞没了海岸，人类学会在平台上生活。
+story.prologue_2,Então o fundo do Atlântico acendeu. Algo antigo despertou sob as ondas.,Then the floor of the Atlantic lit up. Something ancient woke beneath the waves.,Entonces el fondo del Atlántico se encendió. Algo antiguo despertó bajo las olas.,Dann leuchtete der Grund des Atlantiks. Etwas Uraltes erwachte unter den Wellen.,Puis le fond de l'Atlantique s'est illuminé. Quelque chose d'ancien s'est éveillé sous les vagues.,Затем дно Атлантики вспыхнуло. Под волнами проснулось нечто древнее.,Lalu dasar Atlantik menyala. Sesuatu yang purba terbangun di bawah ombak.,やがて大西洋の海底が光った。波の下で、古の何かが目を覚ました。,그때 대서양 해저가 빛났다. 파도 아래에서 고대의 무언가가 깨어났다.,接著，大西洋海底亮起光芒。某種古老之物在浪下甦醒。,接着，大西洋海底亮起光芒。某种古老之物在浪下苏醒。
+story.prologue_3,"A Halcyon foi investigar e sumiu. Maré, você é a única nave pronta. Traga-os de volta.","The Halcyon went to investigate and vanished. Tide, you're the only ship ready. Bring them home.","La Halcyon fue a investigar y desapareció. Marea, eres la única nave lista. Tráelos de vuelta.","Die Halcyon ging nachsehen und verschwand. Flut, du bist das einzige bereite Schiff. Hol sie heim.","La Halcyon est partie enquêter et a disparu. Marée, tu es le seul vaisseau prêt. Ramène-les.","«Халкион» ушёл на разведку и пропал. Прилив, ты единственный готовый корабль. Верни их.","Halcyon pergi menyelidiki lalu hilang. Pasang, hanya kau kapal yang siap. Bawa mereka pulang.",調査に向かったハルシオンが消息を絶った。タイド、出られるのは君だけだ。連れ戻してくれ。,"조사하러 간 할시온이 사라졌다. 타이드, 출격 가능한 건 너뿐이다. 그들을 데려와.",翠鳥號前去調查後失蹤了。海潮，你是唯一能出動的機體。把他們帶回來。,翠鸟号前去调查后失踪了。海潮，你是唯一能出动的机体。把他们带回来。
+story.prologue_4,"Entendido, Farol. Motores quentes. Vou mergulhar.","Copy, Beacon. Engines hot. Going in.","Entendido, Faro. Motores calientes. Voy a sumergirme.","Verstanden, Leuchtfeuer. Triebwerke heiß. Ich tauche ein.","Reçu, Phare. Moteurs chauds. J'y vais.","Принято, Маяк. Двигатели прогреты. Иду.","Dimengerti, Mercusuar. Mesin panas. Aku masuk.",了解、ビーコン。エンジン良好。突入する。,"알았다, 비컨. 엔진 가열 완료. 진입한다.",收到，燈塔。引擎就緒，出發。,收到，灯塔。引擎就绪，出发。
+story.skip,Pular,Skip,Saltar,Überspringen,Passer,Пропустить,Lewati,スキップ,건너뛰기,跳過,跳过
 weapon.laser,Laser,Laser,Láser,Laser,Laser,Лазер,Laser,レーザー,레이저,雷射,激光
 weapon.plasma,Plasma,Plasma,Plasma,Plasma,Plasma,Плазма,Plasma,プラズマ,플라스마,電漿,等离子
 weapon.pulsar,Pulsar,Pulsar,Púlsar,Pulsar,Pulsar,Пульсар,Pulsar,パルサー,펄서,脈衝,脉冲
 weapon.railgun,Railgun,Railgun,Cañón de riel,Railgun,Canon électromagnétique,Рельсотрон,Railgun,レールガン,레일건,磁軌砲,磁轨炮
+wing.wing_bubble,Ala Bolha,Bubble Wing,Ala Burbuja,Blasenflügel,Aile Bulle,Крыло-пузырь,Sayap Gelembung,泡翼,거품 날개,泡泡翼,泡泡翼
+wing.wing_bubble_desc,Bolha a cada 30 s,Bubble every 30 s,Burbuja cada 30 s,Blase alle 30 s,Bulle toutes les 30 s,Пузырь каждые 30 с,Gelembung tiap 30 dtk,30秒ごとに泡,30초마다 거품,每30秒一個泡泡,每30秒一个泡泡
+wing.wing_edge,Ala Gume,Edge Wing,Ala Filo,Schneideflügel,Aile Tranchant,Крыло-лезвие,Sayap Tajam,刃翼,칼날 날개,鋒刃翼,锋刃翼
+wing.wing_edge_desc,+5% de dano,+5% damage,+5% de daño,+5% Schaden,+5% de dégâts,+5% урона,+5% kerusakan,ダメージ+5%,피해 +5%,傷害 +5%,伤害 +5%
+wing.wing_finder,Ala Farejadora,Finder Wing,Ala Rastreadora,Spürflügel,Aile Pisteuse,Крыло-поисковик,Sayap Pelacak,探索翼,탐색 날개,探索翼,探索翼
+wing.wing_finder_desc,O registro vem até você,Logs fly to you,El registro viene a ti,Logbücher kommen zu dir,Les journaux viennent à toi,Записи летят к вам,Catatan datang padamu,記録が寄ってくる,기록이 다가옴,日誌會飛向你,日志会飞向你
+wing.wing_graze,Ala Rasante,Graze Wing,Ala Roce,Streifflügel,Aile Frôle,Крыло касаний,Sayap Serempet,かすり翼,그레이즈 날개,擦彈翼,擦弹翼
+wing.wing_graze_desc,+10% de carga por rasante,+10% charge per graze,+10% de carga por roce,+10% Ladung je Streifer,+10% de charge par frôlement,+10% заряда за касание,+10% isi per serempet,かすりのチャージ+10%,그레이즈 충전 +10%,擦彈充能 +10%,擦弹充能 +10%
+wing.wing_halo,Ala Halo,Halo Wing,Ala Halo,Haloflügel,Aile Halo,Крыло-ореол,Sayap Halo,光輪翼,후광 날개,光環翼,光环翼
+wing.wing_halo_desc,"+0,3 s de invulnerabilidade",+0.3 s invulnerability,"+0,3 s de invulnerabilidad","+0,3 s Unverwundbarkeit","+0,3 s d'invulnérabilité","+0,3 с неуязвимости","+0,3 dtk kebal",無敵時間+0.3秒,무적 +0.3초,無敵 +0.3 秒,无敌 +0.3 秒
+wing.wing_luck,Ala Trevo,Clover Wing,Ala Trébol,Kleeflügel,Aile Trèfle,Крыло-клевер,Sayap Semanggi,幸運翼,클로버 날개,幸運翼,幸运翼
+wing.wing_luck_desc,+8% de chance de orbe,+8% orb chance,+8% de prob. de orbe,+8% Orb-Chance,+8% de chance d'orbe,+8% шанс сферы,+8% peluang orb,オーブ出現率+8%,구슬 확률 +8%,寶珠機率 +8%,宝珠概率 +8%
+wing.wing_magnet,Ala Ímã,Magnet Wing,Ala Imán,Magnetflügel,Aile Aimant,Крыло-магнит,Sayap Magnet,磁石翼,자석 날개,磁鐵翼,磁铁翼
+wing.wing_magnet_desc,Atrai coletáveis,Pulls pickups,Atrae objetos,Zieht Gegenstände an,Attire les bonus,Притягивает предметы,Menarik item,アイテムを引き寄せる,아이템 흡수,吸引道具,吸引道具
+wing.wing_net,Ala Rede,Net Wing,Ala Red,Netzflügel,Aile Filet,Крыло-сеть,Sayap Jaring,網翼,그물 날개,漁網翼,渔网翼
+wing.wing_net_desc,Medalha perdida volta,Missed medals bounce back,La medalla perdida vuelve,Medaille kehrt zurück,La médaille ratée revient,Медаль возвращается,Medali kembali,メダルが一度戻る,메달이 돌아옴,勳章會彈回,勋章会弹回
+wing.wing_rear,Ala Popa,Stern Wing,Ala Popa,Heckflügel,Aile Poupe,Кормовое крыло,Sayap Buritan,艦尾翼,선미 날개,艦尾翼,舰尾翼
+wing.wing_rear_desc,Atira também para trás,Also fires backward,También dispara atrás,Feuert auch nach hinten,Tire aussi vers l'arrière,Стреляет и назад,Juga menembak ke belakang,後方にも射撃,후방으로도 사격,也向後射擊,也向后射击
+wing.wing_sailor,Ala Marujo,Sailor Wing,Ala Marino,Seemannsflügel,Aile Marin,Крыло моряка,Sayap Pelaut,水夫翼,선원 날개,水手翼,水手翼
+wing.wing_sailor_desc,A corrente dura mais,Chain window lasts longer,La cadena dura más,Kette hält länger,La chaîne dure plus,Цепь держится дольше,Rantai lebih lama,チェインが長く続く,체인 유지 증가,連鎖持續更久,连锁持续更久
+wing.wing_slip,Ala Esguia,Slip Wing,Ala Esbelta,Schlankflügel,Aile Fine,Узкое крыло,Sayap Ramping,細身翼,날렵한 날개,纖細翼,纤细翼
+wing.wing_slip_desc,Ponto de dano 10% menor,Hitbox 10% smaller,Punto de impacto 10% menor,Trefferzone 10% kleiner,Zone d'impact -10%,Хитбокс меньше на 10%,Hitbox 10% lebih kecil,当たり判定10%縮小,피격 판정 10% 축소,判定縮小10%,判定缩小10%
+wing.wing_tide,Ala Maré,Tide Wing,Ala Marea,Flutflügel,Aile Marée,Крыло прилива,Sayap Pasang,潮翼,조수 날개,潮汐翼,潮汐翼
+wing.wing_tide_desc,Maré Alta dura +2 s,High Tide lasts +2 s,Marea Alta dura +2 s,Springflut hält +2 s,Grande Marée +2 s,Высокий прилив +2 с,Pasang Tinggi +2 dtk,満潮が2秒延長,만조 +2초,滿潮延長2秒,满潮延长2秒

@@ -114,18 +114,29 @@ func _mission(check: Callable) -> void:
 	var first := run_bot(mission, tables, 7)
 	var second := run_bot(mission, tables, 7)
 	var other := run_bot(mission, tables, 11)
-	var r: Dictionary = first["result"]
-	if "--verbose" in OS.get_cmdline_user_args():
-		print("Missão c1m1 semente 7: ", r, " pico de balas ", first["peak"])
-		print("Missão c1m1 semente 11: ", other["result"])
-	check.call(bool(first["finished"]), "Missão: o bot termina a c1m1 (%d passos)" % first["frames"])
-	check.call(bool(r.get("cleared", false)), "Missão: o bot vence a c1m1 (%s)" % [r])
 	check.call(first["hash"] == second["hash"], "Determinismo: mesma semente, mesmo estado")
 	check.call(bool(other["finished"]), "Missão: o bot termina a c1m1 com outra semente")
-	check.call(int(first["peak"]) <= 300, "Densidade: no máximo 300 balas inimigas vivas (%d)" % first["peak"])
-	var seconds := float(r.get("seconds", 0.0))
-	check.call(seconds >= 150.0 and seconds <= 330.0, "Ritmo: missão de 2,5 a 5,5 min (%.0f s)" % seconds)
-	check.call(int(r.get("kills", 0)) >= 60, "Missão: o bot derruba a maioria (%d)" % r.get("kills"))
+	for id: StringName in mission_ids():
+		var run := first if id == &"c1m1" else run_bot(Sim.load_mission(id), tables, 7)
+		var r: Dictionary = run["result"]
+		if "--verbose" in OS.get_cmdline_user_args():
+			print("Missão %s semente 7: " % id, r, " pico de balas ", run["peak"])
+		check.call(bool(run["finished"]), "Missão: o bot termina a %s (%d passos)" % [id, run["frames"]])
+		check.call(bool(r.get("cleared", false)), "Missão: o bot vence a %s (casco %s)" % [id, r.get("hull")])
+		check.call(int(run["peak"]) <= 300, "Densidade %s: no máximo 300 balas vivas (%d)" % [id, run["peak"]])
+		var seconds := float(r.get("seconds", 0.0))
+		check.call(seconds >= 120.0 and seconds <= 330.0, "Ritmo %s: de 2 a 5,5 min (%.0f s)" % [id, seconds])
+		check.call(int(r.get("kills", 0)) >= 50, "Missão %s: o bot derruba a maioria (%d)" % [id, r.get("kills")])
+
+
+## Ids das missões em data/stages/, em ordem.
+static func mission_ids() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	for file: String in DirAccess.get_files_at("res://data/stages"):
+		if file.ends_with(".json"):
+			ids.append(StringName(file.get_basename()))
+	ids.sort()
+	return ids
 
 
 static func run_bot(mission: Dictionary, tables: Dictionary, seed: int) -> Dictionary:

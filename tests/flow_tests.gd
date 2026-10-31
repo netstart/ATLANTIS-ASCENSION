@@ -1,13 +1,12 @@
 extends RefCounted
-## Fluxo de ponta a ponta no Godot (docs/policies/testes.md, E2E): título → hub → mapa → missão
-## jogada pelo bot até o fim → resultado gravado no save → Tentar de novo → sair pela pausa.
-## Também confere o contraste das balas inimigas contra a água do capítulo 1 (≥ 4,5:1).
+## Fluxo de ponta a ponta no Godot (docs/policies/testes.md, E2E): título → hub → prólogo → mapa →
+## missão jogada pelo bot até o fim → resultado gravado no save → Tentar de novo → sair pela pausa →
+## oficina do hangar (subir nível) → naves → opções → diário. Também confere o contraste das balas
+## inimigas contra a água de todos os cenários (≥ 4,5:1).
 ## Chamado por tests/integration_tests.gd.
 
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
-## Cores da água do shader ocean_surface (fundo, meio, raso) com o escurecimento do campo.
-const WATER: Array[Color] = [Color(0.024, 0.071, 0.165), Color(0.043, 0.157, 0.302), Color(0.051, 0.235, 0.290)]
 
 
 func run(host: Node, check: Callable) -> void:
@@ -29,10 +28,18 @@ func run(host: Node, check: Callable) -> void:
 	check.call(app.current == &"hub", "Fluxo: Jogar abre o hub")
 	(app.screen(&"hub").find_child("Play", true, false) as Button).pressed.emit()
 	await LayoutTests.settle(host)
-	check.call(app.current == &"map", "Fluxo: JOGAR do hub abre o mapa")
+	check.call(app.current == &"story", "Fluxo: JOGAR do hub abre o prólogo na primeira vez")
+	var story := app.screen(&"story") as StoryScreen
+	var panels := (story.scene.get("panels", []) as Array).size()
+	check.call(panels >= 3, "Fluxo: o prólogo tem %d quadros" % panels)
+	for i: int in range(panels):
+		(story.find_child("Next", true, false) as Button).pressed.emit()
+		await LayoutTests.settle(host)
+	check.call(app.current == &"map", "Fluxo: o fim do prólogo abre o mapa")
+	check.call(StoryScreen.pending(SaveManager.data).is_empty(), "Fluxo: o prólogo não volta a aparecer")
 	var map := app.screen(&"map") as MapScreen
 	check.call(map.selected == &"c1m1", "Fluxo: o mapa foca a missão 1-1")
-	app.play(&"c1m1", true, 7)
+	app.play(&"c1m1", true, 7, Sim.default_loadout(&"falcon"))
 	await host.get_tree().process_frame
 	check.call(app.game != null, "Fluxo: a missão começou")
 	var bot := BotPilot.new()
@@ -56,6 +63,27 @@ func run(host: Node, check: Callable) -> void:
 	app.game.hud().quit_pressed.emit()
 	await LayoutTests.settle(host)
 	check.call(app.game == null and app.current == &"map", "Fluxo: sair pela pausa volta ao mapa")
+	check.call(Economy.mission_unlocked(SaveManager.data, &"c1m2"), "Fluxo: a 1-2 abriu no mapa")
+	app.go(&"hub")
+	await LayoutTests.settle(host)
+	(app.screen(&"hub").find_child("Tab_hangar", true, false) as Button).pressed.emit()
+	await LayoutTests.settle(host)
+	check.call(app.current == &"hangar", "Fluxo: a aba Hangar abre a oficina")
+	SaveManager.add_currency("credits", 5000)
+	(app.screen(&"hangar") as ListScreen).refill()
+	(app.screen(&"hangar").find_child("UpgradeShip", true, false) as Button).pressed.emit()
+	check.call(Economy.ship_level(SaveManager.data, &"falcon") == 2, "Fluxo: subir o nível da Falcon na oficina")
+	app.go(&"back")
+	await LayoutTests.settle(host)
+	(app.screen(&"hub").find_child("Tab_ships", true, false) as Button).pressed.emit()
+	await LayoutTests.settle(host)
+	check.call(app.current == &"ships", "Fluxo: a aba Naves abre a coleção")
+	for screen_name: StringName in [&"options", &"logbook"]:
+		app.go(&"hub")
+		await LayoutTests.settle(host)
+		(app.screen(&"hub").find_child(String(screen_name).capitalize(), true, false) as Button).pressed.emit()
+		await LayoutTests.settle(host)
+		check.call(app.current == screen_name, "Fluxo: o hub abre %s" % screen_name)
 	app.queue_free()
 	await host.get_tree().process_frame
 	SaveManager.reset_profile()
@@ -70,7 +98,11 @@ func _contrast(check: Callable) -> void:
 			continue
 		var img := tex.get_image()
 		var c := img.get_pixel(img.get_width() / 2, img.get_height() / 2)
-		for water: Color in WATER:
+		var waters: Array[Color] = []
+		for palette: Dictionary in OceanBackdrop.PALETTES.values():
+			for key: String in ["deep", "mid", "shoal"]:
+				waters.append(palette[key])
+		for water: Color in waters:
 			var ratio := contrast(c, water)
 			check.call(ratio >= 4.5, "Leitura: %s sobre a água %s com contraste %.1f:1" % [k["id"], water.to_html(false), ratio])
 

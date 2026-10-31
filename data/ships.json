@@ -1,14 +1,20 @@
 [
 	{"id": "falcon", "name_key": "ship.falcon", "role": "balanced", "signature": "pulsar", "special": "area_bomb",
-		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "1.0"},
+		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "alpha", "fragments": 0, "tint": "#ffffff",
+		"sources": []},
 	{"id": "manta", "name_key": "ship.manta", "role": "precision", "signature": "laser", "special": "focused_burst",
-		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "1.0"},
-	{"id": "hydra", "name_key": "ship.hydra", "role": "missiles", "signature": "pulsar", "special": "drone_swarm",
-		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 1.0, "release": "1.0"},
-	{"id": "tempest", "name_key": "ship.tempest", "role": "speed", "signature": "laser", "special": "emp_pulse",
-		"hull": 3, "speed": 1.2, "hitbox": 2.5, "fire_rate": 1.0, "release": "1.0"},
+		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "alpha", "fragments": 20, "tint": "#9fe8ff",
+		"sources": ["c1m2", "c1m3"]},
+	{"id": "hydra", "name_key": "ship.hydra", "role": "missiles", "signature": "plasma", "special": "drone_swarm",
+		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 1.0, "release": "alpha", "fragments": 30, "tint": "#c7a0ff",
+		"sources": ["c2m1", "c2m2"]},
+	{"id": "tempest", "name_key": "ship.tempest", "role": "speed", "signature": "railgun", "special": "emp_pulse",
+		"hull": 3, "speed": 1.2, "hitbox": 2.5, "fire_rate": 1.0, "release": "alpha", "fragments": 40, "tint": "#ffb08a",
+		"sources": ["c2m3", "c3m1"]},
 	{"id": "trident", "name_key": "ship.trident", "role": "area_control", "signature": "plasma", "special": "gravity_rift",
-		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 0.9, "release": "1.0"},
+		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 0.9, "release": "beta", "fragments": 50, "tint": "#8affc8",
+		"sources": ["c4m2", "c5m1"]},
 	{"id": "atlas", "name_key": "ship.atlas", "role": "defense", "signature": "railgun", "special": "tide_shield",
-		"hull": 4, "speed": 0.9, "hitbox": 3.5, "fire_rate": 0.9, "release": "1.0"}
+		"hull": 4, "speed": 0.9, "hitbox": 3.5, "fire_rate": 0.9, "release": "beta", "fragments": 60, "tint": "#ffe08a",
+		"sources": ["c6m1", "c7m2"]}
 ]

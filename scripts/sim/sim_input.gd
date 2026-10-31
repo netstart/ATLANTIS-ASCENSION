@@ -11,6 +11,10 @@ var special: bool = false
 var bomb: bool = false
 ## Toques no duelo de raio neste passo.
 var taps: int = 0
+## Maré Alta (medidor de Pressão cheio).
+var tide: bool = false
+## Bênção escolhida (índice na oferta) ou -1.
+var choice: int = -1
 
 
 func copy() -> SimInput:
@@ -22,4 +26,6 @@ func copy() -> SimInput:
 	c.special = special
 	c.bomb = bomb
 	c.taps = taps
+	c.tide = tide
+	c.choice = choice
 	return c
