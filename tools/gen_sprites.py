@@ -257,6 +257,144 @@ def tentacle(size: int, tip: bool) -> list:
     return px
 
 
+# --- Ícone do jogo (plano mestre 11): pixel art em grade de 64, ampliada sem filtro -----------------
+# A nave sobe pelo anel dourado do portal atlante, acima das ondas: a "Ascensão" num relance. Fundo em
+# faixas do céu claro (alto) ao abismo (baixo). O ícone adaptativo do Android usa o mesmo desenho sem
+# fundo, centralizado numa grade de 108 (a zona segura do Android é o círculo central de 66/108).
+
+ICON_GRID = 64
+GOLD = (232, 184, 74, 255)
+GOLD_DARK = (150, 104, 36, 255)
+CYAN = (63, 243, 255, 255)
+CORAL = (255, 90, 95, 255)
+HULL = (214, 230, 240, 255)
+HULL_DARK = (120, 150, 176, 255)
+
+
+def _blank(n: int) -> list:
+    return [(0, 0, 0, 0)] * (n * n)
+
+
+def icon_background(n: int, rounded: bool) -> list:
+    """Faixas do céu ao abismo; cantos arredondados no ícone comum (o adaptativo é recortado pelo sistema)."""
+    top, mid, bottom = (34, 98, 150), (11, 42, 77), (4, 11, 26)
+    px = _blank(n)
+    radius = n * 0.17
+    for y in range(n):
+        u = y / (n - 1)
+        band = round(u * 9) / 9.0
+        if band < 0.45:
+            k = band / 0.45
+            c = tuple(round(top[i] + (mid[i] - top[i]) * k) for i in range(3))
+        else:
+            k = (band - 0.45) / 0.55
+            c = tuple(round(mid[i] + (bottom[i] - mid[i]) * k) for i in range(3))
+        for x in range(n):
+            if rounded:
+                dx = max(radius - x, x - (n - 1 - radius), 0)
+                dy = max(radius - y, y - (n - 1 - radius), 0)
+                if dx * dx + dy * dy > radius * radius:
+                    continue
+            px[y * n + x] = (*c, 255)
+    return px
+
+
+def icon_emblem() -> list:
+    """Anel do portal, nave subindo, rastro do motor e ondas, em grade de 64 com fundo transparente."""
+    n = ICON_GRID
+    px = _blank(n)
+
+    def put(x, y, c):
+        if 0 <= x < n and 0 <= y < n:
+            px[y * n + x] = c
+
+    cx, cy = 31.5, 29.5
+    # Anel dourado com sombra interna e 8 marcas de glifo.
+    for y in range(n):
+        for x in range(n):
+            d = math.hypot(x - cx, y - cy)
+            if 18.2 <= d < 20.6:
+                put(x, y, GOLD)
+            elif 17.0 <= d < 18.2:
+                put(x, y, GOLD_DARK)
+            elif d < 17.0:
+                put(x, y, (24, 74, 112, 255) if d < 12.5 else (17, 58, 94, 255))
+    for k in range(8):
+        a = k * math.pi / 4
+        for r in (21.0, 22.0):
+            put(round(cx + math.cos(a) * r), round(cy + math.sin(a) * r), GOLD)
+    # Ondas na base: duas linhas de espuma em zigue-zague.
+    for x in range(6, 58):
+        y1 = 50 + (1 if (x // 3) % 2 else 0)
+        put(x, y1, CYAN)
+        if x % 2 == 0:
+            put(x, y1 + 4 - (1 if (x // 4) % 2 else 0), (120, 200, 230, 255))
+    # Rastro do motor (coral para dourado) atravessando o anel até as ondas.
+    for y in range(41, 50):
+        w = 2 if y < 45 else 1
+        col = CORAL if y < 44 else (GOLD if y < 47 else (255, 236, 180, 255))
+        for x in range(32 - w, 32 + w):
+            put(x, y, col)
+    # Nave em seta, apontando para cima, com contorno escuro.
+    shape = {}
+    for y in range(13, 41):
+        if y < 22:
+            half = (y - 13) // 3 + 1
+        elif y < 33:
+            half = 4 + (y - 22) // 2 + (2 if y >= 29 else 0)
+        else:
+            half = 4
+        for x in range(32 - half, 32 + half):
+            shape[(x, y)] = HULL if x < 32 else HULL_DARK
+    for (x, y) in list(shape):
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            if (x + dx, y + dy) not in shape:
+                put(x + dx, y + dy, OUTLINE)
+    for (x, y), c in shape.items():
+        put(x, y, c)
+    for y in range(20, 26):
+        put(31, y, CYAN)
+        put(32, y, CYAN)
+    for y in (37, 38, 39):
+        put(29, y, CORAL)
+        put(34, y, CORAL)
+    # Brilhos.
+    for x, y in ((12, 10), (52, 14), (9, 34), (55, 40), (46, 6)):
+        put(x, y, WHITE)
+    return px
+
+
+def compose(base: list, top: list, n_base: int, n_top: int, ox: int, oy: int) -> list:
+    out = list(base)
+    for y in range(n_top):
+        for x in range(n_top):
+            c = top[y * n_top + x]
+            if c[3] > 0:
+                out[(y + oy) * n_base + x + ox] = c
+    return out
+
+
+def scale(px: list, n: int, k: int) -> list:
+    out = []
+    for y in range(n * k):
+        row = px[(y // k) * n:(y // k) * n + n]
+        for c in row:
+            out.extend([c] * k)
+    return out
+
+
+def icon_full(size: int) -> list:
+    n = ICON_GRID
+    return scale(compose(icon_background(n, True), icon_emblem(), n, n, 0, 0), n, size // n)
+
+
+def icon_adaptive(layer: str) -> list:
+    n = 108
+    if layer == "background":
+        return scale(icon_background(n, False), n, 4)
+    return scale(compose(_blank(n), icon_emblem(), n, ICON_GRID, 22, 22), n, 4)
+
+
 SPRITES = {
     "bullets/orb_cyan_8.png": (8, 8, lambda: orb(8, "cyan")),
     "bullets/orb_cyan_12.png": (12, 12, lambda: orb(12, "cyan")),
@@ -285,6 +423,10 @@ SPRITES = {
     "fx/beam.png": (16, 4, lambda: beam(16, 4)),
     "boss/tentacle_segment.png": (14, 14, lambda: tentacle(14, False)),
     "boss/tentacle_tip.png": (18, 18, lambda: tentacle(18, True)),
+    "icon/icon_512.png": (512, 512, lambda: icon_full(512)),
+    "icon/icon_192.png": (192, 192, lambda: icon_full(192)),
+    "icon/adaptive_foreground_432.png": (432, 432, lambda: icon_adaptive("foreground")),
+    "icon/adaptive_background_432.png": (432, 432, lambda: icon_adaptive("background")),
 }
 
 

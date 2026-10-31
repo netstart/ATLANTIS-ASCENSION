@@ -172,6 +172,8 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ✅ Passe da Maré por trimestre: 30 níveis, trilha grátis e trilha dourada com 3 pinturas (compra simulada)
 - ✅ 22 conquistas locais (`data/achievements.json`, mesmas ids para a Steam) no Diário e no resultado
 - ✅ Modo foto do mapa (esconde a interface, salva PNG em `user://photos/`)
+- ✅ Ícone do jogo (`1.0.1`): pixel art gerada por `tools/gen_sprites.py` (nave subindo pelo portal atlante sobre as
+  ondas), em 512 e 192 px e nas camadas do ícone adaptativo do Android (432 px, conteúdo na zona segura)
 - ✅ Política de privacidade (pt-BR e en), textos das lojas, questionários IARC e de Segurança de dados, modelo do
   `app-ads.txt` e checklist de lançamento em `docs/store/`; créditos públicos em `CREDITS.md`
 - ⚠️ Play Console, teste fechado (20 testadores por 14 dias), AdMob com UMP e Play Billing: exigem a conta e o aceite

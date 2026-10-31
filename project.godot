@@ -12,10 +12,11 @@ config_version=5
 
 config/name="Atlantis Ascension"
 config/description="Atlantis Ascension — The ocean remembers. The sky belongs to whoever survives."
-config/version="1.0.0"
+config/version="1.0.1"
 run/main_scene="res://scenes/app/App.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://assets/art/generated/icon/icon_512.png"
 boot_splash/bg_color=Color(0.043137256, 0.11764706, 0.24705882, 1)
 boot_splash/show_image=false
 

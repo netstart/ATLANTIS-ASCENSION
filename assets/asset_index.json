@@ -114,6 +114,30 @@
   "sha256": "34478d49c39d48fe0165a93a7e945fb261886b2c7820188f7b6bcce658d8d5f6"
  },
  {
+  "file": "assets/art/generated/icon/adaptive_background_432.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "018fd0f88cb73d74d6f4dd48ac315abb59210e1342a1d6a266d1225d574cfe8d"
+ },
+ {
+  "file": "assets/art/generated/icon/adaptive_foreground_432.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6752f669480e96a1f6d0ff2cbd847bcd84f2a8614da62de840fba0df5e8da25e"
+ },
+ {
+  "file": "assets/art/generated/icon/icon_192.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "d1071dbee8fe8cd6ae64db34f0cc114ed4442be2effb02dd42a78629d084bd1d"
+ },
+ {
+  "file": "assets/art/generated/icon/icon_512.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "c44eef95acda8dd7a1776fbf92ce5884362de4cb22dc3f0ae6f08f691df1c88d"
+ },
+ {
   "file": "assets/art/generated/pickups/capsule.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
