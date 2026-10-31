@@ -477,12 +477,14 @@ func glyph(kind: StringName, color: Color = UiTheme.WHITE, size: int = 12) -> Te
 	return t
 
 
-## Vista da aeronave (herói do hangar, miniatura da coleção e da loja).
-func ship_view(tint: Color, zoom: int, dim: bool = false) -> Control:
+## Vista da aeronave (herói do hangar, miniatura da coleção e da loja), com as peças do `level` do
+## hangar (ShipLivery).
+func ship_view(tint: Color, zoom: int, dim: bool = false, level: int = 1) -> ShipView:
 	var view := ShipView.new()
 	view.tint = tint
 	view.zoom = zoom
 	view.dim = dim
+	view.level = level
 	view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	return view
 
@@ -687,19 +689,24 @@ static func _poly_sd(p: Vector2, pts: PackedVector2Array) -> float:
 
 
 ## Aeronave em destaque: halo ciano em degradê (círculos vetoriais, nítidos em qualquer escala), anel
-## fino, motor animado e a nave em escala inteira com filtro nearest. Flutua 2 pontos devagar;
-## parada em "reduzir movimento". Redesenha a 15 Hz, só enquanto visível.
+## fino, motor animado e a nave em escala inteira com filtro nearest, vestida com as peças do nível
+## (ShipLivery; no nível máximo o halo vira ouro). Flutua 2 pontos devagar; parada em "reduzir
+## movimento". Redesenha a 15 Hz, só enquanto visível (60 Hz durante a revelação).
+## `reveal()`: a peça nova acabou de ser montada — onda de luz e centelhas que se abrem.
 class ShipView:
 	extends Control
 
 	const REDRAW_HZ := 15.0
 	const SIZE := 48.0
+	const REVEAL_TIME := 1.4
 
 	var tint := Color.WHITE
 	var zoom: int = 2
 	var dim: bool = false
+	var level: int = 1
 
 	var _time: float = 0.0
+	var _reveal: float = -1.0
 	var _wait: float = 0.0
 	var _base: Texture2D
 	var _engine: Texture2D
@@ -711,31 +718,69 @@ class ShipView:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		custom_minimum_size = Vector2(SIZE * float(zoom) + 24.0, SIZE * float(zoom) + 12.0)
 
+	## Começa a revelação da peça nova (em "reduzir movimento" a peça só aparece).
+	func reveal() -> void:
+		if not UiFx.reduced():
+			_reveal = 0.0
+
+	func revealing() -> bool:
+		return _reveal >= 0.0
+
 	func _process(delta: float) -> void:
 		if dim or not is_visible_in_tree() or UiFx.reduced():
 			return
 		_time += delta
 		_wait -= delta
+		if _reveal >= 0.0:
+			_reveal += delta
+			if _reveal > REVEAL_TIME:
+				_reveal = -1.0
 		if _wait <= 0.0:
-			_wait = 1.0 / REDRAW_HZ
+			_wait = 1.0 / (60.0 if _reveal >= 0.0 else REDRAW_HZ)
 			queue_redraw()
 
 	func _draw() -> void:
 		var center := size * 0.5 + Vector2(0.0, roundf(sin(_time * 1.6) * 2.0))
 		var radius := SIZE * float(zoom) * 0.62
-		var halo := Color(tint.lerp(UiTheme.CYAN, 0.6), 0.022 if not dim else 0.01)
+		var ascended := level >= Economy.SHIP_MAX_LEVEL and not dim
+		var ring := UiTheme.GOLD if ascended else UiTheme.CYAN
+		var halo := Color(tint.lerp(ring, 0.6), 0.022 if not dim else 0.01)
 		for i: int in range(20):
 			draw_circle(center, radius * (1.0 - float(i) * 0.045), halo, true, -1.0, true)
-		draw_arc(center, radius, 0.0, TAU, 64, Color(UiTheme.CYAN, 0.18 if not dim else 0.08), 1.0, true)
+		var ring_alpha := (0.3 if ascended else 0.18) if not dim else 0.08
+		draw_arc(center, radius, 0.0, TAU, 64, Color(ring, ring_alpha), 1.0, true)
 		if _base == null:
 			return
 		var col := Color(0.16, 0.24, 0.34, 0.9) if dim else tint
 		var z := float(zoom)
+		var calm := UiFx.reduced()
 		draw_set_transform(center.round(), 0.0, Vector2(z, z))
 		var half := Vector2(SIZE, SIZE) * 0.5
 		if _engine != null and not dim:
 			var frames := maxi(1, _engine.get_width() / int(SIZE))
 			draw_texture_rect_region(_engine, Rect2(-half, half * 2.0),
 					SpriteBank.frame_rect(int(_time * 10.0) % frames, int(SIZE)), col)
+		if not dim:
+			ShipLivery.draw_under(self, level, col, _time, 1.0, true, calm)
 		draw_texture(_base, -half, col)
+		if not dim:
+			ShipLivery.draw_over(self, level, col, _time, 1.0, calm)
 		draw_set_transform(Vector2.ZERO)
+		if _reveal >= 0.0:
+			_draw_reveal(center, radius)
+
+	## Onda de luz que sai da nave, brilho que apaga e oito centelhas que se abrem (ouro e acento).
+	func _draw_reveal(center: Vector2, radius: float) -> void:
+		var t := clampf(_reveal / REVEAL_TIME, 0.0, 1.0)
+		var accent := ShipLivery.accent_of(tint)
+		var fade := 1.0 - t
+		var wave := ease(t, 0.4)
+		draw_arc(center, radius * (0.35 + 0.9 * wave), 0.0, TAU, 64, Color(UiTheme.WHITE, 0.8 * fade), 2.0, true)
+		draw_arc(center, radius * (0.25 + 0.7 * wave), 0.0, TAU, 64, Color(accent, 0.6 * fade), 1.0, true)
+		draw_circle(center, radius * 0.7, Color(accent, 0.16 * fade * fade), true, -1.0, true)
+		for i: int in range(8):
+			var a := TAU * float(i) / 8.0 + 0.4
+			var dir := Vector2(cos(a), sin(a))
+			var from := center + dir * radius * (0.3 + 0.8 * wave)
+			draw_line(from, from + dir * radius * 0.16 * fade, Color(UiTheme.GOLD if i % 2 == 0 else accent, fade),
+					1.5, true)

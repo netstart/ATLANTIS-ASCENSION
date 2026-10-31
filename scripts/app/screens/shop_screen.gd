@@ -114,7 +114,9 @@ func _tile(shelf: GridContainer, name: String, tint: Color, accent: Color, dim: 
 	var box := card(accent, shelf, 0.7 if dim else 0.84)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	(box.get_parent() as Control).size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var view := ship_view(tint, 1)
+	# A pintura aparece na nave do jogador como ela está hoje (peças do nível do hangar).
+	var selected := StringName(String(SaveManager.data["selected"]["ship"]))
+	var view := ship_view(tint, 1, false, Economy.ship_level(SaveManager.data, selected))
 	if dim:
 		view.modulate = Color(1, 1, 1, 0.55)
 	box.add_child(view)

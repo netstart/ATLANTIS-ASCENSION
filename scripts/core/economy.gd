@@ -216,6 +216,7 @@ static func toggle_wing(profile: Dictionary, wing: StringName, wings: Array) -> 
 
 
 ## Carga levada para a missão (Sim.setup): aeronave escolhida, nível, secundária, asas, dificuldade.
+## "ship_level" só veste a nave (ShipLivery); o bônus do nível vai em "damage" e "hull".
 static func loadout(profile: Dictionary) -> Dictionary:
 	var sel: Dictionary = profile["selected"]
 	var ship := StringName(String(sel.get("ship", "falcon")))
@@ -227,7 +228,7 @@ static func loadout(profile: Dictionary) -> Dictionary:
 			"speed": 0.0, "difficulty": String(sel.get("difficulty", "normal")),
 			"bombs": int(district_bonus(profile, &"bombs")), "abyss_records": abyss_records(profile),
 			"memory_lane": int((profile.get("boss_memory", {}) as Dictionary).get("lane", -1)),
-			"cosmetic": String(sel.get("cosmetic", ""))}
+			"cosmetic": String(sel.get("cosmetic", "")), "ship_level": ship_level(profile, ship)}
 
 
 ## Registros Abissais: missões secretas já concluídas.

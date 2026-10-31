@@ -32,7 +32,8 @@ func _fill() -> void:
 		var top := HBoxContainer.new()
 		top.add_theme_constant_override("separation", 10)
 		box.add_child(top)
-		var view := ship_view(ship_tint(id, cosmetic if on else ""), 1, not owned)
+		var view := ship_view(ship_tint(id, cosmetic if on else ""), 1, not owned,
+				Economy.ship_level(profile, StringName(id)) if owned else 1)
 		view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		top.add_child(view)
 		var info := VBoxContainer.new()

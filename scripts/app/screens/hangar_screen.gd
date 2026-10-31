@@ -5,6 +5,11 @@ extends ListScreen
 ##
 ## A aeronave é a estrela: aparece grande (escala inteira, com halo) no cartão de cima, com as barras
 ## de nível e o ganho do próximo nível em menta ("antes → depois"), para o jogador ver o que compra.
+## Cada nível monta uma peça nova na nave (ShipLivery): o cartão diz qual vem a seguir, a subida
+## revela a peça com uma onda de luz e um selo dourado, e o cartão "Evolução" mostra as nove peças.
+
+## Nível recém-comprado: a próxima montagem da tela revela a peça dele.
+var _revealed: int = 0
 
 
 func title_key() -> String:
@@ -22,7 +27,19 @@ func _fill() -> void:
 	var hero := card(UiTheme.CYAN, null, 0.78)
 	# Escala 3 só onde sobra altura; nas telas baixas (270x480) a nave em 2x deixa a oficina à vista.
 	var zoom := 3 if _width >= 300.0 and safe.size.y >= 600.0 else 2
-	hero.add_child(ship_view(ship_tint(String(ship), String(profile["selected"].get("cosmetic", ""))), zoom))
+	var tint := ship_tint(String(ship), String(profile["selected"].get("cosmetic", "")))
+	var view := ship_view(tint, zoom, false, level)
+	view.name = "HeroShip"
+	hero.add_child(view)
+	if _revealed == level and ShipLivery.part_at(level) != &"":
+		view.reveal()
+		var fresh := badge(tr("hangar.livery_new") % tr("livery." + String(ShipLivery.part_at(level))), UiTheme.GOLD,
+				&"star")
+		fresh.name = "NewPart"
+		fresh.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		hero.add_child(fresh)
+		_pop_in(fresh)
+	_revealed = 0
 	var head := title_row(hero, tr("ship." + String(ship)), UiTheme.WHITE, 18)
 	head.add_child(badge(tr("hangar.level") % level, UiTheme.GOLD))
 	pips(hero, level, Economy.SHIP_MAX_LEVEL)
@@ -31,16 +48,50 @@ func _fill() -> void:
 	if level < Economy.SHIP_MAX_LEVEL:
 		var next := Economy.ship_bonus(level + 1)
 		text(hero, "→ " + tr("hangar.bonus") % [roundi(float(next["damage"]) * 100.0), int(next["hull"])], UiTheme.MINT)
+		var part := ShipLivery.next_part(level)
+		text(hero, "→ " + tr("hangar.livery_next") % tr("livery." + String(part["id"])), UiTheme.MINT)
 		var cost := Economy.ship_level_cost(level)
 		button(hero, tr("hangar.upgrade") % Locale.format_number(cost), func() -> void:
 			if Economy.upgrade_ship(SaveManager.data, ship):
+				_revealed = Economy.ship_level(SaveManager.data, ship)
 				AudioManager.play_ui("kenney_weapon_up")
 				SaveManager.save_profile(), Economy.can_pay(profile, {"credits": cost}), "UpgradeShip", true)
 	else:
 		hero.add_child(badge(tr("hangar.max"), UiTheme.GOLD, &"star"))
+	_fill_livery(level, tint)
 	_fill_secondaries(profile)
 	_fill_wings(profile)
 	_fill_difficulty(profile)
+
+
+## Evolução da nave: as nove peças em ordem, montadas (visto, na cor do acento) ou por vir (cadeado e
+## o nível que as monta). A primeira por vir fica em menta: é a próxima compra.
+func _fill_livery(level: int, tint: Color) -> void:
+	add_heading(tr("hangar.livery") % [ShipLivery.parts_at(level).size(), ShipLivery.PARTS.size()])
+	var box := card(UiTheme.GOLD if level >= Economy.SHIP_MAX_LEVEL else UiTheme.CYAN, null, 0.78)
+	box.add_theme_constant_override("separation", 3)
+	var accent := ShipLivery.accent_of(tint)
+	var next := int(ShipLivery.next_part(level).get("level", 0))
+	for p: Dictionary in ShipLivery.PARTS:
+		var at := int(p["level"])
+		var on := at <= level
+		var color := UiTheme.WHITE if on else (UiTheme.MINT if at == next else UiTheme.TEXT_DIM)
+		var row := title_row(box, tr("livery." + String(p["id"])), color, UiTheme.SMALL_SIZE,
+				&"check" if on else &"lock", accent if on else color)
+		row.add_child(UiTheme.label(tr("hangar.level") % at, UiTheme.SMALL_SIZE, UiTheme.GOLD if on else color))
+
+
+## Selo que salta para dentro (escala 0,6 → 1 com mola), salvo em "reduzir movimento".
+func _pop_in(node: Control) -> void:
+	if UiFx.reduced():
+		return
+	node.scale = Vector2.ONE * 0.6
+	node.modulate.a = 0.0
+	node.resized.connect(func() -> void: node.pivot_offset = node.size * 0.5)
+	var tween := node.create_tween().set_parallel()
+	tween.tween_property(node, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT) \
+			.set_delay(0.25)
+	tween.tween_property(node, "modulate:a", 1.0, 0.2).set_delay(0.25)
 
 
 func _fill_secondaries(profile: Dictionary) -> void:

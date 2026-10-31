@@ -138,6 +138,60 @@
   "sha256": "c44eef95acda8dd7a1776fbf92ce5884362de4cb22dc3f0ae6f08f691df1c88d"
  },
  {
+  "file": "assets/art/generated/livery/armor.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "cd2855886d7ecb774e81551f25276b186d96810c517c0424593448b6431a5d97"
+ },
+ {
+  "file": "assets/art/generated/livery/blades.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3994f92b324f46dd84deedd5d1ca1e64faf7ea3beecbbdb48f01b4918342f14a"
+ },
+ {
+  "file": "assets/art/generated/livery/canards.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "4845239f514d52564de2607bf81725de2ef5f4cb24d1032222a637f9d64ecbec"
+ },
+ {
+  "file": "assets/art/generated/livery/nav_lights.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3818901aed5dbd37e7be37d04beaf094f579e203ac5c0d182e3fa39c9149d6f8"
+ },
+ {
+  "file": "assets/art/generated/livery/runes.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "484d1c3a74d5dce0ed9e9ca44c1fd16173b2e6c14de43bb6f494d1256f7cbe75"
+ },
+ {
+  "file": "assets/art/generated/livery/sensor.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "589261f4bce20dbdfa47aa41d4242dc9a562a28c70c66f4b0609b84cebaf679d"
+ },
+ {
+  "file": "assets/art/generated/livery/stripes.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f990e8f400bf5e82677b9836780382e769bfa814a5ebd45b6a0c6bb2fd04ac29"
+ },
+ {
+  "file": "assets/art/generated/livery/thrusters.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3dad8f2c72c1ee59f6b731a78df0e5ed79d4b7e03883c6985db735c384dc6cfd"
+ },
+ {
+  "file": "assets/art/generated/livery/trim.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "22962589eff6391a032340995f7e67868fce96991afd175f9ec86b936b1e9b44"
+ },
+ {
   "file": "assets/art/generated/pickups/capsule.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",

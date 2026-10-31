@@ -74,6 +74,12 @@ func run(host: Node, check: Callable) -> void:
 	(app.screen(&"hangar") as ListScreen).refill()
 	(app.screen(&"hangar").find_child("UpgradeShip", true, false) as Button).pressed.emit()
 	check.call(Economy.ship_level(SaveManager.data, &"falcon") == 2, "Fluxo: subir o nível da Falcon na oficina")
+	var hangar := app.screen(&"hangar")
+	var hero := hangar.find_child("HeroShip", true, false)
+	check.call(hero != null and int(hero.get("level")) == 2 and hangar.find_child("NewPart", true, false) != null,
+			"Fluxo: a subida monta a peça nova na nave e mostra o selo")
+	(hangar as ListScreen).refill()
+	check.call(hangar.find_child("NewPart", true, false) == null, "Fluxo: o selo da peça nova aparece uma vez só")
 	app.go(&"back")
 	await LayoutTests.settle(host)
 	(app.screen(&"hub").find_child("Tab_ships", true, false) as Button).pressed.emit()

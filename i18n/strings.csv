@@ -233,6 +233,9 @@ hangar.difficulty,Dificuldade,Difficulty,Dificultad,Schwierigkeit,Difficulté,С
 hangar.equip,Equipar,Equip,Equipar,Ausrüsten,Équiper,Установить,Pasang,装備,장착,裝備,装备
 hangar.equipped,Equipada,Equipped,Equipada,Ausgerüstet,Équipée,Установлено,Terpasang,装備中,장착됨,已裝備,已装备
 hangar.level,Nível %d,Level %d,Nivel %d,Stufe %d,Niveau %d,Уровень %d,Level %d,Lv.%d,레벨 %d,等級 %d,等级 %d
+hangar.livery,Evolução da nave (%d de %d),Ship evolution (%d of %d),Evolución de la nave (%d de %d),Schiffsentwicklung (%d von %d),Évolution du vaisseau (%d sur %d),Эволюция корабля (%d из %d),Evolusi pesawat (%d dari %d),機体の進化（%d/%d）,기체 진화 (%d/%d),機體進化（%d/%d）,机体进化（%d/%d）
+hangar.livery_new,Peça montada: %s,Part installed: %s,Pieza montada: %s,Teil montiert: %s,Pièce montée : %s,Деталь установлена: %s,Komponen terpasang: %s,装着完了：%s,부품 장착: %s,已裝上：%s,已装上：%s
+hangar.livery_next,Visual novo: %s,New look: %s,Nuevo aspecto: %s,Neuer Look: %s,Nouveau look : %s,Новый облик: %s,Tampilan baru: %s,新パーツ：%s,새 외형: %s,新外觀：%s,新外观：%s
 hangar.max,Nível máximo,Max level,Nivel máximo,Maximalstufe,Niveau max,Максимальный уровень,Level maksimum,最大レベル,최대 레벨,最高等級,最高等级
 hangar.secondary,Arma secundária,Secondary weapon,Arma secundaria,Sekundärwaffe,Arme secondaire,Доп. оружие,Senjata sekunder,サブウェポン,보조 무기,副武器,副武器
 hangar.title,Oficina,Workshop,Taller,Werkstatt,Atelier,Мастерская,Bengkel,工房,정비소,工坊,工坊
@@ -296,6 +299,15 @@ hud.synergy,Sinergia: %s,Synergy: %s,Sinergia: %s,Synergie: %s,Synergie : %s,С�
 hud.tide,MARÉ ALTA!,HIGH TIDE!,¡MAREA ALTA!,SPRINGFLUT!,GRANDE MARÉE !,ВЫСОКИЙ ПРИЛИВ!,PASANG TINGGI!,満潮！,만조!,滿潮！,满潮！
 hud.tide_button,MARÉ,TIDE,MAREA,FLUT,MARÉE,ПРИЛИВ,PASANG,満潮,만조,滿潮,满潮
 hud.wind,VENTANIA!,GALE!,¡VENDAVAL!,STURMBÖE!,BOURRASQUE !,ШКВАЛ!,ANGIN KENCANG!,突風！,돌풍!,強風！,强风！
+livery.armor,Blindagem de oricalco,Orichalcum plating,Blindaje de oricalco,Orichalkum-Panzerung,Blindage d'orichalque,Орихалковая броня,Lapisan orikalkum,オリハルコン装甲,오리하르콘 장갑,山銅裝甲,山铜装甲
+livery.blades,Lâminas de maré,Tide blades,Hojas de marea,Gezeitenklingen,Lames de marée,Клинки прилива,Bilah pasang,潮の刃,조수의 칼날,潮汐之刃,潮汐之刃
+livery.canards,Canards de proa,Bow canards,Canards de proa,Bugcanards,Canards de proue,Носовые рули,Kanard haluan,カナード翼,카나드 날개,前翼,前翼
+livery.nav_lights,Luzes de navegação,Navigation lights,Luces de navegación,Positionslichter,Feux de navigation,Навигационные огни,Lampu navigasi,航法灯,항법등,航行燈,航行灯
+livery.runes,Runas atlantes,Atlantean runes,Runas atlantes,Atlantische Runen,Runes atlantes,Атлантские руны,Rune Atlantis,アトランティスのルーン,아틀란티스 룬,亞特蘭提斯符文,亚特兰蒂斯符文
+livery.sensor,Cristal sensor,Sensor crystal,Cristal sensor,Sensorkristall,Cristal capteur,Кристалл-сенсор,Kristal sensor,センサー結晶,센서 수정,感測水晶,传感水晶
+livery.stripes,Faixas de esquadrão,Squadron stripes,Franjas de escuadrón,Staffelstreifen,Bandes d'escadrille,Полосы эскадрильи,Garis skuadron,部隊ストライプ,편대 줄무늬,中隊條紋,中队条纹
+livery.thrusters,Propulsores auxiliares,Auxiliary thrusters,Propulsores auxiliares,Hilfstriebwerke,Propulseurs auxiliaires,Вспомогательные двигатели,Pendorong bantu,補助スラスター,보조 추진기,輔助推進器,辅助推进器
+livery.trim,Friso Ascendido,Ascended trim,Moldura Ascendida,Aufgestiegene Zierleiste,Liseré ascendant,Кайма Вознесения,Lis Kenaikan,昇華の金縁,승천의 금테,昇華金邊,升华金边
 log.c10m1_text,A 10.900 m o casco geme. O sonar mostra um pulso que não é nosso.,"At 10,900 m the hull groans. The sonar shows a pulse that isn't ours.",A 10.900 m el casco gime. El sonar muestra un pulso que no es nuestro.,In 10.900 m ächzt die Hülle. Das Sonar zeigt einen fremden Puls.,À 10 900 m la coque gémit. Le sonar montre une pulsation qui n'est pas la nôtre.,На 10 900 м корпус стонет. Сонар ловит чужой пульс.,Di 10.900 m lambung mengerang. Sonar menunjukkan denyut yang bukan milik kita.,"水深10,900m、船体がきしむ。ソナーに我々のものではない脈動。","수심 10,900m, 선체가 신음한다. 소나에 우리 것이 아닌 맥동이 잡힌다.","在10,900公尺，船體呻吟。聲納顯示一個不屬於我們的脈動。","在10,900米，船体呻吟。声呐显示一个不属于我们的脉动。"
 log.c10m1_title,Sonar da Fossa,Trench Sonar,Sonar de la Fosa,Graben-Sonar,Sonar de la fosse,Сонар впадины,Sonar Palung,海溝のソナー,해구 소나,海溝聲納,海沟声呐
 log.c10m2_text,As fontes alimentam um jardim vivo. Cada flor é um sensor do Protocolo.,The vents feed a living garden. Every flower is a Protocol sensor.,Las fuentes alimentan un jardín vivo. Cada flor es un sensor del Protocolo.,Die Quellen nähren einen lebenden Garten. Jede Blume ist ein Sensor des Protokolls.,Les sources nourrissent un jardin vivant. Chaque fleur est un capteur du Protocole.,Источники питают живой сад. Каждый цветок — датчик Протокола.,Ventilasi memberi makan taman hidup. Setiap bunga adalah sensor Protokol.,噴出孔が生きた庭を育てる。花の一輪一輪がプロトコルのセンサー。,분출구가 살아 있는 정원을 키운다. 꽃 하나하나가 프로토콜의 센서다.,噴口滋養著一座活的花園。每朵花都是協議的感測器。,喷口滋养着一座活的花园。每朵花都是协议的传感器。

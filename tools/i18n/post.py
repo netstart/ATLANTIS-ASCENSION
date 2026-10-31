@@ -333,3 +333,42 @@ COOP = {
                        "两名驾驶共用船体：PC上键盘加手柄；靠近时潮汐连结会消除子弹"],
 }
 STRINGS.update(COOP)
+
+
+# Evolução visual da nave pelo nível do hangar (scripts/view/ship_livery.gd).
+LIVERY = {
+    "hangar.livery": ["Evolução da nave (%d de %d)", "Ship evolution (%d of %d)", "Evolución de la nave (%d de %d)",
+                      "Schiffsentwicklung (%d von %d)", "Évolution du vaisseau (%d sur %d)", "Эволюция корабля (%d из %d)",
+                      "Evolusi pesawat (%d dari %d)", "機体の進化（%d/%d）", "기체 진화 (%d/%d)", "機體進化（%d/%d）",
+                      "机体进化（%d/%d）"],
+    "hangar.livery_next": ["Visual novo: %s", "New look: %s", "Nuevo aspecto: %s", "Neuer Look: %s", "Nouveau look : %s",
+                           "Новый облик: %s", "Tampilan baru: %s", "新パーツ：%s", "새 외형: %s", "新外觀：%s", "新外观：%s"],
+    "hangar.livery_new": ["Peça montada: %s", "Part installed: %s", "Pieza montada: %s", "Teil montiert: %s",
+                          "Pièce montée : %s", "Деталь установлена: %s", "Komponen terpasang: %s", "装着完了：%s",
+                          "부품 장착: %s", "已裝上：%s", "已装上：%s"],
+    "livery.stripes": ["Faixas de esquadrão", "Squadron stripes", "Franjas de escuadrón", "Staffelstreifen",
+                       "Bandes d'escadrille", "Полосы эскадрильи", "Garis skuadron", "部隊ストライプ", "편대 줄무늬",
+                       "中隊條紋", "中队条纹"],
+    "livery.nav_lights": ["Luzes de navegação", "Navigation lights", "Luces de navegación", "Positionslichter",
+                          "Feux de navigation", "Навигационные огни", "Lampu navigasi", "航法灯", "항법등", "航行燈",
+                          "航行灯"],
+    "livery.canards": ["Canards de proa", "Bow canards", "Canards de proa", "Bugcanards", "Canards de proue",
+                       "Носовые рули", "Kanard haluan", "カナード翼", "카나드 날개", "前翼", "前翼"],
+    "livery.sensor": ["Cristal sensor", "Sensor crystal", "Cristal sensor", "Sensorkristall", "Cristal capteur",
+                      "Кристалл-сенсор", "Kristal sensor", "センサー結晶", "센서 수정", "感測水晶", "传感水晶"],
+    "livery.armor": ["Blindagem de oricalco", "Orichalcum plating", "Blindaje de oricalco", "Orichalkum-Panzerung",
+                     "Blindage d'orichalque", "Орихалковая броня", "Lapisan orikalkum", "オリハルコン装甲",
+                     "오리하르콘 장갑", "山銅裝甲", "山铜装甲"],
+    "livery.thrusters": ["Propulsores auxiliares", "Auxiliary thrusters", "Propulsores auxiliares", "Hilfstriebwerke",
+                         "Propulseurs auxiliaires", "Вспомогательные двигатели", "Pendorong bantu", "補助スラスター",
+                         "보조 추진기", "輔助推進器", "辅助推进器"],
+    "livery.runes": ["Runas atlantes", "Atlantean runes", "Runas atlantes", "Atlantische Runen", "Runes atlantes",
+                     "Атлантские руны", "Rune Atlantis", "アトランティスのルーン", "아틀란티스 룬", "亞特蘭提斯符文",
+                     "亚特兰蒂斯符文"],
+    "livery.blades": ["Lâminas de maré", "Tide blades", "Hojas de marea", "Gezeitenklingen", "Lames de marée",
+                      "Клинки прилива", "Bilah pasang", "潮の刃", "조수의 칼날", "潮汐之刃", "潮汐之刃"],
+    "livery.trim": ["Friso Ascendido", "Ascended trim", "Moldura Ascendida", "Aufgestiegene Zierleiste",
+                    "Liseré ascendant", "Кайма Вознесения", "Lis Kenaikan", "昇華の金縁", "승천의 금테", "昇華金邊",
+                    "升华金边"],
+}
+STRINGS.update(LIVERY)

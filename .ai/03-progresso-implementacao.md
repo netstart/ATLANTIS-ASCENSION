@@ -227,5 +227,12 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   nos 11 idiomas (`tools/check_store_texts.py`), política de privacidade 1.1 (offline, sem anúncios) com página
   HTML (`tools/build_privacy_page.py`) e roteiro com todas as respostas do Play Console em
   `docs/store/play-console.md`
+- ✅ `1.7.0` Evolução visual da nave pelo nível do hangar (`ShipLivery`): cada nível do 2 ao 10 monta uma peça
+  que fica — faixas de esquadrão, luzes de navegação piscando, canards de proa, cristal sensor, blindagem de
+  oricalco (junto do +1 de casco), propulsores auxiliares com chama, runas atlantes pulsando, lâminas de maré e,
+  no 10, a nave Ascendida (friso de ouro, halo e rastro de centelhas). Arte em `tools/gen_livery.py`, alinhada
+  pixel a pixel à nave e com acento oposto à tinta (legível em toda pintura). Hangar anuncia a próxima peça,
+  revela a nova com onda de luz e selo, e lista as nove em "Evolução da nave"; coleção e loja mostram a nave
+  vestida; vale em todo modo e na ala do co-op, sem mudar a partida (hash igual)
 - ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
   (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`

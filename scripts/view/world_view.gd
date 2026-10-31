@@ -10,6 +10,8 @@ extends Node2D
 ## abaixo de tudo; inimigos que sobem do fundo (SimEnemy.depth < 1, ainda sem colisão na Sim) crescem
 ## de 35% a 100% saindo da neblina, e a sombra se separa deles conforme sobem. A nave inclina nas
 ## curvas (some com "reduzir movimento") e o dano pisca em branco (shaders/sprite_flash.gdshader).
+## A nave veste as peças do nível do hangar (ShipLivery, carga "ship_level"); na Ascendida (nível 10)
+## deixa um rastro de centelhas de ouro.
 
 const ANIM_FPS := 12.0
 const EXPLOSION_TIME := 0.6
@@ -33,6 +35,9 @@ const HAZARD_COLORS := {"lava": Color(1.0, 0.45, 0.15, 0.95), "icefall": Color(0
 const COVER_COLOR := Color(0.16, 0.2, 0.3, 0.95)
 const COVER_TRIM := Color(0.45, 0.85, 1.0, 0.8)
 const BREACH_COLOR := Color(0.75, 0.55, 1.0, 0.22)
+## Rastro da nave Ascendida: uma centelha a cada WAKE_STEP s, WAKE_LEN delas.
+const WAKE_STEP := 0.05
+const WAKE_LEN := 9
 var dark: bool = false
 ## Paleta de daltonismo das balas inimigas (Settings "colorblind").
 var colorblind: String = "off"
@@ -78,6 +83,11 @@ var _ship_tint := Color(1, 1, 1)
 var _depth_tint := Color(0.45, 0.72, 0.92, 0.6)
 var _bank: float = 0.0
 var _wing_bank: float = 0.0
+## Nível do hangar da nave e da ala (peças da ShipLivery).
+var _livery: int = 1
+var _wing_livery: int = 1
+var _wake: Array[Vector2] = []
+var _wake_clock: float = 0.0
 
 
 func setup(p_sim: Sim) -> void:
@@ -100,6 +110,8 @@ func setup(p_sim: Sim) -> void:
 	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
 	if not paint.is_empty():
 		_ship_tint = Color(paint)
+	_livery = clampi(int(sim.loadout.get("ship_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
+	_wing_livery = clampi(int(sim.loadout.get("coop_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
 	for name: String in ["base_very_damaged", "base_damaged", "base_slight", "base_full"]:
 		_ship_bases.append(SpriteBank.texture("res://assets/art/void/main_ship/%s.png" % name))
 	_engine_idle = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_idle.png")
@@ -152,6 +164,7 @@ func refresh(delta: float) -> void:
 	_bank = lerpf(_bank, _bank_target(sim.player), ease)
 	if sim.wing != null:
 		_wing_bank = lerpf(_wing_bank, _bank_target(sim.wing), ease)
+	_trail(delta)
 	_shadows.queue_redraw()
 	_entities.queue_redraw()
 	_player.queue_redraw()
@@ -418,10 +431,13 @@ func _draw_wing(ci: CanvasItem, w: SimPlayer, blink: bool) -> void:
 	var col := Color(Color(String(w.ship.get("tint", "#9fe8ff"))), 0.45 if blink else 1.0)
 	var engine := _engine_power if w.last_move.y < -0.3 else _engine_idle
 	var frames := maxi(1, engine.get_width() / 48)
+	var tint := Color(col, 1.0)
 	_bank_transform(ci, w.pos, _wing_bank)
 	ci.draw_texture_rect_region(engine, Rect2(-24, -24, 48, 48),
 			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
+	ShipLivery.draw_under(ci, _wing_livery, tint, time, col.a, w.last_move.y < -0.3, reduce_flashes)
 	ci.draw_texture(_ship_bases[3], Vector2(-24, -24), col)
+	ShipLivery.draw_over(ci, _wing_livery, tint, time, col.a, reduce_flashes)
 	ci.draw_set_transform(Vector2.ZERO)
 	ci.draw_string(Locale.font, w.pos + Vector2(-4, 30), "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
 
@@ -450,12 +466,16 @@ func _draw_player(ci: CanvasItem) -> void:
 		_draw_wing(ci, sim.wing, blink)
 	if ghost_sim != null and ghost_sim.player.alive:
 		ci.draw_texture(_ship_bases[3], ghost_sim.player.pos - Vector2(24, 24), Color(0.5, 1.0, 1.0, 0.3))
-	var engine := _engine_power if pl.last_move.y < -0.3 else _engine_idle
+	_draw_wake(ci, col.a)
+	var thrust := pl.last_move.y < -0.3
+	var engine := _engine_power if thrust else _engine_idle
 	var frames := maxi(1, engine.get_width() / 48)
 	_bank_transform(ci, p, _bank)
 	ci.draw_texture_rect_region(engine, Rect2(-24, -24, 48, 48),
 			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
+	ShipLivery.draw_under(ci, _livery, _ship_tint, time, col.a, thrust, reduce_flashes)
 	ci.draw_texture(base, Vector2(-24, -24), col)
+	ShipLivery.draw_over(ci, _livery, _ship_tint, time, col.a, reduce_flashes)
 	ci.draw_set_transform(Vector2.ZERO)
 	if pl.invuln > 0 and _shield != null:
 		var sf := int(time * ANIM_FPS) % maxi(1, _shield.get_width() / 64)
@@ -464,6 +484,29 @@ func _draw_player(ci: CanvasItem) -> void:
 	if touching:
 		ci.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.08, 0.07, 0.09))
 		ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), Color(1, 1, 1))
+
+
+## Rastro da Ascendida: guarda a posição da nave a cada WAKE_STEP s (só desenho; qualidade Baixa não tem).
+func _trail(delta: float) -> void:
+	if _livery < Economy.SHIP_MAX_LEVEL or fx_level < 1 or not sim.player.alive:
+		_wake.clear()
+		return
+	_wake_clock += delta
+	if _wake_clock < WAKE_STEP:
+		return
+	_wake_clock = 0.0
+	_wake.push_front(sim.player.pos + Vector2(0, 12))
+	if _wake.size() > WAKE_LEN:
+		_wake.pop_back()
+
+
+## Centelhas de ouro que ficam para trás, menores e mais apagadas quanto mais velhas.
+func _draw_wake(ci: CanvasItem, alpha: float) -> void:
+	for i: int in range(_wake.size()):
+		var k := 1.0 - float(i) / float(WAKE_LEN)
+		var drift := Vector2(sin(time * 3.0 + float(i)) * 1.5, float(i) * 1.2)
+		_tex_centered(ci, _glow, _wake[i] + drift, 0.22 * k, Color(ShipLivery.GOLD, 0.45 * k * alpha))
+		ci.draw_rect(Rect2(_wake[i] + drift - Vector2(0.5, 0.5), Vector2(1, 1)), Color(1, 0.95, 0.75, 0.8 * k * alpha))
 
 
 ## Nave inclinada na curva: gira um pouco e estreita (a asa de dentro "abaixa").

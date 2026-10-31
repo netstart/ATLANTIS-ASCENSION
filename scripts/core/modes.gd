@@ -260,9 +260,12 @@ static func loadout_for(mode: StringName, profile: Dictionary, date: String) -> 
 	var out := Economy.loadout(profile) if mode in [&"survival", &"second_tide", &"abyss"] else Sim.default_loadout(ship)
 	if mode == &"second_tide":
 		out["second_tide"] = true
+	# A evolução visual do hangar vale em todo modo: só veste a nave, não muda a partida.
+	out["ship_level"] = Economy.ship_level(profile, ship)
 	if mode == &"coop":
 		out["coop"] = true
 		out["coop_ship"] = coop_partner(profile)
+		out["coop_level"] = Economy.ship_level(profile, StringName(String(out["coop_ship"])))
 	if mode == &"currents":
 		out["mutators"] = [String(current_mutator(LiveOps.week_of(date)))]
 	return out

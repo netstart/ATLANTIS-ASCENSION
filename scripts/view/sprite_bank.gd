@@ -70,3 +70,4 @@ static func frame_rect(index: int, size: int) -> Rect2:
 static func clear() -> void:
 	_cache.clear()
 	_textures.clear()
+	ShipLivery.clear()
