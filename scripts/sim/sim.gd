@@ -28,6 +28,10 @@ const ORB_WEAPONS: Array[StringName] = [&"pulsar", &"laser", &"plasma", &"railgu
 const TIDE_FRAMES := 480
 const TIDE_RADIUS := 20.0
 const TIDE_CANCEL := 48.0
+## Co-op local (PC): as duas naves dividem o casco; perto uma da outra, o Elo de Maré entre elas apaga balas.
+const LINK_RANGE := 64.0
+const LINK_CANCEL := 12.0
+const COOP_OFFSET := 36.0
 const DIFFICULTY := {
 	&"brisa": {"hull": 2, "bullet": 0.8, "rank": false, "score": 0.5},
 	&"normal": {"hull": 0, "bullet": 1.0, "rank": true, "score": 1.0},
@@ -109,6 +113,9 @@ var captured: int = 0
 var specials_used: int = 0
 ## Abismo Infinito: profundidade atual (0 fora do modo); acelera as balas e multiplica os pontos.
 var abyss_depth: int = 0
+## Segunda nave do co-op local (null no jogo solo) e se o Elo de Maré está ligado neste passo.
+var wing: SimPlayer
+var linked: bool = false
 var _coral_grazes: int = 0
 var _bubble_timer: int = 0
 var _finish_timer: int = -1
@@ -178,6 +185,8 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	if not lock.is_empty():
 		player.weapon_lock = StringName(lock)
 		player.weapon = player.weapon_lock
+	if bool(loadout.get("coop", false)):
+		_setup_wing(StringName(String(loadout.get("coop_ship", "manta"))))
 	secondary = StringName(String(loadout.get("secondary", "")))
 	secondary_level = clampi(int(loadout.get("secondary_level", 1)), 1, 5)
 	scroll_speed = float(mission.get("scroll_speed", 22.0))
@@ -188,6 +197,21 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	stage.setup(mission)
 	for c: int in range(COLUMNS):
 		_columns.append([])
+
+
+func _setup_wing(ship_id: StringName) -> void:
+	wing = SimPlayer.new()
+	wing.setup((tables["ships"] as Dictionary).get(ship_id, {}), player.speed_mult / maxf(0.01,
+			float(player.ship.get("speed", 1.0))))
+	# O feixe do Laser é resolvido só para a nave 1; a ala usa Pulsar no lugar.
+	if wing.signature == &"laser":
+		wing.signature = &"pulsar"
+		wing.weapon = &"pulsar"
+	player.pos.x -= COOP_OFFSET
+	wing.pos = SimPlayer.START + Vector2(COOP_OFFSET, 0)
+	if player.weapon_lock != &"" and player.weapon_lock != &"laser":
+		wing.weapon_lock = player.weapon_lock
+		wing.weapon = player.weapon_lock
 
 
 ## Reviver (anúncio recompensado ou grátis na Steam): volta com 1 de casco, balas apagadas e 3 s de
@@ -249,7 +273,8 @@ func damage_mult() -> float:
 
 # --- Passo -------------------------------------------------------------------------------------
 
-func step(input: SimInput) -> void:
+## `input2`: entrada da segunda nave no co-op local (ignorada no solo).
+func step(input: SimInput, input2: SimInput = null) -> void:
 	if finished:
 		return
 	if not offer.is_empty():
@@ -272,6 +297,8 @@ func step(input: SimInput) -> void:
 			player.pos += drift * STEP
 			player.pos = player.pos.clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
 		_player_actions(input)
+		if wing != null:
+			_wing_actions(input2 if input2 != null else SimInput.new())
 	SecondaryFire.step(self)
 	ShipTraits.step(self)
 	Specials.step(self)
@@ -294,7 +321,9 @@ func step(input: SimInput) -> void:
 	if laser_active:
 		_beam_attack(WeaponFire.laser_width(player.level), WeaponFire.dps(
 				(tables["weapons"] as Dictionary).get(&"laser", {}), player.level) * damage_mult())
-	_collide_player()
+	_collide_ship(player)
+	if wing != null:
+		_collide_ship(wing)
 	_pickups_step()
 	_cleanup()
 	if bool((DIFFICULTY[difficulty] as Dictionary)["rank"]):
@@ -348,6 +377,30 @@ func _player_actions(input: SimInput) -> void:
 		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_CANCEL))
 		rank = minf(1.0, rank + 0.1)
 		emit(&"tide", {"pos": player.pos})
+
+
+## Ala do co-op: move, atira com a própria arma, usa as bombas do par e liga o Elo de Maré quando perto.
+func _wing_actions(input: SimInput) -> void:
+	wing.tick()
+	wing.move(input)
+	if input.fire:
+		var before := player_bullets.count
+		var def: Dictionary = (tables["weapons"] as Dictionary).get(wing.weapon, {})
+		if WeaponFire.fire(wing, player_bullets, def, frame, damage_mult(), mods.fire_rate) > 0:
+			ShipTraits.on_fire(self, before)
+	if input.bomb and player.bombs > 0:
+		player.bombs -= 1
+		scoring.bombs_used += 1
+		scoring.break_chain()
+		wing.invuln = maxi(wing.invuln, SimPlayer.BOMB_INVULN)
+		area_blast(BOMB_DAMAGE)
+		emit(&"bomb", {"pos": wing.pos})
+	var was := linked
+	linked = wing.pos.distance_to(player.pos) <= LINK_RANGE
+	if linked:
+		pearls_from(enemy_bullets.cancel_near((wing.pos + player.pos) * 0.5, LINK_CANCEL))
+	if linked != was:
+		emit(&"link", {"on": linked})
 
 
 ## Bomba e especial: todas as balas viram pérolas e todo inimigo na tela leva dano.
@@ -713,11 +766,11 @@ func _beam_attack(width: float, dps_value: float) -> void:
 		boss.damage_body(dmg, self)
 
 
-func _collide_player() -> void:
+func _collide_ship(ship: SimPlayer) -> void:
 	if not player.alive:
 		return
-	var pp := player.pos
-	var hb := player.hitbox
+	var pp := ship.pos
+	var hb := ship.hitbox
 	var hit := false
 	var cause := &"bullet"
 	for i: int in range(enemy_bullets.count):
@@ -729,7 +782,7 @@ func _collide_player() -> void:
 			break
 		if enemy_bullets.grazed[i] == 0 and d2 <= (hb + r + GRAZE_RANGE) * (hb + r + GRAZE_RANGE):
 			enemy_bullets.grazed[i] = 1
-			_graze(p)
+			_graze(p, ship)
 	if not hit:
 		for e: SimEnemy in enemies:
 			if e.active() and pp.distance_to(e.pos) <= e.radius * CONTACT_FACTOR + hb:
@@ -747,14 +800,19 @@ func _collide_player() -> void:
 		hit = pp.distance_to(boss.body_pos()) <= boss.body_radius() * CONTACT_FACTOR + hb
 		if hit:
 			cause = &"boss"
-	if hit and player.vulnerable():
-		_player_hit(cause)
+	if hit and ship.vulnerable():
+		_player_hit(cause, ship)
 
 
-func _graze(p: Vector2) -> void:
+func _graze(p: Vector2, ship: SimPlayer = null) -> void:
 	scoring.on_graze()
+	if linked:
+		# Elo de Maré: raspão perto do par vale dobrado.
+		scoring.on_graze()
 	scoring.add_pressure(mods.graze_bonus)
 	player.special_charge = minf(1.0, player.special_charge + SimPlayer.GRAZE_CHARGE * (1.0 + mods.graze_bonus))
+	if ship != null and ship != player:
+		ship.special_charge = player.special_charge
 	emit(&"graze", {"pos": p})
 	if breach_frames > 0:
 		# Redemoinho: durante a Gravity Breach cada raspão conta duas vezes.
@@ -768,22 +826,33 @@ func _graze(p: Vector2) -> void:
 				emit(&"heal", {"pos": player.pos})
 
 
-func _player_hit(cause: StringName) -> void:
+## `ship`: a nave atingida (no co-op, a ala divide o casco da nave 1).
+func _player_hit(cause: StringName, ship: SimPlayer = null) -> void:
+	if ship == null:
+		ship = player
 	fury_stacks = 0
 	capsule_combo = 0
 	if mods.bubbles > 0:
 		mods.bubbles -= 1
-		player.invuln = maxi(player.invuln, 60)
-		pearls_from(enemy_bullets.cancel_near(player.pos, MERCY_RADIUS))
-		emit(&"bubble_pop", {"pos": player.pos})
+		ship.invuln = maxi(ship.invuln, 60)
+		pearls_from(enemy_bullets.cancel_near(ship.pos, MERCY_RADIUS))
+		emit(&"bubble_pop", {"pos": ship.pos})
 		return
 	scoring.hull_lost += 1
 	scoring.break_chain()
+	var keep_level := player.level
 	var down := player.take_hit()
-	enemy_bullets.cancel_near(player.pos, 120.0 if mods.reflux else MERCY_RADIUS)
+	if ship != player:
+		# O casco é do par; o nível de arma perdido é o da nave atingida.
+		player.level = keep_level
+		ship.level = maxi(1, ship.level - 1)
+	if wing != null:
+		wing.invuln = player.invuln
+		wing.alive = player.alive
+	enemy_bullets.cancel_near(ship.pos, 120.0 if mods.reflux else MERCY_RADIUS)
 	rank = maxf(0.0, rank - 0.25)
 	hitstop = maxi(hitstop, 6)
-	emit(&"player_hit", {"pos": player.pos, "hull": player.hull, "down": down, "cause": cause})
+	emit(&"player_hit", {"pos": ship.pos, "hull": player.hull, "down": down, "cause": cause})
 
 
 func _kill_enemy(e: SimEnemy) -> void:
@@ -878,8 +947,13 @@ func _pickups_step() -> void:
 		p += (pk["vel"] as Vector2) * STEP
 		pk["pos"] = p
 		var radius := PEARL_RADIUS if kind == &"pearl" else PICKUP_RADIUS
+		var who: SimPlayer = null
 		if player.alive and p.distance_to(player.pos) <= radius:
-			_collect(kind, frames)
+			who = player
+		elif wing != null and wing.alive and p.distance_to(wing.pos) <= radius:
+			who = wing
+		if who != null:
+			_collect(kind, frames, who)
 			pickups.remove_at(i)
 		elif p.y > Playfield.FIELD.y + 24.0 or (kind == &"pearl" and frames > 600):
 			if kind == &"medal" and mods.medal_net and not pk.has("bounced"):
@@ -895,12 +969,16 @@ func _pickups_step() -> void:
 		i -= 1
 
 
-func _collect(kind: StringName, frames: int) -> void:
+func _collect(kind: StringName, frames: int, who: SimPlayer = null) -> void:
+	if who == null:
+		who = player
 	match kind:
 		&"orb":
 			var weapon := orb_weapon(frames)
-			var up := player.collect_orb(weapon)
-			emit(&"orb", {"weapon": player.weapon, "level": player.level, "up": up})
+			if who == wing and weapon == &"laser":
+				weapon = &"pulsar"
+			var up := who.collect_orb(weapon)
+			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up})
 		&"medal":
 			emit(&"medal", {"value": scoring.on_medal()})
 		&"pearl":
@@ -991,6 +1069,8 @@ func state_hash() -> String:
 			"%.3f,%.3f" % [player.pos.x, player.pos.y], str(enemy_bullets.count), str(player_bullets.count),
 			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken),
 			str(rescued), str(breach_frames), str(captured)])
+	if wing != null:
+		parts.append("w%.3f,%.3f:%d" % [wing.pos.x, wing.pos.y, wing.level])
 	for e: SimEnemy in enemies:
 		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
 	var sum := Vector2.ZERO

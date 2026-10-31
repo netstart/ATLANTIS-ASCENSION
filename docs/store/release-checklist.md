@@ -5,11 +5,14 @@ nome do mantenedor, então ficam com ele. Ordem sugerida:
 
 ## 1. Ferramentas
 
-1. `powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1` — instala o Android SDK e **pede que
-   você aceite as licenças do Google**. Depois disso o export Android (`.apk`/`.aab`) funciona.
-2. Criar a keystore de release (guarde fora do repositório):
-   `keytool -genkeypair -v -keystore atlantis-release.keystore -alias atlantis -keyalg RSA -keysize 2048 -validity 10000`
-   e preencher `keystore/release*` no preset Android (ou nas variáveis `GODOT_ANDROID_KEYSTORE_RELEASE_*`).
+1. ✅ Android SDK instalado (`tools\setup_android_sdk.ps1`, licenças do Google aceitas pelo mantenedor).
+2. ✅ Chave de upload criada fora do repositório: `C:\src\tools\keys\atlantis-upload.keystore` (RSA 4096,
+   alias `atlantis-upload`) e `atlantis-upload.env` com as variáveis `GODOT_ANDROID_KEYSTORE_RELEASE_*`. **Faça
+   backup dos dois arquivos** (cofre de senhas ou mídia offline). Na Play, ative a Assinatura de apps pelo Google
+   Play e envie esta chave como chave de upload: se ela se perder, a Play permite trocar a chave de upload.
+3. Todos os builds: `powershell -ExecutionPolicy Bypass -File tools\build_release.ps1` gera em `build/` o APK de
+   debug, o AAB de release assinado (`atlantis-ascension-release.aab`, preset "Android Play"), o zip do Windows e o
+   tar.gz do Linux.
 
 ## 2. Google Play
 

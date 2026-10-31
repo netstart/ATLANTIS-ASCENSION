@@ -17,6 +17,7 @@ func run(check: Callable) -> void:
 	_portraits(check)
 	_abyss(check, tables)
 	_hadal(check)
+	_coop(check, tables)
 
 
 func _sim(tables: Dictionary, ship: StringName, seed: int = 5) -> Sim:
@@ -258,3 +259,37 @@ func _hadal(check: Callable) -> void:
 			"Fossa Hadal: abaixo do primeiro mar no mapa")
 	var bosses: Dictionary = Sim.load_tables()["bosses"]
 	check.call(bosses.has(&"hadal_matriarch") and bosses.has(&"hadal_angler"), "Fossa Hadal: chefes nos dados")
+
+
+## Co-op local: duas naves, casco dividido, Elo de Maré quando perto, o par vence e o hash se repete.
+func _coop(check: Callable, tables: Dictionary) -> void:
+	var p := SaveManagerScript.default_profile()
+	var loadout := Modes.loadout_for(&"coop", p, "2026-11-01")
+	check.call(bool(loadout["coop"]) and String(loadout["coop_ship"]) != String(p["selected"]["ship"]),
+			"Co-op: a ala usa outra nave (%s)" % loadout["coop_ship"])
+	check.call(Modes.run(&"coop", p, "2026-11-01", 1).size() == Modes.ARCADE.size(), "Co-op: corrida do Arcade")
+	var hashes: Array[String] = []
+	var sim: Sim
+	var link := false
+	for k: int in range(2):
+		sim = Sim.new()
+		sim.setup(Sim.load_mission(&"c1m1"), tables, loadout, 7)
+		var bot := BotPilot.new()
+		var mate := BotPilot.new()
+		while not sim.finished and sim.frame < 60 * 60 * 8:
+			sim.step(bot.decide(sim), mate.decide_wing(sim))
+			for ev: Dictionary in sim.take_events():
+				link = link or (ev["type"] == &"link" and bool(ev["on"]))
+		hashes.append(sim.state_hash())
+	check.call(sim.wing != null and sim.cleared, "Co-op: o par vence a 1-1 (%.0f s)" % (sim.frame / 60.0))
+	check.call(link, "Co-op: o Elo de Maré liga com as naves perto")
+	check.call(hashes[0] == hashes[1], "Co-op: determinístico")
+	var hit := Sim.new()
+	hit.setup(Sim.load_mission(&"c1m1"), tables, loadout, 7)
+	var before := hit.player.hull
+	hit.fire_enemy(hit.wing.pos, 90.0, 0.0, 0, 0.0, 0.0)
+	hit.step(SimInput.new(), SimInput.new())
+	check.call(hit.player.hull == before - 1 and hit.wing.invuln > 0, "Co-op: tiro na ala tira do casco do par")
+	var solo := Sim.new()
+	solo.setup(Sim.load_mission(&"c1m1"), tables, Sim.default_loadout(&"falcon"), 7)
+	check.call(solo.wing == null, "Co-op: sem ala no jogo solo")

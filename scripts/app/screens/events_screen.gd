@@ -6,7 +6,7 @@ extends ListScreen
 
 const MODE_HINT := {&"arcade": "c2m3", &"daily": "c2m1", &"survival": "c4m1", &"boss_rush": "c9m3",
 		&"practice": "c1m1", &"currents": "c3m2", &"second_tide": "c9m3",
-		&"abyss": "c7m1"}
+		&"abyss": "c7m1", &"coop": "c1m3"}
 
 
 func title_key() -> String:
@@ -38,6 +38,8 @@ func _fill() -> void:
 	add_heading(tr("events.modes"))
 	for m: Dictionary in Modes.MODES:
 		var mode: StringName = m["id"]
+		if not Modes.available(mode):
+			continue
 		var best := int((profile.get("mode_best", {}) as Dictionary).get(String(mode), 0))
 		add_text("%s · %s" % [tr("mode." + String(mode)), tr("mode.%s_desc" % mode)], UiTheme.TEXT_DIM)
 		if mode == &"currents":

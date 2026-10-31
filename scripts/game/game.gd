@@ -32,6 +32,7 @@ var stress: int = 0
 var paused: bool = false
 
 var _bot: BotPilot
+var _wing_bomb_held: bool = false
 var _ghost_sim: Sim
 var _backdrop: OceanBackdrop
 var _clip: Control
@@ -172,6 +173,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if paused:
 		return
+	if sim.wing != null and (event is InputEventJoypadButton or event is InputEventJoypadMotion):
+		# No co-op o controle é da nave 2 (lido em _wing_input).
+		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
 		if touch.pressed:
@@ -202,6 +206,10 @@ func _human_input() -> SimInput:
 	input.move = _drag
 	_drag = Vector2.ZERO
 	input.axis = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
+	if sim.wing != null:
+		# Co-op: a nave 1 fica com o teclado (e o toque); o controle move a ala.
+		input.axis = Vector2(_key(KEY_D, KEY_RIGHT) - _key(KEY_A, KEY_LEFT), _key(KEY_S, KEY_DOWN) - _key(KEY_W, KEY_UP))
+		input.axis = input.axis.limit_length(1.0)
 	input.precise = Input.is_action_pressed(&"precise") or _touch_ids.size() >= 2
 	input.fire = bool(Settings.get_value("auto_fire")) or Input.is_action_pressed(&"fire") or not _touch_ids.is_empty()
 	input.special = _want_special
@@ -229,6 +237,9 @@ func _on_tick(_dt: float) -> void:
 	else:
 		input = _bot.decide(sim) if _bot != null else _human_input()
 	recording.record(input)
+	var input2: SimInput = null
+	if sim.wing != null:
+		input2 = _bot.decide_wing(sim) if _bot != null else _wing_input()
 	if _ghost_sim != null and not _ghost_sim.finished:
 		var g := ghost.next_input()
 		if g != null:
@@ -236,7 +247,35 @@ func _on_tick(_dt: float) -> void:
 			_ghost_sim.take_events()
 	if stress > 0:
 		_stress()
-	sim.step(input)
+	sim.step(input, input2)
+
+
+func _key(a: Key, b: Key) -> float:
+	return 1.0 if Input.is_physical_key_pressed(a) or Input.is_physical_key_pressed(b) else 0.0
+
+
+## Co-op local: a nave 2 é o primeiro controle conectado (analógico ou direcional, B = bomba, tiro automático).
+## Os eventos de controle não vão para a nave 1 enquanto houver ala (_unhandled_input).
+func _wing_input() -> SimInput:
+	var input := SimInput.new()
+	input.fire = true
+	var pads := Input.get_connected_joypads()
+	if pads.is_empty():
+		return input
+	var dev: int = pads[0]
+	var axis := Vector2(Input.get_joy_axis(dev, JOY_AXIS_LEFT_X), Input.get_joy_axis(dev, JOY_AXIS_LEFT_Y))
+	if axis.length() < 0.2:
+		axis = Vector2.ZERO
+	axis += Vector2(float(Input.is_joy_button_pressed(dev, JOY_BUTTON_DPAD_RIGHT))
+			- float(Input.is_joy_button_pressed(dev, JOY_BUTTON_DPAD_LEFT)),
+			float(Input.is_joy_button_pressed(dev, JOY_BUTTON_DPAD_DOWN))
+			- float(Input.is_joy_button_pressed(dev, JOY_BUTTON_DPAD_UP)))
+	input.axis = axis.limit_length(1.0)
+	input.precise = Input.get_joy_axis(dev, JOY_AXIS_TRIGGER_LEFT) > 0.5
+	var bomb := Input.is_joy_button_pressed(dev, JOY_BUTTON_B)
+	input.bomb = bomb and not _wing_bomb_held
+	_wing_bomb_held = bomb
+	return input
 
 
 ## Estresse (benchmark): mantém `stress` balas inimigas vivas, em anéis lentos do topo.

@@ -318,6 +318,21 @@ func _draw_boss_parts(ci: CanvasItem, b: SimBoss, body: Vector2) -> void:
 
 # --- Jogador -----------------------------------------------------------------------------------
 
+## Ala do co-op: a mesma nave com a cor dela e, perto da nave 1, o Elo de Maré (linha que apaga balas).
+func _draw_wing(ci: CanvasItem, w: SimPlayer, blink: bool) -> void:
+	if sim.linked:
+		var a := sim.player.pos
+		var flick := 0.55 + 0.25 * sin(time * 18.0)
+		ci.draw_line(a, w.pos, Color(TIDE_COLOR, flick), 2.0)
+		_tex_centered(ci, _glow, (a + w.pos) * 0.5, 0.6, Color(TIDE_COLOR, 0.6))
+	var col := Color(Color(String(w.ship.get("tint", "#9fe8ff"))), 0.45 if blink else 1.0)
+	var engine := _engine_power if w.last_move.y < -0.3 else _engine_idle
+	var frames := maxi(1, engine.get_width() / 48)
+	ci.draw_texture_rect_region(engine, Rect2(w.pos - Vector2(24, 24), Vector2(48, 48)),
+			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
+	ci.draw_texture(_ship_bases[3], w.pos - Vector2(24, 24), col)
+	ci.draw_string(Locale.font, w.pos + Vector2(-4, 30), "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+
 func _draw_player(ci: CanvasItem) -> void:
 	var pl := sim.player
 	if not pl.alive:
@@ -339,6 +354,8 @@ func _draw_player(ci: CanvasItem) -> void:
 		_tex_centered(ci, _ring, p, Sim.TIDE_RADIUS / 14.0 * pulse, TIDE_COLOR)
 	if sim.mods.bubbles > 0:
 		_tex_centered(ci, _ring, p, 1.2, Color(0.7, 0.95, 1.0, 0.45))
+	if sim.wing != null:
+		_draw_wing(ci, sim.wing, blink)
 	if ghost_sim != null and ghost_sim.player.alive:
 		ci.draw_texture(_ship_bases[3], ghost_sim.player.pos - Vector2(24, 24), Color(0.5, 1.0, 1.0, 0.3))
 	var engine := _engine_power if pl.last_move.y < -0.3 else _engine_idle

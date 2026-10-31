@@ -316,3 +316,20 @@ HADAL = {
 }
 STRINGS.update(HADAL)
 
+
+COOP = {
+    "mode.coop": ["Co-op local", "Local Co-op", "Cooperativo local", "Lokaler Koop", "Coop locale", "Локальный кооператив",
+                  "Co-op Lokal", "ローカル協力", "로컬 협동", "本機合作", "本地合作"],
+    "mode.coop_desc": ["Dois pilotos, um casco: teclado e controle no PC; perto, o Elo de Maré apaga balas",
+                       "Two pilots, one hull: keyboard and gamepad on PC; close together, the Tide Link erases bullets",
+                       "Dos pilotos, un casco: teclado y mando en PC; juntos, el Enlace de Marea borra balas",
+                       "Zwei Piloten, eine Hülle: Tastatur und Controller am PC; nah beieinander löscht das Flutband Kugeln",
+                       "Deux pilotes, une coque : clavier et manette sur PC ; proches, le Lien de marée efface les tirs",
+                       "Два пилота, один корпус: клавиатура и геймпад на ПК; рядом Связь прилива стирает пули",
+                       "Dua pilot, satu lambung: keyboard dan gamepad di PC; berdekatan, Tautan Pasang menghapus peluru",
+                       "2人で1つの船体：PCでキーボードとパッド。近づくと潮の絆が弾を消す",
+                       "두 조종사, 하나의 선체: PC에서 키보드와 패드, 가까우면 조수의 고리가 탄을 지운다",
+                       "兩名駕駛共用船體：PC上鍵盤加手把；靠近時潮汐連結會消除子彈",
+                       "两名驾驶共用船体：PC上键盘加手柄；靠近时潮汐连结会消除子弹"],
+}
+STRINGS.update(COOP)

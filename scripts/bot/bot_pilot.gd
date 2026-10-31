@@ -22,6 +22,20 @@ func _init() -> void:
 		_dirs.append(Vector2.from_angle(TAU * k / 16.0) * STEP_LEN)
 
 
+## Ala do co-op nos testes: o mesmo desvio, decidido com a ala no lugar da nave 1 (só leitura da Sim).
+func decide_wing(sim: Sim) -> SimInput:
+	if sim.wing == null:
+		return SimInput.new()
+	var lead := sim.player
+	sim.player = sim.wing
+	var input := decide(sim)
+	sim.player = lead
+	input.special = false
+	input.tide = false
+	input.choice = -1
+	return input
+
+
 func decide(sim: Sim) -> SimInput:
 	var input := SimInput.new()
 	input.fire = true

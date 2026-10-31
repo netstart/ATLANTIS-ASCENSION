@@ -47,7 +47,7 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"role.{r}" for r in ("artillery", "drones", "piercing", "critical", "explosive", "hybrid")] + [
     f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"] + [
     "mode.abyss", "mode.abyss_desc", "deity.abyss", "hud.module_title", "results.depth"] + [
-    f"options.window_{w}" for w in ("portrait", "landscape", "fullscreen")] + ["hub.banner_c10", "map.chapter10"]
+    f"options.window_{w}" for w in ("portrait", "landscape", "fullscreen")] + ["hub.banner_c10", "map.chapter10"] + ["mode.coop", "mode.coop_desc"]
 
 
 def _json_keys(value, out: set) -> None:

@@ -207,3 +207,11 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   missões (escuridão com sonar, fontes térmicas e correntes), mini-chefe Pescador Abissal e chefe Matriarca Hadal
   (braços de 5 segmentos, pressão com Gravity Breach, canto em espiral), gerados por `tools/gen_bosses_post.py`;
   cenário "hadal" com brilho bioluminescente, 5 falas, epílogo e a conquista "Silêncio no fundo"
+- ✅ `1.5.0` Co-op local no PC (modo "Co-op local", abre na 1-3, oculto no celular): teclado (e toque) na nave 1 e o
+  primeiro controle na ala; as duas naves dividem o casco e as bombas, cada uma com sua arma; perto uma da outra o
+  Elo de Maré apaga balas no meio do caminho e dobra os raspões. Corrida do Arcade, sem placar nem replay
+- ✅ Release Android: preset "Android Play" (AAB, arm64 + armv7 + x86_64) assinado com a chave de upload em
+  `C:\src\tools\keys` (fora do repositório, senha só no `.env` de lá); `tools/build_release.ps1` gera APK de debug,
+  AAB, zip do Windows e tar.gz do Linux
+- ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
+  (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`

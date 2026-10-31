@@ -15,6 +15,7 @@ const MODES: Array[Dictionary] = [
 	{"id": &"currents", "after_all": [&"c3m2"], "rewards": true},
 	{"id": &"second_tide", "after_all": [&"c9m3"], "rewards": true},
 	{"id": &"abyss", "after_all": [&"c7m1"], "rewards": true},
+	{"id": &"coop", "after_all": [&"c1m3"], "rewards": true},
 ]
 ## Segunda Maré: o fim de cada capítulo, com balas mais rápidas, vingança e chefes remendados.
 const SECOND_TIDE: Array[StringName] = [&"c1m2", &"c2m3", &"c3m3a", &"c4m3a", &"c5m3a", &"c6m3a", &"c7m3a", &"c8m3a",
@@ -205,7 +206,7 @@ static func boss_only(boss_id: StringName, index: int) -> Dictionary:
 static func run(mode: StringName, profile: Dictionary, date: String, seed: int) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	match mode:
-		&"arcade":
+		&"arcade", &"coop":
 			for id: StringName in ARCADE:
 				out.append(_load(id))
 		&"boss_rush":
@@ -259,9 +260,26 @@ static func loadout_for(mode: StringName, profile: Dictionary, date: String) -> 
 	var out := Economy.loadout(profile) if mode in [&"survival", &"second_tide", &"abyss"] else Sim.default_loadout(ship)
 	if mode == &"second_tide":
 		out["second_tide"] = true
+	if mode == &"coop":
+		out["coop"] = true
+		out["coop_ship"] = coop_partner(profile)
 	if mode == &"currents":
 		out["mutators"] = [String(current_mutator(LiveOps.week_of(date)))]
 	return out
+
+
+## Nave da ala no co-op: a primeira aberta diferente da escolhida (ou a Manta).
+static func coop_partner(profile: Dictionary) -> String:
+	var mine := String(profile["selected"]["ship"])
+	for s: Variant in profile["unlocked"]["ships"]:
+		if String(s) != mine:
+			return String(s)
+	return "manta" if mine != "manta" else "falcon"
+
+
+## Co-op só no PC (dois controles ou teclado e controle).
+static func available(mode: StringName) -> bool:
+	return mode != &"coop" or not OS.has_feature("mobile")
 
 
 ## Maior capítulo com alguma missão concluída (o diário não sorteia capítulo que o jogador não viu).

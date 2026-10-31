@@ -246,7 +246,7 @@ static func record_result(result: Dictionary, mode: StringName = &"") -> Diction
 
 ## Placar local e replay do recorde (missões avulsas: campanha, Diário, Correntes, Sobrevivência).
 func _save_record(result: Dictionary, recording: Replay) -> void:
-	if run_mode in [&"practice", &"arcade", &"boss_rush", &"second_tide"] or recording == null:
+	if run_mode in [&"practice", &"arcade", &"boss_rush", &"second_tide", &"coop"] or recording == null:
 		return
 	var key := Replay.key_for(String(result.get("mission", "")), String(run_mode))
 	var pos := Replay.submit(SaveManager.data, key, int(result.get("score", 0)), today(),
