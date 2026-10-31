@@ -16,7 +16,7 @@ const HEADER := 48.0
 const STRATUM_COLORS: Array[Color] = [Color("040b1a"), Color("0b2a4a"), Color("0f4652"), Color("26364a"),
 		Color("3a1410"), Color("141c38"), Color("2c4a5e"), Color("2d5f8a"), Color("0a0f2a"), Color("2a0a26"),
 		Color("05060f")]
-const STRATUM_KEYS: Array[String] = ["", "map.chapter1", "map.chapter2", "map.chapter3", "map.chapter4",
+const STRATUM_KEYS: Array[String] = ["map.chapter10", "map.chapter1", "map.chapter2", "map.chapter3", "map.chapter4",
 		"map.chapter5", "map.chapter6", "map.chapter7", "map.chapter8", "map.chapter9", ""]
 ## Rótulo curto do nó por tipo (o tipo também muda a cor do brilho).
 const KIND_MARK := {&"miniboss": " ◆", &"boss": " ♛", &"secret": " ◎", &"route": ""}
@@ -326,7 +326,7 @@ func draw_map(ci: CanvasItem) -> void:
 	# 3: rota e nós (fator 1,0).
 	for n: Dictionary in Economy.CAMPAIGN:
 		var open := is_open(n["id"])
-		for prev: Variant in n["after"]:
+		for prev: Variant in [] if bool(n.get("bridge", false)) else n["after"]:
 			var pn := Economy.node(prev)
 			var a := Vector2(w * float(pn["x"]), screen_y(float(pn["y"]), 1.0))
 			var b := Vector2(w * float(n["x"]), screen_y(float(n["y"]), 1.0))

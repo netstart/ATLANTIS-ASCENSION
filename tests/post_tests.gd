@@ -16,6 +16,7 @@ func run(check: Callable) -> void:
 	_bot_runs(check, tables)
 	_portraits(check)
 	_abyss(check, tables)
+	_hadal(check)
 
 
 func _sim(tables: Dictionary, ship: StringName, seed: int = 5) -> Sim:
@@ -245,3 +246,15 @@ func _abyss(check: Callable, tables: Dictionary) -> void:
 	check.call(int(p["abyss_depth"]) == 31 and int(out["orichalcum_gain"]) == 12,
 			"Abismo: guarda a profundidade e paga Oricalco")
 	check.call(Achievements.check(p, {}).has("abyss_30"), "Conquista: Trinta braças")
+
+
+## Capítulo bônus: abre depois da 9-3 e fica no fundo do mapa, com chefe e cena final próprios.
+func _hadal(check: Callable) -> void:
+	var p := SaveManagerScript.default_profile()
+	check.call(not Economy.mission_unlocked(p, &"c10m1"), "Fossa Hadal: fechada antes da 9-3")
+	p["missions"]["c9m3"] = {"cleared": true, "stars": [true, false, false, false], "best_score": 1}
+	check.call(Economy.mission_unlocked(p, &"c10m1"), "Fossa Hadal: abre com a 9-3")
+	check.call(float(Economy.node(&"c10m3")["y"]) < float(Economy.node(&"c1m1")["y"]),
+			"Fossa Hadal: abaixo do primeiro mar no mapa")
+	var bosses: Dictionary = Sim.load_tables()["bosses"]
+	check.call(bosses.has(&"hadal_matriarch") and bosses.has(&"hadal_angler"), "Fossa Hadal: chefes nos dados")

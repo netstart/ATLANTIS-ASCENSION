@@ -69,7 +69,8 @@ func _campaign(check: Callable) -> void:
 	var tables := Sim.load_tables()
 	var order: Array[StringName] = [&"c1m1", &"c1m2", &"c1m3", &"c2m1", &"s1", &"c2m2", &"c2m3", &"c3m1", &"c3m2",
 			&"c3m3a", &"c4m1", &"s2", &"c4m2", &"c4m3a", &"c5m1", &"c5m2", &"c5m3s", &"c6m1", &"s3", &"c6m2", &"c6m3a",
-			&"c7m1", &"c7m2", &"c7m3s", &"c8m1", &"s4", &"c8m2", &"c8m3a", &"c9m1", &"c9m2", &"c9m3"]
+			&"c7m1", &"c7m2", &"c7m3s", &"c8m1", &"s4", &"c8m2", &"c8m3a", &"c9m1", &"c9m2", &"c9m3",
+			&"c10m1", &"c10m2", &"c10m3"]
 	var act1_level := 0
 	var ending := ""
 	for id: StringName in order:

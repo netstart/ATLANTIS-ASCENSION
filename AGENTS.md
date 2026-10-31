@@ -79,6 +79,7 @@ python -I tools\check_licenses.py
 python -I tools\sync_assets.py
 # Missões e chefes do Beta (fontes: tools\gen_missions.py e tools\gen_bosses_beta.py)
 python -I tools\gen_bosses_beta.py
+python -I tools\gen_bosses_post.py
 python -I tools\gen_missions.py
 # Textos (fonte: tools\i18n\*.py)
 python -I tools\build_i18n.py

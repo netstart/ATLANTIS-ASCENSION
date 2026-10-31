@@ -89,6 +89,16 @@ POOLS = {
         ("tide_wasp", "v", 5, "dive", {"side": 1, "amp": 80, "speed": 72}, {"mirror": True, "drop_last": "orb"}),
         ("spark_swarm", "column", 10, "sine", {"amp": 70, "freq": 0.6, "speed": 115}, {"interval": 6, "drop_last": "capsule"}),
     ],
+    # Capítulo bônus (pós-lançamento): Fossa Hadal, criaturas das três facções que o Protocolo deixou no fundo.
+    10: [
+        ("nautilus", "single", 1, "sine", {"amp": 50, "freq": 0.15, "speed": 28}, {}),
+        ("squid_probe", "column", 4, "sine", {"amp": 50, "freq": 0.3, "speed": 72}, {"interval": 14, "from_depth": True}),
+        ("glass_siren", "single", 1, "stop_go", {"speed": 40, "stop_y": 130, "hold": 5}, {"from_depth": True}),
+        ("prism_jelly", "line", 3, "sine", {"amp": 40, "freq": 0.25, "speed": 36}, {"spacing": 80, "drop_last": "capsule"}),
+        ("protocol_shard", "single", 1, "stop_go", {"speed": 55, "stop_y": 120, "hold": 4}, {}),
+        ("tide_wasp", "v", 5, "dive", {"side": -1, "amp": 80, "speed": 72}, {"mirror": True, "drop_last": "orb"}),
+        ("magma_larva", "line", 3, "stop_go", {"speed": 70, "stop_y": 150, "hold": 2.5}, {"spacing": 70, "from_depth": True}),
+    ],
 }
 XS = [0.25, 0.35, 0.5, 0.65, 0.75]
 # Trechos de ondas esticados para cada missão durar de 2 a 5 min (plano mestre 5).
@@ -346,6 +356,28 @@ MISSIONS["s4"] = dict(chapter=8, name="stage.s4", music="hydrogene_space_shooter
                           for k in range(3)] + [fill(8, 24, r, 1.0), beat(3, [(0.0, {"op": "log", "x": 0.5})]),
                                                 beat(4, [(0.5, {"op": "blessing"})]), fill(8, 20, r, 1.1),
                                                 beat(4, [(0.0, {"op": "end"})])])
+
+# Capítulo 10 (bônus): Fossa Hadal. Escuridão com sonar, correntes e fontes térmicas; Pescador Abissal e a
+# Matriarca Hadal. Abre depois da 9-3, com qualquer final.
+HADAL = [(0.0, {"op": "current", "dx": 1, "strength": 30, "duration": 8.0}), (2.0, {"op": "lightning", "x": 0.3}),
+         (5.0, {"op": "lightning", "x": 0.7}), (8.0, {"op": "lightning", "x": 0.5})]
+MISSIONS["c10m1"] = dict(chapter=10, name="stage.c10m1", music="hydrogene_space_shooter", backdrop="hadal", scroll=20,
+                         dark=True, objective={"type": "log", "text_key": "objective.log"},
+                         beats=lambda r: [beat(2, [(0.5, dialogue("c10_intro"))]), fill(10, 22, r, 0.9),
+                                          beat(4, [(0.5, {"op": "blessing"})]),
+                                          beat(8, [(0.0, {"op": "ocean_shift", "to": "flood", "warn": 2.0,
+                                                          "duration": 6.0})]),
+                                          fill(10, 18, r, 1.0, True), beat(3, [(0.0, {"op": "log", "x": 0.6})]),
+                                          beat(6, capsules(0.3, 0.7)), fill(10, 16, r, 1.1),
+                                          beat(4, [(0.5, {"op": "blessing"})]), fill(10, 16, r, 1.15),
+                                          beat(4, [(0.0, {"op": "end"})])])
+MISSIONS["c10m2"] = dict(chapter=10, name="stage.c10m2", music="hydrogene_space_shooter", backdrop="hadal", scroll=22,
+                         objective={"type": "miniboss_time", "seconds": 60,
+                                    "text_key": "objective.miniboss_hadal_angler"},
+                         beats=chapter_mission(10, HADAL, density=1.1, end=mini_end(10, "hadal_angler")))
+MISSIONS["c10m3"] = dict(chapter=10, name="stage.c10m3", music="hydrogene_space_shooter", backdrop="hadal", scroll=22,
+                         objective={"type": "boss_time", "seconds": 150, "text_key": "objective.boss_time"},
+                         beats=chapter_mission(10, HADAL, density=1.2, end=boss_end("hadal_matriarch", "hadal_intro")))
 
 
 def build(mission_id: str, spec: dict) -> dict:

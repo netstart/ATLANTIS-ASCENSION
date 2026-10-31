@@ -203,3 +203,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   profundidade máxima no perfil, 2 de Oricalco a cada 5 profundidades e a conquista "Trinta braças"
 - ✅ `1.3.0` Modo de janela no PC e Steam (Opções): em pé (tate, padrão), deitada (campo 9:16 no centro) ou tela
   cheia (monitor girado no sistema = tate em tela cheia). Janelas no maior múltiplo inteiro de 270x480 ou 480x270
+- ✅ `1.4.0` Capítulo bônus 10, Fossa Hadal (abre depois da 9-3, no fundo do mapa abaixo do primeiro mar): 3
+  missões (escuridão com sonar, fontes térmicas e correntes), mini-chefe Pescador Abissal e chefe Matriarca Hadal
+  (braços de 5 segmentos, pressão com Gravity Breach, canto em espiral), gerados por `tools/gen_bosses_post.py`;
+  cenário "hadal" com brilho bioluminescente, 5 falas, epílogo e a conquista "Silêncio no fundo"

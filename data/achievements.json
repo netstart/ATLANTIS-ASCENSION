@@ -12,6 +12,7 @@
 	{"id": "fleet", "type": "ships", "target": 6},
 	{"id": "armada", "type": "ships", "target": 12},
 	{"id": "abyss_30", "type": "abyss_depth", "target": 30},
+	{"id": "hadal", "type": "cleared", "mission": "c10m3"},
 	{"id": "first_secret", "type": "secrets", "target": 1},
 	{"id": "all_secrets", "type": "secrets", "target": 4},
 	{"id": "rescuer", "type": "rescued", "target": 100},

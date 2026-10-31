@@ -21,5 +21,10 @@
 	{"id": "s2_intro", "speaker": "farol", "text_key": "dialogue.s2_intro", "color": "#8fe8ff"},
 	{"id": "s3_intro", "speaker": "thalassa", "text_key": "dialogue.s3_intro", "color": "#c79bff"},
 	{"id": "s4_intro", "speaker": "thalassa", "text_key": "dialogue.s4_intro", "color": "#c79bff"},
-	{"id": "kraken_patched", "speaker": "protocol", "text_key": "dialogue.kraken_patched", "color": "#ff7a7e", "mood": "alert"}
+	{"id": "kraken_patched", "speaker": "protocol", "text_key": "dialogue.kraken_patched", "color": "#ff7a7e", "mood": "alert"},
+	{"id": "c10_intro", "speaker": "thalassa", "text_key": "dialogue.c10_intro", "color": "#c79bff"},
+	{"id": "hadal_intro", "speaker": "farol", "text_key": "dialogue.hadal_intro", "color": "#8fe8ff", "mood": "alert"},
+	{"id": "hadal_brood", "speaker": "protocol", "text_key": "dialogue.hadal_brood", "color": "#ff7a7e", "mood": "alert"},
+	{"id": "hadal_pressure", "speaker": "farol", "text_key": "dialogue.hadal_pressure", "color": "#8fe8ff", "mood": "alert"},
+	{"id": "hadal_song", "speaker": "thalassa", "text_key": "dialogue.hadal_song", "color": "#c79bff", "mood": "alert"}
 ]

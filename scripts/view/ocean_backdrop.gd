@@ -30,6 +30,8 @@ const PALETTES := {
 			"foam": Color(0.9, 0.95, 1.0), "base_emerge": 0.0, "ruins": false, "particles": &"wind"},
 	&"orbit": {"deep": Color(0.01, 0.01, 0.04), "mid": Color(0.03, 0.03, 0.08), "shoal": Color(0.06, 0.05, 0.12),
 			"foam": Color(0.8, 0.8, 1.0), "base_emerge": 0.0, "ruins": false, "particles": &"stars"},
+	&"hadal": {"deep": Color(0.0, 0.03, 0.04), "mid": Color(0.01, 0.07, 0.08), "shoal": Color(0.02, 0.11, 0.11),
+			"foam": Color(0.45, 1.0, 0.85), "base_emerge": 0.15, "particles": &"glow"},
 	&"core": {"deep": Color(0.06, 0.0, 0.06), "mid": Color(0.12, 0.02, 0.1), "shoal": Color(0.19, 0.04, 0.14),
 			"foam": Color(1.0, 0.5, 0.6), "base_emerge": 0.0, "ruins": false, "particles": &"sparks"},
 }
@@ -40,6 +42,7 @@ const PARTICLES := {
 	&"snow": {"color": Color(1.0, 1.0, 1.0, 0.4), "length": 1, "speed": 0.7, "slant": 0.25, "step": 21.0},
 	&"wind": {"color": Color(1.0, 1.0, 1.0, 0.1), "length": 8, "speed": 4.0, "slant": 0.0, "step": 31.0},
 	&"stars": {"color": Color(1.0, 1.0, 1.0, 0.5), "length": 1, "speed": 0.25, "slant": 0.0, "step": 19.0},
+	&"glow": {"color": Color(0.45, 1.0, 0.85, 0.4), "length": 1, "speed": -0.5, "slant": 0.05, "step": 27.0},
 	&"sparks": {"color": Color(1.0, 0.6, 0.7, 0.35), "length": 2, "speed": 1.5, "slant": -0.2, "step": 23.0},
 }
 

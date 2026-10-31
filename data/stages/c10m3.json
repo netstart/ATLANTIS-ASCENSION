@@ -1,0 +1,482 @@
+{
+	"id": "c10m3",
+	"chapter": 10,
+	"name_key": "stage.c10m3",
+	"music": "hydrogene_space_shooter",
+	"scroll_speed": 22,
+	"backdrop": "hadal",
+	"seed_salt": 356,
+	"objective": {
+		"type": "boss_time",
+		"seconds": 150,
+		"text_key": "objective.boss_time"
+	},
+	"length_s": 109.9,
+	"events": [
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"t": 0.0
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 72
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"spacing": 36,
+			"t": 3.0
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 6.0
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 72
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"spacing": 36,
+			"t": 9.0
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"t": 12.0
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 28
+			},
+			"marked": true,
+			"t": 15.0
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 18.0
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 28
+			},
+			"marked": true,
+			"t": 21.0
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 24.0
+		},
+		{
+			"op": "blessing",
+			"t": 27.5
+		},
+		{
+			"op": "current",
+			"dx": 1,
+			"strength": 30,
+			"duration": 8.0,
+			"t": 31.0
+		},
+		{
+			"op": "lightning",
+			"x": 0.3,
+			"t": 33.0
+		},
+		{
+			"op": "lightning",
+			"x": 0.7,
+			"t": 36.0
+		},
+		{
+			"op": "lightning",
+			"x": 0.5,
+			"t": 39.0
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 28
+			},
+			"marked": true,
+			"t": 43.0
+		},
+		{
+			"op": "wave",
+			"enemy": "protocol_shard",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 55,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"t": 45.73
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 48.45
+		},
+		{
+			"op": "wave",
+			"enemy": "squid_probe",
+			"formation": "column",
+			"count": 4,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.3,
+				"speed": 72
+			},
+			"interval": 14,
+			"from_depth": true,
+			"t": 51.18
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"t": 53.91
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 56.64
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 28
+			},
+			"marked": true,
+			"t": 59.36
+		},
+		{
+			"op": "wave",
+			"enemy": "protocol_shard",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "stop_go",
+			"params": {
+				"speed": 55,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"t": 62.09
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 64.82
+		},
+		{
+			"op": "log",
+			"x": 0.5230608577846438,
+			"t": 67.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 70.3
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 73.3
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"t": 76.3
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": -1,
+				"amp": 80,
+				"speed": 72
+			},
+			"mirror": true,
+			"drop_last": "orb",
+			"spacing": 36,
+			"t": 78.91
+		},
+		{
+			"op": "wave",
+			"enemy": "glass_siren",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 40,
+				"stop_y": 130,
+				"hold": 5
+			},
+			"from_depth": true,
+			"marked": true,
+			"t": 81.52
+		},
+		{
+			"op": "wave",
+			"enemy": "magma_larva",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 70,
+				"stop_y": 150,
+				"hold": 2.5
+			},
+			"spacing": 70,
+			"from_depth": true,
+			"t": 84.13
+		},
+		{
+			"op": "wave",
+			"enemy": "protocol_shard",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 55,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"t": 86.73
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 28
+			},
+			"marked": true,
+			"t": 89.34
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 36
+			},
+			"spacing": 80,
+			"drop_last": "capsule",
+			"t": 91.95
+		},
+		{
+			"op": "wave",
+			"enemy": "protocol_shard",
+			"formation": "single",
+			"count": 1,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 55,
+				"stop_y": 120,
+				"hold": 4
+			},
+			"t": 94.56
+		},
+		{
+			"op": "blessing",
+			"t": 98.4
+		},
+		{
+			"op": "dialogue",
+			"id": "hadal_intro",
+			"t": 101.9
+		},
+		{
+			"op": "boss",
+			"id": "hadal_matriarch",
+			"t": 105.9
+		},
+		{
+			"op": "end",
+			"t": 107.9
+		}
+	]
+}

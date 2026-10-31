@@ -44,6 +44,10 @@ const CAMPAIGN: Array[Dictionary] = [
 	{"id": &"c9m1", "chapter": 9, "after": [&"c8m3s", &"c8m3a"], "x": 0.62, "y": 6980.0, "kind": &"mission"},
 	{"id": &"c9m2", "chapter": 9, "after": [&"c9m1"], "x": 0.38, "y": 7210.0, "kind": &"mission"},
 	{"id": &"c9m3", "chapter": 9, "after": [&"c9m2"], "x": 0.5, "y": 7460.0, "kind": &"boss"},
+	# Capítulo bônus: a Fossa Hadal fica ABAIXO do primeiro mar ("bridge": a rota a partir da 9-3 não é desenhada).
+	{"id": &"c10m1", "chapter": 10, "after": [&"c9m3"], "x": 0.5, "y": 640.0, "kind": &"mission", "bridge": true},
+	{"id": &"c10m2", "chapter": 10, "after": [&"c10m1"], "x": 0.3, "y": 420.0, "kind": &"miniboss"},
+	{"id": &"c10m3", "chapter": 10, "after": [&"c10m2"], "x": 0.62, "y": 200.0, "kind": &"boss"},
 ]
 ## Fases já lançadas: naves e asas de fases futuras ficam fora das listas.
 const RELEASES: Array[String] = ["alpha", "beta", "post"]
