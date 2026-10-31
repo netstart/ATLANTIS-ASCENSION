@@ -377,6 +377,9 @@ func _on_event(ev: Dictionary) -> void:
 				_hud.show_radio_text(tr("hud.capsule_combo") % int(ev["combo"]), UiTheme.GOLD)
 		&"cover":
 			AudioManager.play("kenney_ocean_shift", 1.4, 0.0, -10.0)
+		&"abyss":
+			AudioManager.play("kenney_ocean_shift", 0.5 + 0.01 * float(ev["depth"]), 0.0, -6.0)
+			_hud.show_banner(tr("hud.depth") % int(ev["depth"]))
 		&"capture":
 			AudioManager.play("kenney_weapon_up", 1.3)
 			Settings.vibrate(30)

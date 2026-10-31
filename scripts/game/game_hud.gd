@@ -293,6 +293,8 @@ func setup_mission(sim: Sim) -> void:
 
 func show_offer(sim: Sim) -> void:
 	var table: Dictionary = sim.tables.get("blessings", {})
+	var module := not sim.offer.is_empty() and bool((table.get(sim.offer[0], {}) as Dictionary).get("abyss", false))
+	_offer_title.text = tr("hud.module_title" if module else "hud.blessing_title")
 	for i: int in range(_offer_buttons.size()):
 		var b := _offer_buttons[i]
 		b.visible = i < sim.offer.size()

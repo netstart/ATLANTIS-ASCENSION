@@ -46,6 +46,12 @@ func _test_scaler() -> void:
 	for e: Array in DeviceProfiles.SCALER_EXTRA:
 		_check(PixelScalerScript.factor_for(e[0]) == int(e[1]), "PixelScaler: %s dá ×%d" % [e[0], e[1]])
 	_check(PixelScalerScript.factor_for(Vector2i(10, 10)) == 1, "PixelScaler: nunca abaixo de ×1")
+	_check(PixelScalerScript.window_size_for("portrait", Vector2i(1920, 1040)) == Vector2i(540, 960),
+			"Janela tate: 540x960 num 1080p")
+	_check(PixelScalerScript.window_size_for("landscape", Vector2i(1920, 1040)) == Vector2i(1440, 810),
+			"Janela deitada: 1440x810 num 1080p")
+	_check(PixelScalerScript.window_size_for("portrait", Vector2i(100, 100)) == Vector2i(270, 480),
+			"Janela: nunca abaixo de x1")
 
 
 ## Área de jogo: 270x450 inteira na área segura, alinhada ao pixel, HUD cobrindo no máximo 6%.

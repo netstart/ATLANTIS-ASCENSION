@@ -171,7 +171,7 @@ func play_mission(mission: Dictionary, bot: bool = false, seed: int = -1, loadou
 	game = GAME_SCENE.instantiate() as Game
 	var run_seed := seed if seed >= 0 else int(Time.get_unix_time_from_system()) % 100000
 	game.configure(mission, loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data), run_seed, bot)
-	game.can_revive = not bot and run_mode in [&"", &"survival"]
+	game.can_revive = not bot and run_mode in [&"", &"survival", &"abyss"]
 	if not bot and bool(Settings.get_value("ghost")) and run_mode in [&"", &"practice"]:
 		game.ghost = Replay.load_key(Replay.key_for(String(mission.get("id", "")), ""))
 	if _pending_replay != null:

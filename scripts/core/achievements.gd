@@ -63,4 +63,6 @@ static func _met(profile: Dictionary, result: Dictionary, a: Dictionary) -> bool
 			return Economy.ship_level(profile, StringName(String(profile["selected"]["ship"]))) >= target
 		"mode":
 			return int((profile.get("mode_best", {}) as Dictionary).get(String(a["mode"]), 0)) > 0
+		"abyss_depth":
+			return int(profile.get("abyss_depth", 0)) >= target
 	return false

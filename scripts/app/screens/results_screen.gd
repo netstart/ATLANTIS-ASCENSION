@@ -135,6 +135,8 @@ static func reward_lines(r: Dictionary) -> PackedStringArray:
 		lines.append(_t("results.new_district") % _t("district." + String(d)))
 	if int(r.get("rescued", 0)) > 0:
 		lines.append(_t("results.rescued") % int(r["rescued"]))
+	if int(r.get("depth", 0)) > 0:
+		lines.append(_t("results.depth") % int(r["depth"]))
 	if not String(r.get("ending", "")).is_empty():
 		lines.append(_t("ending." + String(r["ending"])))
 	for m: Variant in r.get("new_missions", []):

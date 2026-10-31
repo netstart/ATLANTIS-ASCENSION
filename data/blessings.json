@@ -16,5 +16,17 @@
 	{"id": "nereus_chart", "deity": "nereus", "effect": "chart", "value": 1, "name_key": "blessing.nereus_chart", "desc_key": "blessing.nereus_chart_desc"},
 	{"id": "nereus_net", "deity": "nereus", "effect": "medal_net", "value": 1, "name_key": "blessing.nereus_net", "desc_key": "blessing.nereus_net_desc"},
 	{"id": "nereus_sailor", "deity": "nereus", "effect": "chain_window", "value": 12, "name_key": "blessing.nereus_sailor", "desc_key": "blessing.nereus_sailor_desc"},
-	{"id": "nereus_oracle", "deity": "nereus", "effect": "oracle", "value": 1, "name_key": "blessing.nereus_oracle", "desc_key": "blessing.nereus_oracle_desc"}
+	{"id": "nereus_oracle", "deity": "nereus", "effect": "oracle", "value": 1, "name_key": "blessing.nereus_oracle", "desc_key": "blessing.nereus_oracle_desc"},
+	{"id": "abyss_cannon", "deity": "abyss", "abyss": true, "effect": "damage", "value": 0.12, "name_key": "blessing.abyss_cannon", "desc_key": "blessing.abyss_cannon_desc"},
+	{"id": "abyss_rapid", "deity": "abyss", "abyss": true, "effect": "fire_rate", "value": 0.15, "name_key": "blessing.abyss_rapid", "desc_key": "blessing.abyss_rapid_desc"},
+	{"id": "abyss_plating", "deity": "abyss", "abyss": true, "effect": "hull", "value": 1, "name_key": "blessing.abyss_plating", "desc_key": "blessing.abyss_plating_desc"},
+	{"id": "abyss_thrusters", "deity": "abyss", "abyss": true, "effect": "speed", "value": 0.1, "name_key": "blessing.abyss_thrusters", "desc_key": "blessing.abyss_thrusters_desc"},
+	{"id": "abyss_magnet", "deity": "abyss", "abyss": true, "effect": "magnet", "value": 60, "name_key": "blessing.abyss_magnet", "desc_key": "blessing.abyss_magnet_desc"},
+	{"id": "abyss_reactor", "deity": "abyss", "abyss": true, "effect": "graze_bonus", "value": 0.5, "name_key": "blessing.abyss_reactor", "desc_key": "blessing.abyss_reactor_desc"},
+	{"id": "abyss_bubble", "deity": "abyss", "abyss": true, "effect": "bubble", "value": 1, "name_key": "blessing.abyss_bubble", "desc_key": "blessing.abyss_bubble_desc"},
+	{"id": "abyss_missiles", "deity": "abyss", "abyss": true, "effect": "missiles", "value": 1, "name_key": "blessing.abyss_missiles", "desc_key": "blessing.abyss_missiles_desc"},
+	{"id": "abyss_drones", "deity": "abyss", "abyss": true, "effect": "drones", "value": 1, "name_key": "blessing.abyss_drones", "desc_key": "blessing.abyss_drones_desc"},
+	{"id": "abyss_overclock", "deity": "abyss", "abyss": true, "effect": "weapon_cap", "value": 1, "name_key": "blessing.abyss_overclock", "desc_key": "blessing.abyss_overclock_desc"},
+	{"id": "abyss_bombs", "deity": "abyss", "abyss": true, "effect": "bombs", "value": 2, "name_key": "blessing.abyss_bombs", "desc_key": "blessing.abyss_bombs_desc"},
+	{"id": "abyss_coral", "deity": "abyss", "abyss": true, "effect": "coral_heal", "value": 30, "name_key": "blessing.abyss_coral", "desc_key": "blessing.abyss_coral_desc"}
 ]

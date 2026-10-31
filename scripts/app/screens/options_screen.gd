@@ -53,6 +53,17 @@ func _fill() -> void:
 		var i := steps.find(snappedf(float(Settings.get_value("text_scale")), 0.01))
 		Settings.set_value("text_scale", steps[(i + 1) % steps.size()]))
 	add_row(tr("options.text_scale"), ts)
+	if not OS.has_feature("mobile"):
+		# PC e Steam: janela em pé (tate), deitada ou tela cheia.
+		var win := Button.new()
+		win.name = "WindowMode"
+		win.text = tr("options.window_" + String(Settings.get_value("window_mode")))
+		win.pressed.connect(func() -> void:
+			var modes: Array[String] = ["portrait", "landscape", "fullscreen"]
+			var i := modes.find(String(Settings.get_value("window_mode")))
+			Settings.set_value("window_mode", modes[(i + 1) % modes.size()])
+			refill())
+		add_row(tr("options.window"), win)
 	add_heading(tr("options.audio_controls"))
 	for entry: Array in SLIDERS:
 		var key: String = entry[0]

@@ -89,6 +89,8 @@ func apply(effect: StringName, value: float) -> void:
 			graze_bonus += value
 		&"log_finder":
 			log_finder = true
+		&"weapon_cap":
+			weapon_cap_bonus += int(value)
 		&"shield_timer":
 			bubble_recharge = int(value)
 
@@ -101,6 +103,9 @@ func apply_blessing(def: Dictionary) -> StringName:
 	taken.append(id)
 	apply(StringName(String(def.get("effect", ""))), float(def.get("value", 0.0)))
 	var deity := StringName(String(def.get("deity", "")))
+	if deity == &"abyss":
+		# Módulos do Abismo Infinito não contam para sinergia de deus.
+		return &""
 	var n := int(_deity_count.get(deity, 0)) + 1
 	_deity_count[deity] = n
 	if n == 2:

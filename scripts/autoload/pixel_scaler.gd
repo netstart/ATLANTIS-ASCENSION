@@ -20,6 +20,10 @@ const TARGET_SHORT := 300.0
 const MIN_LONG := 480.0
 const LANDSCAPE_HEIGHT := 540.0
 const INSET_POLL := 0.25
+const WINDOW_MODES: Array[String] = ["portrait", "landscape", "fullscreen"]
+## Janelas do PC: múltiplos inteiros destas bases (9:16 em pé e 16:9 deitada).
+const PORTRAIT_BASE := Vector2i(270, 480)
+const LANDSCAPE_BASE := Vector2i(480, 270)
 
 var scale_factor: int = 1
 var _last_safe: Array = []
@@ -29,6 +33,14 @@ var _inset_wait: float = 0.0
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_fit_desktop_window()
+	# Settings pelo caminho: este script também roda nos testes de regras, sem autoloads.
+	var settings := get_node_or_null(^"/root/Settings")
+	if settings != null:
+		if String(settings.call("get_value", "window_mode")) != "portrait":
+			apply_window_mode()
+		settings.connect("changed", func(key: String) -> void:
+			if key == "window_mode":
+				apply_window_mode())
 	get_tree().root.size_changed.connect(_on_size_changed)
 	_apply()
 	_last_safe = _safe_key()
@@ -72,6 +84,30 @@ func _fit_desktop_window() -> void:
 			int(ProjectSettings.get_setting("display/window/size/viewport_height")))
 	var k := maxi(1, mini(floori(float(usable.x) / base.x), floori(usable.y * 0.95 / base.y)))
 	DisplayServer.window_set_size(base * k)
+
+
+## PC e Steam: aplica o modo de janela das Opções. Em pé (tate) e deitada usam o maior múltiplo inteiro da base
+## que cabe em 95% da área útil, centralizado; tela cheia deixa a orientação com o monitor.
+func apply_window_mode() -> void:
+	if OS.has_feature("mobile") or DisplayServer.get_name() == "headless":
+		return
+	var settings := get_node_or_null(^"/root/Settings")
+	var mode := String(settings.call("get_value", "window_mode")) if settings != null else "portrait"
+	if mode == "fullscreen":
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		return
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	var usable := DisplayServer.screen_get_usable_rect()
+	var size := window_size_for(mode, usable.size)
+	DisplayServer.window_set_size(size)
+	DisplayServer.window_set_position(usable.position + (usable.size - size) / 2)
+
+
+## Tamanho da janela de um modo numa área útil (testável sem janela).
+static func window_size_for(mode: String, usable: Vector2i) -> Vector2i:
+	var base := LANDSCAPE_BASE if mode == "landscape" else PORTRAIT_BASE
+	var k := maxi(1, mini(floori(usable.x * 0.95 / base.x), floori(usable.y * 0.95 / base.y)))
+	return base * k
 
 
 func _process(delta: float) -> void:

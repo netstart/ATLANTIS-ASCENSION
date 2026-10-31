@@ -45,7 +45,9 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"cosmetic.tint_season_{s}" for s in ("a", "b", "c")] + ["season.title", "options.ghost"] + ["speaker.narrator", "hangar.title", "ships.title"] + [
     f"results.{r}" for r in ("fragments", "log", "new_mission", "new_ship", "new_wing")] + [
     f"role.{r}" for r in ("artillery", "drones", "piercing", "critical", "explosive", "hybrid")] + [
-    f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"]
+    f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"] + [
+    "mode.abyss", "mode.abyss_desc", "deity.abyss", "hud.module_title", "results.depth"] + [
+    f"options.window_{w}" for w in ("portrait", "landscape", "fullscreen")]
 
 
 def _json_keys(value, out: set) -> None:

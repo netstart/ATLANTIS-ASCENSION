@@ -5,7 +5,8 @@ extends ListScreen
 ## recorde de cada um e o motivo quando ainda está fechado.
 
 const MODE_HINT := {&"arcade": "c2m3", &"daily": "c2m1", &"survival": "c4m1", &"boss_rush": "c9m3",
-		&"practice": "c1m1", &"currents": "c3m2", &"second_tide": "c9m3"}
+		&"practice": "c1m1", &"currents": "c3m2", &"second_tide": "c9m3",
+		&"abyss": "c7m1"}
 
 
 func title_key() -> String:

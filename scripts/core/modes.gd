@@ -14,6 +14,7 @@ const MODES: Array[Dictionary] = [
 	{"id": &"practice", "after_all": [&"c1m1"], "rewards": false},
 	{"id": &"currents", "after_all": [&"c3m2"], "rewards": true},
 	{"id": &"second_tide", "after_all": [&"c9m3"], "rewards": true},
+	{"id": &"abyss", "after_all": [&"c7m1"], "rewards": true},
 ]
 ## Segunda Maré: o fim de cada capítulo, com balas mais rápidas, vingança e chefes remendados.
 const SECOND_TIDE: Array[StringName] = [&"c1m2", &"c2m3", &"c3m3a", &"c4m3a", &"c5m3a", &"c6m3a", &"c7m3a", &"c8m3a",
@@ -30,8 +31,17 @@ const ACT_BOSSES: Array[StringName] = [&"kraken_engine", &"sky_leviathan", &"pos
 const DAILY_SECONDS := 150.0
 const SURVIVAL_STAGE_SECONDS := 40.0
 const SURVIVAL_STAGES := 15
+## Abismo Infinito (pós-lançamento): profundidades de 30 s, módulo e bênção alternados entre elas, mini-chefe a
+## cada 5 e chefe de ato a cada 10. Chegar ao fundo (60) vence a corrida.
+const ABYSS_STAGES := 60
+const ABYSS_STAGE_SECONDS := 30.0
+const ABYSS_MINIBOSSES: Array[StringName] = [&"tidebreaker", &"coral_guardian", &"storm_eye", &"forge", &"architect",
+		&"ice_queen", &"steel_albatross", &"orbital_gate"]
+const ABYSS_BOSSES: Array[StringName] = [&"kraken_engine", &"sky_leviathan", &"poseidon_prime"]
 const BACKDROPS: Array[String] = ["ocean", "atlantis", "storm", "volcanic", "city", "ice", "stratosphere", "orbit",
 		"core"]
+
+static var _waves_cache: Dictionary = {}
 
 
 static func unlocked(profile: Dictionary, mode: StringName) -> bool:
@@ -81,9 +91,7 @@ static func remix(id: String, chapters: Array, seed: int, seconds: float, gap: f
 	rng.seed = seed
 	var pool: Array[Dictionary] = []
 	for ch: Variant in chapters:
-		for n: Dictionary in Economy.CAMPAIGN:
-			if int(n["chapter"]) == int(ch) and n["kind"] != &"secret":
-				pool.append_array(waves_of(_load(n["id"])))
+		pool.append_array(chapter_waves(int(ch)))
 	var events: Array = []
 	var t := 1.0
 	var half_done := false
@@ -104,6 +112,48 @@ static func remix(id: String, chapters: Array, seed: int, seconds: float, gap: f
 	return {"id": id, "chapter": first, "name_key": "mode." + id.get_slice(":", 0), "music": "hydrogene_space_shooter",
 			"scroll_speed": 24, "backdrop": BACKDROPS[clampi(first - 1, 0, BACKDROPS.size() - 1)], "seed_salt": seed % 9973,
 			"objective": {"type": "score", "count": 50000, "text_key": "objective.score"}, "length_s": t, "events": events}
+
+
+## Ondas de todas as missões de um capítulo (cache: o Abismo pede o mesmo capítulo muitas vezes).
+static func chapter_waves(ch: int) -> Array[Dictionary]:
+	if not _waves_cache.has(ch):
+		var pool: Array[Dictionary] = []
+		for n: Dictionary in Economy.CAMPAIGN:
+			if int(n["chapter"]) == ch and n["kind"] != &"secret":
+				pool.append_array(waves_of(_load(n["id"])))
+		_waves_cache[ch] = pool
+	return _waves_cache[ch]
+
+
+## Abismo Infinito: cada profundidade remixa um capítulo (do 1 ao 9 e de novo, mais denso); a Sim acelera as
+## balas e multiplica os pontos a cada profundidade (op "abyss"). Entre elas, módulo (ímpar) ou bênção (par).
+static func abyss(seed: int) -> Dictionary:
+	var events: Array = []
+	var t := 0.5
+	for k: int in range(ABYSS_STAGES):
+		var depth := k + 1
+		events.append({"op": "abyss", "depth": depth, "t": snappedf(t, 0.01)})
+		var part := remix("abyss", [1 + k % 9], seed + k * 7919, ABYSS_STAGE_SECONDS, maxf(1.2, 3.4 - k * 0.04), &"")
+		for ev: Variant in part["events"]:
+			var e := (ev as Dictionary).duplicate(true)
+			if String(e.get("op", "")) in ["end", "blessing", "miniboss"]:
+				continue
+			e["t"] = snappedf(float(e["t"]) + t, 0.01)
+			events.append(e)
+		t += ABYSS_STAGE_SECONDS
+		if depth % 10 == 0:
+			events.append({"op": "boss", "id": String(ABYSS_BOSSES[(depth / 10 - 1) % ABYSS_BOSSES.size()]),
+					"t": snappedf(t, 0.01)})
+		elif depth % 5 == 0:
+			events.append({"op": "miniboss", "id": String(ABYSS_MINIBOSSES[(depth / 5 - 1) % ABYSS_MINIBOSSES.size()]),
+					"t": snappedf(t, 0.01)})
+		t += 1.0
+		events.append({"op": "module" if depth % 2 == 1 else "blessing", "t": snappedf(t, 0.01)})
+		t += 3.0
+	events.append({"op": "end", "t": snappedf(t + 2.0, 0.01)})
+	return {"id": "abyss", "chapter": 1, "name_key": "mode.abyss", "music": "hydrogene_space_shooter",
+			"scroll_speed": 26, "backdrop": "core", "seed_salt": seed % 9973, "abyss": true,
+			"objective": {"type": "score", "count": 500000, "text_key": "objective.score"}, "length_s": t, "events": events}
 
 
 ## Desafio Diário: capítulo, ritmo e mini-chefe sorteados pela data, entre os capítulos já abertos.
@@ -165,6 +215,8 @@ static func run(mode: StringName, profile: Dictionary, date: String, seed: int) 
 			out.append(daily(date, max_chapter(profile)))
 		&"survival":
 			out.append(survival(seed))
+		&"abyss":
+			out.append(abyss(seed))
 		&"currents":
 			out.append(currents(LiveOps.week_of(date), max_chapter(profile)))
 		&"second_tide":
@@ -204,7 +256,7 @@ static func currents(week: String, max_ch: int) -> Dictionary:
 ## Carga de um modo: hangar na Sobrevivência e na Segunda Maré; nave escolhida sem hangar no resto.
 static func loadout_for(mode: StringName, profile: Dictionary, date: String) -> Dictionary:
 	var ship := StringName(String(profile["selected"]["ship"]))
-	var out := Economy.loadout(profile) if mode in [&"survival", &"second_tide"] else Sim.default_loadout(ship)
+	var out := Economy.loadout(profile) if mode in [&"survival", &"second_tide", &"abyss"] else Sim.default_loadout(ship)
 	if mode == &"second_tide":
 		out["second_tide"] = true
 	if mode == &"currents":
@@ -248,6 +300,13 @@ static func apply_result(profile: Dictionary, mode: StringName, result: Dictiona
 			daily["best_score"] = score
 			profile["wallet"]["pearls"] = int(profile["wallet"]["pearls"]) + 10
 			out["pearls_gain"] = 10
+	if mode == &"abyss":
+		# Profundidade máxima (conquista e recorde) e Oricalco a cada 5 profundidades vencidas.
+		var depth := int(result.get("depth", 0))
+		profile["abyss_depth"] = maxi(int(profile.get("abyss_depth", 0)), depth)
+		var ori := (depth / 5) * 2
+		profile["wallet"]["orichalcum"] = int(profile["wallet"].get("orichalcum", 0)) + ori
+		out["orichalcum_gain"] = ori
 	out["credits"] = credits
 	return out
 

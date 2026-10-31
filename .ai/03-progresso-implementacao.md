@@ -196,3 +196,10 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   sorriso), pixel art 64x64 gerada por `tools/gen_portraits.py`. Aparecem no rádio da missão (32 px, à esquerda do
   texto) e nas cenas da história (64 px); a expressão vem do campo `mood` das falas. Testes: todo personagem que
   fala tem as 3 expressões; o narrador não tem rosto
+- ✅ `1.3.0` Abismo Infinito (roguelite, abre na 7-1): 60 profundidades de 30 s remixadas por semente (capítulos 1 a
+  9 em ciclo, cada vez mais densas); entre elas, alternados, 12 módulos novos (canhão, cadência, blindagem, mísseis,
+  drones, sobrecarga, paiol, coral...) e as bênçãos com sinergias; mini-chefe a cada 5 e chefe de ato a cada 10. Cada
+  profundidade deixa as balas 1% mais rápidas (até +45%) e os pontos 5% maiores. Placar e replay próprios,
+  profundidade máxima no perfil, 2 de Oricalco a cada 5 profundidades e a conquista "Trinta braças"
+- ✅ `1.3.0` Modo de janela no PC e Steam (Opções): em pé (tate, padrão), deitada (campo 9:16 no centro) ou tela
+  cheia (monitor girado no sistema = tate em tela cheia). Janelas no maior múltiplo inteiro de 270x480 ou 480x270

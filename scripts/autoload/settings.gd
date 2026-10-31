@@ -39,6 +39,9 @@ const DEFAULTS := {
 	"show_fps": false,
 	## Fantasma do Abismo: o recorde voa junto, translúcido.
 	"ghost": true,
+	## PC e Steam: "portrait" (janela em pé, modo tate), "landscape" (janela deitada, campo 9:16 no centro) ou
+	## "fullscreen" (a orientação segue o monitor; monitor girado no sistema = tate em tela cheia).
+	"window_mode": "portrait",
 }
 
 var path: String = PATH

@@ -107,12 +107,15 @@ var bosses_met: int = 0
 var escorts: Array[Dictionary] = []
 var captured: int = 0
 var specials_used: int = 0
+## Abismo Infinito: profundidade atual (0 fora do modo); acelera as balas e multiplica os pontos.
+var abyss_depth: int = 0
 var _coral_grazes: int = 0
 var _bubble_timer: int = 0
 var _finish_timer: int = -1
 var _miniboss_start: int = -1
 var _boss_start: int = -1
 var _columns: Array = []
+var _abyss_points: float = 1.0
 
 
 ## Lê as tabelas de data/ sem depender do autoload DB (roda nos testes sem autoloads).
@@ -181,6 +184,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	scoring.window = Scoring.CHAIN_WINDOW + mods.chain_window
 	scoring.point_mult = float(diff["score"]) * float(mission.get("score_mult", 1.0))
 	_bubble_timer = mods.bubble_recharge
+	_abyss_points = scoring.point_mult
 	stage.setup(mission)
 	for c: int in range(COLUMNS):
 		_columns.append([])
@@ -230,6 +234,8 @@ func bullet_speed_mult() -> float:
 		mult *= 1.15
 	if "fast_bullets" in mutators:
 		mult *= 1.2
+	if abyss_depth > 1:
+		mult *= 1.0 + minf(0.45, 0.01 * (abyss_depth - 1))
 	return mult
 
 
@@ -365,11 +371,13 @@ func burst_beam(width: float, mult: float) -> void:
 
 # --- Bênçãos -----------------------------------------------------------------------------------
 
-## Sorteia 3 bênçãos ainda não escolhidas (fluxo "blessings" da semente) e espera a escolha.
-func offer_blessings() -> void:
+## Sorteia 3 bênçãos ainda não escolhidas (fluxo "blessings" da semente) e espera a escolha. `kind` &"module"
+## oferece os módulos do Abismo Infinito (mesma tabela, marcados com "abyss") no lugar das bênçãos.
+func offer_blessings(kind: StringName = &"blessing") -> void:
 	var pool: Array[StringName] = []
-	for id: StringName in (tables.get("blessings", {}) as Dictionary):
-		if not id in mods.taken:
+	var table: Dictionary = tables.get("blessings", {})
+	for id: StringName in table:
+		if not id in mods.taken and bool((table[id] as Dictionary).get("abyss", false)) == (kind == &"module"):
 			pool.append(id)
 	offer.clear()
 	var stream := rng.stream(&"blessings")
@@ -399,6 +407,13 @@ func choose_blessing(id: StringName) -> void:
 			scoring.window = Scoring.CHAIN_WINDOW + mods.chain_window
 		&"shield_timer":
 			_bubble_timer = mods.bubble_recharge
+		&"missiles", &"drones":
+			# Módulo de secundária: instala a arma ou sobe 2 níveis se já for a mesma.
+			var kind := StringName(String(def["effect"]))
+			secondary_level = mini(5, secondary_level + 2) if secondary == kind else maxi(2, secondary_level)
+			secondary = kind
+		&"bombs":
+			player.bombs = mini(player.bombs + int(def.get("value", 1)), 6)
 	player.cap_bonus = mods.weapon_cap_bonus
 	scoring.base_chain = mods.base_chain
 	scoring.chain = maxi(scoring.chain, scoring.base_chain)
@@ -542,6 +557,12 @@ func on_stage_event(ev: Dictionary) -> void:
 					"kind": String(ev.get("kind", "lightning"))})
 		&"blessing":
 			offer_blessings()
+		&"module":
+			offer_blessings(&"module")
+		&"abyss":
+			abyss_depth = int(ev.get("depth", abyss_depth + 1))
+			scoring.point_mult = _abyss_points * (1.0 + 0.05 * (abyss_depth - 1))
+			emit(&"abyss", {"depth": abyss_depth})
 		&"gravity_breach", &"cover", &"capsule":
 			Hazards.on_event(self, ev)
 		&"log":
@@ -960,7 +981,7 @@ func result() -> Dictionary:
 		"secret": String(secret_found), "blessings": mods.taken.duplicate(), "difficulty": String(difficulty),
 		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
 		"rescued": rescued, "max_capsule_combo": max_capsule_combo, "ending": String(ending), "revives": revives,
-		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met, "captured": captured,
+		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met, "captured": captured, "depth": abyss_depth,
 	}
 
 

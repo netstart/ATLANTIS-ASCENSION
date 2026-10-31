@@ -30,7 +30,7 @@ func _fill() -> void:
 
 
 func _title_of(key: String) -> String:
-	for mode: String in ["daily", "currents", "survival"]:
+	for mode: String in ["daily", "currents", "survival", "abyss"]:
 		if key.begins_with(mode + "_"):
 			return tr("mode." + mode)
 	return tr("stage." + key)

@@ -15,6 +15,7 @@ func run(check: Callable) -> void:
 	_unlocks(check, tables)
 	_bot_runs(check, tables)
 	_portraits(check)
+	_abyss(check, tables)
 
 
 func _sim(tables: Dictionary, ship: StringName, seed: int = 5) -> Sim:
@@ -191,3 +192,56 @@ func _portraits(check: Callable) -> void:
 	check.call(Portraits.texture("narrator") == null, "Retrato: o narrador não tem rosto")
 	var tex := Portraits.texture("mare", "alert")
 	check.call(tex != null and tex.get_size() == Vector2(64, 64), "Retrato: 64x64")
+
+
+## Abismo Infinito: roteiro por semente, módulos só no modo, profundidade acelera e paga, o bot desce.
+func _abyss(check: Callable, tables: Dictionary) -> void:
+	var a := Modes.abyss(42)
+	check.call(JSON.stringify(a) == JSON.stringify(Modes.abyss(42)), "Abismo: mesma semente, mesmo roteiro")
+	var ops := {}
+	var boss_at_10 := false
+	var depth := 0
+	for ev: Variant in a["events"]:
+		var op := String((ev as Dictionary)["op"])
+		ops[op] = int(ops.get(op, 0)) + 1
+		if op == "abyss":
+			depth = int(ev["depth"])
+		boss_at_10 = boss_at_10 or (op == "boss" and depth == 10)
+	check.call(int(ops.get("abyss", 0)) == Modes.ABYSS_STAGES, "Abismo: %d profundidades" % Modes.ABYSS_STAGES)
+	check.call(int(ops.get("module", 0)) == Modes.ABYSS_STAGES / 2, "Abismo: módulo a cada 2 profundidades")
+	check.call(boss_at_10, "Abismo: chefe de ato na profundidade 10")
+	var camp := _sim(tables, &"falcon")
+	camp.offer_blessings()
+	var leaked := false
+	for id: StringName in camp.offer:
+		leaked = leaked or String(id).begins_with("abyss_")
+	check.call(not camp.offer.is_empty() and not leaked, "Abismo: módulos nunca aparecem como bênção na campanha")
+	var p := SaveManagerScript.default_profile()
+	var loadout := Modes.loadout_for(&"abyss", p, "2026-11-01")
+	loadout["damage"] = 0.36
+	loadout["hull"] = 3
+	var hashes: Array[String] = []
+	var sim: Sim
+	for k: int in range(2):
+		sim = Sim.new()
+		sim.setup(a, tables, loadout, 42)
+		var bot := BotPilot.new()
+		while not sim.finished and sim.frame < 60 * 60 * 4:
+			sim.step(bot.decide(sim))
+		hashes.append(sim.state_hash())
+	var modules := 0
+	for id: StringName in sim.mods.taken:
+		modules += 1 if String(id).begins_with("abyss_") else 0
+	check.call(sim.abyss_depth >= 5, "Abismo: o bot desce ao menos 5 profundidades em 4 min (%d)" % sim.abyss_depth)
+	check.call(modules >= 2, "Abismo: módulos escolhidos no caminho (%d)" % modules)
+	check.call(hashes[0] == hashes[1], "Abismo: determinístico pela semente")
+	var deep := Sim.new()
+	deep.setup(a, tables, loadout, 42)
+	var base := deep.bullet_speed_mult()
+	deep.on_stage_event({"op": "abyss", "depth": 30})
+	check.call(deep.bullet_speed_mult() > base and deep.scoring.point_mult > 1.0,
+			"Abismo: mais fundo, balas mais rápidas e mais pontos")
+	var out := Modes.apply_result(p, &"abyss", {"score": 50000, "depth": 31})
+	check.call(int(p["abyss_depth"]) == 31 and int(out["orichalcum_gain"]) == 12,
+			"Abismo: guarda a profundidade e paga Oricalco")
+	check.call(Achievements.check(p, {}).has("abyss_30"), "Conquista: Trinta braças")

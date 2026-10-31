@@ -1,4 +1,5 @@
 key,pt_BR,en,es,de,fr,ru,id,ja,ko,zh_TW,zh_CN
+achievement.abyss_30,Trinta braças,Thirty Fathoms,Treinta brazas,Dreißig Faden,Trente brasses,Тридцать саженей,Tiga Puluh Depa,三十尋,서른 길,三十噚,三十英寻
 achievement.all_secrets,Registros Abissais,Abyssal Records,Registros Abisales,Abyssale Aufzeichnungen,Archives abyssales,Записи бездны,Catatan Jurang,深淵の記録,심연 기록,深淵紀錄,深渊纪录
 achievement.armada,Armada atlante,Atlantean Armada,Armada atlante,Atlantische Armada,Armada atlante,Атлантская армада,Armada Atlantis,アトランティス艦隊,아틀란티스 함대,亞特蘭提斯艦隊,亚特兰蒂斯舰队
 achievement.chain_80,Corrente de 80,Chain of 80,Cadena de 80,80er-Kette,Chaîne de 80,Цепь из 80,Rantai 80,80チェイン,80 체인,80連鎖,80连锁
@@ -22,6 +23,30 @@ achievement.stars_30,30 estrelas,30 Stars,30 estrellas,30 Sterne,30 étoiles,30 
 achievement.survivor,Sobrevivente,Survivor,Superviviente,Überlebender,Survivant,Выживший,Penyintas,サバイバー,생존자,倖存者,幸存者
 achievement.tidebreaker,Quebra-mar,Breakwater,Rompeolas,Wellenbrecher,Brise-lames,Волнолом,Pemecah Ombak,防波堤,방파제,防波堤,防波堤
 achievement.untouchable,Intocável,Untouchable,Intocable,Unberührbar,Intouchable,Неприкасаемый,Tak Tersentuh,アンタッチャブル,무적,無傷,无伤
+blessing.abyss_bombs,Paiol,Magazine,Polvorín,Munitionslager,Soute,Арсенал,Gudang Bom,弾薬庫,탄약고,彈藥庫,弹药库
+blessing.abyss_bombs_desc,+2 bombas,+2 bombs,+2 bombas,+2 Bomben,+2 bombes,+2 бомбы,+2 bom,ボム+2,폭탄 +2,炸彈+2,炸弹+2
+blessing.abyss_bubble,Bolha de reserva,Spare Bubble,Burbuja de reserva,Ersatzblase,Bulle de réserve,Запасной пузырь,Gelembung Cadangan,予備バブル,예비 거품,備用泡泡,备用泡泡
+blessing.abyss_bubble_desc,Uma bolha absorve o próximo golpe,A bubble absorbs the next hit,Una burbuja absorbe el próximo golpe,Eine Blase fängt den nächsten Treffer ab,Une bulle absorbe le prochain coup,Пузырь поглотит следующий удар,Gelembung menahan serangan berikutnya,次の被弾をバブルが防ぐ,거품이 다음 피격을 흡수,泡泡抵擋下一次攻擊,泡泡抵挡下一次攻击
+blessing.abyss_cannon,Canhão de pressão,Pressure Cannon,Cañón de presión,Druckkanone,Canon à pression,Напорная пушка,Meriam Tekanan,圧力砲,압력포,壓力砲,压力炮
+blessing.abyss_cannon_desc,Dano +12%,Damage +12%,Daño +12%,Schaden +12%,Dégâts +12%,Урон +12%,Damage +12%,ダメージ+12%,피해 +12%,傷害+12%,伤害+12%
+blessing.abyss_coral,Coral regenerador,Healing Coral,Coral regenerador,Heilkoralle,Corail régénérant,Целебный коралл,Karang Penyembuh,再生サンゴ,재생 산호,再生珊瑚,再生珊瑚
+blessing.abyss_coral_desc,"A cada 30 raspões, +1 de casco","Every 30 grazes, +1 hull","Cada 30 roces, +1 de casco",Alle 30 Streifer +1 Hülle,"Tous les 30 effleurements, +1 coque",Каждые 30 касаний +1 к корпусу,"Setiap 30 serempetan, +1 lambung",30回かすると船体+1,그레이즈 30회마다 선체 +1,每擦彈30次船體+1,每擦弹30次船体+1
+blessing.abyss_drones,Hangar de drones,Drone Bay,Hangar de drones,Drohnenbucht,Baie à drones,Отсек дронов,Ruang Drone,ドローンベイ,드론 격납고,無人機艙,无人机舱
+blessing.abyss_drones_desc,Instala drones ou sobe 2 níveis,Installs drones or adds 2 levels,Instala drones o sube 2 niveles,Baut Drohnen ein oder +2 Stufen,Installe des drones ou +2 niveaux,Ставит дронов или +2 уровня,Pasang drone atau naik 2 level,ドローン装備またはLv+2,드론 장착 또는 2레벨 상승,裝上無人機或提升2級,装上无人机或提升2级
+blessing.abyss_magnet,Ímã de pérolas,Pearl Magnet,Imán de perlas,Perlenmagnet,Aimant à perles,Жемчужный магнит,Magnet Mutiara,真珠マグネット,진주 자석,珍珠磁鐵,珍珠磁铁
+blessing.abyss_magnet_desc,Puxa itens a 60 u,Pulls items within 60 u,Atrae objetos a 60 u,Zieht Items aus 60 E an,Attire les objets à 60 u,Притягивает предметы в 60 ед.,Menarik item dalam 60 u,60u以内のアイテムを吸引,60u 내 아이템 흡수,吸取60單位內物品,吸取60单位内物品
+blessing.abyss_missiles,Lançador de mísseis,Missile Launcher,Lanzamisiles,Raketenwerfer,Lance-missiles,Ракетница,Peluncur Rudal,ミサイルランチャー,미사일 발사기,飛彈發射器,导弹发射器
+blessing.abyss_missiles_desc,Instala mísseis ou sobe 2 níveis,Installs missiles or adds 2 levels,Instala misiles o sube 2 niveles,Baut Raketen ein oder +2 Stufen,Installe des missiles ou +2 niveaux,Ставит ракеты или +2 уровня,Pasang rudal atau naik 2 level,ミサイル装備またはLv+2,미사일 장착 또는 2레벨 상승,裝上飛彈或提升2級,装上导弹或提升2级
+blessing.abyss_overclock,Sobrecarga,Overclock,Sobrecarga,Übertaktung,Surcadençage,Разгон,Overclock,オーバークロック,오버클럭,超頻,超频
+blessing.abyss_overclock_desc,Arma sobe 1 nível além do limite,Weapon goes 1 level past its cap,El arma sube 1 nivel más allá del límite,Waffe steigt 1 Stufe über das Limit,L'arme dépasse sa limite d'un niveau,Оружие на 1 уровень выше предела,Senjata naik 1 level melewati batas,武器レベル上限+1,무기 레벨 상한 +1,武器等級上限+1,武器等级上限+1
+blessing.abyss_plating,Blindagem abissal,Abyssal Plating,Blindaje abisal,Abyssale Panzerung,Blindage abyssal,Бронеплиты бездны,Lapisan Jurang,深淵装甲,심연 장갑,深淵裝甲,深渊装甲
+blessing.abyss_plating_desc,+1 de casco,+1 hull,+1 de casco,+1 Hülle,+1 coque,+1 к корпусу,+1 lambung,船体+1,선체 +1,船體+1,船体+1
+blessing.abyss_rapid,Gatilho rápido,Rapid Trigger,Gatillo rápido,Schnellabzug,Détente rapide,Быстрый спуск,Pemicu Cepat,速射トリガー,속사 방아쇠,速射扳機,速射扳机
+blessing.abyss_rapid_desc,Cadência +15%,Fire rate +15%,Cadencia +15%,Feuerrate +15%,Cadence +15%,Скорострельность +15%,Laju tembak +15%,連射+15%,연사 +15%,射速+15%,射速+15%
+blessing.abyss_reactor,Reator de raspão,Graze Reactor,Reactor de roce,Streifreaktor,Réacteur d'effleurement,Реактор касаний,Reaktor Serempet,かすりリアクター,그레이즈 반응로,擦彈反應爐,擦弹反应炉
+blessing.abyss_reactor_desc,Raspões carregam 50% mais,Grazes charge 50% more,Los roces cargan 50% más,Streifer laden 50% mehr,Les effleurements chargent 50% de plus,Касания заряжают на 50% больше,Serempetan mengisi 50% lebih,かすりのチャージ+50%,그레이즈 충전 50% 증가,擦彈充能+50%,擦弹充能+50%
+blessing.abyss_thrusters,Propulsores,Thrusters,Propulsores,Triebwerke,Propulseurs,Двигатели,Pendorong,スラスター,추진기,推進器,推进器
+blessing.abyss_thrusters_desc,Velocidade +10%,Speed +10%,Velocidad +10%,Tempo +10%,Vitesse +10%,Скорость +10%,Kecepatan +10%,速度+10%,속도 +10%,速度+10%,速度+10%
 blessing.nereus_chart,Carta Náutica,Sea Chart,Carta Náutica,Seekarte,Carte Marine,Морская карта,Peta Laut,海図,해도,海圖,海图
 blessing.nereus_chart_desc,Marcados brilham e valem +50%,"Marked foes glow, +50% points","Marcados brillan, +50% puntos","Markierte leuchten, +50% Punkte",Cibles marquées : +50% pts,"Отмеченные светятся, +50% очков",Target bertanda +50% poin,マーク対象が光り得点+50%,"표시 대상 강조, 점수 +50%",標記目標發光，分數+50%,标记目标发光，分数+50%
 blessing.nereus_luck,Sorte,Luck,Suerte,Glück,Chance,Удача,Untung,幸運,행운,幸運,幸运
@@ -108,6 +133,7 @@ credits.title,Créditos,Credits,Créditos,Mitwirkende,Crédits,Авторы,Kred
 currency.credits,Créditos,Credits,Créditos,Credits,Crédits,Кредиты,Kredit,クレジット,크레딧,點數,点数
 currency.orichalcum,Oricalco,Orichalcum,Oricalco,Orichalkum,Orichalque,Орихалк,Orikalkum,オリハルコン,오리하르콘,山銅,山铜
 currency.pearls,Pérolas,Pearls,Perlas,Perlen,Perles,Жемчуг,Mutiara,真珠,진주,珍珠,珍珠
+deity.abyss,Módulo,Module,Módulo,Modul,Module,Модуль,Modul,モジュール,모듈,模組,模块
 deity.avatar,Avatar das Marés,Avatar of the Tides,Avatar de las Mareas,Avatar der Gezeiten,Avatar des Marées,Аватар приливов,Avatar Pasang,潮の化身,조수의 화신,潮汐化身,潮汐化身
 deity.nereus,Nereu,Nereus,Nereo,Nereus,Nérée,Нерей,Nereus,ネーレウス,네레우스,涅柔斯,涅柔斯
 deity.proteus,Proteu,Proteus,Proteo,Proteus,Protée,Протей,Proteus,プロテウス,프로테우스,普羅透斯,普罗透斯
@@ -238,12 +264,14 @@ hud.boss_remember,Ele lembra de você. Mude o seu voo.,It remembers you. Change 
 hud.capsule_combo,Resgate x%d!,Rescue x%d!,¡Rescate x%d!,Rettung x%d!,Sauvetage x%d !,Спасение x%d!,Penyelamatan x%d!,救出 x%d！,구조 x%d!,救援 x%d！,救援 x%d！
 hud.capture,Capturado! Ele voa com você,Captured! It flies with you,¡Capturado! Vuela contigo,Gekapert! Er fliegt mit dir,Capturé ! Il vole avec vous,Захвачен! Летит с тобой,Tertangkap! Ia terbang bersamamu,捕獲！ 味方として飛ぶ,포획! 함께 비행합니다,捕獲！牠與你同飛,捕获！它与你同飞
 hud.current,CORRENTE!,CURRENT!,¡CORRIENTE!,STRÖMUNG!,COURANT !,ТЕЧЕНИЕ!,ARUS!,海流！,해류!,洋流！,洋流！
+hud.depth,Profundidade %d,Depth %d,Profundidad %d,Tiefe %d,Profondeur %d,Глубина %d,Kedalaman %d,深度 %d,깊이 %d,深度 %d,深度 %d
 hud.duel,TOQUE RÁPIDO!,TAP FAST!,¡TOCA RÁPIDO!,SCHNELL TIPPEN!,TAPEZ VITE !,ЖМИ БЫСТРЕЕ!,KETUK CEPAT!,連打！,연타!,快速點擊！,快速点击！
 hud.give_up,Encerrar,End run,Terminar,Beenden,Terminer,Завершить,Akhiri,終了,종료,結束,结束
 hud.glyph,Glifo %d de %d,Glyph %d of %d,Glifo %d de %d,Glyphe %d von %d,Glyphe %d sur %d,Глиф %d из %d,Glif %d dari %d,グリフ %d / %d,글리프 %d / %d,符文 %d / %d,符文 %d / %d
 hud.glyph_reset,Ordem errada. Os glifos se apagaram.,Wrong order. The glyphs went dark.,Orden incorrecto. Los glifos se apagaron.,Falsche Reihenfolge. Die Glyphen erlöschen.,Mauvais ordre. Les glyphes s'éteignent.,Не тот порядок. Глифы погасли.,Urutan salah. Glif padam.,順番が違う。グリフが消えた。,순서가 틀렸다. 글리프가 꺼졌다.,順序錯誤，符文熄滅了。,顺序错误，符文熄灭了。
 hud.gravity_breach,GRAVITY BREACH!,GRAVITY BREACH!,¡GRAVITY BREACH!,GRAVITY BREACH!,GRAVITY BREACH !,ГРАВИПРОРЫВ!,GRAVITY BREACH!,グラビティ・ブリーチ！,중력 붕괴!,重力裂變！,重力裂变！
 hud.log_found,Registro da Halcyon recuperado.,Halcyon log recovered.,Registro de la Halcyon recuperado.,Halcyon-Logbuch geborgen.,Journal de la Halcyon récupéré.,Запись «Халкиона» получена.,Catatan Halcyon ditemukan.,ハルシオンの記録を回収。,할시온의 기록 회수.,已回收翠鳥號日誌。,已回收翠鸟号日志。
+hud.module_title,Escolha um módulo,Choose a module,Elige un módulo,Wähle ein Modul,Choisis un module,Выбери модуль,Pilih modul,モジュールを選べ,모듈을 고르세요,選擇一個模組,选择一个模块
 hud.ocean_shift,A MARÉ ESTÁ MUDANDO,THE TIDE IS TURNING,LA MAREA CAMBIA,DIE GEZEITEN WENDEN SICH,LA MARÉE TOURNE,ПРИЛИВ МЕНЯЕТСЯ,ARUS BERUBAH,潮が変わる,조류가 바뀐다,潮汐正在改變,潮汐正在改变
 hud.paused,Pausa,Paused,Pausa,Pause,Pause,Пауза,Jeda,ポーズ,일시정지,暫停,暂停
 hud.quit,Sair da missão,Leave mission,Salir de la misión,Mission verlassen,Quitter la mission,Покинуть миссию,Keluar misi,ミッションを出る,임무 나가기,離開任務,离开任务
@@ -356,6 +384,8 @@ map.route_abyss,"Rota do abismo · pontos x1,5",Abyss route · score x1.5,"Ruta 
 map.route_surface,Rota segura pela superfície,Safer route along the surface,Ruta segura por la superficie,Sicherere Route an der Oberfläche,Route plus sûre en surface,Безопасный путь по поверхности,Rute aman di permukaan,海上を行く安全なルート,수면을 따라가는 안전한 경로,沿海面的安全航線,沿海面的安全航线
 map.secret_hint,Aberta pelos glifos da 2-1,Opened by the glyphs of 2-1,Abierta por los glifos de 2-1,Durch die Glyphen von 2-1 geöffnet,Ouverte par les glyphes de 2-1,Открыта глифами 2-1,Dibuka oleh glif 2-1,2-1のグリフで開放,2-1의 글리프로 개방,由2-1的符文開啟,由2-1的符文开启
 map.title,Carta da Ascensão,Ascension Chart,Carta de la Ascensión,Karte des Aufstiegs,Carte de l'Ascension,Карта Восхождения,Peta Kenaikan,昇天の海図,상승의 해도,昇天海圖,升天海图
+mode.abyss,Abismo Infinito,Endless Abyss,Abismo Infinito,Endloser Abgrund,Abysse Infini,Бесконечная бездна,Jurang Tanpa Akhir,無限の深淵,끝없는 심연,無盡深淵,无尽深渊
+mode.abyss_desc,Desça o mais fundo que puder: módulos e bênçãos a cada profundidade,Dive as deep as you can: modules and blessings at every depth,Baja lo más hondo que puedas: módulos y bendiciones en cada profundidad,Tauche so tief du kannst: Module und Segen in jeder Tiefe,Plongez au plus profond : modules et bénédictions à chaque palier,Погружайся как можно глубже: модули и благословения на каждой глубине,Selami sedalam mungkin: modul dan berkah di setiap kedalaman,どこまでも潜れ：深度ごとにモジュールと加護,최대한 깊이 잠수: 깊이마다 모듈과 축복,盡可能深潛：每層都有模組與祝福,尽可能深潜：每层都有模块与祝福
 mode.arcade,Arcade,Arcade,Arcade,Arcade,Arcade,Аркада,Arkade,アーケード,아케이드,街機,街机
 mode.arcade_desc,"9 capítulos seguidos, sem hangar","9 chapters in a row, no hangar","9 capítulos seguidos, sin hangar","9 Kapitel am Stück, ohne Hangar","9 chapitres d'affilée, sans hangar","9 глав подряд, без ангара","9 bab berturut-turut, tanpa hanggar",9章連続・強化なし,"9장 연속, 강화 없음",連續9章，無機庫強化,连续9章，无机库强化
 mode.boss_rush,Boss Rush,Boss Rush,Boss Rush,Boss Rush,Boss Rush,Битва с боссами,Boss Rush,ボスラッシュ,보스 러시,首領連戰,首领连战
@@ -429,6 +459,10 @@ options.tilt_parallax,Parallax por inclinação,Tilt parallax,Paralaje por incli
 options.title,Opções,Options,Opciones,Optionen,Options,Настройки,Opsi,オプション,옵션,選項,选项
 options.ui_volume,Interface,Interface,Interfaz,Oberfläche,Interface,Интерфейс,Antarmuka,UI音,인터페이스,介面,界面
 options.vibration,Vibração,Vibration,Vibración,Vibration,Vibration,Вибрация,Getar,振動,진동,震動,震动
+options.window,Janela,Window,Ventana,Fenster,Fenêtre,Окно,Jendela,ウィンドウ,창,視窗,窗口
+options.window_fullscreen,Tela cheia,Fullscreen,Pantalla completa,Vollbild,Plein écran,Полный экран,Layar penuh,フルスクリーン,전체 화면,全螢幕,全屏
+options.window_landscape,Deitada,Landscape,Horizontal,Quer,Paysage,Горизонтально,Lanskap,横,가로,橫向,横屏
+options.window_portrait,Em pé (tate),Upright (tate),Vertical (tate),Hochkant (Tate),Verticale (tate),Вертикально (тате),Tegak (tate),縦（TATE）,세로 (타테),直立（TATE）,竖屏（TATE）
 practice.desc,Sem estrelas e sem moedas. Use para estudar.,"No stars, no currency. For study only.",Sin estrellas ni monedas. Para estudiar.,"Keine Sterne, keine Währung. Nur zum Üben.",Ni étoiles ni monnaie. Pour s'entraîner.,Без звёзд и валюты. Только для учёбы.,Tanpa bintang dan mata uang. Untuk belajar.,星も通貨もなし。研究用。,별도 재화도 없음. 연습용.,沒有星星與貨幣，僅供研究。,没有星星与货币，仅供研究。
 practice.none,Vença uma missão para treinar nela.,Clear a mission to practice it.,Supera una misión para practicarla.,"Schaffe eine Mission, um sie zu üben.",Termine une mission pour t'y entraîner.,"Пройди миссию, чтобы тренироваться.",Selesaikan misi untuk berlatih.,クリアしたミッションで練習できる。,임무를 클리어하면 연습할 수 있다.,通關任務後即可練習。,通关任务后即可练习。
 records.none,Nenhum recorde ainda. Vença uma missão!,No records yet. Clear a mission!,Aún no hay récords. ¡Supera una misión!,Noch keine Rekorde. Schaffe eine Mission!,Aucun record. Termine une mission !,Рекордов пока нет. Пройди миссию!,Belum ada rekor. Selesaikan misi!,まだ記録がない。ミッションをクリアしよう！,아직 기록이 없다. 임무를 클리어하자!,還沒有紀錄，去通關任務吧！,还没有纪录，去通关任务吧！
@@ -439,6 +473,7 @@ results.chain,Maior corrente,Best chain,Mejor cadena,Beste Kette,Meilleure chaî
 results.cleared,Missão concluída,Mission complete,Misión completada,Mission erfüllt,Mission accomplie,Миссия выполнена,Misi selesai,ミッションクリア,임무 완료,任務完成,任务完成
 results.continue,Continuar,Continue,Continuar,Weiter,Continuer,Далее,Lanjut,続ける,계속,繼續,继续
 results.credits,Créditos: +%s,Credits: +%s,Créditos: +%s,Credits: +%s,Crédits : +%s,Кредиты: +%s,Kredit: +%s,クレジット: +%s,크레딧: +%s,點數: +%s,点数: +%s
+results.depth,Profundidade alcançada: %d,Depth reached: %d,Profundidad alcanzada: %d,Erreichte Tiefe: %d,Profondeur atteinte : %d,Достигнутая глубина: %d,Kedalaman dicapai: %d,到達深度：%d,도달 깊이: %d,到達深度：%d,到达深度：%d
 results.double_ad,Dobrar créditos · ver anúncio,Double credits · watch an ad,Duplicar créditos · ver anuncio,Credits verdoppeln · Werbung,Doubler les crédits · pub,Удвоить кредиты · реклама,Gandakan kredit · tonton iklan,クレジット2倍・広告,크레딧 2배 · 광고,點數加倍・看廣告,点数加倍・看广告
 results.double_free,Dobrar créditos,Double credits,Duplicar créditos,Credits verdoppeln,Doubler les crédits,Удвоить кредиты,Gandakan kredit,クレジット2倍,크레딧 2배,點數加倍,点数加倍
 results.failed,Missão falhou,Mission failed,Misión fallida,Mission gescheitert,Mission échouée,Миссия провалена,Misi gagal,ミッション失敗,임무 실패,任務失敗,任务失败
