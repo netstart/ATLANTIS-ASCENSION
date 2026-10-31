@@ -22,7 +22,7 @@ const BUTTON := 44.0
 const OBJECTIVE_SECONDS := 5.0
 ## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
 const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint.orbs"], [1500, "hint.special"],
-		[2100, "hint.tide"], [2700, "hint.marked"]]
+		[2100, "hint.tide"], [2700, "hint.marked"], [3300, "hint.capture"]]
 
 var layout := {}
 var safe := Rect2()

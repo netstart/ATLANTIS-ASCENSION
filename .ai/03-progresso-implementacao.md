@@ -32,7 +32,8 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `tools/run_checks.ps1`: `TUDO OK` (892 verificações de regras, 71.619 de integração, layout e fluxo, 609 textos x
   11 idiomas, 21 componentes de licença e 169 arquivos, mesmo hash em 1x/2x/3x/Baixa). Benchmarks: partida com
   1.000 balas p95 2,2 ms (pior 3,2 ms); rolagem 72/72 listas aprovadas.
-- ⬜ Próximo passo: o mantenedor executa o checklist de lançamento (contas, licenças, teste fechado).
+- ✅ Pós-lançamento em andamento sem depender de contas: ver a seção no fim.
+- ⬜ Lojas: o mantenedor executa o checklist de lançamento (contas, licenças, teste fechado).
 
 ## Decisões pendentes do mantenedor
 
@@ -68,7 +69,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ✅ Downloads do Vertical Slice em `c:\src\downloads\assets\`: 14 packs Kenney, 6 packs Void, Ocean Creatures, 2 faixas
   CC0 da OpenGameArt e Fusion Pixel, todos no `licenses/registry.json` com snapshot da página de origem
 - ✅ Critério: projeto abre, testes passam em todas as resoluções, licenças verdes
-- ⬜ Benchmark de rolagem (`tests/scroll_bench.tscn`): entra com a primeira lista longa (hub e mapa, Fase 1)
+- ✅ Benchmark de rolagem (`tests/scroll_bench.tscn`): entra com a primeira lista longa (hub e mapa, Fase 1)
 
 ## Fase 1 — Vertical Slice · `0.1.0`
 
@@ -144,7 +145,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   Railgun, escuridão com sonar, gravidade para cima, Ocean Shift contínuo)
 - ✅ Cápsulas de resgate com combo (até x8) e Cidade de Thalassa com 5 distritos e bônus permanentes
 - ✅ 6 aeronaves (Trident e Atlas abertas por fragmentos nos capítulos 4 a 7), 12 alas, 6 especiais.
-  ⚠️ Captura biomecânica fica para o pós-lançamento
+  ✅ Captura biomecânica entrou na `1.1.0` (ver Pós-lançamento)
 - ✅ Gravity Breach (balas inimigas 100%, do jogador 40%) com bônus Redemoinho (raspões em dobro); lava, prédios
   que bloqueiam balas, gelo, detritos, raios, ventania e corrente
 - ✅ Chefe que lembra (a faixa preferida do jogador fica no perfil e os chefes de ato começam puxados para ela).
@@ -182,3 +183,12 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   jogo
 - ⚠️ Revisão de traduções por nativos
 - ⬜ Critérios: aprovado nas duas lojas, crash-free ≥ 99,5%, D1 ≥ 40% no teste fechado
+
+## Pós-lançamento · `1.x`
+
+- ✅ `1.1.0` Frota completa: aeronaves 7 a 12 com traço próprio em `scripts/sim/ship_traits.gd` (Ariete: agulhas
+  que explodem; Enxame: 2 drones fixos; Eclipse: tiro perfurante; Nova: 1 em 5 tiros crítico x2,5; Titã: abate
+  explode; Ascension: arma do orbe vira assinatura e a especial gira entre as 6, aberta pelo final Maré Alta).
+  Fragmentos nas missões 7-1 a 9-2 e nas 4 secretas. Captura biomecânica: marcado abatido a até 56 u vira escolta
+  por 10 s (até 2) e atira junto. Conquista "Armada atlante" (12 aeronaves). Testes em `tests/post_tests.gd`
+  (traços, captura, desbloqueio, o bot vence a 1-1 com cada nave nova e o hash se repete)

@@ -1,5 +1,6 @@
 key,pt_BR,en,es,de,fr,ru,id,ja,ko,zh_TW,zh_CN
 achievement.all_secrets,Registros Abissais,Abyssal Records,Registros Abisales,Abyssale Aufzeichnungen,Archives abyssales,Записи бездны,Catatan Jurang,深淵の記録,심연 기록,深淵紀錄,深渊纪录
+achievement.armada,Armada atlante,Atlantean Armada,Armada atlante,Atlantische Armada,Armada atlante,Атлантская армада,Armada Atlantis,アトランティス艦隊,아틀란티스 함대,亞特蘭提斯艦隊,亚特兰蒂斯舰队
 achievement.chain_80,Corrente de 80,Chain of 80,Cadena de 80,80er-Kette,Chaîne de 80,Цепь из 80,Rantai 80,80チェイン,80 체인,80連鎖,80连锁
 achievement.daily,Todo dia,Every Day,Cada día,Jeden Tag,Chaque jour,Каждый день,Setiap Hari,毎日,매일,每一天,每一天
 achievement.ending_high_tide,Maré Alta,High Tide,Marea Alta,Springflut,Grande Marée,Высокий прилив,Pasang Tinggi,満潮,만조,滿潮,满潮
@@ -205,6 +206,7 @@ hangar.upgrade,Melhorar · %s créditos,Upgrade · %s credits,Mejorar · %s cré
 hangar.upgrade_both,Melhorar · %s créditos + %d oricalco,Upgrade · %s credits + %d orichalcum,Mejorar · %s créditos + %d oricalco,Verbessern · %s Credits + %d Orichalkum,Améliorer · %s crédits + %d orichalque,Улучшить · %s кредитов + %d орихалка,Tingkatkan · %s kredit + %d orikalkum,強化・%sクレジット＋オリハルコン%d,강화 · %s 크레딧 + 오리하르콘 %d,強化・%s 點數＋山銅 %d,强化・%s 点数＋山铜 %d
 hangar.wing_locked,%d de %d estrelas,%d of %d stars,%d de %d estrellas,%d von %d Sternen,%d sur %d étoiles,%d из %d звёзд,%d dari %d bintang,星 %d/%d,별 %d/%d,星 %d/%d,星 %d/%d
 hangar.wings,Asas (%d de %d),Wings (%d of %d),Alas (%d de %d),Flügel (%d von %d),Ailes (%d sur %d),Крылья (%d из %d),Sayap (%d dari %d),ウイング（%d/%d）,날개 (%d/%d),僚翼（%d/%d）,僚翼（%d/%d）
+hint.capture,Abata um marcado bem de perto para capturá-lo,Down a marked foe up close to capture it,Derriba a un marcado de cerca para capturarlo,"Schieß einen Markierten aus nächster Nähe ab, um ihn zu kapern",Abattez un marqué de près pour le capturer,"Сбей отмеченного вплотную, чтобы захватить",Jatuhkan musuh bertanda dari dekat untuk menangkapnya,マーク付きの敵を至近距離で倒すと捕獲,표식 적을 가까이서 격추하면 포획,近距離擊墜標記敵人即可捕獲,近距离击坠标记敌人即可捕获
 hint.graze,Passe raspando nas balas: enche o SP e a Pressão.,Skim past bullets: it charges SP and Pressure.,Roza las balas: carga el SP y la Presión.,Kugeln streifen lädt SP und Druck.,Frôle les tirs : ça charge le SP et la Pression.,Касайтесь пуль: копится СП и Давление.,Serempet peluru: isi SP dan Tekanan.,弾をかすると必殺とプレッシャーが溜まる。,탄을 스치면 필살과 압력이 찬다.,擦過子彈可累積必殺與壓力。,擦过子弹可累积必杀与压力。
 hint.marked,Inimigos marcados valem estrela: derrube todos.,Marked enemies count for a star: down them all.,Los marcados dan estrella: derríbalos todos.,Markierte zählen für einen Stern: alle abschießen.,Les marqués comptent pour une étoile : abats-les tous.,Отмеченные дают звезду: сбейте всех.,Musuh bertanda memberi bintang: kalahkan semua.,マーク敵を全滅で星ひとつ。,표시된 적을 전부 잡으면 별 하나.,擊落全部標記敵人可得一顆星。,击落全部标记敌人可得一颗星。
 hint.move,Arraste em qualquer lugar para mover. O tiro é automático.,Drag anywhere to move. Firing is automatic.,Arrastra en cualquier lugar para moverte. Disparo automático.,Irgendwo ziehen zum Bewegen. Feuer ist automatisch.,Glisse n'importe où pour bouger. Le tir est automatique.,"Тяните где угодно, чтобы лететь. Огонь автоматический.",Seret di mana saja untuk bergerak. Tembak otomatis.,どこでもドラッグで移動。射撃は自動。,아무 곳이나 드래그해 이동. 사격은 자동.,在任何地方拖動即可移動，自動射擊。,在任何地方拖动即可移动，自动射击。
@@ -234,6 +236,7 @@ hud.bomb,BOMBA,BOMB,BOMBA,BOMBE,BOMBE,БОМБА,BOM,ボム,폭탄,炸彈,炸弹
 hud.boss_learn,Ele mudou de posição. Está te estudando.,It moved. It's studying you.,Se movió. Te está estudiando.,Es hat sich bewegt. Es studiert dich.,Il s'est déplacé. Il t'étudie.,Он сместился. Он изучает тебя.,Ia berpindah. Ia mempelajarimu.,位置を変えた。君を研究している。,위치를 바꿨다. 너를 연구하고 있어.,它移動了，正在研究你。,它移动了，正在研究你。
 hud.boss_remember,Ele lembra de você. Mude o seu voo.,It remembers you. Change how you fly.,Te recuerda. Cambia tu vuelo.,Es erinnert sich an dich. Flieg anders.,Il se souvient de toi. Change ta façon de voler.,Он помнит тебя. Измени манеру полёта.,Ia mengingatmu. Ubah cara terbangmu.,奴は君を覚えている。飛び方を変えろ。,놈이 너를 기억한다. 비행 방식을 바꿔.,它記得你，改變你的飛法。,它记得你，改变你的飞法。
 hud.capsule_combo,Resgate x%d!,Rescue x%d!,¡Rescate x%d!,Rettung x%d!,Sauvetage x%d !,Спасение x%d!,Penyelamatan x%d!,救出 x%d！,구조 x%d!,救援 x%d！,救援 x%d！
+hud.capture,Capturado! Ele voa com você,Captured! It flies with you,¡Capturado! Vuela contigo,Gekapert! Er fliegt mit dir,Capturé ! Il vole avec vous,Захвачен! Летит с тобой,Tertangkap! Ia terbang bersamamu,捕獲！ 味方として飛ぶ,포획! 함께 비행합니다,捕獲！牠與你同飛,捕获！它与你同飞
 hud.current,CORRENTE!,CURRENT!,¡CORRIENTE!,STRÖMUNG!,COURANT !,ТЕЧЕНИЕ!,ARUS!,海流！,해류!,洋流！,洋流！
 hud.duel,TOQUE RÁPIDO!,TAP FAST!,¡TOCA RÁPIDO!,SCHNELL TIPPEN!,TAPEZ VITE !,ЖМИ БЫСТРЕЕ!,KETUK CEPAT!,連打！,연타!,快速點擊！,快速点击！
 hud.give_up,Encerrar,End run,Terminar,Beenden,Terminer,Завершить,Akhiri,終了,종료,結束,结束
@@ -453,9 +456,15 @@ results.rescued,Atlantes resgatados: %d,Atlanteans rescued: %d,Atlantes rescatad
 results.retry,Tentar de novo,Try again,Reintentar,Nochmal,Réessayer,Ещё раз,Coba lagi,リトライ,다시 하기,再試一次,再试一次
 results.season_xp,Passe da Maré: +%d XP,Tide Pass: +%d XP,Pase de la Marea: +%d XP,Flutpass: +%d EP,Passe des Marées : +%d XP,Пропуск прилива: +%d опыта,Pass Pasang: +%d XP,タイドパス +%d XP,조수 패스 +%d XP,潮汐通行證 +%d XP,潮汐通行证 +%d XP
 role.area_control,Controle de área,Area control,Control de área,Flächenkontrolle,Contrôle de zone,Контроль зоны,Kendali area,範囲制圧,범위 제압,區域控制,区域控制
+role.artillery,Artilharia,Artillery,Artillería,Artillerie,Artillerie,Артиллерия,Artileri,砲撃,포격형,砲擊,炮击
 role.balanced,Equilibrada,Balanced,Equilibrada,Ausgewogen,Équilibré,Сбалансированный,Seimbang,バランス,균형형,均衡,均衡
+role.critical,Crítico,Critical,Crítico,Kritisch,Critique,Крит,Kritis,クリティカル,치명타형,暴擊,暴击
 role.defense,Defesa,Defense,Defensa,Verteidigung,Défense,Защита,Pertahanan,防御,방어형,防禦,防御
+role.drones,Drones,Drones,Drones,Drohnen,Drones,Дроны,Drone,ドローン,드론형,無人機,无人机
+role.explosive,Explosão,Explosive,Explosión,Explosiv,Explosif,Взрыв,Ledakan,爆発,폭발형,爆破,爆破
+role.hybrid,Lendária híbrida,Legendary hybrid,Híbrida legendaria,Legendärer Hybrid,Hybride légendaire,Легендарный гибрид,Hibrida legendaris,伝説のハイブリッド,전설의 하이브리드,傳說混合型,传说混合型
 role.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일형,飛彈,导弹
+role.piercing,Perfuração,Piercing,Perforación,Durchschlag,Perforation,Пробитие,Tembus,貫通,관통형,貫穿,贯穿
 role.precision,Precisão,Precision,Precisión,Präzision,Précision,Точность,Presisi,精密,정밀형,精準,精准
 role.speed,Velocidade,Speed,Velocidad,Tempo,Vitesse,Скорость,Kecepatan,スピード,속도형,速度,速度
 season.gold_buy,Trilha Maré Dourada (simulada),Golden Tide track (simulated),Pista Marea Dorada (simulada),Goldene Flut (simuliert),Piste Marée Dorée (simulée),Золотой прилив (имитация),Jalur Pasang Emas (simulasi),黄金の潮トラック（模擬）,황금 조수 트랙 (모의),黃金潮汐路線（模擬）,黄金潮汐路线（模拟）
@@ -468,12 +477,19 @@ secondary.drones,Drones,Drones,Drones,Drohnen,Drones,Дроны,Drone,ドロー�
 secondary.drones_desc,Orbitam e atiram junto,Orbit and fire with you,Orbitan y disparan contigo,Kreisen und feuern mit,Orbitent et tirent avec toi,Кружат и стреляют,Mengorbit dan ikut menembak,周回して一緒に撃つ,주위를 돌며 함께 사격,環繞並一同射擊,环绕并一同射击
 secondary.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일,飛彈,导弹
 secondary.missiles_desc,"Teleguiados, buscam o alvo","Homing, seek the target","Teledirigidos, buscan el blanco",Zielsuchend,Guidés vers la cible,Самонаводящиеся,Pelacak target,追尾して狙う,유도 추적,追蹤目標,追踪目标
+ship.ascension,Ascensão,Ascension,Ascensión,Aufstieg,Ascension,Вознесение,Kenaikan,アセンション,어센션,昇天,升天
 ship.atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas
+ship.eclipse,Eclipse,Eclipse,Eclipse,Eclipse,Éclipse,Затмение,Gerhana,エクリプス,이클립스,日蝕,日蚀
 ship.falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon
 ship.hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra
 ship.manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta
+ship.nova,Nova,Nova,Nova,Nova,Nova,Нова,Nova,ノヴァ,노바,新星,新星
+ship.ram,Ariete,Ram,Ariete,Rammbock,Bélier,Таран,Pendobrak,ラム,램,衝角,冲角
+ship.swarm,Enxame,Swarm,Enjambre,Schwarm,Essaim,Рой,Kawanan,スウォーム,스웜,蜂群,蜂群
 ship.tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest
+ship.titan,Titã,Titan,Titán,Titan,Titan,Титан,Titan,タイタン,타이탄,泰坦,泰坦
 ship.trident,Tridente,Trident,Tridente,Dreizack,Trident,Трезубец,Trisula,トライデント,트라이던트,三叉戟,三叉戟
+ships.ending_unlock,Abre com o %s,Unlocked by %s,Se abre con %s,Freigeschaltet durch %s,Débloqué par %s,Открывается: %s,Terbuka lewat %s,%sで解放,%s 달성 시 해금,達成%s後解鎖,达成%s后解锁
 ships.fragments,Fragmentos %d de %d · em %s,Fragments %d of %d · from %s,Fragmentos %d de %d · en %s,Fragmente %d von %d · in %s,Fragments %d sur %d · dans %s,Фрагменты %d из %d · в %s,Fragmen %d dari %d · di %s,欠片 %d/%d・入手: %s,조각 %d/%d · 획득처 %s,碎片 %d/%d・取得：%s,碎片 %d/%d・获取：%s
 ships.select,Escolher,Select,Elegir,Wählen,Choisir,Выбрать,Pilih,選ぶ,선택,選擇,选择
 ships.selected,Na missão,In use,En uso,Im Einsatz,En service,В строю,Dipakai,出撃中,출격 중,出擊中,出击中
@@ -505,6 +521,7 @@ special.drone_swarm,Enxame de drones,Drone swarm,Enjambre de drones,Drohnenschwa
 special.emp_pulse,Pulso EMP,EMP pulse,Pulso EMP,EMP-Impuls,Impulsion IEM,ЭМИ-импульс,Denyut EMP,EMPパルス,EMP 펄스,電磁脈衝,电磁脉冲
 special.focused_burst,Rajada focada,Focused burst,Ráfaga enfocada,Fokusstoß,Salve concentrée,Фокусный залп,Semburan fokus,集中砲火,집중 포화,集中射擊,集中射击
 special.gravity_rift,Fenda gravitacional,Gravity rift,Grieta gravitatoria,Schwerkraftriss,Faille gravitationnelle,Гравиразлом,Celah gravitasi,重力断層,중력 균열,重力裂隙,重力裂隙
+special.rotation,Rodízio de especiais,Special rotation,Rotación de especiales,Spezial-Rotation,Rotation des spéciaux,Смена спецприёмов,Rotasi spesial,スペシャル輪番,특수기 순환,特技輪替,特技轮替
 special.tide_shield,Escudo da maré,Tide shield,Escudo de marea,Flutschild,Bouclier de marée,Щит прилива,Perisai pasang,潮の盾,조수 방패,潮汐護盾,潮汐护盾
 stage.c1m1,1-1 · O Despertar,1-1 · The Awakening,1-1 · El Despertar,1-1 · Das Erwachen,1-1 · L'Éveil,1-1 · Пробуждение,1-1 · Kebangkitan,1-1・目覚め,1-1 · 각성,1-1・甦醒,1-1・苏醒
 stage.c1m2,1-2 · Plataformas em chamas,1-2 · Burning Platforms,1-2 · Plataformas en llamas,1-2 · Brennende Plattformen,1-2 · Plateformes en feu,1-2 · Горящие платформы,1-2 · Anjungan Terbakar,1-2・燃える海上基地,1-2 · 불타는 플랫폼,1-2・燃燒的平台,1-2・燃烧的平台
@@ -580,6 +597,12 @@ task.kills,Derrube %d inimigos,Down %d enemies,Derriba %d enemigos,Schieße %d G
 task.medals,Pegue %d medalhas,Collect %d medals,Recoge %d medallas,Sammle %d Medaillen,Ramasse %d médailles,Собери %d медалей,Kumpulkan %d medali,メダルを%d個,메달 %d개 획득,收集%d枚勳章,收集%d枚勋章
 task.rescued,Resgate %d atlantes,Rescue %d Atlanteans,Rescata %d atlantes,Rette %d Atlanter,Sauve %d Atlantes,Спаси %d атлантов,Selamatkan %d Atlantis,%d人を救出,%d명 구조,救出%d人,救出%d人
 task.stars,Ganhe %d estrelas novas,Earn %d new stars,Gana %d estrellas nuevas,Hol %d neue Sterne,Gagne %d nouvelles étoiles,Получи %d новых звёзд,Raih %d bintang baru,新しい星を%d個,새 별 %d개,獲得%d顆新星,获得%d颗新星
+trait.artillery,Agulhas da Railgun explodem no impacto,Railgun needles explode on impact,Las agujas del Railgun explotan al impactar,Railgun-Nadeln explodieren beim Aufprall,Les aiguilles du Railgun explosent à l'impact,Иглы рельсотрона взрываются при попадании,Jarum Railgun meledak saat kena,レールガンの針が着弾で爆発,레일건 바늘이 명중 시 폭발,軌道砲針彈命中時爆炸,轨道炮针弹命中时爆炸
+trait.blast,Todo abate explode e fere quem está perto,Every kill explodes and hurts nearby foes,Cada derribo explota y daña a los cercanos,Jeder Abschuss explodiert und trifft Nahe,Chaque élimination explose et blesse les voisins,Каждое уничтожение взрывается и ранит соседей,Setiap kehancuran meledak dan melukai sekitar,撃破のたびに爆発し周囲を巻き込む,격추 시 폭발해 주변 적에게 피해,每次擊墜都會爆炸波及周圍,每次击坠都会爆炸波及周围
+trait.crit,"1 em 5 tiros é crítico (dano x2,5)",1 in 5 shots is critical (x2.5 damage),"1 de cada 5 disparos es crítico (daño x2,5)","Jeder 5. Schuss ist kritisch (x2,5 Schaden)","1 tir sur 5 est critique (dégâts x2,5)","Каждый 5-й выстрел критический (урон x2,5)","1 dari 5 tembakan kritis (damage x2,5)",5発に1発がクリティカル（2.5倍）,5발 중 1발 치명타 (피해 x2.5),每5發有1發暴擊（2.5倍傷害）,每5发有1发暴击（2.5倍伤害）
+trait.drones,2 drones fixos sempre ao lado,2 permanent drones at your side,2 drones fijos siempre a tu lado,2 feste Drohnen an deiner Seite,2 drones permanents à vos côtés,2 постоянных дрона рядом,2 drone tetap di sisimu,常に2機のドローンが随伴,항상 드론 2기 동행,兩架無人機常伴左右,两架无人机常伴左右
+trait.hybrid,Toda arma chega ao nível 4; a especial gira entre as 6,Every weapon reaches level 4; the special cycles through all 6,Toda arma llega al nivel 4; el especial rota entre los 6,Jede Waffe erreicht Stufe 4; das Spezial wechselt durch alle 6,Chaque arme atteint le niveau 4 ; le spécial alterne entre les 6,Любое оружие до 4 уровня; спецприём меняется по кругу из 6,Semua senjata sampai level 4; spesial bergilir dari 6,全武器がLv4到達、スペシャルは6種を順に使用,"모든 무기 4레벨 도달, 특수기는 6종 순환",所有武器可達4級；特技在6種間輪替,所有武器可达4级；特技在6种间轮替
+trait.pierce,Todo tiro atravessa mais um alvo,Every shot pierces one more target,Cada disparo atraviesa un objetivo más,Jeder Schuss durchschlägt ein Ziel mehr,Chaque tir traverse une cible de plus,Каждый выстрел пробивает ещё одну цель,Setiap tembakan menembus satu target lagi,全弾が敵をもう1体貫通,모든 탄이 적 하나를 더 관통,每發子彈多貫穿一個目標,每发子弹多贯穿一个目标
 weapon.laser,Laser,Laser,Láser,Laser,Laser,Лазер,Laser,レーザー,레이저,雷射,激光
 weapon.plasma,Plasma,Plasma,Plasma,Plasma,Plasma,Плазма,Plasma,プラズマ,플라스마,電漿,等离子
 weapon.pulsar,Pulsar,Pulsar,Púlsar,Pulsar,Pulsar,Пульсар,Pulsar,パルサー,펄서,脈衝,脉冲

@@ -46,7 +46,7 @@ const CAMPAIGN: Array[Dictionary] = [
 	{"id": &"c9m3", "chapter": 9, "after": [&"c9m2"], "x": 0.5, "y": 7460.0, "kind": &"boss"},
 ]
 ## Fases já lançadas: naves e asas de fases futuras ficam fora das listas.
-const RELEASES: Array[String] = ["alpha", "beta"]
+const RELEASES: Array[String] = ["alpha", "beta", "post"]
 ## Missões secretas (Registros Abissais): as 4 concluídas levam ao final verdadeiro.
 const SECRETS: Array[StringName] = [&"s1", &"s2", &"s3", &"s4"]
 ## Distritos da Cidade de Thalassa (plano mestre 7.2), abertos por atlantes resgatados, com o bônus de cada um.
@@ -295,6 +295,9 @@ static func apply_result(profile: Dictionary, result: Dictionary, ships: Array, 
 			var ship := String(def["id"])
 			if not released(def) or (profile["unlocked"]["ships"] as Array).has(ship):
 				continue
+			if _unlock_by_ending(profile, def):
+				new_ships.append(StringName(ship))
+				continue
 			if not (def.get("sources", []) as Array).has(String(id)):
 				continue
 			var gain := FRAGMENTS_REPEAT if was_cleared else FRAGMENTS_FIRST
@@ -335,6 +338,16 @@ static func apply_result(profile: Dictionary, result: Dictionary, ships: Array, 
 			new_districts.append(d["id"])
 	out["new_districts"] = new_districts
 	return out
+
+
+## Aeronave que vem de um final (Ascension: final verdadeiro). Abre na primeira vitória depois dele.
+static func _unlock_by_ending(profile: Dictionary, def: Dictionary) -> bool:
+	var ending := String(def.get("ending", ""))
+	if ending.is_empty() or not (profile["story"]["endings"] as Array).has(ending):
+		return false
+	(profile["unlocked"]["ships"] as Array).append(String(def["id"]))
+	profile["hangar"]["ship_levels"][String(def["id"])] = 1
+	return true
 
 
 static func _earn(profile: Dictionary, kind: String, amount: int) -> void:

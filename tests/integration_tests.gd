@@ -12,6 +12,7 @@ const FlowTests := preload("res://tests/flow_tests.gd")
 const EconomyTests := preload("res://tests/economy_tests.gd")
 const BetaTests := preload("res://tests/beta_tests.gd")
 const LaunchTests := preload("res://tests/launch_tests.gd")
+const PostTests := preload("res://tests/post_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -31,6 +32,7 @@ func _ready() -> void:
 	_test_licenses()
 	EconomyTests.new().run(_check)
 	BetaTests.new().run(_check)
+	PostTests.new().run(_check)
 	DeviceProfiles.check_scaler(self, _check)
 	await LayoutTests.new().run(self, _check)
 	await CreditsScreenTests.new().run(self, _check)
@@ -57,7 +59,7 @@ func _check(condition: bool, label: String) -> void:
 
 func _test_data() -> void:
 	_check(DB.errors.is_empty(), "Dados: nenhum erro ao carregar (%s)" % [DB.errors])
-	_check(DB.ids("ships").size() == 6, "Dados: 6 aeronaves da 1.0")
+	_check(DB.ids("ships").size() == 12, "Dados: 12 aeronaves (6 da 1.0 e 6 do pós-lançamento)")
 	_check(not Sim.load_tables()["enemies"].is_empty(), "Dados: inimigos carregam")
 	for id: StringName in DB.ids("ships"):
 		var ship := DB.ship(id)

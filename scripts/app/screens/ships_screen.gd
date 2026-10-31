@@ -25,6 +25,8 @@ func _fill() -> void:
 		add_text("%s · %s %s · %s %s" % [tr("role." + String(def["role"])), tr("ships.weapon"),
 				tr("weapon." + String(def["signature"])), tr("ships.special"), tr("special." + String(def["special"]))],
 				UiTheme.TEXT_DIM)
+		if def.has("trait"):
+			add_text(tr("trait." + String(def["trait"])), UiTheme.CYAN)
 		if owned:
 			var level := Economy.ship_level(profile, StringName(id))
 			if id == selected:
@@ -33,6 +35,8 @@ func _fill() -> void:
 				add_button(tr("ships.select") + " · " + tr("hangar.level") % level, func() -> void:
 					SaveManager.data["selected"]["ship"] = id
 					SaveManager.save_profile(), true, "Select_" + id)
+		elif def.has("ending"):
+			add_text(tr("ships.ending_unlock") % tr("ending." + String(def["ending"])), UiTheme.CORAL)
 		else:
 			var have := int((profile["hangar"]["fragments"] as Dictionary).get(id, 0))
 			var sources := PackedStringArray()

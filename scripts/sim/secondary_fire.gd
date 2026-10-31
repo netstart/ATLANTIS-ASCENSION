@@ -43,6 +43,7 @@ static func step(sim: Sim) -> void:
 		count = drone_count(sim.secondary_level)
 	if sim.special_kind == &"drone_swarm" and sim.special_frames > 0:
 		count += 6
+	count += ShipTraits.extra_drones(sim)
 	sim.drones.clear()
 	if sim.mods.rear_cover and sim.frame % 18 == 0:
 		var back := BulletKinds.player_index(&"shot_back")

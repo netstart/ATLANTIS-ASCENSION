@@ -19,7 +19,7 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     "results.cleared", "results.failed", "map.chapter1", "map.chapter2", "map.chapter3"] + [
     f"deity.{d}" for d in ("proteus", "tethys", "nereus", "avatar")] + [
     f"hud.{h}" for h in ("current", "wind")] + [
-    f"hint.{h}" for h in ("move", "graze", "orbs", "special", "tide", "marked")] + [
+    f"hint.{h}" for h in ("move", "graze", "orbs", "special", "tide", "marked", "capture")] + [
     f"secondary.{s}{x}" for s in ("missiles", "drones") for x in ("", "_desc")] + [
     f"difficulty.{d}{x}" for d in ("brisa", "normal", "veteran", "abyssal") for x in ("", "_desc")] + [
     f"role.{r}" for r in ("balanced", "precision", "missiles", "speed", "area_control", "defense")] + [
@@ -43,7 +43,9 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"achievement.{a['id']}" for a in json.loads((ROOT / "data" / "achievements.json").read_text(encoding="utf-8"))] + [
     f"results.{r}" for r in ("achievement", "board", "season_xp")] + [
     f"cosmetic.tint_season_{s}" for s in ("a", "b", "c")] + ["season.title", "options.ghost"] + ["speaker.narrator", "hangar.title", "ships.title"] + [
-    f"results.{r}" for r in ("fragments", "log", "new_mission", "new_ship", "new_wing")]
+    f"results.{r}" for r in ("fragments", "log", "new_mission", "new_ship", "new_wing")] + [
+    f"role.{r}" for r in ("artillery", "drones", "piercing", "critical", "explosive", "hybrid")] + [
+    f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"]
 
 
 def _json_keys(value, out: set) -> None:

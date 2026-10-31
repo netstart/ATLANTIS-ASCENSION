@@ -141,6 +141,9 @@ func on_event(ev: Dictionary) -> void:
 		&"player_hit":
 			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.5, "radius": 70.0, "color": Color(1.0, 0.4, 0.4)})
 			_burst(ev["pos"], 14, Color(1.0, 0.55, 0.4))
+		&"capture":
+			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.45, "radius": 50.0, "color": Color(0.4, 1.0, 1.0)})
+			_burst(ev["pos"], 10, Color(0.4, 1.0, 1.0))
 		&"bomb", &"special":
 			rings.append({"pos": ev["pos"], "t": 0.0, "duration": 0.7, "radius": 340.0, "color": Color(0.6, 1.0, 1.0)})
 		&"boss_part":
@@ -222,10 +225,15 @@ func _draw_entities(ci: CanvasItem) -> void:
 			ci.draw_set_transform(Vector2.ZERO)
 	for d: Vector2 in sim.drones:
 		_tex_centered(ci, _drone, d, 1.0)
+	for esc: Dictionary in sim.escorts:
+		# Escolta capturada: o inimigo dominado, menor e em ciano; pisca no último segundo.
+		var fading := int(esc["frames"]) < 60 and int(time * 10.0) % 2 == 0
+		var col := Color(0.55, 1.0, 1.0, 0.45 if fading else 0.95)
+		_draw_ship(ci, SpriteBank.ship(StringName(String(esc["sprite"]))), esc["pos"], 1.0, false, 0.6, col, true)
 
 
 func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, flash: bool, scale: float,
-		tint: Color = Color(1, 1, 1)) -> void:
+		tint: Color = Color(1, 1, 1), up: bool = false) -> void:
 	var size: int = ship["size"]
 	var base: Texture2D = ship["base"]
 	if base == null:
@@ -240,7 +248,7 @@ func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, fl
 	# Sombra no "chão": deslocada pela altura, maior com a profundidade.
 	ci.draw_texture_rect(_glow, Rect2(pos + SHADOW_OFFSET * depth - Vector2(size, size) * 0.35 * s,
 			Vector2(size, size) * 0.7 * s), false, Color(0, 0.02, 0.06, 0.35))
-	ci.draw_set_transform(pos, PI, Vector2(s, s))
+	ci.draw_set_transform(pos, 0.0 if up else PI, Vector2(s, s))
 	var half := Vector2(size, size) * 0.5
 	var engine: Texture2D = ship["engine"]
 	if engine != null:

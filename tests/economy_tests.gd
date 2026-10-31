@@ -95,6 +95,16 @@ func _campaign(check: Callable) -> void:
 	check.call(act1_level >= 3 and act1_level <= 7, "Economia: aeronave no nível 3 a 7 ao fim do Ato I (%d)" % act1_level)
 	check.call(level >= 6, "Economia: aeronave no nível 6+ ao fim da campanha (%d)" % level)
 	check.call(Economy.total_stars(p) >= 60, "Economia: o bot junta ≥ 60 estrelas (%d)" % Economy.total_stars(p))
-	check.call((p["unlocked"]["ships"] as Array).size() == 6, "Economia: as 6 aeronaves abrem na campanha")
+	# Toda aeronave com fontes só na campanha principal abre (as de missões secretas e de final dependem do jogador).
+	var expected := 0
+	for row: Variant in DB.rows("ships"):
+		var srcs: Array = (row as Dictionary).get("sources", [])
+		var main := not (row as Dictionary).has("ending")
+		for m: Variant in srcs:
+			main = main and Economy.node(StringName(String(m)))["kind"] != &"secret"
+		if main:
+			expected += 1
+	check.call((p["unlocked"]["ships"] as Array).size() >= expected,
+			"Economia: as %d aeronaves da campanha principal abrem (%d)" % [expected, (p["unlocked"]["ships"] as Array).size()])
 	check.call(int(p["rescued_total"]) >= 10, "Economia: resgates reerguem ao menos as Docas (%d)" % p["rescued_total"])
 	check.call(not ending.is_empty(), "Economia: a campanha termina com um final (%s)" % ending)

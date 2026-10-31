@@ -1,0 +1,170 @@
+extends RefCounted
+## Pós-lançamento (plano mestre 13, "Pós-lançamento"): aeronaves 7 a 12 com traço próprio que muda o
+## disparo, a captura biomecânica (marcado abatido de perto vira escolta por 10 s) e a Ascension aberta
+## pelo final verdadeiro. Chamado por tests/integration_tests.gd.
+
+const SaveManagerScript := preload("res://scripts/autoload/save_manager.gd")
+const NEW_SHIPS: Array[StringName] = [&"ram", &"swarm", &"eclipse", &"nova", &"titan", &"ascension"]
+
+
+func run(check: Callable) -> void:
+	var tables := Sim.load_tables()
+	_data(check, tables)
+	_traits(check, tables)
+	_capture(check, tables)
+	_unlocks(check, tables)
+	_bot_runs(check, tables)
+
+
+func _sim(tables: Dictionary, ship: StringName, seed: int = 5) -> Sim:
+	var sim := Sim.new()
+	sim.setup(Sim.load_mission(&"c1m1"), tables, Sim.default_loadout(ship), seed)
+	return sim
+
+
+## Passos com tiro e sem movimento (o roteiro da 1-1 ainda não trouxe inimigos no começo).
+func _fire(sim: Sim, steps: int, special: bool = false) -> void:
+	for k: int in range(steps):
+		var input := SimInput.new()
+		input.special = special and k == 0
+		sim.step(input)
+
+
+func _data(check: Callable, tables: Dictionary) -> void:
+	var ships: Dictionary = tables["ships"]
+	check.call(ships.size() == 12, "Frota: 12 aeronaves (%d)" % ships.size())
+	var traits := {}
+	for id: StringName in NEW_SHIPS:
+		var def: Dictionary = ships.get(id, {})
+		check.call(Economy.released(def), "Frota: %s lançada" % id)
+		traits[String(def.get("trait", ""))] = true
+		for m: Variant in def.get("sources", []):
+			check.call(not Economy.node(StringName(String(m))).is_empty(), "Frota: fonte %s de %s existe" % [m, id])
+	check.call(traits.size() == 6 and not traits.has(""), "Frota: 6 traços diferentes")
+
+
+func _traits(check: Callable, tables: Dictionary) -> void:
+	var ram := _sim(tables, &"ram")
+	_fire(ram, 2)
+	check.call(ram.player_bullets.count > 0 and ram.player_bullets.splash[0] >= ShipTraits.ARTILLERY_SPLASH,
+			"Ariete: agulha da Railgun com explosão")
+	var eclipse := _sim(tables, &"eclipse")
+	_fire(eclipse, 2)
+	check.call(eclipse.player_bullets.count > 0 and eclipse.player_bullets.pierce[0] >= 1, "Eclipse: Plasma perfurante")
+	var nova := _sim(tables, &"nova")
+	var falcon := _sim(tables, &"falcon")
+	var top := 0.0
+	var low := INF
+	for k: int in range(300):
+		_fire(nova, 1)
+		for i: int in range(nova.player_bullets.count):
+			top = maxf(top, nova.player_bullets.damage[i])
+			low = minf(low, nova.player_bullets.damage[i])
+	check.call(top >= low * ShipTraits.CRIT_MULT * 0.99, "Nova: há críticos x2,5 entre os tiros")
+	var swarm := _sim(tables, &"swarm")
+	_fire(swarm, 2)
+	_fire(falcon, 2)
+	check.call(swarm.drones.size() == ShipTraits.EXTRA_DRONES and falcon.drones.is_empty(), "Enxame: 2 drones fixos")
+	var asc := _sim(tables, &"ascension")
+	var kinds: Array[StringName] = []
+	for k: int in range(3):
+		asc.player.special_charge = 1.0
+		_fire(asc, 1, true)
+		kinds.append(asc.special_kind)
+	check.call(kinds[0] != kinds[1] and kinds[1] != kinds[2], "Ascension: a especial gira (%s)" % [kinds])
+	asc.player.collect_orb(&"laser")
+	_fire(asc, 1)
+	check.call(asc.player.signature == &"laser" and asc.player.max_level() == 4,
+			"Ascension: a arma do orbe vira assinatura (nível máximo 4)")
+	var titan := _sim(tables, &"titan")
+	var e := _enemy_near(titan)
+	e.marked = false
+	e.hp = 0.01
+	var blast := false
+	for k: int in range(30):
+		titan.step(SimInput.new())
+		for ev: Dictionary in titan.take_events():
+			blast = blast or (ev["type"] == &"splash" and is_equal_approx(float(ev["radius"]), ShipTraits.BLAST_RADIUS))
+	check.call(blast, "Titã: o abate explode em área")
+
+
+## Inimigo parado logo acima da nave (ativo, sem padrão de tiro relevante).
+func _enemy_near(sim: Sim) -> SimEnemy:
+	var id: StringName = (sim.tables["enemies"] as Dictionary).keys()[0]
+	sim.spawn_enemy({"enemy": String(id), "x": 0.5, "y": 0.0}, 0)
+	var e: SimEnemy = sim.enemies[-1]
+	e.pos = sim.player.pos + Vector2(0, -30)
+	e.origin = e.pos
+	e.params = {"speed": 0.0}
+	e.depth = 1.0
+	e.entered = true
+	return e
+
+
+func _capture(check: Callable, tables: Dictionary) -> void:
+	var sim := _sim(tables, &"falcon")
+	var e := _enemy_near(sim)
+	e.marked = true
+	e.hp = 0.01
+	var got := false
+	for k: int in range(30):
+		sim.step(SimInput.new())
+		for ev: Dictionary in sim.take_events():
+			got = got or ev["type"] == &"capture"
+	check.call(got and sim.escorts.size() == 1 and sim.captured == 1, "Captura: marcado abatido de perto vira escolta")
+	var shots_before := sim.player_bullets.count
+	check.call(shots_before > 0, "Captura: a escolta voa e atira")
+	for k: int in range(ShipTraits.CAPTURE_FRAMES):
+		sim.step(SimInput.new())
+	check.call(sim.escorts.is_empty(), "Captura: o domínio acaba em 10 s")
+	var far := _sim(tables, &"falcon")
+	var f := _enemy_near(far)
+	f.marked = true
+	f.hp = 0.01
+	f.pos = far.player.pos + Vector2(0, -200)
+	f.origin = f.pos
+	for k: int in range(60):
+		far.step(SimInput.new())
+	check.call(far.escorts.is_empty(), "Captura: de longe não captura")
+
+
+func _unlocks(check: Callable, tables: Dictionary) -> void:
+	var ships: Array = (tables["ships"] as Dictionary).values()
+	var p := SaveManagerScript.default_profile()
+	var won := {"mission": "c9m3", "cleared": true, "stars": [true, false, false, false], "score": 1000,
+			"ending": "return"}
+	Economy.apply_result(p, won, ships, [])
+	check.call(not (p["unlocked"]["ships"] as Array).has("ascension"), "Ascension: fechada sem o final verdadeiro")
+	won["ending"] = "high_tide"
+	var out := Economy.apply_result(p, won, ships, [])
+	check.call((p["unlocked"]["ships"] as Array).has("ascension") and (out["new_ships"] as Array).has(&"ascension"),
+			"Ascension: abre com o final Maré Alta")
+	var q := SaveManagerScript.default_profile()
+	var r := {"mission": "c7m1", "cleared": true, "stars": [true, false, false, false], "score": 1000}
+	Economy.apply_result(q, r, ships, [])
+	r["mission"] = "c7m2"
+	var out2 := Economy.apply_result(q, r, ships, [])
+	check.call((out2["new_ships"] as Array).has(&"ram"), "Ariete: 2 missões-fonte abrem a nave")
+	for id: StringName in NEW_SHIPS:
+		(q["unlocked"]["ships"] as Array).append(String(id))
+	while (q["unlocked"]["ships"] as Array).size() < 12:
+		(q["unlocked"]["ships"] as Array).append("x%d" % (q["unlocked"]["ships"] as Array).size())
+	check.call(Achievements.check(q, {}).has("armada"),
+			"Conquista: Armada atlante com 12 aeronaves")
+
+
+## O bot vence a 1-1 com cada aeronave nova; mesma semente, mesmo hash.
+func _bot_runs(check: Callable, tables: Dictionary) -> void:
+	var mission := Sim.load_mission(&"c1m1")
+	for id: StringName in NEW_SHIPS:
+		var hashes: Array[String] = []
+		var sim: Sim
+		for k: int in range(2):
+			sim = Sim.new()
+			sim.setup(mission, tables, Sim.default_loadout(id), 7)
+			var bot := BotPilot.new()
+			while not sim.finished and sim.frame < 60 * 60 * 8:
+				sim.step(bot.decide(sim))
+			hashes.append(sim.state_hash())
+		check.call(sim.cleared, "Bot: vence a 1-1 com %s (%.0f s, %d pontos)" % [id, sim.frame / 60.0, sim.scoring.score])
+		check.call(hashes[0] == hashes[1], "Determinismo: %s dá o mesmo hash" % id)

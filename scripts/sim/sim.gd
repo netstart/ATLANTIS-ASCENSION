@@ -103,6 +103,10 @@ var second_tide: bool = false
 ## Modificadores das Correntes semanais (fast_bullets, glass...).
 var mutators: Array = []
 var bosses_met: int = 0
+## Pós-lançamento: escolta capturada (ShipTraits), quantos inimigos foram dominados e especiais usadas.
+var escorts: Array[Dictionary] = []
+var captured: int = 0
+var specials_used: int = 0
 var _coral_grazes: int = 0
 var _bubble_timer: int = 0
 var _finish_timer: int = -1
@@ -263,6 +267,7 @@ func step(input: SimInput) -> void:
 			player.pos = player.pos.clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
 		_player_actions(input)
 	SecondaryFire.step(self)
+	ShipTraits.step(self)
 	Specials.step(self)
 	stage.step(self)
 	Hazards.step(self)
@@ -315,8 +320,11 @@ func _player_actions(input: SimInput) -> void:
 	if input.fire:
 		if player.weapon == &"laser":
 			laser_active = true
-		elif WeaponFire.fire(player, player_bullets, weapon_def, frame, damage_mult(), mods.fire_rate) > 0:
-			emit(&"shot", {"weapon": player.weapon})
+		else:
+			var before := player_bullets.count
+			if WeaponFire.fire(player, player_bullets, weapon_def, frame, damage_mult(), mods.fire_rate) > 0:
+				ShipTraits.on_fire(self, before)
+				emit(&"shot", {"weapon": player.weapon})
 	if input.bomb and player.bombs > 0:
 		player.bombs -= 1
 		scoring.bombs_used += 1
@@ -326,7 +334,7 @@ func _player_actions(input: SimInput) -> void:
 		emit(&"bomb", {"pos": player.pos})
 	elif input.special and player.special_charge >= 1.0:
 		player.special_charge = 0.0
-		Specials.activate(self, StringName(String(player.ship.get("special", "area_bomb"))))
+		Specials.activate(self, ShipTraits.special_for(self))
 	if input.tide and scoring.pressure >= Scoring.PRESSURE_MAX and tide_frames == 0:
 		tide_frames = TIDE_FRAMES + mods.tide_bonus
 		scoring.pressure = 0.0
@@ -585,9 +593,9 @@ func _collide_player_bullets() -> void:
 			hit = _hit_boss(p, r, dmg)
 		if hit:
 			emit(&"hit", {"pos": p})
-			var splash: float = player_bullets.splash[i]
-			if splash > 0.0:
-				_splash(p, splash, dmg)
+			var area: float = player_bullets.splash[i]
+			if area > 0.0:
+				splash(p, area, dmg)
 			if player_bullets.pierce[i] > 0:
 				player_bullets.pierce[i] -= 1
 			else:
@@ -596,7 +604,7 @@ func _collide_player_bullets() -> void:
 
 
 ## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio.
-func _splash(at: Vector2, radius: float, dmg: float) -> void:
+func splash(at: Vector2, radius: float, dmg: float) -> void:
 	for e: SimEnemy in enemies:
 		if e.active() and at.distance_to(e.pos) <= radius + e.radius and e.damage(dmg * 0.5):
 			_kill_enemy(e)
@@ -774,7 +782,8 @@ func _kill_enemy(e: SimEnemy) -> void:
 		fire_enemy(e.pos, rad_to_deg((player.pos - e.pos).angle()), 62.0, BulletKinds.enemy_index(&"orb_gold_m"),
 				0.0, 0.0)
 	if mods.undertow:
-		_splash(e.pos, 30.0, 8.0 * damage_mult())
+		splash(e.pos, 30.0, 8.0 * damage_mult())
+	ShipTraits.on_kill(self, e)
 	if e.glyph >= 0:
 		_glyph(e.glyph)
 	var drop := e.drop
@@ -951,7 +960,7 @@ func result() -> Dictionary:
 		"secret": String(secret_found), "blessings": mods.taken.duplicate(), "difficulty": String(difficulty),
 		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
 		"rescued": rescued, "max_capsule_combo": max_capsule_combo, "ending": String(ending), "revives": revives,
-		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met,
+		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met, "captured": captured,
 	}
 
 
@@ -960,7 +969,7 @@ func state_hash() -> String:
 	var parts := PackedStringArray([str(frame), str(scoring.score), str(scoring.grazes), str(player.hull),
 			"%.3f,%.3f" % [player.pos.x, player.pos.y], str(enemy_bullets.count), str(player_bullets.count),
 			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken),
-			str(rescued), str(breach_frames)])
+			str(rescued), str(breach_frames), str(captured)])
 	for e: SimEnemy in enemies:
 		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
 	var sum := Vector2.ZERO

@@ -10,6 +10,7 @@
 	{"id": "kills_5000", "type": "kills", "target": 5000},
 	{"id": "grazes_2000", "type": "grazes", "target": 2000},
 	{"id": "fleet", "type": "ships", "target": 6},
+	{"id": "armada", "type": "ships", "target": 12},
 	{"id": "first_secret", "type": "secrets", "target": 1},
 	{"id": "all_secrets", "type": "secrets", "target": 4},
 	{"id": "rescuer", "type": "rescued", "target": 100},
