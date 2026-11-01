@@ -181,7 +181,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   dos termos pelo mantenedor (passos em `docs/store/release-checklist.md`)
 - ⚠️ Steam (página, Steamworks SDK, GodotSteam, Cloud, Deck Verified): idem; conquistas e placares já existem no
   jogo
-- ⚠️ Revisão de traduções por nativos
+- ✅ Traduções: sem revisão por nativos (decisão do mantenedor, 31/10/2026)
 - ⬜ Critérios: aprovado nas duas lojas, crash-free ≥ 99,5%, D1 ≥ 40% no teste fechado
 
 ## Pós-lançamento · `1.x`
@@ -250,4 +250,17 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   no mapa; moedas do hub que contam até o saldo novo. Só código e arte do projeto; "reduzir movimento" e
   "reduzir flashes" desligam o que se move ou pisca
 - ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
-  (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`
+  (Play Console, Steamworks) e teste fechado — ver `docs/store/release-checklist.md`. Traduções sem revisão por
+  nativos (decisão do mantenedor)
+- ✅ `1.10.0` Chefes ao longo de toda fase: chefe intermediário (`mid_*`, um por capítulo, três etapas, peças
+  destrutíveis em vários deles) perto do meio de todas as 41 missões e mini-chefes de elite (`elite_*`, dez desenhos
+  com variante por capítulo) perto de 1/4 e 3/4 (uma elite só onde a missão já tem mini-chefe; nenhuma onde há
+  chefe de ato). Gerador em `tools/gen_bosses_mid.py` (49 padrões novos); posição em `tools/gen_missions.py`.
+  Eles entram com escolta, soltam o núcleo de força (`power`: +1 nível na arma atual, sem trocar de arma) e bomba;
+  nas missões com chefe no fim os trechos de ondas ficam 15% mais curtos e mais densos. Sky Leviathan de 9.000
+  para 6.800 de casco (era o chefe de ato mais longo). Balanceado com o bot (`tests/boss_timing.gd`): as 41
+  missões vencidas de 2 a 5,5 min, com ≥ 50 abatidos; `run_checks.ps1` `TUDO OK` (1.207 regras, 82.894 de
+  integração, 725 textos x 11 idiomas, 34 componentes de licença e 251 arquivos). Pesquisa profunda de assets
+  (15 pacotes CC0 avaliados, `.ai/02-catalogo-assets-licencas.md`): entraram explosões em pixel art do ansimuz
+  (peças e quedas de chefe), alarme e rugidos (rubberduck), estrondo de queda (faxcorp) e o tema de chefe
+  intermediário (SketchyLogic). Os conjuntos de chefes em desenho liso ficaram de fora por destoar da arte Void

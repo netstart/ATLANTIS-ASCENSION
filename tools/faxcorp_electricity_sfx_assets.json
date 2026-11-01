@@ -1,0 +1,8 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "faxcorp_electricity_sfx",
+	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo.",
+	"files": {
+		"electricity-sound-pack/deathboom.wav": "audio/sfx/faxcorp_deathboom.wav"
+	}
+}

@@ -35,6 +35,11 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | 8-bit Danger!! Strong Boss | HydroGene | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-danger-strong-boss |
 | Boss Stage Synth Track | killerfishred | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/boss-stage-synth-track |
 | Retro Synthwave Loops (Deadly Contracts, Hostile Territory) | Magnesus | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/retro-synthwave-loops |
+| Animated Explosions | Luis Zuno (ansimuz) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/animated-explosions |
+| 80 CC0 creature SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/80-cc0-creature-sfx |
+| 30 CC0 SFX loops | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/30-cc0-sfx-loops |
+| Electricity Game Sound Pack | faxcorp | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/electricity-game-sound-pack |
+| NES Shooter Music (5 tracks, 3 jingles) | SketchyLogic | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

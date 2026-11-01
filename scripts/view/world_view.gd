@@ -80,6 +80,8 @@ var _enemy_bullets: BulletRenderer
 var _glow: Texture2D
 var _ring: Texture2D
 var _flare: Texture2D
+## Explosões em pixel art (ansimuz, CC0) para peças e quedas de chefe: 80, 128 e 192 px.
+var _blasts: Dictionary = {}
 var _shock: Texture2D
 var _sparkle: Texture2D
 var _beam: Texture2D
@@ -118,6 +120,8 @@ func setup(p_sim: Sim) -> void:
 	_glow = SpriteBank.generated("fx/glow_32")
 	_ring = SpriteBank.generated("fx/ring_32")
 	_flare = SpriteBank.generated("fx/flare_64")
+	for size: int in [80, 128, 192]:
+		_blasts[size] = SpriteBank.texture("res://assets/art/oga/explosions/ansimuz_explosion_%d.png" % size)
 	_shock = SpriteBank.generated("fx/shock_64")
 	_sparkle = SpriteBank.generated("fx/sparkle_9")
 	_beam = SpriteBank.generated("fx/beam")
@@ -252,6 +256,7 @@ func on_event(ev: Dictionary) -> void:
 			if sim.enemy_bullets.count * 2 < seen.size():
 				fx.cancel_wave(at, seen)
 		&"boss_part":
+			_blast(at, 80, 0.0, 1.0)
 			fx.explosion(at, 2.0, Color(0.85, 0.55, 1.0, 0.9))
 			fx.chain(at, Vector2(18, 14), 3, 0.3, 1.0)
 			_ring_at(at, 0.4, 60.0, Color(0.85, 0.6, 1.0))
@@ -263,6 +268,11 @@ func on_event(ev: Dictionary) -> void:
 				explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
 						"size": ship["destruction_size"], "pos": at + off, "t": -k * 0.18, "scale": 1.6,
 						"duration": 0.9})
+			# Chefe de ato: a explosão grande (192 px) depois da cadeia; meio de fase: a de 128 px na hora.
+			if bool(ev.get("final", false)):
+				_blast(at, 192, -0.9, 1.2)
+			else:
+				_blast(at, 128, 0.0, 1.0)
 			fx.explosion(at, 2.5)
 			fx.chain(at, Vector2(60, 36), 6 + fx_level * 3, 1.3, 1.5)
 			fx.later(1.35, fx.explosion.bind(at, 3.5, CombatFx.FIRE))
@@ -406,6 +416,11 @@ func _draw_entities(ci: CanvasItem) -> void:
 				var tex: Texture2D = _orbs[Sim.orb_weapon(int(pk["frames"]))]
 				var pulse := 1.0 + 0.12 * sin(time * 8.0)
 				_tex_centered(ci, tex, p, pulse)
+			&"power":
+				# Núcleo de força: o orbe da arma atual, maior, num halo dourado.
+				_tex_centered(ci, _glow, p, 1.0 + 0.25 * sin(time * 7.0), Color(UiTheme.GOLD, 0.6))
+				_tex_centered(ci, _orbs[sim.player.weapon] if _orbs.has(sim.player.weapon) else _pearl, p,
+						1.3 + 0.12 * sin(time * 8.0))
 			&"medal":
 				var squash := absf(cos(time * 5.0 + p.x))
 				ci.draw_set_transform(p, 0.0, Vector2(maxf(0.2, squash), 1.0))
@@ -654,9 +669,18 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 		var size: int = e["size"]
 		var f := mini(frames - 1, int(t / float(e["duration"]) * frames))
 		var s := float(e["scale"])
-		ci.draw_set_transform(e["pos"], PI, Vector2(s, s))
+		ci.draw_set_transform(e["pos"], float(e.get("rot", PI)), Vector2(s, s))
 		ci.draw_texture_rect_region(e["tex"], Rect2(-size * 0.5, -size * 0.5, size, size), SpriteBank.frame_rect(f, size))
 		ci.draw_set_transform(Vector2.ZERO)
+
+
+## Explosão de chefe em pixel art: a folha toca uma vez, de pé, a partir de `delay` segundos.
+func _blast(at: Vector2, size: int, delay: float, zoom: float) -> void:
+	var tex: Texture2D = _blasts.get(size)
+	if tex == null:
+		return
+	explosions.append({"tex": tex, "frames": maxi(1, tex.get_width() / size), "size": size, "pos": at, "t": delay,
+			"scale": zoom, "duration": 0.05 * tex.get_width() / size, "rot": 0.0})
 
 
 ## Gravity Breach: grade que escorre na direção da força e uma seta no centro (aviso de leitura).
@@ -747,6 +771,8 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 			&"orb":
 				var tint: Color = ORB_TINTS.get(Sim.orb_weapon(int(pk["frames"])), Color(1, 1, 1))
 				_tex_centered(ci, _flare, at, 0.55 + 0.08 * sin(time * 8.0), Color(tint, 0.6))
+			&"power":
+				_tex_centered(ci, _flare, at, 0.8 + 0.1 * sin(time * 8.0), Color(UiTheme.GOLD, 0.7))
 			&"medal":
 				_tex_centered(ci, _flare, at, 0.35, Color(UiTheme.GOLD, 0.45))
 				var glint := fposmod(time * 1.6 + at.x * 0.05, 1.0)

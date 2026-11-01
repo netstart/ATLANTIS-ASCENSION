@@ -1,0 +1,10 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "ansimuz_animated_explosions",
+	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo.",
+	"files": {
+		"ansimuz-animated-explosions/x/explosions-pack/spritesheets/explosion-3.png": "art/oga/explosions/ansimuz_explosion_80.png",
+		"ansimuz-animated-explosions/x/explosions-pack/spritesheets/explosion-4.png": "art/oga/explosions/ansimuz_explosion_128.png",
+		"ansimuz-animated-explosions/x/explosions-pack/spritesheets/explosion-5.png": "art/oga/explosions/ansimuz_explosion_192.png"
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "rubberduck_creature_sfx",
+	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo.",
+	"files": {
+		"80-cc0-creature-sfx/x2/roar_04.ogg": "audio/sfx/rubberduck_roar.ogg",
+		"80-cc0-creature-sfx/x1/monster_03.ogg": "audio/sfx/rubberduck_growl.ogg"
+	}
+}

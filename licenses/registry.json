@@ -796,5 +796,141 @@
     },
     "snapshot_file": "docs/licenses/magnesus_synthwave_music_2026-10-31.pdf",
     "downloaded_at": "2026-10-31"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "Luis Zuno (ansimuz)",
+    "category": "art",
+    "commercial_use": true,
+    "files": [
+      "assets/art/oga/explosions/ansimuz_*"
+    ],
+    "id": "ansimuz_animated_explosions",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Animated Explosions",
+    "snapshot_url": "https://opengameart.org/content/animated-explosions",
+    "source_url": "https://opengameart.org/content/animated-explosions",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (chefes de meio de fase 1.10); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "downloaded_at": "2026-10-31",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "44162c0f812ced44b523f2ba58d4296c9c25b2489f6c8bfc82bfe114f9ab5290"
+    },
+    "snapshot_file": "docs/licenses/ansimuz_animated_explosions_2026-10-31.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "rubberduck",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/sfx/rubberduck_roar*",
+      "assets/audio/sfx/rubberduck_growl*"
+    ],
+    "id": "rubberduck_creature_sfx",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "80 CC0 creature SFX",
+    "snapshot_url": "https://opengameart.org/content/80-cc0-creature-sfx",
+    "source_url": "https://opengameart.org/content/80-cc0-creature-sfx",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (chefes de meio de fase 1.10); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "downloaded_at": "2026-10-31",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "4aade0526869c2eafcbf2e6cf9990516ef1714ab73a6fa2725d43dace2ad4c24"
+    },
+    "snapshot_file": "docs/licenses/rubberduck_creature_sfx_2026-10-31.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "rubberduck",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/sfx/rubberduck_alarm*"
+    ],
+    "id": "rubberduck_sfx_loops",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "30 CC0 SFX loops",
+    "snapshot_url": "https://opengameart.org/content/30-cc0-sfx-loops",
+    "source_url": "https://opengameart.org/content/30-cc0-sfx-loops",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (chefes de meio de fase 1.10); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "downloaded_at": "2026-10-31",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "d111f5a969036d4e36a6ed66904d933529f5720a1c199eef1464dc9c21a963de"
+    },
+    "snapshot_file": "docs/licenses/rubberduck_sfx_loops_2026-10-31.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "faxcorp",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/sfx/faxcorp_*"
+    ],
+    "id": "faxcorp_electricity_sfx",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "Electricity Game Sound Pack",
+    "snapshot_url": "https://opengameart.org/content/electricity-game-sound-pack",
+    "source_url": "https://opengameart.org/content/electricity-game-sound-pack",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (chefes de meio de fase 1.10); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "downloaded_at": "2026-10-31",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "99e4f713744e7021d762841a83526ea1c826510592c3149d31670e342095fe31"
+    },
+    "snapshot_file": "docs/licenses/faxcorp_electricity_sfx_2026-10-31.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "author": "SketchyLogic",
+    "category": "audio",
+    "commercial_use": true,
+    "files": [
+      "assets/audio/music/sketchylogic_*"
+    ],
+    "id": "sketchylogic_nes_music",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "modifications": "",
+    "name": "NES Shooter Music (5 tracks, 3 jingles)",
+    "snapshot_url": "https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles",
+    "source_url": "https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles",
+    "verified_at": "2026-10-31",
+    "verified_by": "Claude (chefes de meio de fase 1.10); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "downloaded_at": "2026-10-31",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "185b40569759e15b8bdd7878d4e7b6e53065c8579af9d03360e3eabf47431fe5"
+    },
+    "snapshot_file": "docs/licenses/sketchylogic_nes_music_2026-10-31.pdf"
   }
 ]

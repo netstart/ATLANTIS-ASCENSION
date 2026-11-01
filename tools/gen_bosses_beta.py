@@ -124,7 +124,7 @@ BOSSES = [
     mini("steel_albatross", "klaed_frigate", "#d8d8e8", 6400, ["albatross_wings"], ["albatross_dive", "albatross_wings"]),
     mini("orbital_gate", "klaed_dreadnought", "#a0ffd0", 7000, ["gate_rings"], ["gate_beams", "gate_rings"]),
     {"id": "sky_leviathan", "name_key": "boss.sky_leviathan", "sprite": "nautolan_battlecruiser", "scale": 1.5,
-     "tint": "#bfe6ff", "hp": 9000, "home_y": 84, "body_radius": 32, "points": 40000, "medals": 10, "duel": True,
+     "tint": "#bfe6ff", "hp": 6800, "home_y": 84, "body_radius": 32, "points": 40000, "medals": 10, "duel": True,
      "music": "hydrogene_strong_boss", "enter_from": 160, "parts": chain(8, "nautolan_scout", 22, 16),
      "phases": [
          {"id": "crossing", "until_hp": 0.6, "armor": 0.4, "par_s": 45, "move": {"amp": 70, "freq": 0.09},

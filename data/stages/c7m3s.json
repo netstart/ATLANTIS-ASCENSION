@@ -11,7 +11,7 @@
 		"count": 6,
 		"text_key": "objective.rescue"
 	},
-	"length_s": 109.9,
+	"length_s": 89.8,
 	"events": [
 		{
 			"op": "wave",
@@ -41,7 +41,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 3.13
+			"t": 2.66
 		},
 		{
 			"op": "wave",
@@ -56,7 +56,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 6.26
+			"t": 5.32
 		},
 		{
 			"op": "wave",
@@ -73,7 +73,7 @@
 			"mirror": true,
 			"spacing": 90,
 			"marked": true,
-			"t": 9.39
+			"t": 7.98
 		},
 		{
 			"op": "wave",
@@ -88,7 +88,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 12.52
+			"t": 10.64
 		},
 		{
 			"op": "wave",
@@ -103,7 +103,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 15.65
+			"t": 13.3
 		},
 		{
 			"op": "wave",
@@ -118,7 +118,19 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 18.78
+			"t": 15.97
+		},
+		{
+			"op": "blessing",
+			"t": 20.05
+		},
+		{
+			"op": "gravity_breach",
+			"dx": 1,
+			"dy": 0,
+			"strength": 30,
+			"duration": 10,
+			"t": 23.55
 		},
 		{
 			"op": "wave",
@@ -135,7 +147,7 @@
 			"mirror": true,
 			"spacing": 90,
 			"marked": true,
-			"t": 21.91
+			"t": 35.55
 		},
 		{
 			"op": "wave",
@@ -149,19 +161,7 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 25.04
-		},
-		{
-			"op": "blessing",
-			"t": 27.5
-		},
-		{
-			"op": "gravity_breach",
-			"dx": 1,
-			"dy": 0,
-			"strength": 30,
-			"duration": 10,
-			"t": 31.0
+			"t": 37.97
 		},
 		{
 			"op": "wave",
@@ -176,7 +176,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 43.0
+			"t": 40.39
 		},
 		{
 			"op": "wave",
@@ -193,7 +193,44 @@
 			"mirror": true,
 			"spacing": 90,
 			"marked": true,
-			"t": 45.85
+			"t": 42.81
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 44.63
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 44.83
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_storm_carrier",
+			"t": 45.18
 		},
 		{
 			"op": "wave",
@@ -208,7 +245,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 48.69
+			"t": 45.23
 		},
 		{
 			"op": "wave",
@@ -223,7 +260,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 51.54
+			"t": 47.64
 		},
 		{
 			"op": "wave",
@@ -239,21 +276,22 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 54.38
+			"t": 50.06
 		},
 		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 64
-			},
-			"drop_last": "capsule",
-			"spacing": 36,
-			"t": 57.23
+			"op": "log",
+			"x": 0.6364740329790546,
+			"t": 53.14
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 56.14
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 59.14
 		},
 		{
 			"op": "wave",
@@ -268,7 +306,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 60.08
+			"t": 62.14
 		},
 		{
 			"op": "wave",
@@ -283,7 +321,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 62.92
+			"t": 64.45
 		},
 		{
 			"op": "wave",
@@ -297,37 +335,38 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 65.77
-		},
-		{
-			"op": "log",
-			"x": 0.33861416231224056,
-			"t": 67.3
-		},
-		{
-			"op": "capsule",
-			"x": 0.3,
-			"t": 70.3
-		},
-		{
-			"op": "capsule",
-			"x": 0.7,
-			"t": 73.3
+			"t": 66.77
 		},
 		{
 			"op": "wave",
-			"enemy": "nautilus",
+			"enemy": "aegis",
 			"formation": "single",
 			"count": 1,
-			"x": 0.5,
-			"path": "sine",
+			"x": 0.35,
+			"path": "stop_go",
 			"params": {
-				"amp": 50,
-				"freq": 0.15,
-				"speed": 26
+				"speed": 45,
+				"stop_y": 100,
+				"hold": 5
 			},
 			"marked": true,
-			"t": 76.3
+			"t": 69.08
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 71.41
 		},
 		{
 			"op": "wave",
@@ -342,7 +381,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 79.02
+			"t": 73.72
 		},
 		{
 			"op": "wave",
@@ -356,101 +395,25 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 81.74
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 64
-			},
-			"drop_last": "capsule",
-			"spacing": 36,
-			"t": 84.47
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 85,
-				"stop_y": 130,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"drop_last": "orb",
-			"t": 87.19
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 64
-			},
-			"drop_last": "capsule",
-			"spacing": 36,
-			"t": 89.91
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 85,
-				"stop_y": 130,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"drop_last": "orb",
-			"t": 92.63
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 85,
-				"stop_y": 130,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"drop_last": "orb",
-			"t": 95.35
+			"t": 76.02
 		},
 		{
 			"op": "blessing",
-			"t": 98.4
+			"t": 78.28
 		},
 		{
 			"op": "dialogue",
 			"id": "poseidon_intro",
-			"t": 101.9
+			"t": 81.78
 		},
 		{
 			"op": "boss",
 			"id": "poseidon_prime",
-			"t": 105.9
+			"t": 85.78
 		},
 		{
 			"op": "end",
-			"t": 107.9
+			"t": 87.78
 		}
 	],
 	"route": "surface"

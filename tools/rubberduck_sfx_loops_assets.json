@@ -1,0 +1,8 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "rubberduck_sfx_loops",
+	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo.",
+	"files": {
+		"30-cc0-sfx-loops/x/alarm_02.ogg": "audio/sfx/rubberduck_alarm.ogg"
+	}
+}

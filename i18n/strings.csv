@@ -90,6 +90,16 @@ boot.play,Jogar,Play,Jugar,Spielen,Jouer,Играть,Main,プレイ,플레이,�
 boot.tagline,O oceano se lembra. O céu pertence a quem sobreviver.,The ocean remembers. The sky belongs to whoever survives.,El océano recuerda. El cielo es de quien sobreviva.,"Der Ozean erinnert sich. Der Himmel gehört dem, der überlebt.",L'océan se souvient. Le ciel appartient à qui survivra.,"Океан помнит. Небо принадлежит тому, кто выживет.",Lautan mengingat. Langit milik siapa pun yang bertahan.,海は覚えている。空は生き残った者のものだ。,바다는 기억한다. 하늘은 살아남은 자의 것이다.,海洋記得一切。天空屬於倖存者。,海洋记得一切。天空属于幸存者。
 boss.architect,ARQUITETO,ARCHITECT,ARQUITECTO,ARCHITEKT,ARCHITECTE,АРХИТЕКТОР,ARSITEK,アーキテクト,설계자,建築師,建筑师
 boss.coral_guardian,GUARDIÃO DE CORAL,CORAL GUARDIAN,GUARDIÁN DE CORAL,KORALLENWÄCHTER,GARDIEN DE CORAIL,КОРАЛЛОВЫЙ СТРАЖ,PENJAGA KARANG,コーラル・ガーディアン,산호 수호자,珊瑚守護者,珊瑚守护者
+boss.elite_brine_bomber,BOMBARDEIRO SALINO,BRINE BOMBER,BOMBARDERO SALOBRE,SALZBOMBER,BOMBARDIER SAUMÂTRE,СОЛЯНОЙ БОМБАРДИР,PEMBOM ASIN,ブラインボマー,소금물 폭격기,鹽潮轟炸機,盐潮轰炸机
+boss.elite_coral_ram,ARÍETE DE CORAL,CORAL RAM,ARIETE DE CORAL,KORALLENRAMME,BÉLIER DE CORAIL,КОРАЛЛОВЫЙ ТАРАН,PENDOBRAK KARANG,コーラルラム,산호 충각,珊瑚衝角,珊瑚冲角
+boss.elite_depth_charger,CARGA ABISSAL,DEPTH CHARGER,CARGA ABISAL,TIEFENLADER,CHARGE ABYSSALE,ГЛУБИННЫЙ ЗАРЯД,PELEDAK DALAM,デプスチャージャー,심해 폭뢰,深海炸彈,深海炸弹
+boss.elite_echo_twin,GÊMEO ECO,ECHO TWIN,GEMELO ECO,ECHOZWILLING,JUMEAU ÉCHO,ЭХО-БЛИЗНЕЦ,KEMBAR GEMA,エコーツイン,메아리 쌍둥이,回聲雙子,回声双子
+boss.elite_glass_wing,ASA DE VIDRO,GLASS WING,ALA DE CRISTAL,GLASFLÜGEL,AILE DE VERRE,СТЕКЛЯННОЕ КРЫЛО,SAYAP KACA,グラスウィング,유리 날개,琉璃之翼,琉璃之翼
+boss.elite_ink_torpedo,TORPEDO DE TINTA,INK TORPEDO,TORPEDO DE TINTA,TINTENTORPEDO,TORPILLE D'ENCRE,ЧЕРНИЛЬНАЯ ТОРПЕДА,TORPEDO TINTA,インクトーピード,먹물 어뢰,墨汁魚雷,墨汁鱼雷
+boss.elite_reef_lancer,LANCEIRO DO RECIFE,REEF LANCER,LANCERO DEL ARRECIFE,RIFFLANZER,LANCIER DU RÉCIF,РИФОВЫЙ КОПЕЙЩИК,PENOMBAK KARANG,リーフランサー,암초 창기병,礁石槍騎,礁石枪骑
+boss.elite_shell_turret,TORRE-CONCHA,SHELL TURRET,TORRETA CONCHA,MUSCHELTURM,TOURELLE COQUILLE,ТУРЕЛЬ-РАКОВИНА,MENARA CANGKANG,シェルタレット,조개 포탑,貝殼砲塔,贝壳炮塔
+boss.elite_siren_drone,DRONE SIRENE,SIREN DRONE,DRON SIRENA,SIRENENDROHNE,DRONE SIRÈNE,ДРОН-СИРЕНА,DRONE SIREN,セイレーンドローン,세이렌 드론,海妖無人機,海妖无人机
+boss.elite_volt_eel,ENGUIA VOLT,VOLT EEL,ANGUILA VOLT,VOLTAAL,ANGUILLE VOLT,ВОЛЬТ-УГОРЬ,BELUT VOLT,ボルトイール,볼트 장어,伏特電鰻,伏特电鳗
 boss.forge,FORJA VIVA,LIVING FORGE,FRAGUA VIVA,LEBENDE SCHMIEDE,FORGE VIVANTE,ЖИВАЯ КУЗНЯ,TEMPA HIDUP,生ける炉,살아있는 용광로,活體熔爐,活体熔炉
 boss.hadal_angler,PESCADOR ABISSAL,ABYSSAL ANGLER,PESCADOR ABISAL,ABYSSALER ANGLER,BAUDROIE ABYSSALE,ГЛУБИННЫЙ УДИЛЬЩИК,PEMANCING JURANG,深淵のアングラー,심연의 아귀,深淵鮟鱇,深渊鮟鱇
 boss.hadal_matriarch,MATRIARCA HADAL,HADAL MATRIARCH,MATRIARCA HADAL,HADAL-MATRIARCHIN,MATRIARCHE HADALE,ХАДАЛЬНАЯ МАТРИАРХ,MATRIARK HADAL,ハダルの女王,초심해의 여왕,超深淵女王,超深渊女王
@@ -97,6 +107,16 @@ boss.ice_queen,RAINHA DO GELO,ICE QUEEN,REINA DEL HIELO,EISKÖNIGIN,REINE DES GL
 boss.kraken_engine,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,KRAKEN ENGINE,КРАКЕН-ДВИГАТЕЛЬ,KRAKEN ENGINE,クラーケン・エンジン,크라켄 엔진,克拉肯引擎,克拉肯引擎
 boss.kraken_engine_patched,KRAKEN REMENDADO,PATCHED KRAKEN,KRAKEN REMENDADO,GEFLICKTER KRAKEN,KRAKEN RAPIÉCÉ,ЗАЛАТАННЫЙ КРАКЕН,KRAKEN TAMBALAN,継ぎはぎのクラーケン,기워진 크라켄,縫補克拉肯,缝补克拉肯
 boss.leviathan_protocol,LEVIATHAN PROTOCOL,LEVIATHAN PROTOCOL,PROTOCOLO LEVIATÁN,LEVIATHAN-PROTOKOLL,PROTOCOLE LÉVIATHAN,ПРОТОКОЛ «ЛЕВИАФАН»,PROTOKOL LEVIATHAN,リヴァイアサン・プロトコル,리바이어던 프로토콜,利維坦協議,利维坦协议
+boss.mid_abyss_jelly,ÁGUA-VIVA ABISSAL,ABYSSAL JELLY,MEDUSA ABISAL,ABYSSALQUALLE,MÉDUSE ABYSSALE,БЕЗДОННАЯ МЕДУЗА,UBUR-UBUR ABISAL,アビサルジェリー,심연 해파리,深淵水母,深渊水母
+boss.mid_frost_serpent,SERPENTE DE GELO,FROST SERPENT,SERPIENTE DE ESCARCHA,FROSTSCHLANGE,SERPENT DE GIVRE,ЛЕДЯНОЙ ЗМЕЙ,ULAR BEKU,フロストサーペント,서리 뱀,寒霜海蛇,寒霜海蛇
+boss.mid_harpoon_trawler,ARRASTÃO ARPOADOR,HARPOON TRAWLER,ARRASTRERO ARPONERO,HARPUNEN-TRAWLER,CHALUTIER HARPONNEUR,ГАРПУННЫЙ ТРАЛЕР,PUKAT TOMBAK,ハープーン・トローラー,작살 트롤선,魚叉拖網艦,鱼叉拖网舰
+boss.mid_magma_crab,CARANGUEJO DE MAGMA,MAGMA CRAB,CANGREJO DE MAGMA,MAGMAKRABBE,CRABE DE MAGMA,МАГМОВЫЙ КРАБ,KEPITING MAGMA,マグマクラブ,마그마 크랩,熔岩巨蟹,熔岩巨蟹
+boss.mid_pearl_oracle,ORÁCULO DE PÉROLA,PEARL ORACLE,ORÁCULO DE PERLA,PERLENORAKEL,ORACLE DE PERLE,ЖЕМЧУЖНЫЙ ОРАКУЛ,ORAKEL MUTIARA,パール・オラクル,진주 신탁,珍珠神諭,珍珠神谕
+boss.mid_protocol_sentinel,SENTINELA DO PROTOCOLO,PROTOCOL SENTINEL,CENTINELA DEL PROTOCOLO,PROTOKOLLWÄCHTER,SENTINELLE DU PROTOCOLE,СТРАЖ ПРОТОКОЛА,PENJAGA PROTOKOL,プロトコル・センチネル,프로토콜 센티넬,協議哨兵,协议哨兵
+boss.mid_satellite_hydra,HIDRA SATÉLITE,SATELLITE HYDRA,HIDRA SATÉLITE,SATELLITENHYDRA,HYDRE SATELLITE,СПУТНИКОВАЯ ГИДРА,HIDRA SATELIT,サテライト・ヒドラ,위성 히드라,衛星九頭蛇,卫星九头蛇
+boss.mid_spire_warden,GUARDIÃO DA TORRE,SPIRE WARDEN,GUARDIÁN DE LA AGUJA,TURMWÄCHTER,GARDIEN DE LA FLÈCHE,СТРАЖ ШПИЛЯ,PENJAGA MENARA,スパイア・ウォーデン,첨탑 수호자,尖塔守衛,尖塔守卫
+boss.mid_storm_carrier,PORTA-TEMPESTADE,STORM CARRIER,PORTATORMENTAS,STURMTRÄGER,PORTE-TEMPÊTE,ШТОРМОВОЙ НОСИТЕЛЬ,INDUK BADAI,ストームキャリア,폭풍 모함,風暴母艦,风暴母舰
+boss.mid_thunder_manta,RAIA-TROVÃO,THUNDER MANTA,MANTA TRUENO,DONNERMANTA,MANTA TONNERRE,ГРОМОВОЙ СКАТ,PARI GUNTUR,サンダーマンタ,천둥 만타,雷霆魟,雷霆魟
 boss.orbital_gate,PORTÃO ORBITAL,ORBITAL GATE,PUERTA ORBITAL,ORBITALTOR,PORTE ORBITALE,ОРБИТАЛЬНЫЕ ВРАТА,GERBANG ORBIT,軌道門,궤도 관문,軌道之門,轨道之门
 boss.poseidon_prime,POSEIDON PRIME,POSEIDON PRIME,POSEIDÓN PRIME,POSEIDON PRIME,POSÉIDON PRIME,ПОСЕЙДОН-ПРАЙМ,POSEIDON PRIME,ポセイドン・プライム,포세이돈 프라임,波塞頓・原初,波塞顿・原初
 boss.sky_leviathan,SKY LEVIATHAN,SKY LEVIATHAN,SKY LEVIATHAN,SKY LEVIATHAN,SKY LEVIATHAN,НЕБЕСНЫЙ ЛЕВИАФАН,SKY LEVIATHAN,スカイ・リヴァイアサン,스카이 리바이어던,天空利維坦,天空利维坦

@@ -540,6 +540,24 @@
   "sha256": "024ffc10111b23b5f3fcf820cbb1959942cbfe54a4466141d7d6a8df1fa21db2"
  },
  {
+  "file": "assets/art/oga/explosions/ansimuz_explosion_128.png",
+  "source": "opengameart/ansimuz-animated-explosions/x/explosions-pack/spritesheets/explosion-4.png",
+  "license_id": "ansimuz_animated_explosions",
+  "sha256": "1040af276e8ac3864766ad04142b666ba2adaa43c6995eb91b631ed4c61a26e0"
+ },
+ {
+  "file": "assets/art/oga/explosions/ansimuz_explosion_192.png",
+  "source": "opengameart/ansimuz-animated-explosions/x/explosions-pack/spritesheets/explosion-5.png",
+  "license_id": "ansimuz_animated_explosions",
+  "sha256": "c1b4c23bc435197f36d63937afb9b57e0e61166b4e82b6c09c3408ee1e03fa45"
+ },
+ {
+  "file": "assets/art/oga/explosions/ansimuz_explosion_80.png",
+  "source": "opengameart/ansimuz-animated-explosions/x/explosions-pack/spritesheets/explosion-3.png",
+  "license_id": "ansimuz_animated_explosions",
+  "sha256": "d49049266c4a2067b2a8a05d88920308927da1fac78a49e187dd8f73806704f2"
+ },
+ {
   "file": "assets/art/void/environment/asteroid_explode.png",
   "source": "foozle/Foozle_2DS0015_Void_EnvironmentPack/Foozle_2DS0015_Void_EnvironmentPack/Asteroids/PNGs/Asteroid 01 - Explode.png",
   "license_id": "foozle_void_environment_pack",
@@ -1224,10 +1242,22 @@
   "sha256": "63ea88e921bce528c6a3d41961579fb6111aeb246c1d677d2225a09b83d309a4"
  },
  {
+  "file": "assets/audio/music/sketchylogic_boss_main.wav",
+  "source": "opengameart/nes-shooter-music/x/BossMain.wav",
+  "license_id": "sketchylogic_nes_music",
+  "sha256": "bca81ff30003ba02e1afbdc4f608a0ec2a378917ad17c554512c71fc737f2403"
+ },
+ {
   "file": "assets/audio/music/umplix_deep_sea.mp3",
   "source": "opengameart/deep-sea/deep_sea.mp3",
   "license_id": "umplix_deep_sea_music",
   "sha256": "81ca46dfc0f48b956ce868c85b1545ea6e9b538d8f09cb2ef5f99fea84e192c4"
+ },
+ {
+  "file": "assets/audio/sfx/faxcorp_deathboom.wav",
+  "source": "opengameart/electricity-sound-pack/deathboom.wav",
+  "license_id": "faxcorp_electricity_sfx",
+  "sha256": "fa7943c117f367b205bf808486d249c22e894f19e5641608a1a25c25d6d7ad39"
  },
  {
   "file": "assets/audio/sfx/kenney_beam.ogg",
@@ -1366,6 +1396,24 @@
   "source": "kenney/digital-audio/Audio/powerUp10.ogg",
   "license_id": "kenney_audio",
   "sha256": "e4d2c7707655361678ccd358048b7956753e4f333e99545b4ae25e07a9b2ef9b"
+ },
+ {
+  "file": "assets/audio/sfx/rubberduck_alarm.ogg",
+  "source": "opengameart/30-cc0-sfx-loops/x/alarm_02.ogg",
+  "license_id": "rubberduck_sfx_loops",
+  "sha256": "26f1a445657e35c2639a0fecb2535c19a890cf3d70f65606d5729429efa95c1f"
+ },
+ {
+  "file": "assets/audio/sfx/rubberduck_growl.ogg",
+  "source": "opengameart/80-cc0-creature-sfx/x1/monster_03.ogg",
+  "license_id": "rubberduck_creature_sfx",
+  "sha256": "1208729886f3f66e7d8018e8880dff073275fd37b30e1016dd5b164161482df1"
+ },
+ {
+  "file": "assets/audio/sfx/rubberduck_roar.ogg",
+  "source": "opengameart/80-cc0-creature-sfx/x2/roar_04.ogg",
+  "license_id": "rubberduck_creature_sfx",
+  "sha256": "4bd8be77b058410e1af9a3a5aa5c62b8ec9ac214672be4ab84180e156e8c0a20"
  },
  {
   "file": "assets/fonts/exo2_variable.ttf",

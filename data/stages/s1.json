@@ -10,7 +10,7 @@
 		"type": "log",
 		"text_key": "objective.log"
 	},
-	"length_s": 127.8,
+	"length_s": 110.8,
 	"events": [
 		{
 			"op": "dialogue",
@@ -126,6 +126,27 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 27.68
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_brine_bomber_c2",
+			"t": 28.23
+		},
+		{
+			"op": "wave",
 			"enemy": "skiff",
 			"formation": "v",
 			"count": 7,
@@ -218,6 +239,52 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 50.28
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 50.48
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_pearl_oracle",
+			"t": 50.83
+		},
+		{
+			"op": "blessing",
+			"t": 51.38
+		},
+		{
+			"op": "log",
+			"x": 0.5,
+			"t": 54.88
+		},
+		{
+			"op": "wave",
 			"enemy": "prism_jelly",
 			"formation": "line",
 			"count": 3,
@@ -230,7 +297,7 @@
 			},
 			"spacing": 80,
 			"from_depth": true,
-			"t": 50.96
+			"t": 57.88
 		},
 		{
 			"op": "wave",
@@ -246,7 +313,7 @@
 			},
 			"interval": 14,
 			"from_depth": true,
-			"t": 54.56
+			"t": 60.88
 		},
 		{
 			"op": "wave",
@@ -262,16 +329,7 @@
 			},
 			"spacing": 54,
 			"from_depth": true,
-			"t": 58.16
-		},
-		{
-			"op": "blessing",
-			"t": 59.88
-		},
-		{
-			"op": "log",
-			"x": 0.5,
-			"t": 63.38
+			"t": 63.88
 		},
 		{
 			"op": "wave",
@@ -289,7 +347,7 @@
 			"drop_last": "orb",
 			"from_depth": true,
 			"spacing": 36,
-			"t": 66.38
+			"t": 66.88
 		},
 		{
 			"op": "wave",
@@ -302,7 +360,7 @@
 				"speed": 28
 			},
 			"marked": true,
-			"t": 69.38
+			"t": 69.88
 		},
 		{
 			"op": "wave",
@@ -318,7 +376,7 @@
 			},
 			"spacing": 54,
 			"from_depth": true,
-			"t": 73.28
+			"t": 73.78
 		},
 		{
 			"op": "wave",
@@ -334,7 +392,7 @@
 			},
 			"spacing": 80,
 			"from_depth": true,
-			"t": 76.28
+			"t": 76.78
 		},
 		{
 			"op": "wave",
@@ -348,7 +406,28 @@
 			},
 			"from_depth": true,
 			"spacing": 36,
-			"t": 79.28
+			"t": 79.78
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 82.18
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_siren_drone_c2",
+			"t": 82.73
 		},
 		{
 			"op": "wave",
@@ -361,7 +440,7 @@
 				"speed": 28
 			},
 			"marked": true,
-			"t": 82.28
+			"t": 82.78
 		},
 		{
 			"op": "wave",
@@ -379,7 +458,7 @@
 			"drop_last": "orb",
 			"from_depth": true,
 			"spacing": 36,
-			"t": 86.17
+			"t": 86.67
 		},
 		{
 			"op": "wave",
@@ -393,7 +472,7 @@
 			},
 			"from_depth": true,
 			"spacing": 36,
-			"t": 89.17
+			"t": 89.67
 		},
 		{
 			"op": "wave",
@@ -407,7 +486,7 @@
 			},
 			"from_depth": true,
 			"spacing": 36,
-			"t": 92.17
+			"t": 92.67
 		},
 		{
 			"op": "wave",
@@ -421,7 +500,7 @@
 			},
 			"y": -20,
 			"marked": true,
-			"t": 95.17
+			"t": 95.67
 		},
 		{
 			"op": "wave",
@@ -437,7 +516,7 @@
 			},
 			"spacing": 54,
 			"from_depth": true,
-			"t": 99.08
+			"t": 99.58
 		},
 		{
 			"op": "wave",
@@ -453,7 +532,7 @@
 			},
 			"spacing": 80,
 			"from_depth": true,
-			"t": 102.08
+			"t": 102.58
 		},
 		{
 			"op": "wave",
@@ -469,91 +548,11 @@
 			},
 			"spacing": 80,
 			"from_depth": true,
-			"t": 105.08
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 80,
-				"stop_y": 120,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"from_depth": true,
-			"t": 108.08
-		},
-		{
-			"op": "wave",
-			"enemy": "skiff",
-			"formation": "v",
-			"count": 7,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 82
-			},
-			"from_depth": true,
-			"spacing": 36,
-			"t": 111.08
-		},
-		{
-			"op": "wave",
-			"enemy": "skiff",
-			"formation": "v",
-			"count": 7,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 82
-			},
-			"from_depth": true,
-			"spacing": 36,
-			"t": 114.08
-		},
-		{
-			"op": "wave",
-			"enemy": "tide_wasp",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": -1,
-				"amp": 80,
-				"speed": 66
-			},
-			"mirror": true,
-			"drop_last": "orb",
-			"from_depth": true,
-			"spacing": 36,
-			"t": 117.08
-		},
-		{
-			"op": "wave",
-			"enemy": "tide_wasp",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": -1,
-				"amp": 80,
-				"speed": 66
-			},
-			"mirror": true,
-			"drop_last": "orb",
-			"from_depth": true,
-			"spacing": 36,
-			"t": 120.08
+			"t": 105.58
 		},
 		{
 			"op": "end",
-			"t": 123.75
+			"t": 106.75
 		}
 	],
 	"weapon_lock": "railgun",

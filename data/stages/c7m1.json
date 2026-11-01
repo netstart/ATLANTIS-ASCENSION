@@ -11,7 +11,7 @@
 		"count": 4,
 		"text_key": "objective.capsule_combo"
 	},
-	"length_s": 124.8,
+	"length_s": 111.2,
 	"events": [
 		{
 			"op": "wave",
@@ -135,13 +135,18 @@
 				"stop_y": 130,
 				"hold": 2.0
 			},
+			"escort": true,
 			"spacing": 54,
-			"drop_last": "orb",
-			"t": 25.2
+			"t": 22.4
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_volt_eel_c7",
+			"t": 22.95
 		},
 		{
 			"op": "blessing",
-			"t": 27.5
+			"t": 23.5
 		},
 		{
 			"op": "gravity_breach",
@@ -149,116 +154,7 @@
 			"dy": 0,
 			"strength": 30,
 			"duration": 10,
-			"t": 31.0
-		},
-		{
-			"op": "wave",
-			"enemy": "aegis",
-			"formation": "single",
-			"count": 1,
-			"x": 0.35,
-			"path": "stop_go",
-			"params": {
-				"speed": 45,
-				"stop_y": 100,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 43.0
-		},
-		{
-			"op": "wave",
-			"enemy": "volt_ray",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 60,
-				"speed": 50
-			},
-			"mirror": true,
-			"spacing": 90,
-			"marked": true,
-			"t": 46.27
-		},
-		{
-			"op": "wave",
-			"enemy": "volt_ray",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 60,
-				"speed": 50
-			},
-			"mirror": true,
-			"spacing": 90,
-			"marked": true,
-			"t": 49.55
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 64
-			},
-			"drop_last": "capsule",
-			"spacing": 36,
-			"t": 52.82
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 64
-			},
-			"drop_last": "capsule",
-			"spacing": 36,
-			"t": 56.09
-		},
-		{
-			"op": "wave",
-			"enemy": "volt_ray",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 60,
-				"speed": 50
-			},
-			"mirror": true,
-			"spacing": 90,
-			"marked": true,
-			"t": 59.36
-		},
-		{
-			"op": "wave",
-			"enemy": "aegis",
-			"formation": "single",
-			"count": 1,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 45,
-				"stop_y": 100,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 62.64
+			"t": 27.0
 		},
 		{
 			"op": "wave",
@@ -274,22 +170,56 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 65.91
+			"t": 39.0
 		},
 		{
-			"op": "log",
-			"x": 0.39794422224624226,
-			"t": 67.3
+			"op": "wave",
+			"enemy": "aegis",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "stop_go",
+			"params": {
+				"speed": 45,
+				"stop_y": 100,
+				"hold": 5
+			},
+			"marked": true,
+			"t": 42.27
 		},
 		{
-			"op": "capsule",
-			"x": 0.3,
-			"t": 70.3
+			"op": "wave",
+			"enemy": "volt_ray",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 60,
+				"speed": 50
+			},
+			"mirror": true,
+			"spacing": 90,
+			"marked": true,
+			"t": 45.55
 		},
 		{
-			"op": "capsule",
-			"x": 0.7,
-			"t": 73.3
+			"op": "wave",
+			"enemy": "volt_ray",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 60,
+				"speed": 50
+			},
+			"mirror": true,
+			"spacing": 90,
+			"marked": true,
+			"t": 48.82
 		},
 		{
 			"op": "wave",
@@ -303,7 +233,151 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 76.3
+			"t": 52.09
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 64
+			},
+			"drop_last": "capsule",
+			"spacing": 36,
+			"t": 55.36
+		},
+		{
+			"op": "wave",
+			"enemy": "volt_ray",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 60,
+				"speed": 50
+			},
+			"mirror": true,
+			"spacing": 90,
+			"marked": true,
+			"t": 58.64
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 59.1
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 59.3
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_storm_carrier",
+			"t": 59.65
+		},
+		{
+			"op": "log",
+			"x": 0.3422036310232735,
+			"t": 59.7
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 62.7
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 65.7
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 68.7
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 71.83
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.65,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 26
+			},
+			"marked": true,
+			"t": 74.96
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 64
+			},
+			"drop_last": "capsule",
+			"spacing": 36,
+			"t": 78.09
 		},
 		{
 			"op": "wave",
@@ -318,7 +392,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 79.43
+			"t": 81.22
 		},
 		{
 			"op": "wave",
@@ -332,7 +406,32 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 82.56
+			"t": 84.35
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 86.5
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_glass_wing_c7",
+			"t": 87.05
+		},
+		{
+			"op": "blessing",
+			"t": 87.6
 		},
 		{
 			"op": "wave",
@@ -347,7 +446,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 85.69
+			"t": 91.1
 		},
 		{
 			"op": "wave",
@@ -362,7 +461,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 88.82
+			"t": 94.1
 		},
 		{
 			"op": "wave",
@@ -377,7 +476,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 91.95
+			"t": 97.1
 		},
 		{
 			"op": "wave",
@@ -394,11 +493,7 @@
 			"mirror": true,
 			"spacing": 90,
 			"marked": true,
-			"t": 95.08
-		},
-		{
-			"op": "blessing",
-			"t": 98.4
+			"t": 100.1
 		},
 		{
 			"op": "wave",
@@ -412,7 +507,7 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 101.9
+			"t": 103.1
 		},
 		{
 			"op": "wave",
@@ -427,74 +522,11 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 104.9
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 85,
-				"stop_y": 130,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"drop_last": "orb",
-			"t": 107.9
-		},
-		{
-			"op": "wave",
-			"enemy": "aegis",
-			"formation": "single",
-			"count": 1,
-			"x": 0.35,
-			"path": "stop_go",
-			"params": {
-				"speed": 45,
-				"stop_y": 100,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 110.9
-		},
-		{
-			"op": "wave",
-			"enemy": "aegis",
-			"formation": "single",
-			"count": 1,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 45,
-				"stop_y": 100,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 113.9
-		},
-		{
-			"op": "wave",
-			"enemy": "volt_ray",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 60,
-				"speed": 50
-			},
-			"mirror": true,
-			"spacing": 90,
-			"marked": true,
-			"t": 116.9
+			"t": 106.1
 		},
 		{
 			"op": "end",
-			"t": 120.8
+			"t": 107.2
 		}
 	]
 }

@@ -10,7 +10,7 @@
 		"type": "log",
 		"text_key": "objective.log"
 	},
-	"length_s": 132.3,
+	"length_s": 121.7,
 	"events": [
 		{
 			"op": "dialogue",
@@ -100,6 +100,45 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.3,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"escort": true,
+			"interval": 6,
+			"spacing": 36,
+			"t": 60.2
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.7,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"escort": true,
+			"interval": 6,
+			"spacing": 36,
+			"t": 60.4
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_satellite_hydra",
+			"t": 60.75
+		},
+		{
+			"op": "wave",
 			"enemy": "hunter",
 			"formation": "line",
 			"count": 2,
@@ -163,6 +202,28 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.3,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"escort": true,
+			"interval": 6,
+			"spacing": 36,
+			"t": 74.6
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_glass_wing_c8",
+			"t": 75.15
+		},
+		{
+			"op": "wave",
 			"enemy": "trireme",
 			"formation": "single",
 			"count": 1,
@@ -190,6 +251,37 @@
 			"t": 78.8
 		},
 		{
+			"op": "log",
+			"x": 0.5,
+			"t": 83.12
+		},
+		{
+			"op": "blessing",
+			"t": 86.62
+		},
+		{
+			"op": "wave",
+			"enemy": "spark_swarm",
+			"formation": "column",
+			"count": 12,
+			"x": 0.3,
+			"path": "sine",
+			"params": {
+				"amp": 80,
+				"freq": 0.6,
+				"speed": 115
+			},
+			"escort": true,
+			"interval": 6,
+			"spacing": 36,
+			"t": 89.52
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_depth_charger_c8",
+			"t": 90.07
+		},
+		{
 			"op": "wave",
 			"enemy": "bulwark",
 			"formation": "single",
@@ -202,7 +294,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 82.4
+			"t": 90.12
 		},
 		{
 			"op": "wave",
@@ -218,16 +310,7 @@
 			},
 			"interval": 14,
 			"from_depth": true,
-			"t": 86.0
-		},
-		{
-			"op": "log",
-			"x": 0.5,
-			"t": 88.88
-		},
-		{
-			"op": "blessing",
-			"t": 92.38
+			"t": 93.39
 		},
 		{
 			"op": "wave",
@@ -243,7 +326,7 @@
 			},
 			"spacing": 80,
 			"drop_last": "orb",
-			"t": 95.88
+			"t": 96.67
 		},
 		{
 			"op": "wave",
@@ -259,7 +342,7 @@
 			},
 			"interval": 14,
 			"from_depth": true,
-			"t": 99.15
+			"t": 99.94
 		},
 		{
 			"op": "wave",
@@ -273,7 +356,7 @@
 			},
 			"y": -40,
 			"marked": true,
-			"t": 102.43
+			"t": 103.21
 		},
 		{
 			"op": "wave",
@@ -289,7 +372,7 @@
 			},
 			"interval": 6,
 			"drop_last": "capsule",
-			"t": 105.7
+			"t": 106.48
 		},
 		{
 			"op": "wave",
@@ -303,7 +386,7 @@
 			},
 			"y": -40,
 			"marked": true,
-			"t": 108.97
+			"t": 109.76
 		},
 		{
 			"op": "wave",
@@ -318,7 +401,7 @@
 				"speed": 44
 			},
 			"spacing": 110,
-			"t": 112.24
+			"t": 113.03
 		},
 		{
 			"op": "wave",
@@ -334,58 +417,11 @@
 			},
 			"spacing": 80,
 			"drop_last": "orb",
-			"t": 115.52
-		},
-		{
-			"op": "wave",
-			"enemy": "ice_fan",
-			"formation": "line",
-			"count": 3,
-			"x": 0.5,
-			"path": "sine",
-			"params": {
-				"amp": 80,
-				"freq": 0.5,
-				"speed": 62
-			},
-			"spacing": 80,
-			"drop_last": "orb",
-			"t": 118.79
-		},
-		{
-			"op": "wave",
-			"enemy": "squid_probe",
-			"formation": "column",
-			"count": 4,
-			"x": 0.25,
-			"path": "sine",
-			"params": {
-				"amp": 50,
-				"freq": 0.3,
-				"speed": 72
-			},
-			"interval": 14,
-			"from_depth": true,
-			"t": 122.06
-		},
-		{
-			"op": "wave",
-			"enemy": "hunter",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "sine",
-			"params": {
-				"amp": 60,
-				"freq": 0.2,
-				"speed": 44
-			},
-			"spacing": 110,
-			"t": 125.33
+			"t": 116.3
 		},
 		{
 			"op": "end",
-			"t": 128.28
+			"t": 117.72
 		}
 	],
 	"secret_mission": true

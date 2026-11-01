@@ -56,5 +56,4 @@ Só o mantenedor pode fazer:
 ## 4. Antes de enviar
 
 - `powershell -ExecutionPolicy Bypass -File tools\run_checks.ps1` → `TUDO OK`.
-- Revisão das traduções por falantes nativos (10 idiomas além do pt-BR).
 - Critérios da 1.0: aprovado nas duas lojas; crash-free ≥ 99,5% e D1 ≥ 40% no teste fechado.

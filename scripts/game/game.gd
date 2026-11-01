@@ -14,6 +14,8 @@ const SHAKE_DECAY := 18.0
 ## Hitstop (congelar a partida por um instante no golpe forte): parte do chefe e morte do chefe.
 const HITSTOP_PART := 0.05
 const HITSTOP_BOSS := 0.14
+## Tema dos chefes intermediários (SketchyLogic, CC0); a trilha da fase volta quando ele cai.
+const MID_BOSS_MUSIC := "sketchylogic_boss_main"
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
@@ -376,11 +378,17 @@ func _on_event(ev: Dictionary) -> void:
 		&"beam_warn":
 			AudioManager.play("kenney_beam_warn", 1.0, 0.0, -6.0)
 		&"boss_intro":
-			AudioManager.play("kenney_boss_alert")
+			var boss_def: Dictionary = (sim.tables["bosses"] as Dictionary).get(StringName(ev["id"]), {})
+			var tier := String(boss_def.get("tier", ""))
+			# Chefes de meio de fase: alarme; criaturas (frota Nautolan) rugem; o intermediário tem tema próprio.
+			AudioManager.play("rubberduck_alarm" if not tier.is_empty() else "kenney_boss_alert")
+			if String(boss_def.get("sprite", "")).begins_with("nautolan"):
+				AudioManager.play("rubberduck_roar" if tier == "mid" else "rubberduck_growl", 1.0, 0.05, -4.0)
 			_hud.show_banner(tr(String(ev.get("name_key", ""))))
 			if bool(ev.get("final", false)):
-				var boss_def: Dictionary = (sim.tables["bosses"] as Dictionary).get(StringName(ev["id"]), {})
 				AudioManager.play_music(String(boss_def.get("music", "")))
+			elif tier == "mid":
+				AudioManager.play_music(MID_BOSS_MUSIC)
 		&"boss_phase":
 			if not String(ev.get("dialogue", "")).is_empty():
 				_hud.show_radio(String(ev["dialogue"]))
@@ -394,6 +402,9 @@ func _on_event(ev: Dictionary) -> void:
 			_hud.show_banner(tr("hud.duel"))
 		&"boss_dead":
 			AudioManager.play("kenney_explosion_big")
+			AudioManager.play("faxcorp_deathboom", 1.0, 0.0, -3.0)
+			if not bool(ev.get("final", false)) and AudioManager.music_id() == MID_BOSS_MUSIC:
+				AudioManager.play_music(String(sim.mission.get("music", "")))
 			Settings.vibrate(150)
 			_shake = 10.0
 			_screen.flash(0.8)

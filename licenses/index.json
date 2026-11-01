@@ -357,5 +357,65 @@
     "source_url": "https://opengameart.org/content/retro-synthwave-loops",
     "license_file": "res://licenses/texts/CC-BY-4.0.txt",
     "files_count": 2
+  },
+  {
+    "id": "ansimuz_animated_explosions",
+    "name": "Animated Explosions",
+    "author": "Luis Zuno (ansimuz)",
+    "license_id": "CC0-1.0",
+    "category": "art",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/animated-explosions",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 3
+  },
+  {
+    "id": "rubberduck_creature_sfx",
+    "name": "80 CC0 creature SFX",
+    "author": "rubberduck",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/80-cc0-creature-sfx",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 2
+  },
+  {
+    "id": "rubberduck_sfx_loops",
+    "name": "30 CC0 SFX loops",
+    "author": "rubberduck",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/30-cc0-sfx-loops",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "faxcorp_electricity_sfx",
+    "name": "Electricity Game Sound Pack",
+    "author": "faxcorp",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/electricity-game-sound-pack",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "sketchylogic_nes_music",
+    "name": "NES Shooter Music (5 tracks, 3 jingles)",
+    "author": "SketchyLogic",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-10-31",
+    "verified_at": "2026-10-31",
+    "source_url": "https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
   }
 ]

@@ -11,7 +11,7 @@
 		"count": 4,
 		"text_key": "objective.capsule_combo"
 	},
-	"length_s": 124.8,
+	"length_s": 111.2,
 	"events": [
 		{
 			"op": "wave",
@@ -130,27 +130,48 @@
 				"stop_y": 120,
 				"hold": 2.0
 			},
+			"escort": true,
 			"spacing": 54,
-			"drop_last": "orb",
-			"t": 25.2
+			"t": 22.4
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_ink_torpedo_c5",
+			"t": 22.95
 		},
 		{
 			"op": "blessing",
-			"t": 27.5
+			"t": 23.5
 		},
 		{
 			"op": "cover",
 			"x": 0.25,
 			"height": 160,
 			"duration": 10,
-			"t": 31.0
+			"t": 27.0
 		},
 		{
 			"op": "cover",
 			"x": 0.75,
 			"height": 140,
 			"duration": 10,
-			"t": 32.0
+			"t": 28.0
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"t": 39.0
 		},
 		{
 			"op": "wave",
@@ -165,7 +186,7 @@
 				"speed": 42
 			},
 			"spacing": 110,
-			"t": 43.0
+			"t": 42.27
 		},
 		{
 			"op": "wave",
@@ -178,7 +199,7 @@
 				"speed": 86
 			},
 			"spacing": 36,
-			"t": 46.27
+			"t": 45.55
 		},
 		{
 			"op": "wave",
@@ -192,7 +213,7 @@
 			},
 			"y": -40,
 			"marked": true,
-			"t": 49.55
+			"t": 48.82
 		},
 		{
 			"op": "wave",
@@ -206,7 +227,7 @@
 			},
 			"y": -40,
 			"marked": true,
-			"t": 52.82
+			"t": 52.09
 		},
 		{
 			"op": "wave",
@@ -221,7 +242,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 56.09
+			"t": 55.36
 		},
 		{
 			"op": "wave",
@@ -237,21 +258,59 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 59.36
+			"t": 58.64
 		},
 		{
 			"op": "wave",
-			"enemy": "basilica",
-			"formation": "single",
-			"count": 1,
-			"x": 0.65,
-			"path": "scroll",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
 			"params": {
-				"speed": 20
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
 			},
-			"y": -40,
-			"marked": true,
-			"t": 62.64
+			"escort": true,
+			"spacing": 54,
+			"t": 59.1
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 59.3
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_spire_warden",
+			"t": 59.65
+		},
+		{
+			"op": "log",
+			"x": 0.3962956143456381,
+			"t": 59.7
+		},
+		{
+			"op": "capsule",
+			"x": 0.3,
+			"t": 62.7
+		},
+		{
+			"op": "capsule",
+			"x": 0.7,
+			"t": 65.7
 		},
 		{
 			"op": "wave",
@@ -266,22 +325,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 65.91
-		},
-		{
-			"op": "log",
-			"x": 0.6656090139546342,
-			"t": 67.3
-		},
-		{
-			"op": "capsule",
-			"x": 0.3,
-			"t": 70.3
-		},
-		{
-			"op": "capsule",
-			"x": 0.7,
-			"t": 73.3
+			"t": 68.7
 		},
 		{
 			"op": "wave",
@@ -294,7 +338,7 @@
 				"speed": 86
 			},
 			"spacing": 36,
-			"t": 76.3
+			"t": 71.83
 		},
 		{
 			"op": "wave",
@@ -309,7 +353,7 @@
 				"speed": 42
 			},
 			"spacing": 110,
-			"t": 79.43
+			"t": 74.96
 		},
 		{
 			"op": "wave",
@@ -322,7 +366,7 @@
 				"speed": 86
 			},
 			"spacing": 36,
-			"t": 82.56
+			"t": 78.09
 		},
 		{
 			"op": "wave",
@@ -338,7 +382,7 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 85.69
+			"t": 81.22
 		},
 		{
 			"op": "wave",
@@ -352,7 +396,32 @@
 			},
 			"y": -40,
 			"marked": true,
-			"t": 88.82
+			"t": 84.35
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 86.5
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_shell_turret_c5",
+			"t": 87.05
+		},
+		{
+			"op": "blessing",
+			"t": 87.6
 		},
 		{
 			"op": "wave",
@@ -368,7 +437,7 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 91.95
+			"t": 91.1
 		},
 		{
 			"op": "wave",
@@ -383,11 +452,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 95.08
-		},
-		{
-			"op": "blessing",
-			"t": 98.4
+			"t": 94.1
 		},
 		{
 			"op": "wave",
@@ -400,7 +465,7 @@
 				"speed": 86
 			},
 			"spacing": 36,
-			"t": 101.9
+			"t": 97.1
 		},
 		{
 			"op": "wave",
@@ -413,7 +478,7 @@
 				"speed": 86
 			},
 			"spacing": 36,
-			"t": 104.9
+			"t": 100.1
 		},
 		{
 			"op": "wave",
@@ -426,7 +491,7 @@
 				"speed": 86
 			},
 			"spacing": 36,
-			"t": 107.9
+			"t": 103.1
 		},
 		{
 			"op": "wave",
@@ -440,41 +505,11 @@
 			},
 			"drop_last": "capsule",
 			"spacing": 36,
-			"t": 110.9
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 62
-			},
-			"drop_last": "capsule",
-			"spacing": 36,
-			"t": 113.9
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 85,
-				"stop_y": 120,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"drop_last": "orb",
-			"t": 116.9
+			"t": 106.1
 		},
 		{
 			"op": "end",
-			"t": 120.8
+			"t": 107.2
 		}
 	]
 }

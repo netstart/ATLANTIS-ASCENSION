@@ -168,6 +168,25 @@ Surge XT, BeepBox. A trilha original é o maior ganho de identidade e o item de 
 | GodotSteam | https://github.com/GodotSteam/GodotSteam | MIT | ⚠️ |
 | Steamworks SDK | partner.steamgames.com | `LicenseRef-Steamworks` | 🔶 |
 
+## 10b. Chefes de meio de fase (pesquisa de 31/10/2026, versão 1.10)
+
+Licença conferida na página de cada asset; baixados em `c:\src\downloads\assets\opengameart\<pack>\` e extraídos
+em `x/`. Todos CC0.
+
+| Asset | Autor | URL | Uso |
+|---|---|---|---|
+| Animated Explosions | Luis Zuno (ansimuz) | https://opengameart.org/content/animated-explosions | ✅ Explosões 80/128/192 px nas peças e quedas de chefe |
+| 80 CC0 creature SFX (1 e 2) | rubberduck | https://opengameart.org/content/80-cc0-creature-sfx | ✅ Rugido e rosnado dos chefes criatura |
+| 30 CC0 SFX loops | rubberduck | https://opengameart.org/content/30-cc0-sfx-loops | ✅ Alarme dos chefes de meio de fase |
+| Electricity Game Sound Pack | faxcorp | https://opengameart.org/content/electricity-game-sound-pack | ✅ Estrondo de queda de chefe |
+| NES Shooter Music | SketchyLogic | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles | ✅ Tema do chefe intermediário |
+| Alien / SpaceShip / UFO Boss Sets | The_Scientist___ | https://opengameart.org/content/alien-boss-set | ⏸️ Baixados, não usados: desenho liso, destoa da pixel art Void |
+| Dragon 1 | Master484 | https://opengameart.org/content/dragon-1 | ⏸️ Vista lateral, não serve à câmera de cima |
+| Explosion Sets 1 e 2 | Master484 | https://opengameart.org/content/explosion-set-1-m484-games | ⏸️ Reserva para explosões menores |
+| Top Down Tentacle Creature | Sean Noonan | https://opengameart.org/content/top-down-tentacle-creature | ⏸️ Reserva para um chefe criatura futuro |
+| Underwater Diving Pack (só a arte) | ansimuz | https://opengameart.org/content/underwater-diving-pack | ⏸️ Reserva (minas); a música do pacote não tem licença |
+| Boss Battle #2, Doomsday Laser Cannon, "!" HUD | nene, TAD, Hazmat Harry | ver `asset_research` da sessão | ⏸️ Reserva |
+
 ## 11. Rejeitados
 
 | Asset | Motivo |
@@ -180,6 +199,10 @@ Surge XT, BeepBox. A trilha original é o maior ganho de identidade e o item de 
 | https://doranarasi.itch.io/shmup-bgm-pack, https://kosmocat.itch.io/space-train-journey | "Livre comercial" sem licença padrão |
 | Páginas itch do ansimuz *Space Backgrounds* e *Spaceship Shooter Environment* | Sem licença declarada (usar as versões CC0 da OpenGameArt) |
 | Starship Pilot, Science Officer e semelhantes (Justin Nichol) | CC-BY-SA-3.0 / GPL |
+| StendhalGame Kraken, anglerfish/jellies de rapidpunches, kit de naves do Skorpio | CC-BY-SA / GPL |
+| BDragon1727 effects | Custom, proíbe redistribuição |
+| "12 Public Domain Boss Sprites" | Feitos com transferência de estilo, origem incerta |
+| Remastered Tyrian | Arte de jogo comercial |
 | Qualquer asset de Galaxy Attack, Star Wars: Galaxy of Heroes, Raiden e demais referências | Propriedade intelectual de terceiros |
 
 ## 12. Ordem de download

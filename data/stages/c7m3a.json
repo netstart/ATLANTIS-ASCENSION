@@ -11,7 +11,7 @@
 		"count": 50,
 		"text_key": "objective.chain_50"
 	},
-	"length_s": 109.9,
+	"length_s": 89.8,
 	"events": [
 		{
 			"op": "wave",
@@ -44,7 +44,7 @@
 			"spacing": 90,
 			"from_depth": true,
 			"marked": true,
-			"t": 2.67
+			"t": 2.27
 		},
 		{
 			"op": "wave",
@@ -59,7 +59,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 5.33
+			"t": 4.53
 		},
 		{
 			"op": "wave",
@@ -74,7 +74,7 @@
 			"drop_last": "capsule",
 			"from_depth": true,
 			"spacing": 36,
-			"t": 8.0
+			"t": 6.8
 		},
 		{
 			"op": "wave",
@@ -92,7 +92,7 @@
 			"spacing": 90,
 			"from_depth": true,
 			"marked": true,
-			"t": 10.67
+			"t": 9.07
 		},
 		{
 			"op": "wave",
@@ -107,7 +107,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 13.33
+			"t": 11.33
 		},
 		{
 			"op": "wave",
@@ -125,7 +125,7 @@
 			"spacing": 90,
 			"from_depth": true,
 			"marked": true,
-			"t": 16.0
+			"t": 13.6
 		},
 		{
 			"op": "wave",
@@ -140,7 +140,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 18.67
+			"t": 15.87
 		},
 		{
 			"op": "wave",
@@ -155,26 +155,11 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 21.33
-		},
-		{
-			"op": "wave",
-			"enemy": "nautilus",
-			"formation": "single",
-			"count": 1,
-			"x": 0.75,
-			"path": "sine",
-			"params": {
-				"amp": 50,
-				"freq": 0.15,
-				"speed": 26
-			},
-			"marked": true,
-			"t": 24.0
+			"t": 18.13
 		},
 		{
 			"op": "blessing",
-			"t": 27.5
+			"t": 20.05
 		},
 		{
 			"op": "gravity_breach",
@@ -182,7 +167,7 @@
 			"dy": 0,
 			"strength": 30,
 			"duration": 10,
-			"t": 31.0
+			"t": 23.55
 		},
 		{
 			"op": "wave",
@@ -197,7 +182,22 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 43.0
+			"t": 35.55
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 26
+			},
+			"marked": true,
+			"t": 37.61
 		},
 		{
 			"op": "wave",
@@ -212,7 +212,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 45.42
+			"t": 39.67
 		},
 		{
 			"op": "wave",
@@ -227,7 +227,7 @@
 			"drop_last": "capsule",
 			"from_depth": true,
 			"spacing": 36,
-			"t": 47.85
+			"t": 41.73
 		},
 		{
 			"op": "wave",
@@ -244,7 +244,44 @@
 			"spacing": 54,
 			"drop_last": "orb",
 			"from_depth": true,
-			"t": 50.27
+			"t": 43.79
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 45.25
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 45.45
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_storm_carrier",
+			"t": 45.8
 		},
 		{
 			"op": "wave",
@@ -259,7 +296,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 52.7
+			"t": 45.85
 		},
 		{
 			"op": "wave",
@@ -277,7 +314,7 @@
 			"spacing": 90,
 			"from_depth": true,
 			"marked": true,
-			"t": 55.12
+			"t": 47.91
 		},
 		{
 			"op": "wave",
@@ -292,7 +329,7 @@
 			"drop_last": "capsule",
 			"from_depth": true,
 			"spacing": 36,
-			"t": 57.55
+			"t": 49.97
 		},
 		{
 			"op": "wave",
@@ -309,52 +346,54 @@
 			"spacing": 54,
 			"drop_last": "orb",
 			"from_depth": true,
-			"t": 59.97
-		},
-		{
-			"op": "wave",
-			"enemy": "aegis",
-			"formation": "single",
-			"count": 1,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 45,
-				"stop_y": 100,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 62.39
-		},
-		{
-			"op": "wave",
-			"enemy": "nautilus",
-			"formation": "single",
-			"count": 1,
-			"x": 0.35,
-			"path": "sine",
-			"params": {
-				"amp": 50,
-				"freq": 0.15,
-				"speed": 26
-			},
-			"marked": true,
-			"t": 64.82
+			"t": 52.03
 		},
 		{
 			"op": "log",
-			"x": 0.605181752982424,
-			"t": 67.3
+			"x": 0.6166504830819965,
+			"t": 53.14
 		},
 		{
 			"op": "capsule",
 			"x": 0.3,
-			"t": 70.3
+			"t": 56.14
 		},
 		{
 			"op": "capsule",
 			"x": 0.7,
-			"t": 73.3
+			"t": 59.14
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 85,
+				"stop_y": 130,
+				"hold": 2.0
+			},
+			"spacing": 54,
+			"drop_last": "orb",
+			"from_depth": true,
+			"t": 62.14
+		},
+		{
+			"op": "wave",
+			"enemy": "nautilus",
+			"formation": "single",
+			"count": 1,
+			"x": 0.35,
+			"path": "sine",
+			"params": {
+				"amp": 50,
+				"freq": 0.15,
+				"speed": 26
+			},
+			"marked": true,
+			"t": 64.11
 		},
 		{
 			"op": "wave",
@@ -369,7 +408,7 @@
 			"drop_last": "capsule",
 			"from_depth": true,
 			"spacing": 36,
-			"t": 76.3
+			"t": 66.08
 		},
 		{
 			"op": "wave",
@@ -386,7 +425,7 @@
 			"spacing": 54,
 			"drop_last": "orb",
 			"from_depth": true,
-			"t": 78.62
+			"t": 68.05
 		},
 		{
 			"op": "wave",
@@ -401,7 +440,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 80.94
+			"t": 70.02
 		},
 		{
 			"op": "wave",
@@ -418,7 +457,7 @@
 			"spacing": 54,
 			"drop_last": "orb",
 			"from_depth": true,
-			"t": 83.26
+			"t": 72.0
 		},
 		{
 			"op": "wave",
@@ -436,7 +475,7 @@
 			"spacing": 90,
 			"from_depth": true,
 			"marked": true,
-			"t": 85.58
+			"t": 73.97
 		},
 		{
 			"op": "wave",
@@ -451,70 +490,25 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 87.89
-		},
-		{
-			"op": "wave",
-			"enemy": "aegis",
-			"formation": "single",
-			"count": 1,
-			"x": 0.65,
-			"path": "stop_go",
-			"params": {
-				"speed": 45,
-				"stop_y": 100,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 90.21
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 64
-			},
-			"drop_last": "capsule",
-			"from_depth": true,
-			"spacing": 36,
-			"t": 92.53
-		},
-		{
-			"op": "wave",
-			"enemy": "nautilus",
-			"formation": "single",
-			"count": 1,
-			"x": 0.25,
-			"path": "sine",
-			"params": {
-				"amp": 50,
-				"freq": 0.15,
-				"speed": 26
-			},
-			"marked": true,
-			"t": 94.85
+			"t": 75.94
 		},
 		{
 			"op": "blessing",
-			"t": 98.4
+			"t": 78.28
 		},
 		{
 			"op": "dialogue",
 			"id": "poseidon_intro",
-			"t": 101.9
+			"t": 81.78
 		},
 		{
 			"op": "boss",
 			"id": "poseidon_prime",
-			"t": 105.9
+			"t": 85.78
 		},
 		{
 			"op": "end",
-			"t": 107.9
+			"t": 87.78
 		}
 	],
 	"route": "abyss",

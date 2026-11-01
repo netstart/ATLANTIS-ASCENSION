@@ -18,6 +18,7 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Void — Pickups Pack** — Foozle (foozle.io) (CC0-1.0) — https://foozlecc.itch.io/void-pickups-pack
 - **Ocean Creatures** — michael-jay-rov (CC-BY-4.0) — https://michael-jay-rov.itch.io/ocean-creatures
 - **Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
+- **Animated Explosions** — Luis Zuno (ansimuz) (CC0-1.0) — https://opengameart.org/content/animated-explosions
 
 ## Música
 
@@ -31,10 +32,14 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **8-bit Danger!! Strong Boss** — HydroGene (CC0-1.0) — https://opengameart.org/content/8-bit-danger-strong-boss
 - **Boss Stage Synth Track** — killerfishred (CC0-1.0) — https://opengameart.org/content/boss-stage-synth-track
 - **Retro Synthwave Loops (Deadly Contracts, Hostile Territory)** — Magnesus (CC-BY-4.0) — https://opengameart.org/content/retro-synthwave-loops
+- **NES Shooter Music (5 tracks, 3 jingles)** — SketchyLogic (CC0-1.0) — https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles
 
 ## Efeitos sonoros
 
 - **Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio** — Kenney (kenney.nl) (CC0-1.0) — https://kenney.nl/assets/sci-fi-sounds
+- **80 CC0 creature SFX** — rubberduck (CC0-1.0) — https://opengameart.org/content/80-cc0-creature-sfx
+- **30 CC0 SFX loops** — rubberduck (CC0-1.0) — https://opengameart.org/content/30-cc0-sfx-loops
+- **Electricity Game Sound Pack** — faxcorp (CC0-1.0) — https://opengameart.org/content/electricity-game-sound-pack
 
 ## Fontes
 

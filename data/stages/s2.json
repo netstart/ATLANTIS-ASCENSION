@@ -10,7 +10,7 @@
 		"type": "log",
 		"text_key": "objective.log"
 	},
-	"length_s": 134.5,
+	"length_s": 116.5,
 	"events": [
 		{
 			"op": "dialogue",
@@ -128,6 +128,28 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 70,
+				"speed": 70
+			},
+			"escort": true,
+			"mirror": true,
+			"spacing": 36,
+			"t": 29.4
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_coral_ram_c4",
+			"t": 29.95
+		},
+		{
+			"op": "wave",
 			"enemy": "magma_larva",
 			"formation": "line",
 			"count": 3,
@@ -221,6 +243,54 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 70,
+				"speed": 70
+			},
+			"escort": true,
+			"mirror": true,
+			"spacing": 36,
+			"t": 53.15
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 70,
+				"speed": 70
+			},
+			"escort": true,
+			"mirror": true,
+			"spacing": 36,
+			"t": 53.35
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_magma_crab",
+			"t": 53.7
+		},
+		{
+			"op": "blessing",
+			"t": 54.25
+		},
+		{
+			"op": "log",
+			"x": 0.6,
+			"t": 57.75
+		},
+		{
+			"op": "wave",
 			"enemy": "hunter",
 			"formation": "line",
 			"count": 2,
@@ -232,7 +302,7 @@
 				"speed": 40
 			},
 			"spacing": 110,
-			"t": 54.0
+			"t": 60.75
 		},
 		{
 			"op": "wave",
@@ -249,16 +319,7 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 58.0
-		},
-		{
-			"op": "blessing",
-			"t": 63.25
-		},
-		{
-			"op": "log",
-			"x": 0.6,
-			"t": 66.75
+			"t": 64.35
 		},
 		{
 			"op": "wave",
@@ -273,7 +334,7 @@
 				"hold": 5
 			},
 			"marked": true,
-			"t": 69.75
+			"t": 67.95
 		},
 		{
 			"op": "wave",
@@ -289,7 +350,7 @@
 			},
 			"spacing": 70,
 			"from_depth": true,
-			"t": 73.35
+			"t": 71.55
 		},
 		{
 			"op": "wave",
@@ -304,7 +365,7 @@
 				"speed": 40
 			},
 			"spacing": 110,
-			"t": 76.95
+			"t": 75.15
 		},
 		{
 			"op": "wave",
@@ -321,7 +382,7 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 80.55
+			"t": 78.75
 		},
 		{
 			"op": "wave",
@@ -336,7 +397,29 @@
 				"speed": 40
 			},
 			"spacing": 110,
-			"t": 84.15
+			"t": 82.35
+		},
+		{
+			"op": "wave",
+			"enemy": "tide_wasp",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "dive",
+			"params": {
+				"side": 1,
+				"amp": 70,
+				"speed": 70
+			},
+			"escort": true,
+			"mirror": true,
+			"spacing": 36,
+			"t": 85.35
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_ink_torpedo_c4",
+			"t": 85.9
 		},
 		{
 			"op": "wave",
@@ -352,7 +435,7 @@
 			},
 			"interval": 6,
 			"drop_last": "capsule",
-			"t": 87.75
+			"t": 85.95
 		},
 		{
 			"op": "wave",
@@ -367,7 +450,7 @@
 				"speed": 40
 			},
 			"spacing": 110,
-			"t": 91.35
+			"t": 89.55
 		},
 		{
 			"op": "wave",
@@ -382,7 +465,7 @@
 				"hold": 4
 			},
 			"marked": true,
-			"t": 94.95
+			"t": 93.15
 		},
 		{
 			"op": "wave",
@@ -399,7 +482,7 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 99.63
+			"t": 97.83
 		},
 		{
 			"op": "wave",
@@ -414,7 +497,7 @@
 				"speed": 40
 			},
 			"spacing": 110,
-			"t": 103.23
+			"t": 101.43
 		},
 		{
 			"op": "wave",
@@ -429,7 +512,7 @@
 				"hold": 4
 			},
 			"marked": true,
-			"t": 106.83
+			"t": 105.03
 		},
 		{
 			"op": "wave",
@@ -445,74 +528,11 @@
 			},
 			"interval": 6,
 			"drop_last": "capsule",
-			"t": 111.51
-		},
-		{
-			"op": "wave",
-			"enemy": "bulwark",
-			"formation": "single",
-			"count": 1,
-			"x": 0.25,
-			"path": "stop_go",
-			"params": {
-				"speed": 40,
-				"stop_y": 90,
-				"hold": 5
-			},
-			"marked": true,
-			"t": 115.11
-		},
-		{
-			"op": "wave",
-			"enemy": "hunter",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "sine",
-			"params": {
-				"amp": 60,
-				"freq": 0.2,
-				"speed": 40
-			},
-			"spacing": 110,
-			"t": 118.71
-		},
-		{
-			"op": "wave",
-			"enemy": "magma_larva",
-			"formation": "line",
-			"count": 3,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 70,
-				"stop_y": 150,
-				"hold": 2.5
-			},
-			"spacing": 70,
-			"from_depth": true,
-			"t": 122.31
-		},
-		{
-			"op": "wave",
-			"enemy": "tide_wasp",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 70,
-				"speed": 70
-			},
-			"mirror": true,
-			"drop_last": "orb",
-			"spacing": 36,
-			"t": 125.91
+			"t": 109.71
 		},
 		{
 			"op": "end",
-			"t": 130.5
+			"t": 112.5
 		}
 	],
 	"secret_mission": true,

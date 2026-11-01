@@ -1,0 +1,8 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "sketchylogic_nes_music",
+	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo.",
+	"files": {
+		"nes-shooter-music/x/BossMain.wav": "audio/music/sketchylogic_boss_main.wav"
+	}
+}

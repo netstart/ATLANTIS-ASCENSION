@@ -11,7 +11,7 @@
 		"seconds": 55,
 		"text_key": "objective.miniboss_time_storm"
 	},
-	"length_s": 108.2,
+	"length_s": 86.1,
 	"events": [
 		{
 			"op": "wave",
@@ -40,7 +40,7 @@
 				"speed": 60
 			},
 			"spacing": 36,
-			"t": 3.27
+			"t": 2.78
 		},
 		{
 			"op": "wave",
@@ -55,7 +55,7 @@
 				"speed": 110
 			},
 			"interval": 6,
-			"t": 6.55
+			"t": 5.56
 		},
 		{
 			"op": "wave",
@@ -71,7 +71,7 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 9.82
+			"t": 8.35
 		},
 		{
 			"op": "wave",
@@ -84,7 +84,7 @@
 				"speed": 60
 			},
 			"spacing": 36,
-			"t": 13.09
+			"t": 11.13
 		},
 		{
 			"op": "wave",
@@ -99,7 +99,7 @@
 				"speed": 110
 			},
 			"interval": 6,
-			"t": 16.36
+			"t": 13.91
 		},
 		{
 			"op": "wave",
@@ -116,7 +116,7 @@
 			"mirror": true,
 			"spacing": 90,
 			"marked": true,
-			"t": 19.64
+			"t": 16.69
 		},
 		{
 			"op": "wave",
@@ -131,7 +131,7 @@
 				"hold": 4
 			},
 			"marked": true,
-			"t": 22.91
+			"t": 19.47
 		},
 		{
 			"op": "wave",
@@ -146,7 +146,42 @@
 				"hold": 4
 			},
 			"marked": true,
-			"t": 27.16
+			"t": 23.09
+		},
+		{
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 25.21
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_siren_drone_c3",
+			"t": 25.76
+		},
+		{
+			"op": "blessing",
+			"t": 26.31
+		},
+		{
+			"op": "wind",
+			"dx": 1,
+			"strength": 34,
+			"duration": 9.0,
+			"t": 29.81
+		},
+		{
+			"op": "lightning",
+			"x": 0.4,
+			"t": 32.81
 		},
 		{
 			"op": "wave",
@@ -162,23 +197,40 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 31.42
+			"t": 39.81
 		},
 		{
-			"op": "blessing",
-			"t": 36.14
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 41.76
 		},
 		{
-			"op": "wind",
-			"dx": 1,
-			"strength": 34,
-			"duration": 9.0,
-			"t": 39.64
+			"op": "wave",
+			"enemy": "phalanx",
+			"formation": "v",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 60
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 41.96
 		},
 		{
-			"op": "lightning",
-			"x": 0.4,
-			"t": 42.64
+			"op": "miniboss",
+			"id": "mid_thunder_manta",
+			"t": 42.31
 		},
 		{
 			"op": "wave",
@@ -193,7 +245,7 @@
 				"speed": 110
 			},
 			"interval": 6,
-			"t": 49.64
+			"t": 42.36
 		},
 		{
 			"op": "wave",
@@ -208,7 +260,7 @@
 				"speed": 36
 			},
 			"spacing": 100,
-			"t": 52.64
+			"t": 44.91
 		},
 		{
 			"op": "wave",
@@ -224,7 +276,7 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 55.64
+			"t": 47.46
 		},
 		{
 			"op": "wave",
@@ -240,7 +292,7 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 58.64
+			"t": 50.01
 		},
 		{
 			"op": "wave",
@@ -253,7 +305,7 @@
 				"speed": 60
 			},
 			"spacing": 36,
-			"t": 61.64
+			"t": 52.56
 		},
 		{
 			"op": "wave",
@@ -268,7 +320,7 @@
 				"hold": 4
 			},
 			"marked": true,
-			"t": 64.64
+			"t": 55.11
 		},
 		{
 			"op": "wave",
@@ -283,7 +335,21 @@
 				"speed": 110
 			},
 			"interval": 6,
-			"t": 68.54
+			"t": 58.43
+		},
+		{
+			"op": "log",
+			"x": 0.75,
+			"t": 61.31
+		},
+		{
+			"op": "blessing",
+			"t": 64.81
+		},
+		{
+			"op": "miniboss",
+			"id": "storm_eye",
+			"t": 68.31
 		},
 		{
 			"op": "wave",
@@ -299,7 +365,7 @@
 			},
 			"spacing": 54,
 			"drop_last": "orb",
-			"t": 71.54
+			"t": 71.31
 		},
 		{
 			"op": "wave",
@@ -314,7 +380,7 @@
 				"speed": 110
 			},
 			"interval": 6,
-			"t": 74.54
+			"t": 74.37
 		},
 		{
 			"op": "wave",
@@ -329,21 +395,7 @@
 				"speed": 110
 			},
 			"interval": 6,
-			"t": 77.54
-		},
-		{
-			"op": "log",
-			"x": 0.75,
-			"t": 79.34
-		},
-		{
-			"op": "blessing",
-			"t": 82.84
-		},
-		{
-			"op": "miniboss",
-			"id": "storm_eye",
-			"t": 86.34
+			"t": 77.43
 		},
 		{
 			"op": "wave",
@@ -358,56 +410,11 @@
 				"hold": 4
 			},
 			"marked": true,
-			"t": 89.34
-		},
-		{
-			"op": "wave",
-			"enemy": "phalanx",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 60
-			},
-			"spacing": 36,
-			"t": 94.02
-		},
-		{
-			"op": "wave",
-			"enemy": "prism_jelly",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "sine",
-			"params": {
-				"amp": 50,
-				"freq": 0.2,
-				"speed": 36
-			},
-			"spacing": 100,
-			"t": 97.62
-		},
-		{
-			"op": "wave",
-			"enemy": "volt_ray",
-			"formation": "line",
-			"count": 2,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 60,
-				"speed": 50
-			},
-			"mirror": true,
-			"spacing": 90,
-			"marked": true,
-			"t": 101.22
+			"t": 80.49
 		},
 		{
 			"op": "end",
-			"t": 104.19
+			"t": 82.06
 		}
 	]
 }

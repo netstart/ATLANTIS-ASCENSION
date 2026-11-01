@@ -11,7 +11,7 @@
 		"seconds": 55,
 		"text_key": "objective.miniboss_time_coral"
 	},
-	"length_s": 120.5,
+	"length_s": 94.4,
 	"events": [
 		{
 			"op": "wave",
@@ -41,7 +41,7 @@
 				"speed": 34
 			},
 			"spacing": 80,
-			"t": 3.6
+			"t": 3.06
 		},
 		{
 			"op": "wave",
@@ -58,7 +58,7 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 7.2
+			"t": 6.12
 		},
 		{
 			"op": "wave",
@@ -71,7 +71,7 @@
 				"speed": 82
 			},
 			"spacing": 36,
-			"t": 10.8
+			"t": 9.18
 		},
 		{
 			"op": "wave",
@@ -84,7 +84,7 @@
 				"speed": 28
 			},
 			"marked": true,
-			"t": 14.4
+			"t": 12.24
 		},
 		{
 			"op": "wave",
@@ -98,7 +98,7 @@
 			},
 			"y": -20,
 			"marked": true,
-			"t": 19.08
+			"t": 16.22
 		},
 		{
 			"op": "wave",
@@ -113,7 +113,7 @@
 				"hold": 2.0
 			},
 			"spacing": 54,
-			"t": 23.76
+			"t": 20.2
 		},
 		{
 			"op": "wave",
@@ -129,7 +129,39 @@
 			},
 			"interval": 14,
 			"from_depth": true,
-			"t": 27.36
+			"t": 23.26
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 24.81
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_brine_bomber_c2",
+			"t": 25.36
+		},
+		{
+			"op": "blessing",
+			"t": 25.91
+		},
+		{
+			"op": "current",
+			"dx": 1,
+			"strength": 40,
+			"duration": 7.0,
+			"t": 29.41
 		},
 		{
 			"op": "wave",
@@ -143,18 +175,7 @@
 			},
 			"y": -20,
 			"marked": true,
-			"t": 30.96
-		},
-		{
-			"op": "blessing",
-			"t": 35.6
-		},
-		{
-			"op": "current",
-			"dx": 1,
-			"strength": 40,
-			"duration": 7.0,
-			"t": 39.1
+			"t": 37.41
 		},
 		{
 			"op": "wave",
@@ -169,7 +190,7 @@
 				"speed": 34
 			},
 			"spacing": 80,
-			"t": 47.1
+			"t": 40.88
 		},
 		{
 			"op": "wave",
@@ -185,7 +206,44 @@
 			},
 			"interval": 14,
 			"from_depth": true,
-			"t": 50.23
+			"t": 43.53
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 45.6
+		},
+		{
+			"op": "wave",
+			"enemy": "gold_lance",
+			"formation": "line",
+			"count": 4,
+			"x": 0.5,
+			"path": "stop_go",
+			"params": {
+				"speed": 80,
+				"stop_y": 120,
+				"hold": 2.0
+			},
+			"escort": true,
+			"spacing": 54,
+			"t": 45.8
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_pearl_oracle",
+			"t": 46.15
 		},
 		{
 			"op": "wave",
@@ -198,7 +256,7 @@
 				"speed": 82
 			},
 			"spacing": 36,
-			"t": 53.36
+			"t": 46.2
 		},
 		{
 			"op": "wave",
@@ -211,7 +269,7 @@
 				"speed": 28
 			},
 			"marked": true,
-			"t": 56.49
+			"t": 48.85
 		},
 		{
 			"op": "wave",
@@ -226,7 +284,7 @@
 				"speed": 34
 			},
 			"spacing": 80,
-			"t": 60.56
+			"t": 52.31
 		},
 		{
 			"op": "wave",
@@ -243,7 +301,7 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 63.69
+			"t": 54.97
 		},
 		{
 			"op": "wave",
@@ -258,7 +316,16 @@
 				"speed": 34
 			},
 			"spacing": 80,
-			"t": 66.82
+			"t": 57.63
+		},
+		{
+			"op": "log",
+			"x": 0.6,
+			"t": 58.92
+		},
+		{
+			"op": "blessing",
+			"t": 62.42
 		},
 		{
 			"op": "wave",
@@ -275,7 +342,7 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 69.95
+			"t": 65.92
 		},
 		{
 			"op": "wave",
@@ -291,16 +358,7 @@
 			},
 			"interval": 14,
 			"from_depth": true,
-			"t": 73.08
-		},
-		{
-			"op": "log",
-			"x": 0.6,
-			"t": 76.8
-		},
-		{
-			"op": "blessing",
-			"t": 80.3
+			"t": 68.98
 		},
 		{
 			"op": "wave",
@@ -315,7 +373,7 @@
 				"hold": 2.0
 			},
 			"spacing": 54,
-			"t": 83.8
+			"t": 72.04
 		},
 		{
 			"op": "wave",
@@ -328,57 +386,42 @@
 				"speed": 82
 			},
 			"spacing": 36,
-			"t": 87.4
-		},
-		{
-			"op": "wave",
-			"enemy": "prism_jelly",
-			"formation": "line",
-			"count": 3,
-			"x": 0.5,
-			"path": "sine",
-			"params": {
-				"amp": 40,
-				"freq": 0.25,
-				"speed": 34
-			},
-			"spacing": 80,
-			"t": 91.0
-		},
-		{
-			"op": "wave",
-			"enemy": "prism_jelly",
-			"formation": "line",
-			"count": 3,
-			"x": 0.5,
-			"path": "sine",
-			"params": {
-				"amp": 40,
-				"freq": 0.25,
-				"speed": 34
-			},
-			"spacing": 80,
-			"t": 94.6
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 80,
-				"stop_y": 120,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"t": 98.2
+			"t": 75.1
 		},
 		{
 			"op": "miniboss",
 			"id": "coral_guardian",
-			"t": 100.0
+			"t": 77.65
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"t": 80.65
+		},
+		{
+			"op": "wave",
+			"enemy": "prism_jelly",
+			"formation": "line",
+			"count": 3,
+			"x": 0.5,
+			"path": "sine",
+			"params": {
+				"amp": 40,
+				"freq": 0.25,
+				"speed": 34
+			},
+			"spacing": 80,
+			"t": 83.71
 		},
 		{
 			"op": "wave",
@@ -393,54 +436,11 @@
 				"hold": 2.0
 			},
 			"spacing": 54,
-			"t": 103.0
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 80,
-				"stop_y": 120,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"t": 106.6
-		},
-		{
-			"op": "wave",
-			"enemy": "gold_lance",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 80,
-				"stop_y": 120,
-				"hold": 2.0
-			},
-			"spacing": 54,
-			"t": 110.2
-		},
-		{
-			"op": "wave",
-			"enemy": "skiff",
-			"formation": "v",
-			"count": 7,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 82
-			},
-			"spacing": 36,
-			"t": 113.8
+			"t": 86.77
 		},
 		{
 			"op": "end",
-			"t": 116.5
+			"t": 90.43
 		}
 	]
 }

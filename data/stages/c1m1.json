@@ -10,7 +10,7 @@
 		"type": "log",
 		"text_key": "objective.log"
 	},
-	"length_s": 153.2,
+	"length_s": 134.8,
 	"events": [
 		{
 			"op": "dialogue",
@@ -128,6 +128,29 @@
 		{
 			"op": "wave",
 			"enemy": "skiff",
+			"formation": "line",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 74
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 31.3
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_reef_lancer_c1",
+			"t": 31.85
+		},
+		{
+			"op": "blessing",
+			"t": 32.4
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
 			"formation": "column",
 			"count": 6,
 			"x": 0.65,
@@ -138,11 +161,7 @@
 				"speed": 80
 			},
 			"interval": 12,
-			"t": 33.5
-		},
-		{
-			"op": "blessing",
-			"t": 37.6
+			"t": 35.9
 		},
 		{
 			"op": "wave",
@@ -157,7 +176,7 @@
 				"speed": 80
 			},
 			"interval": 12,
-			"t": 41.1
+			"t": 39.9
 		},
 		{
 			"op": "wave",
@@ -173,7 +192,7 @@
 			},
 			"from_depth": true,
 			"spacing": 70,
-			"t": 45.1
+			"t": 43.9
 		},
 		{
 			"op": "wave",
@@ -190,7 +209,19 @@
 			"mirror": true,
 			"drop_last": "orb",
 			"spacing": 36,
-			"t": 49.1
+			"t": 47.9
+		},
+		{
+			"op": "dialogue",
+			"id": "c1m1_shift",
+			"t": 52.0
+		},
+		{
+			"op": "ocean_shift",
+			"to": "ruins",
+			"warn": 2.0,
+			"duration": 8.0,
+			"t": 54.0
 		},
 		{
 			"op": "wave",
@@ -205,7 +236,40 @@
 				"hold": 6
 			},
 			"marked": true,
-			"t": 53.1
+			"t": 64.0
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "line",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 74
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 67.4
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "line",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 74
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 67.6
+		},
+		{
+			"op": "miniboss",
+			"id": "mid_harpoon_trawler",
+			"t": 67.95
 		},
 		{
 			"op": "wave",
@@ -220,19 +284,8 @@
 				"speed": 80
 			},
 			"interval": 12,
-			"t": 57.1
-		},
-		{
-			"op": "dialogue",
-			"id": "c1m1_shift",
-			"t": 60.0
-		},
-		{
-			"op": "ocean_shift",
-			"to": "ruins",
-			"warn": 2.0,
-			"duration": 8.0,
-			"t": 62.0
+			"from_depth": true,
+			"t": 68.0
 		},
 		{
 			"op": "wave",
@@ -277,6 +330,11 @@
 			"t": 82.4
 		},
 		{
+			"op": "log",
+			"x": 0.3,
+			"t": 84.7
+		},
+		{
 			"op": "wave",
 			"enemy": "skiff",
 			"formation": "column",
@@ -290,7 +348,7 @@
 			},
 			"interval": 12,
 			"from_depth": true,
-			"t": 86.4
+			"t": 87.7
 		},
 		{
 			"op": "wave",
@@ -305,7 +363,7 @@
 				"hold": 6
 			},
 			"marked": true,
-			"t": 90.4
+			"t": 91.3
 		},
 		{
 			"op": "wave",
@@ -321,12 +379,7 @@
 			},
 			"spacing": 52,
 			"from_depth": true,
-			"t": 94.4
-		},
-		{
-			"op": "log",
-			"x": 0.3,
-			"t": 96.3
+			"t": 94.9
 		},
 		{
 			"op": "wave",
@@ -339,7 +392,7 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 99.3
+			"t": 98.5
 		},
 		{
 			"op": "wave",
@@ -354,7 +407,30 @@
 				"hold": 6
 			},
 			"marked": true,
-			"t": 103.98
+			"t": 103.18
+		},
+		{
+			"op": "wave",
+			"enemy": "skiff",
+			"formation": "line",
+			"count": 5,
+			"x": 0.5,
+			"path": "straight",
+			"params": {
+				"speed": 74
+			},
+			"escort": true,
+			"spacing": 36,
+			"t": 105.5
+		},
+		{
+			"op": "miniboss",
+			"id": "elite_brine_bomber_c1",
+			"t": 106.05
+		},
+		{
+			"op": "blessing",
+			"t": 106.6
 		},
 		{
 			"op": "wave",
@@ -369,8 +445,7 @@
 				"hold": 2.5
 			},
 			"spacing": 52,
-			"from_depth": true,
-			"t": 107.58
+			"t": 110.1
 		},
 		{
 			"op": "wave",
@@ -386,7 +461,7 @@
 			},
 			"from_depth": true,
 			"spacing": 70,
-			"t": 111.18
+			"t": 113.37
 		},
 		{
 			"op": "wave",
@@ -398,9 +473,8 @@
 			"params": {
 				"speed": 74
 			},
-			"from_depth": true,
 			"spacing": 36,
-			"t": 114.78
+			"t": 116.65
 		},
 		{
 			"op": "wave",
@@ -415,12 +489,7 @@
 				"hold": 2.5
 			},
 			"spacing": 52,
-			"from_depth": true,
-			"t": 118.38
-		},
-		{
-			"op": "blessing",
-			"t": 121.4
+			"t": 119.92
 		},
 		{
 			"op": "wave",
@@ -435,7 +504,7 @@
 				"hold": 6
 			},
 			"marked": true,
-			"t": 124.9
+			"t": 123.19
 		},
 		{
 			"op": "wave",
@@ -450,7 +519,7 @@
 				"hold": 2.5
 			},
 			"spacing": 52,
-			"t": 128.17
+			"t": 126.46
 		},
 		{
 			"op": "wave",
@@ -463,69 +532,11 @@
 				"speed": 26
 			},
 			"marked": true,
-			"t": 131.45
-		},
-		{
-			"op": "wave",
-			"enemy": "skiff",
-			"formation": "line",
-			"count": 5,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 74
-			},
-			"spacing": 36,
-			"t": 135.7
-		},
-		{
-			"op": "wave",
-			"enemy": "tide_wasp",
-			"formation": "v",
-			"count": 5,
-			"x": 0.5,
-			"path": "dive",
-			"params": {
-				"side": 1,
-				"amp": 70,
-				"speed": 62
-			},
-			"mirror": true,
-			"drop_last": "orb",
-			"spacing": 36,
-			"t": 138.97
-		},
-		{
-			"op": "wave",
-			"enemy": "tide_wasp",
-			"formation": "line",
-			"count": 4,
-			"x": 0.5,
-			"path": "stop_go",
-			"params": {
-				"speed": 70,
-				"stop_y": 140,
-				"hold": 2.5
-			},
-			"spacing": 52,
-			"t": 142.25
-		},
-		{
-			"op": "wave",
-			"enemy": "trawler",
-			"formation": "single",
-			"count": 1,
-			"x": 0.5,
-			"path": "straight",
-			"params": {
-				"speed": 26
-			},
-			"marked": true,
-			"t": 145.52
+			"t": 129.74
 		},
 		{
 			"op": "end",
-			"t": 149.2
+			"t": 130.8
 		}
 	],
 	"tutorial": true

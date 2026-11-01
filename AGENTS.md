@@ -81,15 +81,18 @@ python -I tools\build_license_index.py
 python -I tools\check_licenses.py
 # Assets: copiar de c:\src\downloads\assets só o que os manifestos tools\*_assets.json pedem
 python -I tools\sync_assets.py
-# Missões e chefes do Beta (fontes: tools\gen_missions.py e tools\gen_bosses_beta.py)
+# Missões e chefes (fontes: tools\gen_missions.py e tools\gen_bosses_*.py; rode os chefes antes das missões)
 python -I tools\gen_bosses_beta.py
 python -I tools\gen_bosses_post.py
+python -I tools\gen_bosses_mid.py
 python -I tools\gen_missions.py
 # Textos (fonte: tools\i18n\*.py)
 python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
+# Balanceamento: quanto o bot leva em cada luta de chefe e em cada fase (todas ou -- --only=c1m1,c9m3)
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/boss_timing.gd
 # Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/scroll_bench.tscn -- --strict
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_bench.tscn -- --strict

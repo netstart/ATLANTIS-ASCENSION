@@ -4,6 +4,7 @@ extends RefCounted
 ## pelo final verdadeiro. Chamado por tests/integration_tests.gd.
 
 const SaveManagerScript := preload("res://scripts/autoload/save_manager.gd")
+const SimTests := preload("res://tests/sim_tests.gd")
 const NEW_SHIPS: Array[StringName] = [&"ram", &"swarm", &"eclipse", &"nova", &"titan", &"ascension"]
 
 
@@ -18,6 +19,7 @@ func run(check: Callable) -> void:
 	_abyss(check, tables)
 	_hadal(check)
 	_coop(check, tables)
+	_mid_bosses(check, tables)
 
 
 func _sim(tables: Dictionary, ship: StringName, seed: int = 5) -> Sim:
@@ -293,3 +295,52 @@ func _coop(check: Callable, tables: Dictionary) -> void:
 	var solo := Sim.new()
 	solo.setup(Sim.load_mission(&"c1m1"), tables, Sim.default_loadout(&"falcon"), 7)
 	check.call(solo.wing == null, "Co-op: sem ala no jogo solo")
+
+
+## Chefes de meio de fase (1.10): toda missão tem o chefe intermediário do capítulo, as elites vêm a 1/4 e 3/4,
+## o roteiro espera cada um, e o núcleo de força que eles soltam sobe a arma atual sem trocá-la.
+func _mid_bosses(check: Callable, tables: Dictionary) -> void:
+	var bosses: Dictionary = tables["bosses"]
+	for id: StringName in SimTests.mission_ids():
+		var mission := Sim.load_mission(id)
+		var length := float(mission.get("length_s", 1.0))
+		var mids := 0
+		var elites := 0
+		for ev: Variant in mission.get("events", []):
+			var e := ev as Dictionary
+			if String(e.get("op", "")) != "miniboss":
+				continue
+			var def: Dictionary = bosses.get(StringName(String(e.get("id", ""))), {})
+			check.call(not def.is_empty(), "Chefes: %s de %s existe" % [e.get("id"), id])
+			match String(def.get("tier", "")):
+				"mid":
+					mids += 1
+					check.call(absf(float(e["t"]) / length - 0.5) <= 0.2, "Chefes: intermediário de %s perto do meio" % id)
+				"elite":
+					elites += 1
+		check.call(mids == 1, "Chefes: %s tem um chefe intermediário (%d)" % [id, mids])
+		# Com chefe de ato no fim, a missão fica só com o intermediário (ritmo de 2 a 5,5 min).
+		var act := (mission.get("events", []) as Array).any(func(e: Variant) -> bool:
+			return String((e as Dictionary).get("op", "")) == "boss")
+		check.call(elites >= (0 if act else 1), "Chefes: %s tem mini-chefe de elite ao longo da fase (%d)" % [id, elites])
+	for def: Variant in bosses.values():
+		var d := def as Dictionary
+		if String(d.get("tier", "")) in ["mid", "elite"]:
+			check.call("power" in (d.get("drops", []) as Array), "Chefes: %s solta núcleo de força" % d["id"])
+			check.call(not tr(String(d["name_key"])).is_empty(), "Chefes: %s tem nome" % d["id"])
+	var sim := _sim(tables, &"falcon")
+	var weapon := sim.player.weapon
+	var before := sim.player.level
+	sim.pickups.append({"kind": &"power", "pos": sim.player.pos, "vel": Vector2.ZERO, "frames": 0})
+	sim.step(SimInput.new())
+	check.call(sim.player.weapon == weapon and sim.player.level == before + 1,
+			"Chefes: núcleo de força sobe 1 nível sem trocar a arma (%s %d)" % [sim.player.weapon, sim.player.level])
+	var stage := StageScript.new()
+	stage.setup({"events": [{"op": "miniboss", "id": "mid_harpoon_trawler", "t": 0.0},
+			{"op": "wave", "enemy": "skiff", "formation": "single", "count": 1, "x": 0.5, "path": "straight",
+			"params": {"speed": 60}, "t": 0.1}]})
+	var held := _sim(tables, &"falcon")
+	stage.step(held)
+	for k: int in range(30):
+		stage.step(held)
+	check.call(stage.waiting_boss and held.enemies.is_empty(), "Chefes: o roteiro espera o chefe intermediário")

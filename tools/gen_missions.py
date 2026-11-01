@@ -7,6 +7,7 @@ glifos, mini-chefe, chefe, bênçãos, registro) são escritos à mão em MISSIO
 
 Uso: python -I tools/gen_missions.py   (escreve data/stages/ e imprime um resumo)
 """
+import importlib.util
 import json
 import pathlib
 import random
@@ -101,8 +102,12 @@ POOLS = {
     ],
 }
 XS = [0.25, 0.35, 0.5, 0.65, 0.75]
-# Trechos de ondas esticados para cada missão durar de 2 a 5 min (plano mestre 5).
-FILL_SCALE = 1.35
+# Trechos de ondas esticados para cada missão durar de 2 a 5 min (plano mestre 5), já contando os chefes de meio
+# de fase (o roteiro pausa enquanto eles lutam).
+FILL_BASE = 1.15
+FILL_SCALE = FILL_BASE
+# Nas missões que terminam em chefe os trechos são mais curtos, mas com as mesmas ondas (mais densos).
+DENSITY_BOOST = 1.0
 
 
 def wave(enemy, formation, count, path, params, x, **extra):
@@ -117,7 +122,7 @@ def fill(chapter: int, seconds: float, rng: random.Random, density: float = 1.0,
     seconds *= FILL_SCALE
     out = []
     t = 0.0
-    step = 3.6 / density
+    step = 3.6 / (density * DENSITY_BOOST)
     while t < seconds - 1.0:
         enemy, formation, count, path, params, extra = rng.choice(POOLS[chapter])
         kw = dict(extra)
@@ -387,11 +392,73 @@ MISSIONS["c10m3"] = dict(chapter=10, name="stage.c10m3", music="hydrogene_space_
                          beats=chapter_mission(10, HADAL, density=1.2, end=boss_end("hadal_matriarch", "hadal_intro")))
 
 
-def build(mission_id: str, spec: dict) -> dict:
-    global FILL_SCALE
-    FILL_SCALE = 1.35 * spec.get("stretch", 1.0)
+def _mid_module():
+    spec = importlib.util.spec_from_file_location("gen_bosses_mid", ROOT / "tools" / "gen_bosses_mid.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+MID = _mid_module()
+# Chefe intermediário do capítulo, na ordem de gen_bosses_mid.mids().
+MID_OF = {1: "harpoon_trawler", 2: "pearl_oracle", 3: "thunder_manta", 4: "magma_crab", 5: "spire_warden",
+          6: "frost_serpent", 7: "storm_carrier", 8: "satellite_hydra", 9: "protocol_sentinel", 10: "abyss_jelly"}
+# Onde entram os chefes de meio de fase (fração do roteiro), na ordem de prioridade: o chefe intermediário
+# primeiro (toda fase tem um), depois as duas elites.
+BOSS_MARKS = ((0.5, "mid"), (0.25, "elite_a"), (0.75, "elite_b"))
+# Distância mínima (fração do roteiro) entre dois chefes, e de um chefe ao fim da fase.
+BOSS_GAP = 0.1
+# Um corte entre trechos de ondas vale mais que o meio de um trecho (a onda em curso termina antes do chefe).
+INSIDE_FILL_COST = 0.06
+
+
+def place_bosses(chapter: int, events: list, cuts: list, length: float) -> None:
+    """Põe o chefe intermediário perto de 1/2 do roteiro e as elites perto de 1/4 e 3/4, longe dos chefes que a
+    missão já tem e do fim. Prefere os cortes entre trechos de ondas; se não houver um livre, entra entre duas
+    ondas. O roteiro pausa enquanto o chefe luta, então o que vem depois só começa quando ele cai."""
+    first, second = MID.elites_of(chapter)
+    ids = {"mid": f"mid_{MID_OF[chapter]}", "elite_a": f"elite_{first}_c{chapter}",
+           "elite_b": f"elite_{second}_c{chapter}"}
+    taken = [e["t"] / length for e in events if e["op"] in ("boss", "miniboss")] + [1.0]
+    # Ritmo de 2 a 5,5 min: com chefe de ato, só o chefe intermediário; com o mini-chefe do capítulo, ele e uma elite.
+    own = {e["op"] for e in events if e["op"] in ("boss", "miniboss")}
+    marks = BOSS_MARKS[:1] if "boss" in own else BOSS_MARKS[:2] if own else BOSS_MARKS
+    inside = sorted({e["t"] for e in events if e["op"] == "wave" and e.get("enemy") != "glyph"} - set(cuts))
+    for mark, kind in marks:
+        options = [(c, 0.0) for c in cuts] + [(c, INSIDE_FILL_COST) for c in inside]
+        options = [o for o in options if all(abs(o[0] / length - x) >= BOSS_GAP for x in taken)]
+        if not options:
+            continue
+        cut = min(options, key=lambda o: abs(o[0] / length - mark) + o[1])[0]
+        taken.append(cut / length)
+        events.append({"op": "miniboss", "id": ids[kind], "t": round(cut - 0.05, 2)})
+        for k in range(2 if kind == "mid" else 1):
+            events.append(dict(escort(chapter, k), t=round(cut - 0.6 + 0.2 * k, 2)))
+    events.sort(key=lambda e: e["t"])
+
+
+def escort(chapter: int, k: int) -> dict:
+    """Escolta que entra com o chefe: a primeira formação de 4+ naves do capítulo (o chefe intermediário traz
+    duas, em lados opostos)."""
+    enemy, formation, count, path, params, extra = [w for w in POOLS[chapter]
+                                                    if w[1] in ("line", "v", "column") and w[2] >= 4][0]
+    kw = {key: v for key, v in extra.items() if key not in ("drop_last",)}
+    kw.setdefault("spacing", 36)
+    x = (0.3, 0.7)[k] if formation == "column" else 0.5
+    return wave(enemy, formation, count, path, params, x, escort=True, **kw)
+
+
+# Missões que já terminam em chefe têm os trechos de ondas mais curtos (a luta do fim já é longa).
+BOSS_MISSION_FILL = 0.85
+
+
+def script(mission_id: str, spec: dict, scale: float) -> tuple:
+    global FILL_SCALE, DENSITY_BOOST
+    FILL_SCALE = FILL_BASE * spec.get("stretch", 1.0) * scale
+    DENSITY_BOOST = 1.0 / scale
     rng = random.Random(f"atlantis:{mission_id}")
     events = []
+    cuts = []
     t = 0.0
     for seconds, items in spec["beats"](rng):
         for dt, ev in items:
@@ -399,6 +466,16 @@ def build(mission_id: str, spec: dict) -> dict:
             ev["t"] = round(t + dt, 2)
             events.append(ev)
         t += seconds
+        if len(items) > 2 and all(ev["op"] == "wave" and ev.get("enemy") != "glyph" for _, ev in items):
+            cuts.append(round(t, 2))
+    return events, cuts, t
+
+
+def build(mission_id: str, spec: dict) -> dict:
+    events, cuts, t = script(mission_id, spec, 1.0)
+    if any(e["op"] in ("boss", "miniboss") for e in events):
+        events, cuts, t = script(mission_id, spec, BOSS_MISSION_FILL)
+    place_bosses(spec["chapter"], events, cuts, t)
     out = {"id": mission_id, "chapter": spec["chapter"], "name_key": spec["name"], "music": CHAPTER_MUSIC.get(spec["chapter"], spec["music"]),
            "scroll_speed": spec["scroll"], "backdrop": spec["backdrop"], "seed_salt": sum(map(ord, mission_id)),
            "objective": spec["objective"], "length_s": round(t, 1), "events": events}

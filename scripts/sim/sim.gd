@@ -583,6 +583,11 @@ func on_boss_defeated(b: SimBoss) -> void:
 	for k: int in range(int(b.def.get("medals", 6))):
 		_spawn_pickup(&"medal", b.body_pos() + Vector2(rng.randf_in(&"drops", -60.0, 60.0),
 				rng.randf_in(&"drops", -30.0, 30.0)))
+	# Recompensa dos chefes de meio de fase (data/bosses.json "drops"): núcleo de força e bomba para a luta seguinte.
+	for kind: Variant in b.def.get("drops", []):
+		var drop := StringName(String(kind))
+		if drop != &"power" or player.weapon_lock == &"":
+			_spawn_pickup(drop, b.body_pos() + Vector2(rng.randf_in(&"drops", -24.0, 24.0), 10.0))
 	emit(&"boss_dead", {"id": b.id, "pos": b.body_pos(), "final": b.is_final})
 
 
@@ -942,7 +947,7 @@ func _pickups_step() -> void:
 		elif kind == &"log" and mods.log_finder and player.alive and p.y > 40.0:
 			# Localizador: o registro vem até a nave assim que entra no campo.
 			pk["vel"] = (player.pos - p).normalized() * 120.0
-		elif kind == &"orb":
+		elif kind == &"orb" or kind == &"power":
 			pk["vel"] = Vector2(sin(frames * 0.05) * 20.0, ORB_FALL)
 		p += (pk["vel"] as Vector2) * STEP
 		pk["pos"] = p
@@ -978,6 +983,10 @@ func _collect(kind: StringName, frames: int, who: SimPlayer = null) -> void:
 			if who == wing and weapon == &"laser":
 				weapon = &"pulsar"
 			var up := who.collect_orb(weapon)
+			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos})
+		&"power":
+			# Núcleo de força (chefes de meio de fase): +1 nível na arma atual, sem trocar de arma.
+			var up := who.collect_orb(who.weapon)
 			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos})
 		&"medal":
 			emit(&"medal", {"value": scoring.on_medal(), "pos": who.pos})

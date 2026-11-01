@@ -958,7 +958,7 @@ Cada fase termina com `tools/run_checks.ps1` em `TUDO OK`, versão marcada e che
   da Play para contas pessoais novas), AdMob real com UMP, Play Billing real.
 - Steam: página, cápsulas, trailer, conquistas, placares, Deck Verified, Next Fest se a data permitir.
 - Política de privacidade, `app-ads.txt`, créditos públicos.
-- Revisão de traduções por nativos.
+- Traduções: as 11 línguas saem como estão; não haverá revisão por nativos (decisão do mantenedor, 31/10/2026).
 - Segunda Maré, Fantasma do Abismo (replay do melhor e do 1º do dia), placares com replay anexado, Correntes
   semanais, passe de temporada (grátis + cosmético), modo foto do mapa.
 - Critério de pronto: aprovado nas duas lojas; crash-free ≥ 99,5% no teste fechado; D1 ≥ 40% no teste fechado.
