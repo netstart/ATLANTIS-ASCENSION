@@ -73,6 +73,8 @@ var _stratum: int = -1
 var _drawn_camera: float = -1.0
 var _idle_wait: float = 0.0
 var _clock: float = 0.0
+## Missão que o controle escolheu e ainda está fora da tela: ganha o foco quando a câmera chegar.
+var _pad_focus: StringName = &""
 
 
 func _build() -> void:
@@ -99,7 +101,10 @@ func _build() -> void:
 		b.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		b.vertical_icon_alignment = VERTICAL_ALIGNMENT_TOP
 		_style_node(b, n, false)
-		b.pressed.connect(_select.bind(n["id"]))
+		b.pressed.connect(_on_node.bind(n["id"]))
+		b.focus_entered.connect(func() -> void:
+			if FocusNav.pad and n["id"] != selected:
+				_select(n["id"]))
 		add_child(b)
 		_node_buttons[n["id"]] = b
 	_back = UiTheme.icon_button("arrowLeft", "Back")
@@ -239,6 +244,74 @@ static func node_label(n: Dictionary) -> String:
 	return text + String(KIND_MARK.get(n["kind"], ""))
 
 
+## Toque escolhe a missão; pelo controle, A na missão já escolhida joga (o cartão fica longe do foco).
+func _on_node(id: StringName) -> void:
+	if FocusNav.pad and id == selected and not _card_play.disabled:
+		_card_play.pressed.emit()
+		return
+	_select(id)
+
+
+## Pelo controle a tela abre na missão escolhida, assim que a câmera a mostrar.
+func default_focus() -> Control:
+	if photo_mode:
+		return _photo_bar.get_node("Save") as Control
+	_pad_focus = selected
+	if _focus_y < 0.0 and size.y > 0.0:
+		_target = maxf(0.0, float(Economy.node(selected)["y"]) - size.y * 0.55)
+	return null
+
+
+## Modo foto: o voltar sai dele (em vez de sair do mapa).
+func back() -> bool:
+	if photo_mode:
+		set_photo_mode(false)
+		return true
+	return false
+
+
+## Controle e teclado: cima e baixo andam pelas missões abertas (de baixo para cima, como a subida no
+## mapa) com a câmera indo junto; baixo na primeira leva ao Jogar do cartão. Esquerda e direita ficam com
+## a navegação do Godot (rotas lado a lado).
+func _input(event: InputEvent) -> void:
+	if not is_visible_in_tree() or photo_mode:
+		return
+	var step := 1 if event.is_action_pressed("ui_up") else -1 if event.is_action_pressed("ui_down") else 0
+	if step == 0:
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused != null and focused.is_visible_in_tree() and not _node_buttons.values().has(focused):
+		return
+	get_viewport().set_input_as_handled()
+	var order := pad_order()
+	if order.is_empty():
+		return
+	var at := order.find(selected)
+	var next := clampi(at + step, 0, order.size() - 1)
+	if at >= 0 and next == at:
+		if step < 0 and _card.visible:
+			_pad_focus = &""
+			_card_play.grab_focus()
+		return
+	_select(order[next])
+	_target = maxf(0.0, float(Economy.node(order[next])["y"]) - size.y * 0.55)
+	_pad_focus = order[next]
+
+
+## Missões abertas na ordem da subida (de baixo para cima; empate da esquerda para a direita).
+func pad_order() -> Array[StringName]:
+	var nodes: Array[Dictionary] = []
+	for n: Dictionary in Economy.CAMPAIGN:
+		if is_open(n["id"]):
+			nodes.append(n)
+	nodes.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		return float(a["y"]) < float(b["y"]) or (float(a["y"]) == float(b["y"]) and float(a["x"]) < float(b["x"])))
+	var out: Array[StringName] = []
+	for n: Dictionary in nodes:
+		out.append(StringName(n["id"]))
+	return out
+
+
 func _select(id: StringName) -> void:
 	selected = id
 	AudioManager.play_ui("kenney_ui_click")
@@ -247,6 +320,8 @@ func _select(id: StringName) -> void:
 		if bool(b.get_meta(&"chosen", false)) != (n["id"] == id):
 			_style_node(b, n, n["id"] == id)
 	_drawn_camera = -1.0
+	# Cima no Jogar volta para a missão escolhida, não para o farol mais perto.
+	_card_play.focus_neighbor_top = _card_play.get_path_to(_node_buttons[id])
 	_update_card()
 	relayout()
 
@@ -322,6 +397,14 @@ func _process(delta: float) -> void:
 	camera = clampf(camera, 0.0, maxf(0.0, STRATUM * STRATA - size.y))
 	_sync_backdrop()
 	_beacon.queue_redraw()
+	# Foco do controle no farol assim que ele aparece; no caminho da câmera ele pode sumir de novo (e
+	# sumir solta o foco), então o pedido só termina com a câmera parada.
+	if _pad_focus != &"":
+		var node := _node_buttons[_pad_focus] as Control
+		if node.is_visible_in_tree() and not node.has_focus():
+			node.grab_focus()
+		if _target < 0.0 and _focus_y < 0.0 and node.has_focus():
+			_pad_focus = &""
 	# Câmera andando: nós e desenho a cada quadro. Parada: só o pulso dos faróis, a IDLE_HZ.
 	if camera != _drawn_camera:
 		_drawn_camera = camera
@@ -384,7 +467,10 @@ func set_photo_mode(on: bool) -> void:
 		c.visible = not on if c != _card else (not on and selected != &"")
 	for b: Button in _node_buttons.values():
 		b.modulate.a = 0.0 if on else 1.0
+		b.focus_mode = Control.FOCUS_NONE if on else Control.FOCUS_ALL
 	_photo_bar.visible = on
+	if FocusNav.pad:
+		FocusNav.focus(_photo_bar.get_node("Save") as Control if on else _node_buttons.get(selected) as Control)
 	_drawn_camera = -1.0
 	AudioManager.play_ui("kenney_ui_click")
 

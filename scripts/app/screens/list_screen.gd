@@ -114,6 +114,11 @@ func refresh_texts() -> void:
 
 ## Remonta as linhas (depois de comprar, equipar ou trocar uma opção).
 func refill() -> void:
+	# Foco do controle na lista: volta para a mesma posição depois de remontar (comprar, equipar).
+	var keep := -1
+	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	if focused != null and _list.is_ancestor_of(focused):
+		keep = FocusNav.all(_list).find(focused)
 	for child: Node in _list.get_children():
 		_list.remove_child(child)
 		child.queue_free()
@@ -126,6 +131,15 @@ func refill() -> void:
 		(value.get_parent().get_parent() as Control).tooltip_text = tr("currency." + kind)
 	_fill()
 	relayout()
+	if keep >= 0:
+		var controls := FocusNav.all(_list)
+		FocusNav.focus(controls[mini(keep, controls.size() - 1)] if not controls.is_empty() else _back)
+
+
+## Primeiro item da lista (o Voltar só quando a lista não tem nada para apertar).
+func default_focus() -> Control:
+	var control := FocusNav.first(_list)
+	return control if control != null else _back
 
 
 func title_key() -> String:

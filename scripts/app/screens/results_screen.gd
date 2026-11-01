@@ -193,6 +193,11 @@ func _build() -> void:
 	add_child(_continue)
 
 
+## Pelo controle a tela abre no botão principal (Continuar na vitória, Tentar de novo na derrota).
+func default_focus() -> Control:
+	return _continue if bool(result.get("cleared", false)) else _retry
+
+
 func on_show(app: Node) -> void:
 	result = app.get("last_result") if app != null else {}
 	refresh_texts()

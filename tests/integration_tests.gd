@@ -16,6 +16,7 @@ const PostTests := preload("res://tests/post_tests.gd")
 const LiveryTests := preload("res://tests/livery_tests.gd")
 const GloryTests := preload("res://tests/glory_tests.gd")
 const WeatherViewTests := preload("res://tests/weather_view_tests.gd")
+const FocusNavTests := preload("res://tests/focus_nav_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -46,6 +47,7 @@ func _ready() -> void:
 	await LiveryTests.new().run_view(self, _check)
 	await GloryTests.new().run_view(self, _check)
 	await WeatherViewTests.new().run_view(self, _check)
+	await FocusNavTests.new().run(self, _check)
 	for file: String in SaveManager.TEST_PATHS + [Settings.TEST_PATH]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)

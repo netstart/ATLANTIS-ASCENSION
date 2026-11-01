@@ -455,7 +455,7 @@ func show_revive() -> void:
 	_revive_panel.size.x = width
 	_open_panel(_revive_panel)
 	_refit_panels()
-	_revive_yes.grab_focus()
+	FocusNav.arm(_revive_yes)
 
 
 ## Painéis com texto quebrado medem a altura só depois que o contêiner dá a largura ao rótulo:
@@ -552,7 +552,7 @@ func show_offer(sim: Sim) -> void:
 	_open_panel(_offer_panel)
 	_place_offer()
 	_refit_panels()
-	_offer_buttons[0].grab_focus()
+	FocusNav.arm(_offer_buttons[0])
 
 
 func hide_offer() -> void:

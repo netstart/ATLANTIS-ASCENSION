@@ -118,6 +118,11 @@ static func _tracked(spacing: int) -> Font:
 	return variation
 
 
+## Pelo controle a tela abre no Jogar.
+func default_focus() -> Control:
+	return _play
+
+
 func on_show(_app: Node) -> void:
 	_time = 0.0
 	if UiFx.reduced():

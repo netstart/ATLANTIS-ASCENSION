@@ -60,6 +60,7 @@ func _ready() -> void:
 	InputSetup.ensure_actions()
 	TouchScroll.install(get_tree())
 	UiFx.install(get_tree())
+	FocusNav.install(get_tree())
 	_layer = CanvasLayer.new()
 	add_child(_layer)
 	_root = Control.new()
@@ -127,6 +128,8 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	# Depois do on_show: a cascata de entrada respeita o que a tela acabou de esconder ou animar.
 	if changed:
 		UiFx.enter(_screens[screen_name] as CanvasItem)
+	if FocusNav.pad:
+		FocusNav.focus((_screens[screen_name] as Screen).default_focus())
 	Events.screen_changed.emit(screen_name)
 
 
@@ -317,10 +320,16 @@ func _notification(what: int) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if game == null and event.is_action_pressed("ui_cancel"):
+	if game != null:
+		return
+	if event.is_action_pressed("ui_cancel"):
 		get_viewport().set_input_as_handled()
 		AudioManager.play_ui("kenney_ui_back")
 		back()
+	elif FocusNav.is_nav(event) and not FocusNav.has_focus(get_viewport()) and screen(current) != null:
+		# Tela sem foco (aberta pelo toque, ou o foco sumiu com o painel): o primeiro movimento só acorda o foco.
+		get_viewport().set_input_as_handled()
+		FocusNav.focus(screen(current).default_focus())
 
 
 ## Escala de texto nova: recria as telas (os rótulos guardam o tamanho) e volta para a mesma tela.

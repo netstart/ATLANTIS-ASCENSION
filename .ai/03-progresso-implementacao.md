@@ -306,3 +306,12 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   em `tests/weather_view_tests.gd`; galeria em `tests/weather_shots_runner.tscn`. Benchmark (`game_bench --strict`,
   1.000 balas, nave nível 10, Radeon integrada): partida padrão 3,86 ms de média (p99 5,93, nenhum quadro > 20 ms);
   `--mission=c3m3s --weather=storm` 4,04 ms de média (p99 7,07, 1 quadro > 20 ms, nenhum > 33 ms)
+- ✅ `1.14.0` Menus pelo controle (Steam Deck, PC): A confirma e B volta nos menus (o Godot só ligava o teclado a
+  `ui_accept` e `ui_cancel`). `FocusNav` guarda o modo de entrada (controle ou teclado contra toque ou mouse): pelo
+  controle cada tela abre com foco no controle padrão (`Screen.default_focus`: JOGAR no hub e no título, Próximo na
+  história, botão principal no resultado, primeiro item das listas); pelo toque nada muda, e o primeiro D-pad numa
+  tela sem foco só acorda o foco. As listas rolam atrás do foco e, remontadas depois de comprar ou equipar, devolvem
+  o foco ao mesmo item. Mapa: cima e baixo andam pelas missões abertas com a câmera junto, baixo na primeira leva ao
+  Jogar, A na missão escolhida joga, B sai do modo foto. Reviver e bênção só recebem o foco 0,6 s depois de abrir
+  (o A do tiro não escolhe sem o jogador ver). Testes em `tests/focus_nav_tests.gd`. Falta conferir num controle
+  físico e no Steam Deck

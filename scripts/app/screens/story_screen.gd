@@ -160,6 +160,11 @@ func _build() -> void:
 	add_child(_skip)
 
 
+## Pelo controle a tela abre no Próximo.
+func default_focus() -> Control:
+	return _next
+
+
 func on_show(_app: Node) -> void:
 	scene = pending(SaveManager.data)
 	index = 0

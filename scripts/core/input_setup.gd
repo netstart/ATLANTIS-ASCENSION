@@ -38,6 +38,9 @@ static func ensure_actions() -> void:
 	_add_button(&"tab_next", JOY_BUTTON_RIGHT_SHOULDER)
 	_add_keys(&"tab_prev", [KEY_Q])
 	_add_keys(&"tab_next", [KEY_E])
+	# Menus pelo controle: o Godot só liga o teclado a ui_accept e ui_cancel (A confirma, B volta).
+	_add_button(&"ui_accept", JOY_BUTTON_A)
+	_add_button(&"ui_cancel", JOY_BUTTON_B)
 
 
 static func _ensure(action: StringName) -> void:

@@ -205,6 +205,11 @@ func _on_play() -> void:
 	navigate.emit(&"story" if not StoryScreen.pending(SaveManager.data).is_empty() else &"map")
 
 
+## Pelo controle a tela abre no JOGAR.
+func default_focus() -> Control:
+	return _play
+
+
 func on_show(_app: Node) -> void:
 	_stage.reduce_motion = bool(Settings.get_value("reduce_motion"))
 	var reward := LiveOps.login(SaveManager.data, App.today())

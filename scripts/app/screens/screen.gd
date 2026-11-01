@@ -55,6 +55,12 @@ func on_show(_app: Node) -> void:
 	pass
 
 
+## Controle que recebe o foco quando a tela abre pelo controle ou teclado (FocusNav); null deixa a
+## tela sem foco até o primeiro movimento.
+func default_focus() -> Control:
+	return FocusNav.first(self)
+
+
 ## Volta de nível (botão voltar do Android, Esc, B do controle). Devolve se tratou; false deixa o
 ## App voltar pelo histórico.
 func back() -> bool:
