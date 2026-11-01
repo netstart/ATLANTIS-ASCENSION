@@ -242,5 +242,12 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   vinheta, borda de perigo com o casco no fim, clarão e onda de choque com distorção (Média e Alta). Partículas em
   MultiMesh (`ParticleField`, teto `particles_max`), receitas em `CombatFx`, tela em `ScreenFx`; nenhum plugin de
   terceiros (avaliação na pesquisa). "Reduzir flashes" e qualidade Baixa reduzem a dose; hash da partida igual
+- ✅ `1.9.0` Menus vivos: reflexo de oricalco que atravessa a tela e acende cada botão dourado em sequência
+  (`UiGlint`, um material só, `shaders/ui_glint.gdshader`); onda e centelhas no ponto de todo toque, dourada no
+  botão principal e ciano nos outros, e varredura de sonar na troca de tela (`UiSpark`, camada aditiva que só
+  processa com algo vivo); entrada de tela em cascata (`UiFx.enter`); plâncton luminoso na cor do humor da tela
+  sobre o fundo compartilhado (`AbyssMotes`, 30 Hz); sonar no farol escolhido e luzes que sobem pela rota aberta
+  no mapa; moedas do hub que contam até o saldo novo. Só código e arte do projeto; "reduzir movimento" e
+  "reduzir flashes" desligam o que se move ou pisca
 - ⚠️ Fora do alcance sem contas e backend: Ecos dos Caídos, Elevação Global e Casas Atlantes (servidor), lojas
   (Play Console, Steamworks), teste fechado e revisão de traduções por nativos — ver `docs/store/release-checklist.md`

@@ -8,6 +8,7 @@ extends Control
 ## Orçamento (docs/policies/qualidade.md): o SubViewport só é redesenhado a REDRAW_HZ (30 Hz), um
 ## retângulo de ≈ 0,2 MP; parado em "reduzir movimento" (só o parallax do dedo) e enquanto oculto.
 ## O parallax segue o dedo ou o mouse (e o acelerômetro, se a opção estiver ligada) com mola suave.
+## Por cima da água, o plâncton luminoso (AbyssMotes, 1.9) anda no mesmo relógio e no mesmo parallax.
 
 const SHADER := preload("res://shaders/abyss_backdrop.gdshader")
 const REDRAW_HZ := 30.0
@@ -43,6 +44,7 @@ var _viewport: SubViewport
 var _rect: ColorRect
 var _view: TextureRect
 var _material: ShaderMaterial
+var _motes: AbyssMotes
 var _clock: float = 0.0
 var _wait: float = 0.0
 var _pointer := Vector2.ZERO
@@ -75,6 +77,8 @@ func _ready() -> void:
 	_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_view)
+	_motes = AbyssMotes.new()
+	add_child(_motes)
 	resized.connect(_fit)
 	_fit()
 	_apply_colors()
@@ -107,6 +111,9 @@ func _apply_colors() -> void:
 	_material.set_shader_parameter("water_top", _colors[0])
 	_material.set_shader_parameter("water_deep", _colors[1])
 	_material.set_shader_parameter("accent", _colors[2])
+	if _motes != null:
+		_motes.accent = _colors[2]
+		_motes.queue_redraw()
 	if _viewport != null:
 		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 
@@ -145,6 +152,9 @@ func _process(delta: float) -> void:
 	_material.set_shader_parameter("rays_strength", 0.55 * clampf(ruins + 0.3, 0.0, 1.0))
 	_material.set_shader_parameter("clock", _clock)
 	_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	_motes.clock = _clock
+	_motes.parallax = _parallax
+	_motes.queue_redraw()
 
 
 ## Só para testes e capturas: deslocamento atual do parallax.

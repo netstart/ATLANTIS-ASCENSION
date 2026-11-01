@@ -185,8 +185,10 @@ static func pill_box(accent: Color = GOLD) -> StyleBoxFlat:
 	return box
 
 
-## Pinta um botão como ação principal (caixas, texto escuro e fonte em negrito).
+## Pinta um botão como ação principal (caixas, texto escuro, fonte em negrito e o reflexo que corre,
+## UiGlint).
 static func style_primary(button: Button, size: int = HEADING_SIZE) -> void:
+	button.material = UiGlint.material()
 	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
 		button.add_theme_stylebox_override(state, primary_box(state))
 	for key: String in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color",

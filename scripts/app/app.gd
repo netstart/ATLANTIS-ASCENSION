@@ -123,9 +123,10 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	_backdrop.ruins = 1.0
 	if game == null:
 		AudioManager.play_music(MENU_MUSIC)
+	(_screens[screen_name] as Screen).on_show(self)
+	# Depois do on_show: a cascata de entrada respeita o que a tela acabou de esconder ou animar.
 	if changed:
 		UiFx.enter(_screens[screen_name] as CanvasItem)
-	(_screens[screen_name] as Screen).on_show(self)
 	Events.screen_changed.emit(screen_name)
 
 
@@ -324,6 +325,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _on_setting_changed(key: String) -> void:
 	if key == "reduce_motion":
 		_backdrop.reduce_motion = bool(Settings.get_value("reduce_motion"))
+		UiGlint.set_reduced(bool(Settings.get_value("reduce_motion")))
 	if key != "text_scale":
 		return
 	UiTheme.text_scale = float(Settings.get_value("text_scale"))

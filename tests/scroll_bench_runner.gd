@@ -88,9 +88,11 @@ func _resolution(r: Dictionary) -> void:
 		var span := maxf(1.0, bar.max_value - bar.page)
 		# Vai e vem linear: a lista anda em todo quadro (um pico senoidal arredondaria para a mesma posição
 		# e contaria como travada sem ser).
-		var step := maxf(2.0, span / 60.0)
+		# Passos inteiros de vai e vem: o pico é visitado uma vez só (com passo fracionário, lista curta de
+		# 45 px e passo 2, a ida e a volta paravam ambas em 44 e contavam uma travada falsa).
+		var steps := maxi(1, ceili(span / maxf(2.0, span / 60.0)))
 		for i: int in range(WARMUP + 120):
-			scroll.scroll_vertical = int(pingpong(i * step, span))
+			scroll.scroll_vertical = roundi(pingpong(i, steps) * span / steps)
 			await get_tree().process_frame
 			if i >= WARMUP:
 				stats.tick_scroll(scroll.scroll_vertical)

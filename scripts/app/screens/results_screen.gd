@@ -633,6 +633,7 @@ static func _style_button(button: Button, primary: bool) -> void:
 	if primary:
 		UiTheme.style_primary(button)
 		return
+	button.material = null
 	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
 		button.remove_theme_stylebox_override(state)
 	for key: String in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color",

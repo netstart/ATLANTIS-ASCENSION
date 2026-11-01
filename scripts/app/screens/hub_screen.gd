@@ -5,6 +5,8 @@ extends Screen
 ## capítulo atual; uma única ação dourada (JOGAR) na zona do polegar; atalhos secundários de vidro
 ## (Diário e Cidade) logo acima; e a barra de 5 abas com ícone e rótulo embaixo: Hangar, Campanha,
 ## Naves, Eventos e Loja. Ao abrir no dia, o login de 7 dias entrega a recompensa num aviso que some.
+## 1.9: as moedas contam até o valor novo e a pílula acende quando o saldo muda; o cartão do capítulo
+## recebe o mesmo reflexo dourado do botão Jogar.
 
 const TAB_HEIGHT := 50.0
 const PLAY_HEIGHT := 56.0
@@ -20,6 +22,8 @@ const TOAST_SECONDS := 4.0
 var _stage: HangarStage
 var _wallet: HBoxContainer
 var _wallet_labels: Dictionary = {}
+## Último saldo mostrado por moeda (-1 = ainda não mostrado: o primeiro aparece sem contagem).
+var _wallet_shown: Dictionary = {}
 var _credits_button: Button
 var _options: Button
 var _banner: Button
@@ -110,6 +114,7 @@ func _build_banner() -> void:
 			box.shadow_color = Color(UiTheme.GOLD, 0.25)
 			box.shadow_offset = Vector2.ZERO
 		_banner.add_theme_stylebox_override(state, box)
+	_banner.material = UiGlint.material()
 	_banner.pressed.connect(func() -> void:
 		AudioManager.play_ui("kenney_ui_click")
 		navigate.emit(&"map"))
@@ -245,7 +250,7 @@ func refresh_texts() -> void:
 	var wallet := SaveManager.data["wallet"] as Dictionary
 	for key: String in _wallet_labels:
 		var value := _wallet_labels[key] as Label
-		value.text = Locale.format_number(int(wallet[key]))
+		_show_balance(key, value, int(wallet[key]))
 		(value.get_parent().get_parent() as Control).tooltip_text = tr("currency." + key)
 	var next := Economy.next_mission(SaveManager.data)
 	_play.text = tr("hub.play") % MapScreen.node_label(Economy.node(next))
@@ -259,6 +264,21 @@ func refresh_texts() -> void:
 		b.tooltip_text = "" if tab in OPEN_TABS else tr("hub.soon")
 	_update_banner()
 	relayout()
+
+
+## Saldo novo: conta do valor anterior até o atual (0,7 s) e a pílula pisca na cor da moeda.
+func _show_balance(key: String, value: Label, amount: int) -> void:
+	var before := int(_wallet_shown.get(key, -1))
+	_wallet_shown[key] = amount
+	if before < 0 or before == amount or not is_visible_in_tree():
+		value.text = Locale.format_number(amount)
+		return
+	UiFx.count_up(value, amount, 0.7, func(v: int) -> String: return Locale.format_number(v), before)
+	if UiFx.reduced():
+		return
+	var pill := value.get_parent().get_parent() as Control
+	pill.modulate = Color(1.6, 1.6, 1.6)
+	pill.create_tween().tween_property(pill, "modulate", Color.WHITE, 0.6).set_trans(Tween.TRANS_SINE)
 
 
 func _update_banner() -> void:

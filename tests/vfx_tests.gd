@@ -1,5 +1,6 @@
 extends RefCounted
-## Testes dos efeitos visuais da partida (ParticleField e CombatFx), sem cena e sem autoloads.
+## Testes dos efeitos visuais da partida (ParticleField e CombatFx) e da luz dos menus (UiSpark,
+## AbyssMotes, UiGlint), sem cena e sem autoloads.
 ## Chamados por tests/run_tests.gd.
 
 var _check: Callable
@@ -13,6 +14,9 @@ func run_unit(check: Callable) -> void:
 	_test_fx_schedule()
 	_test_fx_wrecks_and_popups()
 	_test_fx_repeatable()
+	_test_ui_spark()
+	_test_motes()
+	_test_glint()
 
 
 func _field(capacity: int) -> ParticleField:
@@ -127,6 +131,61 @@ func _test_fx_repeatable() -> void:
 	_check.call(a.light.count == b.light.count and ba == bb, "CombatFx: repetível")
 	_free(a)
 	_free(b)
+
+
+## Toque: onda e centelhas vivem pouco, com teto; parada, a camada não processa.
+func _test_ui_spark() -> void:
+	var old := UiSpark.instance
+	var spark := UiSpark.new()
+	spark._ready()
+	_check.call(not spark.busy() and not spark.is_processing(), "UiSpark: parada não processa")
+	for k: int in range(UiSpark.MAX_RIPPLES + 3):
+		spark.ripple(Vector2(10 * k, 20), Color.CYAN)
+	spark.sweep()
+	_check.call(spark.busy() and spark.is_processing(), "UiSpark: toque acorda a camada")
+	_check.call(spark._ripples.size() == UiSpark.MAX_RIPPLES and spark._sparks.size() <= UiSpark.MAX_SPARKS,
+			"UiSpark: ondas e centelhas com teto")
+	for k: int in range(40):
+		spark._process(1.0 / 60.0)
+	_check.call(not spark.busy() and not spark.is_processing(), "UiSpark: tudo some em menos de 0,7 s")
+	spark.free()
+	UiSpark.instance = old
+
+
+## Plâncton: fica na tela, sobe com o tempo e é sempre o mesmo para o mesmo relógio.
+func _test_motes() -> void:
+	var motes := AbyssMotes.new()
+	motes.size = Vector2(360, 800)
+	var inside := true
+	for i: int in range(AbyssMotes.COUNT):
+		var m := motes.mote(i)
+		inside = inside and m.y >= -30.0 and m.y <= 830.0 and m.w > 0.0 and m.w <= 1.0
+	_check.call(inside, "AbyssMotes: pontos dentro da tela e com alfa válido")
+	var y0 := motes.mote(4).y
+	motes.clock = 0.1
+	var y1 := motes.mote(4).y
+	_check.call(y1 < y0, "AbyssMotes: o plâncton sobe (%.1f -> %.1f)" % [y0, y1])
+	var twin := AbyssMotes.new()
+	twin.size = motes.size
+	twin.clock = motes.clock
+	_check.call(twin.mote(4) == motes.mote(4), "AbyssMotes: determinístico")
+	twin.free()
+	motes.free()
+
+
+## Um material só para todos os botões dourados; "reduzir movimento" apaga a faixa.
+func _test_glint() -> void:
+	var a := Button.new()
+	var b := Button.new()
+	UiTheme.style_primary(a)
+	UiTheme.style_primary(b)
+	_check.call(a.material != null and a.material == b.material, "UiGlint: material compartilhado")
+	UiGlint.set_reduced(true)
+	_check.call(float(UiGlint.material().get_shader_parameter("strength")) == 0.0, "UiGlint: reduzir movimento apaga")
+	UiGlint.set_reduced(false)
+	_check.call(float(UiGlint.material().get_shader_parameter("strength")) > 0.0, "UiGlint: volta a brilhar")
+	a.free()
+	b.free()
 
 
 func _fx(level: int, light: int, matter: int) -> CombatFx:

@@ -390,6 +390,7 @@ func _style_next(primary: bool) -> void:
 	if primary:
 		UiTheme.style_primary(_next)
 		return
+	_next.material = null
 	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
 		_next.remove_theme_stylebox_override(state)
 	for key: String in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color",

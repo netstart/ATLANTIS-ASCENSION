@@ -11,7 +11,9 @@ extends Screen
 ## desenha o ponto (x, y) em tela_y = altura - (y - câmera * f).
 ##
 ## Orçamento: com a câmera parada, o desenho do mapa só é refeito a IDLE_HZ (o brilho dos faróis pulsa
-## devagar) e os nós não são reposicionados; rolando, tudo anda a cada quadro.
+## devagar) e os nós não são reposicionados; rolando, tudo anda a cada quadro. O sonar do farol escolhido
+## e as luzes que correm pela rota aberta (1.9) ficam numa camada aditiva leve à parte (_Beacon), que
+## anda a 60 Hz sem refazer o mapa.
 
 const STRATUM := 760.0
 const STRATA := 11
@@ -20,6 +22,10 @@ const FRICTION := 4.0
 const HEADER := 52.0
 const IDLE_HZ := 15.0
 const NODE_SIZE := 50.0
+## Sonar do farol escolhido: anéis que abrem a cada SONAR_PERIOD s; luz que corre na rota aberta.
+const SONAR_PERIOD := 1.6
+const SONAR_RINGS := 2
+const COMET_SPEED := 0.55
 const STRATUM_COLORS: Array[Color] = [Color("040b1a"), Color("0b2a4a"), Color("0f4652"), Color("26364a"),
 		Color("3a1410"), Color("141c38"), Color("2c4a5e"), Color("2d5f8a"), Color("0a0f2a"), Color("2a0a26"),
 		Color("05060f")]
@@ -42,6 +48,8 @@ var selected: StringName = &""
 var photo_mode: bool = false
 
 var _view: _MapView
+var _beacon: _Beacon
+var _ring: Texture2D
 var _back: Button
 var _photo: Button
 var _photo_bar: HBoxContainer
@@ -74,6 +82,10 @@ func _build() -> void:
 	_view = _MapView.new(self)
 	_view.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(_view)
+	_ring = SpriteBank.generated("fx/ring_128")
+	_beacon = _Beacon.new(self)
+	_beacon.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	add_child(_beacon)
 	for n: Dictionary in Economy.CAMPAIGN:
 		var b := Button.new()
 		b.name = "Node_" + String(n["id"])
@@ -306,6 +318,7 @@ func _process(delta: float) -> void:
 		velocity = lerpf(velocity, 0.0, minf(1.0, delta * FRICTION))
 	camera = clampf(camera, 0.0, maxf(0.0, STRATUM * STRATA - size.y))
 	_sync_backdrop()
+	_beacon.queue_redraw()
 	# Câmera andando: nós e desenho a cada quadro. Parada: só o pulso dos faróis, a IDLE_HZ.
 	if camera != _drawn_camera:
 		_drawn_camera = camera
@@ -483,6 +496,55 @@ func draw_map(ci: CanvasItem) -> void:
 		var head := safe.position.y + HEADER
 		ci.draw_rect(Rect2(0, 0, w, head), Color(UiTheme.ABYSS, 0.72))
 		ci.draw_rect(Rect2(0, head, w, 1.0), Color(UiTheme.CYAN, 0.3))
+
+
+## Camada aditiva por cima da rota: luzes que sobem pelos traços abertos até cada farol e o sonar do
+## farol escolhido (dois anéis que abrem e somem). Sem anel no modo foto (os faróis somem).
+func draw_beacon(ci: CanvasItem) -> void:
+	var w := size.x
+	var h := size.y
+	for n: Dictionary in Economy.CAMPAIGN:
+		if bool(n.get("bridge", false)) or not is_open(n["id"]):
+			continue
+		var b := Vector2(w * float(n["x"]), screen_y(float(n["y"]), 1.0))
+		for prev: Variant in n["after"]:
+			var pn := Economy.node(prev)
+			var a := Vector2(w * float(pn["x"]), screen_y(float(pn["y"]), 1.0))
+			if maxf(a.y, b.y) < -20.0 or minf(a.y, b.y) > h + 20.0:
+				continue
+			var u := fposmod(_clock * COMET_SPEED + float(absi(hash(String(n["id"]))) % 100) / 100.0, 1.0)
+			var p := a.lerp(b, u)
+			var fade := sin(u * PI)
+			ci.draw_texture_rect(_glow, Rect2(p - Vector2(9, 9), Vector2(18, 18)), false, Color(UiTheme.GOLD, 0.55 * fade))
+			ci.draw_texture_rect(_glow, Rect2(p - Vector2(3, 3), Vector2(6, 6)), false, Color(1.0, 0.97, 0.85, fade))
+	if photo_mode or selected == &"":
+		return
+	var chosen := Economy.node(selected)
+	var c := Vector2(w * float(chosen["x"]), screen_y(float(chosen["y"]), 1.0))
+	if c.y < -80.0 or c.y > h + 80.0:
+		return
+	for k: int in range(SONAR_RINGS):
+		var u := fposmod(_clock / SONAR_PERIOD + float(k) / SONAR_RINGS, 1.0)
+		var r := NODE_SIZE * (0.55 + 0.9 * (1.0 - pow(1.0 - u, 2.0)))
+		var flat := Vector2(r, r * 0.62)
+		ci.draw_texture_rect(_ring, Rect2(c - flat, flat * 2.0), false, Color(UiTheme.GOLD, 0.7 * (1.0 - u)))
+
+
+class _Beacon:
+	extends Control
+
+	var _map: MapScreen
+
+	func _init(map: MapScreen) -> void:
+		_map = map
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		var add := CanvasItemMaterial.new()
+		add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		material = add
+
+	func _draw() -> void:
+		_map.draw_beacon(self)
 
 
 ## Área de desenho e arrasto do mapa.
