@@ -61,7 +61,8 @@ func _rules(check: Callable) -> void:
 
 
 ## Campanha inteira jogada pelo bot com a carga do hangar: depois de cada missão o "jogador" sobe a
-## aeronave sempre que puder e entra nas secretas que abriu. Faixas planejadas (plano mestre 18.1): ao
+## aeronave sempre que puder e entra nas secretas que abriu, com a Arca da Maré de cada vitória.
+## Faixas planejadas (plano mestre 18.1): ao
 ## fim do Ato I (3-3) a aeronave está no nível 3 a 7; ao fim da campanha, no 6 ou mais, com as 6
 ## aeronaves abertas e um final escolhido.
 func _campaign(check: Callable) -> void:
@@ -83,7 +84,11 @@ func _campaign(check: Callable) -> void:
 		while not sim.finished and sim.frame < 60 * 60 * 10:
 			sim.step(bot.decide(sim))
 		check.call(sim.cleared, "Economia: o bot vence %s com a carga do hangar" % id)
-		var r := Economy.apply_result(p, sim.result(), DB.rows("ships"), DB.rows("wings"))
+		var result := sim.result()
+		result["seed"] = 7
+		var r := Economy.apply_result(p, result, DB.rows("ships"), DB.rows("wings"))
+		# A Arca da Maré entra na curva como no jogo (App.record_result): a faixa vale com ela.
+		TideChest.settle(p, result)
 		ending = String(r.get("ending", ending)) if not String(r.get("ending", "")).is_empty() else ending
 		while Economy.upgrade_ship(p, &"falcon"):
 			pass

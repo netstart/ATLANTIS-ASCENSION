@@ -55,8 +55,12 @@ func run(host: Node, check: Callable) -> void:
 	var record := SaveManager.mission_record(&"c1m1")
 	check.call(bool(record["cleared"]) and int(record["best_score"]) > 0, "Fluxo: resultado gravado no save")
 	check.call(SaveManager.currency("credits") > 0, "Fluxo: créditos ganhos (%d)" % SaveManager.currency("credits"))
-	check.call(int(app.last_result.get("credits", 0)) == SaveManager.currency("credits") - credits_before,
-			"Fluxo: créditos do resultado = save")
+	var chest: Dictionary = app.last_result.get("chest", {})
+	check.call(int(app.last_result.get("credits", 0)) + int(chest.get("credits", 0))
+			== SaveManager.currency("credits") - credits_before, "Fluxo: créditos do resultado + Arca da Maré = save")
+	check.call(not chest.is_empty() and int(app.last_result.get("grade", -1)) >= Grade.C,
+			"Fluxo: a vitória dá nota e abre a Arca da Maré")
+	check.call(Grade.best(SaveManager.data, "c1m1") == int(app.last_result["grade"]), "Fluxo: melhor nota gravada")
 	(app.screen(&"results").find_child("Retry", true, false) as Button).pressed.emit()
 	await host.get_tree().process_frame
 	check.call(app.game != null, "Fluxo: Tentar de novo começa outra missão")

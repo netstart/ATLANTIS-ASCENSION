@@ -266,6 +266,9 @@ func _update_card() -> void:
 		_card_stars[i].text = ("★  " if got else "☆  ") + texts[i]
 		_card_stars[i].add_theme_color_override("font_color", UiTheme.GOLD if got else UiTheme.TEXT_DIM)
 	_card_best.text = tr("map.best") % Locale.format_number(int(record["best_score"]))
+	var grade := int(record.get("grade", Grade.NONE))
+	if grade != Grade.NONE:
+		_card_best.text += "   ·   " + tr("map.grade") % Grade.letter(grade)
 	var n := Economy.node(selected)
 	if n.has("route"):
 		_card_best.text += "\n" + tr("map.route_" + String(n["route"]))

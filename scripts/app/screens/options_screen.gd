@@ -10,7 +10,7 @@ extends ListScreen
 const SLIDERS: Array[Array] = [["music_volume", 0.0, 1.0], ["sfx_volume", 0.0, 1.0], ["ui_volume", 0.0, 1.0],
 		["screen_shake", 0.0, 1.0], ["drag_sensitivity", 0.8, 2.0]]
 const TOGGLES: Array[String] = ["auto_fire", "vibration", "reduce_flashes", "reduce_motion", "tilt_parallax",
-		"show_fps", "ghost"]
+		"show_fps", "ghost", "style_callouts"]
 const SWITCH := Vector2(34, 18)
 const KNOB := 14.0
 

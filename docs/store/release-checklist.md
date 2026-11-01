@@ -48,7 +48,7 @@ Só o mantenedor pode fazer:
 1. Conta Steamworks (taxa por app), página da loja, cápsulas, trailer.
 2. Baixar o Steamworks SDK (aceitar a licença da Valve) e o GodotSteam (MIT) e registrar ambos em
    `licenses/registry.json` (o SDK como `LicenseRef-Steamworks`).
-3. Conquistas: as 22 ids de `data/achievements.json` (o jogo já as concede localmente); placares a partir de
+3. Conquistas: as 28 ids de `data/achievements.json` (o jogo já as concede localmente); placares a partir de
    `profile.boards`; Steam Cloud apontando para `user://save.json` e `user://replays/`.
 4. Presets Windows/Linux já têm a feature `steam` (sem anúncios, cosméticos inclusos).
 5. Steam Deck: o jogo já roda em 1280x800 com controle (testes de layout na resolução do Deck).

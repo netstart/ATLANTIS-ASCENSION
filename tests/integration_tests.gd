@@ -14,6 +14,7 @@ const BetaTests := preload("res://tests/beta_tests.gd")
 const LaunchTests := preload("res://tests/launch_tests.gd")
 const PostTests := preload("res://tests/post_tests.gd")
 const LiveryTests := preload("res://tests/livery_tests.gd")
+const GloryTests := preload("res://tests/glory_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -35,12 +36,14 @@ func _ready() -> void:
 	BetaTests.new().run(_check)
 	PostTests.new().run(_check)
 	LiveryTests.new().run(_check)
+	GloryTests.new().run(_check)
 	DeviceProfiles.check_scaler(self, _check)
 	await LayoutTests.new().run(self, _check)
 	await CreditsScreenTests.new().run(self, _check)
 	await FlowTests.new().run(self, _check)
 	await LaunchTests.new().run(self, _check)
 	await LiveryTests.new().run_view(self, _check)
+	await GloryTests.new().run_view(self, _check)
 	for file: String in SaveManager.TEST_PATHS + [Settings.TEST_PATH]:
 		if FileAccess.file_exists(file):
 			DirAccess.remove_absolute(file)

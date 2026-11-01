@@ -23,5 +23,8 @@
 	{"id": "chain_80", "type": "chain", "target": 80},
 	{"id": "master_pilot", "type": "level", "target": 10},
 	{"id": "daily", "type": "mode", "mode": "daily"},
-	{"id": "survivor", "type": "mode", "mode": "survival"}
+	{"id": "survivor", "type": "mode", "mode": "survival"},
+	{"id": "grade_s", "type": "grade", "grade": "S", "target": 10},
+	{"id": "atlantean_legend", "type": "grade", "grade": "SS", "target": 1},
+	{"id": "atlantis_treasure", "type": "jackpot", "target": 1}
 ]

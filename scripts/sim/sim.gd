@@ -116,6 +116,8 @@ var abyss_depth: int = 0
 ## Segunda nave do co-op local (null no jogo solo) e se o Elo de Maré está ligado neste passo.
 var wing: SimPlayer
 var linked: bool = false
+## Causa do último dano (bullet, contact, beam, boss): a tela de derrota tira a dica daqui.
+var last_cause: StringName = &""
 var _coral_grazes: int = 0
 var _bubble_timer: int = 0
 var _finish_timer: int = -1
@@ -845,6 +847,7 @@ func _player_hit(cause: StringName, ship: SimPlayer = null) -> void:
 		return
 	scoring.hull_lost += 1
 	scoring.break_chain()
+	last_cause = cause
 	var keep_level := player.level
 	var down := player.take_hit()
 	if ship != player:
@@ -1069,7 +1072,20 @@ func result() -> Dictionary:
 		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
 		"rescued": rescued, "max_capsule_combo": max_capsule_combo, "ending": String(ending), "revives": revives,
 		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met, "captured": captured, "depth": abyss_depth,
+		"progress": progress(), "boss_left": boss.hp / maxf(1.0, boss.max_hp) if boss != null and boss.is_final
+				else -1.0, "bombs_left": player.bombs, "cause": String(last_cause),
 	}
+
+
+## Quanto da missão já passou (0 a 1): tempo de fase sobre a duração; o chefe final conta o resto.
+func progress() -> float:
+	if cleared:
+		return 1.0
+	var length := float(mission.get("length_s", 0.0)) * 60.0
+	var base := clampf(stage.frame / length, 0.0, 1.0) if length > 0.0 else 0.0
+	if boss != null and boss.is_final:
+		base = maxf(base, 0.9 + 0.1 * (1.0 - boss.hp / maxf(1.0, boss.max_hp)))
+	return base
 
 
 ## Hash do estado (teste de determinismo em 1x, 2x, 3x e em qualquer qualidade gráfica).

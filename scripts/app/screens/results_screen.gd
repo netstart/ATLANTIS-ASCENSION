@@ -28,6 +28,8 @@ const GAP := 8.0
 ## Vinheta de recompensa (Kenney, CC0): toca sobre a revelação de uma vitória e devolve a música
 ## dos menus quando acaba (a vitória do chefe já tocou na partida; a de derrota também).
 const JINGLE := "kenney_jingle_reward"
+## Tempo da Arca na revelação: o carretel (TideChestPanel) e o respiro do prêmio.
+const CHEST_TIME := 1.75
 
 var result: Dictionary = {}
 
@@ -46,6 +48,9 @@ var _stat_values: Array[Label] = []
 var _stat_captions: Array[Label] = []
 var _stat_tiles: Array[Control] = []
 var _credits: Label
+var _grade: GradeSeal
+var _defeat: DefeatPanel
+var _chest: TideChestPanel
 var _credits_pill: PanelContainer
 var _rewards: VBoxContainer
 var _double: Button
@@ -91,11 +96,15 @@ func _build() -> void:
 	_record.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
 	_record.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_box.add_child(_record)
+	_grade = GradeSeal.new()
+	_box.add_child(_grade)
 	_rule = ColorRect.new()
 	_rule.custom_minimum_size = Vector2(0, 1)
 	_rule.color = Color(UiTheme.CYAN, 0.18)
 	_rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_box.add_child(_rule)
+	_defeat = DefeatPanel.new()
+	_box.add_child(_defeat)
 	var stars := VBoxContainer.new()
 	stars.add_theme_constant_override("separation", 4)
 	_box.add_child(stars)
@@ -162,6 +171,8 @@ func _build() -> void:
 	_double.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
 	_double.pressed.connect(_on_double)
 	_box.add_child(_double)
+	_chest = TideChestPanel.new()
+	_box.add_child(_chest)
 	_rewards = VBoxContainer.new()
 	_rewards.add_theme_constant_override("separation", 4)
 	_box.add_child(_rewards)
@@ -205,6 +216,10 @@ func refresh_texts() -> void:
 		_score.text = Locale.format_number(score)
 	_record.text = tr("results.record")
 	_record.visible = bool(result.get("record", false))
+	_grade.setup(result)
+	_defeat.setup(result)
+	if not _revealing or not _chest.spinning():
+		_chest.setup(result.get("chest", {}))
 	var mission := Sim.load_mission(StringName(mission_id))
 	var objective := String((mission.get("objective", {}) as Dictionary).get("text_key", "star.all_marked"))
 	var texts := [tr("star.clear"), tr("star.no_damage"), tr("star.all_marked"), tr(objective)]
@@ -399,8 +414,14 @@ func _start_reveal() -> void:
 	if _record.visible:
 		_sequence.tween_callback(_step_record)
 		_sequence.tween_interval(STEP + 0.1)
+	if _grade.visible:
+		_sequence.tween_callback(_step_grade)
+		_sequence.tween_interval(STEP + 0.25)
 	_sequence.tween_callback(_step_rewards)
 	_sequence.tween_interval(STEP)
+	if _chest.visible:
+		_sequence.tween_callback(_step_chest)
+		_sequence.tween_interval(CHEST_TIME)
 	_sequence.tween_callback(_finish_reveal)
 
 
@@ -415,6 +436,8 @@ func _finish_reveal() -> void:
 	_score.text = Locale.format_number(_score_value())
 	for i: int in range(4):
 		_stat_values[i].text = Locale.format_number(_stat(i))
+	_chest.finish()
+	_defeat.finish()
 	var primary := _continue if bool(result.get("cleared", false)) else _retry
 	if is_visible_in_tree() and primary.is_visible_in_tree():
 		primary.grab_focus.call_deferred()
@@ -432,7 +455,7 @@ func _kill_reveal() -> void:
 
 func _reveal_nodes() -> Array[CanvasItem]:
 	var nodes: Array[CanvasItem] = [_subtitle, _title, _score, _record, _rule, _credits_pill, _double,
-			_retry, _continue]
+			_retry, _continue, _grade, _defeat, _chest]
 	for icon: Control in _star_icons:
 		nodes.append(icon)
 	for text: Label in _stars:
@@ -451,6 +474,10 @@ func _step_banner() -> void:
 	# Os botões chegam junto da faixa: quem quer tentar de novo logo não espera a festa acabar.
 	for button: Control in [_retry, _continue]:
 		_fade(button, 0.3)
+	# Derrota: logo abaixo da faixa, a barra mostra até onde o jogador chegou.
+	if _defeat.visible:
+		_fade(_defeat, 0.3)
+		_defeat.play()
 
 
 func _step_score() -> void:
@@ -484,6 +511,19 @@ func _step_star(i: int, on: bool, nth: int) -> void:
 		AudioManager.play("kenney_medal", 1.0 + 0.12 * nth, 0.0, 0.0, "UI")
 	else:
 		_fade(_star_icons[i], 0.25)
+
+
+## Nota da missão: o selo é carimbado com o tom subindo com a letra.
+func _step_grade() -> void:
+	_fade(_grade, 0.2)
+	_stamp(_grade.seal(), 2.0)
+	_grade.celebrate()
+
+
+## Arca da Maré: aparece e o carretel gira até parar no prêmio.
+func _step_chest() -> void:
+	_drop(_chest, 0.0)
+	_chest.spin()
 
 
 func _step_record() -> void:

@@ -270,3 +270,15 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   da trilha (`AudioManager.play_jingle`, abaixa a música sem trocá-la). O benchmark da partida passa a jogar com a
   nave no nível máximo (`--level=N` para outro): Ascendida p95 4,10 ms contra 4,19 ms no nível 1 (custo
   desprezível); `run_checks.ps1` `TUDO OK` (1.207 regras, 82.907 de integração, 726 textos, 254 arquivos)
+- ✅ `1.12.0` Maré de Glória (pesquisa profunda em `.ai/07-pesquisa-diversao-e-surpresa.md`): o jogo passa a
+  celebrar a jogada, criar expectativa na recompensa e dizer o quanto faltou na derrota. **Ecos de Estilo**
+  (`StyleTracker` + `StyleCallouts`): frases curtas com som que sobe para os degraus da corrente (x4/x8/x12/x16),
+  Dança das balas, Queima-roupa, Chuva de pérolas, Medalha máxima e chefe final Impecável ou Por um fio; só lê a
+  Sim (hash igual), opção nas Opções. **Nota da missão** C/B/A/S/SS (`Grade`; SS = partida perfeita) carimbada em
+  roseta no resultado e mostrada no mapa. **Arca da Maré** (`TideChest`): toda vitória na campanha abre uma arca de
+  bronze, prata ou ouro conforme a nota, com carretel que desacelera e 10% (20% no SS) de Tesouro de Atlântida;
+  determinística, sem compra nem anúncio, já dentro da simulação da economia. **"Quase lá"** (`DefeatInsight`):
+  barra da missão, casco restante do chefe e dica tirada da partida (a Sim passa a contar `progress`, `boss_left`,
+  `bombs_left` e `cause`). **Câmera lenta** de 1,1 s quando o chefe final cai (`GameClock.time_scale`, sem mudar a
+  partida) e **vibração em camadas** por prioridade (o raspão nunca abafa o dano). 3 conquistas novas (Maestria,
+  Lenda Atlante, Tesouro de Atlântida; 28 no total), 34 textos x 11 idiomas. Testes em `tests/glory_tests.gd`

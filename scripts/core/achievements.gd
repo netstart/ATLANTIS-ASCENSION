@@ -65,4 +65,8 @@ static func _met(profile: Dictionary, result: Dictionary, a: Dictionary) -> bool
 			return int((profile.get("mode_best", {}) as Dictionary).get(String(a["mode"]), 0)) > 0
 		"abyss_depth":
 			return int(profile.get("abyss_depth", 0)) >= target
+		"grade":
+			return Grade.count_at_least(profile, Grade.LETTERS.find(String(a.get("grade", "S")))) >= target
+		"jackpot":
+			return int(profile.get("jackpots", 0)) >= target
 	return false

@@ -60,7 +60,7 @@ func _ready() -> void:
 			await get_tree().process_frame
 			app.last_result = {"mission": "c1m1", "cleared": true, "score": 123456, "record": true,
 					"stars": [true, true, false, true], "kills": 92, "grazes": 41, "max_chain": 33, "medals": 8,
-					"credits": 125}
+					"credits": 125, "grade": Grade.A, "grade_new": true, "chest": TideChest.roll("c1m1", 3, 9, Grade.A)}
 			for screen_name: StringName in SCREENS:
 				if not only.is_empty() and not String(screen_name) in only:
 					continue
@@ -71,6 +71,9 @@ func _ready() -> void:
 					for k: int in range(2):
 						story.call("advance")
 				await LayoutTests.settle(self)
+				if screen_name == &"results":
+					# Captura o estado final da revelação (nota carimbada, arca aberta).
+					app.screen(&"results").call("_finish_reveal")
 				for i: int in range(40):
 					await get_tree().process_frame
 				await RenderingServer.frame_post_draw

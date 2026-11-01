@@ -17,6 +17,9 @@ const MAX_STEPS_PER_SPEED := 3
 var steps: int = 0
 var speed: int = 1
 var paused: bool = true
+## Câmera lenta do golpe final (Game): menos passos por segundo real, a mesma partida passo a passo.
+## Só muda quando os passos acontecem, nunca o que cada passo faz (o hash não muda).
+var time_scale: float = 1.0
 ## Fração entre o último passo e o próximo; usada para interpolar o desenho.
 var alpha: float = 0.0
 var last_frame_steps: int = 0
@@ -40,6 +43,7 @@ func reset() -> void:
 	steps = 0
 	_accumulator = 0.0
 	alpha = 0.0
+	time_scale = 1.0
 	paused = false
 
 
@@ -58,7 +62,7 @@ func _process(delta: float) -> void:
 	last_frame_steps = 0
 	if paused:
 		return
-	_accumulator += minf(delta, 0.1) * speed
+	_accumulator += minf(delta, 0.1) * speed * clampf(time_scale, 0.05, 1.0)
 	var max_steps := speed * MAX_STEPS_PER_SPEED
 	var start := Time.get_ticks_usec()
 	while _accumulator >= STEP and last_frame_steps < max_steps:

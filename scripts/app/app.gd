@@ -245,6 +245,8 @@ static func record_result(result: Dictionary, mode: StringName = &"") -> Diction
 	var out := result.duplicate(true)
 	if mode == &"":
 		out = Economy.apply_result(SaveManager.data, result, DB.rows("ships"), DB.rows("wings"))
+		# Nota da missão e Arca da Maré (só a campanha grava a melhor nota e abre a arca).
+		out.merge(TideChest.settle(SaveManager.data, result), true)
 	elif mode != &"practice":
 		out = Modes.apply_result(SaveManager.data, mode, result)
 	if mode != &"practice":

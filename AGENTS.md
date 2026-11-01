@@ -51,6 +51,7 @@ som próprio (áudio), aviso antes do perigo (design), teste automatizado (QA) e
 | [.ai/03-progresso-implementacao.md](.ai/03-progresso-implementacao.md) | Checklist de progresso por fase |
 | [.ai/04-pesquisa-mercado-e-retencao.md](.ai/04-pesquisa-mercado-e-retencao.md) | Pesquisa de jogos semelhantes e o que falta para ser completo e viciante |
 | [.ai/06-pesquisa-efeitos-visuais.md](.ai/06-pesquisa-efeitos-visuais.md) | Efeitos de tiro, explosão, coleta e mapa nos jogos de referência; plugins avaliados |
+| [.ai/07-pesquisa-diversao-e-surpresa.md](.ai/07-pesquisa-diversao-e-surpresa.md) | O que torna o jogo divertido, viciante e surpreendente: Ecos de Estilo, nota, Arca da Maré, "Quase lá" |
 | [docs/store/play-console.md](docs/store/play-console.md) | Publicação na Google Play: arquivos, respostas do Play Console e passos do mantenedor |
 
 ## Fatos do projeto

@@ -10,6 +10,7 @@ const PATH := "user://settings.cfg"
 ## Arquivo dos testes (use_test_file): o do jogador nunca é tocado por eles.
 const TEST_PATH := "user://test_settings.cfg"
 const VERSION := 1
+const VIBRATION_GAP_MS := 80
 const DEFAULTS := {
 	"language": "",
 	"music_volume": 0.7,
@@ -39,6 +40,8 @@ const DEFAULTS := {
 	"show_fps": false,
 	## Fantasma do Abismo: o recorde voa junto, translúcido.
 	"ghost": true,
+	## Ecos de Estilo: frases curtas na partida para corrente alta, raspões em série, queima-roupa...
+	"style_callouts": true,
 	## PC e Steam: "portrait" (janela em pé, modo tate), "landscape" (janela deitada, campo 9:16 no centro) ou
 	## "fullscreen" (a orientação segue o monitor; monitor girado no sistema = tate em tela cheia).
 	"window_mode": "portrait",
@@ -46,7 +49,9 @@ const DEFAULTS := {
 
 var path: String = PATH
 var _values: Dictionary = {}
-var _last_vibration_ms: int = 0
+var _last_vibration_ms: int = -100000
+var _last_vibration_priority: int = 0
+var _last_vibration_len: int = 0
 
 
 func _ready() -> void:
@@ -95,13 +100,22 @@ func apply_engine_settings() -> void:
 	FramePacing.apply(int(get_value("fps")))
 
 
-## Vibração curta, respeitando a opção, a intensidade e um intervalo mínimo de 80 ms reais.
-func vibrate(duration_ms: int, amplitude: float = -1.0) -> void:
+## Vibração curta em camadas (pesquisa .ai/07, seção 3.6), respeitando a opção e a intensidade.
+## Prioridade: 0 = toque leve (raspão, eco de estilo), 1 = ação (bomba, maré), 2 = dano e chefe caindo.
+## Dentro do intervalo mínimo (VIBRATION_GAP_MS, ou o dobro para os toques leves) só passa o que for mais
+## importante que a vibração em curso: o raspão em série nunca abafa o aviso de dano.
+func vibrate(duration_ms: int, amplitude: float = -1.0, priority: int = 1) -> void:
 	if not bool(get_value("vibration")):
 		return
 	var now := Time.get_ticks_msec()
-	if now - _last_vibration_ms < 80:
+	var gap := VIBRATION_GAP_MS * (2 if priority == 0 else 1)
+	if now - _last_vibration_ms < gap and priority <= _last_vibration_priority:
+		return
+	if now - _last_vibration_ms < _last_vibration_len and priority < _last_vibration_priority:
 		return
 	_last_vibration_ms = now
+	_last_vibration_priority = priority
+	_last_vibration_len = duration_ms
 	var strength := clampf(float(get_value("vibration_strength")), 0.0, 1.0)
-	Input.vibrate_handheld(duration_ms, amplitude if amplitude >= 0.0 else strength)
+	var amp := amplitude * strength if amplitude >= 0.0 else strength
+	Input.vibrate_handheld(duration_ms, clampf(amp, 0.0, 1.0))

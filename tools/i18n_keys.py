@@ -48,7 +48,11 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"] + [
     "mode.abyss", "mode.abyss_desc", "deity.abyss", "hud.module_title", "results.depth"] + [
     f"options.window_{w}" for w in ("portrait", "landscape", "fullscreen")] + ["hub.banner_c10", "map.chapter10"] + ["mode.coop", "mode.coop_desc"] + [
-    f"livery.{p}" for p in ("stripes", "nav_lights", "canards", "sensor", "armor", "thrusters", "runes", "blades", "trim")]
+    f"livery.{p}" for p in ("stripes", "nav_lights", "canards", "sensor", "armor", "thrusters", "runes", "blades", "trim")] + [
+    f"style.{k}" for k in ("chain", "chain_max", "graze_dance", "point_blank", "pearl_rain", "medal_max", "flawless",
+                           "close_call")] + [f"chest.{t}" for t in ("bronze", "silver", "gold")] + [
+    f"tip.{t}" for t in ("boss_close", "bombs_left", "beam", "contact", "precise", "tide", "hangar", "blessing",
+                         "graze")] + ["options.style_callouts"]
 
 
 def _json_keys(value, out: set) -> None:

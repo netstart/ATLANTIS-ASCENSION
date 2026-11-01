@@ -16,6 +16,10 @@ const HITSTOP_PART := 0.05
 const HITSTOP_BOSS := 0.14
 ## Tema dos chefes intermediários (SketchyLogic, CC0); a trilha da fase volta quando ele cai.
 const MID_BOSS_MUSIC := "sketchylogic_boss_main"
+## Câmera lenta quando o chefe final cai (pesquisa .ai/07, seção 3.5): segura SLOWMO_SCALE pela
+## primeira metade e volta suave à velocidade normal. Tempo real; a partida não muda.
+const SLOWMO_TIME := 1.1
+const SLOWMO_SCALE := 0.22
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
@@ -45,6 +49,7 @@ var _world: WorldView
 var _screen: ScreenFx
 var _layer: CanvasLayer
 var _hud: GameHud
+var _callouts: StyleCallouts
 var _drag := Vector2.ZERO
 var _taps: int = 0
 var _want_special: bool = false
@@ -61,6 +66,8 @@ var _emerge_to: float = 0.0
 var _emerge_t: float = 1.0
 var _emerge_duration: float = 1.0
 var _done: float = -1.0
+var _style := StyleTracker.new()
+var _slowmo: float = 0.0
 var _reported: bool = false
 
 
@@ -116,6 +123,10 @@ func _ready() -> void:
 	_clip.add_child(_screen)
 	_layer = CanvasLayer.new()
 	add_child(_layer)
+	# Ecos de Estilo: sobre o campo, por baixo dos painéis do HUD (pausa, bênçãos).
+	_callouts = StyleCallouts.new()
+	_callouts.reduced = UiFx.reduced()
+	_layer.add_child(_callouts)
 	_hud = GameHud.new()
 	_hud.theme = UiTheme.build(Locale.font)
 	_layer.add_child(_hud)
@@ -141,6 +152,7 @@ func _exit_tree() -> void:
 	if GameClock.ticked.is_connected(_on_tick):
 		GameClock.ticked.disconnect(_on_tick)
 	GameClock.paused = true
+	GameClock.time_scale = 1.0
 
 
 func relayout() -> void:
@@ -158,11 +170,18 @@ func relayout_for(view: Vector2) -> void:
 	_clip.size = field.size
 	_hud.size = view
 	_hud.apply_layout(layout, safe)
+	_callouts.position = field.position
+	_callouts.size = field.size
 
 
 ## Raiz do HUD (testes de layout).
 func hud() -> GameHud:
 	return _hud
+
+
+## Camada dos Ecos de Estilo (testes).
+func callouts() -> StyleCallouts:
+	return _callouts
 
 
 func set_paused(value: bool) -> void:
@@ -308,6 +327,9 @@ func _stress() -> void:
 func _process(delta: float) -> void:
 	for ev: Dictionary in sim.take_events():
 		_on_event(ev)
+	for c: Dictionary in _style.tick(sim):
+		_show_style(c)
+	_tick_slowmo(delta)
 	if _emerge_t < 1.0:
 		_emerge_t = minf(1.0, _emerge_t + delta / maxf(0.01, _emerge_duration))
 		var u := _emerge_t * _emerge_t * (3.0 - 2.0 * _emerge_t)
@@ -346,6 +368,8 @@ func _process(delta: float) -> void:
 
 func _on_event(ev: Dictionary) -> void:
 	_world.on_event(ev)
+	for c: Dictionary in _style.observe(ev, sim):
+		_show_style(c)
 	match StringName(ev["type"]):
 		&"shot":
 			AudioManager.play("kenney_shot_pulsar", 1.0, 0.05, -14.0)
@@ -353,10 +377,13 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_explosion_medium" if bool(ev.get("big", false)) else "kenney_explosion_small",
 					1.0, 0.08, -6.0)
 			_shake = maxf(_shake, 3.0 if bool(ev.get("big", false)) else 0.8)
+			if bool(ev.get("big", false)):
+				Settings.vibrate(18, 0.45, 0)
 		&"hit":
 			AudioManager.play("kenney_hit", 1.0, 0.1, -16.0)
 		&"graze":
 			AudioManager.play("kenney_graze", 1.0, 0.05, -12.0)
+			Settings.vibrate(8, 0.25, 0)
 		&"orb":
 			AudioManager.play("kenney_weapon_up" if bool(ev.get("up", false)) else "kenney_orb")
 		&"medal":
@@ -365,7 +392,7 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_pearl", 1.0, 0.1, -10.0)
 		&"player_hit":
 			AudioManager.play("kenney_player_hit")
-			Settings.vibrate(80)
+			Settings.vibrate(80, -1.0, 2)
 			_shake = 7.0
 			_screen.flash(0.35, Color(1.0, 0.3, 0.3))
 			_screen.shockwave(ev["pos"], 0.012)
@@ -405,13 +432,14 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("faxcorp_deathboom", 1.0, 0.0, -3.0)
 			if not bool(ev.get("final", false)) and AudioManager.music_id() == MID_BOSS_MUSIC:
 				AudioManager.play_music(String(sim.mission.get("music", "")))
-			Settings.vibrate(150)
+			Settings.vibrate(150, -1.0, 2)
 			_shake = 10.0
 			_screen.flash(0.8)
 			_screen.shockwave(ev["pos"], 0.045)
 			_hitstop_for(HITSTOP_BOSS)
 			if bool(ev.get("final", false)):
 				AudioManager.play_music("kenney_jingle_victory", 0.3)
+				_slowmo_start()
 		&"dialogue":
 			_hud.show_radio(String(ev.get("id", "")))
 		&"blessing_offer":
@@ -477,6 +505,38 @@ func _on_event(ev: Dictionary) -> void:
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)
 
 
+## Ecos de Estilo: frase no campo, som que sobe com o destaque e um toque leve na mão.
+func _show_style(c: Dictionary) -> void:
+	if not bool(Settings.get_value("style_callouts")):
+		return
+	var tier := int(c.get("tier", 0))
+	var text := tr(String(c["key"]))
+	if int(c.get("arg", 0)) > 0:
+		text = text % int(c["arg"])
+	_callouts.pop(text, tier)
+	AudioManager.play("kenney_weapon_up" if tier >= 3 else "kenney_medal", 1.15 + 0.12 * tier, 0.0, -9.0 + 2.0 * tier)
+	Settings.vibrate(12 + 10 * tier, 0.3 + 0.2 * tier, 0 if tier < 3 else 1)
+
+
+func _slowmo_start() -> void:
+	if use_bot or playback != null:
+		return
+	_slowmo = SLOWMO_TIME
+
+
+## Primeira metade em SLOWMO_SCALE; a segunda volta ao normal com curva suave.
+func _tick_slowmo(delta: float) -> void:
+	if _slowmo <= 0.0:
+		return
+	_slowmo = maxf(0.0, _slowmo - delta)
+	var u := clampf(1.0 - _slowmo / SLOWMO_TIME, 0.0, 1.0)
+	var back := clampf((u - 0.5) * 2.0, 0.0, 1.0)
+	GameClock.time_scale = lerpf(SLOWMO_SCALE, 1.0, back * back * (3.0 - 2.0 * back))
+	if _slowmo <= 0.0 or paused or _reported:
+		GameClock.time_scale = 1.0
+		_slowmo = 0.0
+
+
 ## Congela a Sim por `seconds` de tempo real (o desenho continua: faíscas e anéis seguem). A partida
 ## não muda, só atrasa; o bot e os replays não param.
 func _hitstop_for(seconds: float) -> void:
@@ -511,6 +571,7 @@ func _finish(quit: bool) -> void:
 		return
 	_reported = true
 	GameClock.paused = true
+	GameClock.time_scale = 1.0
 	var result := sim.result()
 	result["quit"] = quit
 	result["seed"] = seed_value
