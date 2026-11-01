@@ -2,6 +2,15 @@
 
 > `CLAUDE.md` é um link simbólico para este arquivo. Edite só o `AGENTS.md`.
 
+
+A sessão principal planeja e revisa. A escrita de código fica com o executor.
+
+Quebre o pedido em tarefas pequenas.
+Tarefas independentes vão em paralelo.
+Veio errado? Mande o executor corrigir.
+Código direto só para ajuste de 1 ou 2 linhas.
+
+
 Shoot'em up vertical 2.5D para **Android (retrato)** e **Steam (Windows/Linux, Steam Deck)**, feito em
 **Godot 4.7.2 (GDScript tipado, renderer Compatibility)**, só com assets gratuitos e livres para uso comercial.
 
@@ -82,6 +91,8 @@ python -I tools\build_license_index.py
 python -I tools\check_licenses.py
 # Assets: copiar de c:\src\downloads\assets só o que os manifestos tools\*_assets.json pedem
 python -I tools\sync_assets.py
+# Áudio do clima: recorta trovões e normaliza os laços baixados (precisa de numpy e soundfile; rode antes do sync)
+python tools\cut_weather_audio.py
 # Missões e chefes (fontes: tools\gen_missions.py e tools\gen_bosses_*.py; rode os chefes antes das missões)
 python -I tools\gen_bosses_beta.py
 python -I tools\gen_bosses_post.py
@@ -91,9 +102,9 @@ python -I tools\gen_missions.py
 python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
-# Áudio do clima: recorta trovões e normaliza os laços baixados (precisa de numpy e soundfile; rode antes do sync)
-python tools\cut_weather_audio.py
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
+# Galeria do clima (cada estado de data/weather.json no auge, com relâmpago na tempestade)
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
 # Balanceamento: quanto o bot leva em cada luta de chefe e em cada fase (todas ou -- --only=c1m1,c9m3)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/boss_timing.gd
 # Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas (nave no nível 10)
@@ -103,8 +114,6 @@ C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/ga
 python -I tools\gen_sprites.py
 python -I tools\gen_portraits.py
 # Evolução visual da nave por nível do hangar (peças de 48x48 alinhadas à nave; --preview DIR grava os 10 níveis)
-# Galeria do clima (cada estado de data/weather.json no auge, com relâmpago na tempestade)
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
 python -I tools\gen_livery.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)
 powershell -ExecutionPolicy Bypass -File tools\build_release.ps1
