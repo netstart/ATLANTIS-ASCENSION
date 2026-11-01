@@ -1260,10 +1260,70 @@
   "sha256": "81ca46dfc0f48b956ce868c85b1545ea6e9b538d8f09cb2ef5f99fea84e192c4"
  },
  {
+  "file": "assets/audio/sfx/coin_capsule.ogg",
+  "source": "atlantis-mix/pickups/coin_capsule.ogg",
+  "license_id": "luke_rustltd_coin_sounds",
+  "sha256": "c14cf297072aee5a075f0cc4a8d736023a89883412154fbc733ebcbb88c451dd"
+ },
+ {
+  "file": "assets/audio/sfx/coin_medal.ogg",
+  "source": "atlantis-mix/pickups/coin_medal.ogg",
+  "license_id": "deva_8bit_sfx_vol1",
+  "sha256": "5b840bf8a62b9c175aaba00846be9f7332d85f09b3cc60f52fcfb60ce467b093"
+ },
+ {
+  "file": "assets/audio/sfx/coin_pearl_1.ogg",
+  "source": "atlantis-mix/pickups/coin_pearl_1.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "3ad1e24af14c9e58c627d3895af726a5be563088807425c453b6ec6bd9c36374"
+ },
+ {
+  "file": "assets/audio/sfx/coin_pearl_2.ogg",
+  "source": "atlantis-mix/pickups/coin_pearl_2.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "d33b3d97879956b1c1107c5ed0dce1b70c118c53cc8e74f7599ce7bf167d6715"
+ },
+ {
+  "file": "assets/audio/sfx/coin_pearl_3.ogg",
+  "source": "atlantis-mix/pickups/coin_pearl_3.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "f10f944127388eea46b1554d8afb344fa6c78faadfff990307f3a811c7a32c60"
+ },
+ {
   "file": "assets/audio/sfx/faxcorp_deathboom.wav",
   "source": "opengameart/electricity-sound-pack/deathboom.wav",
   "license_id": "faxcorp_electricity_sfx",
   "sha256": "fa7943c117f367b205bf808486d249c22e894f19e5641608a1a25c25d6d7ad39"
+ },
+ {
+  "file": "assets/audio/sfx/hit_1.ogg",
+  "source": "atlantis-mix/pickups/hit_1.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "0c5715cb6197e36c5641b82e861cb9e87b4c474922fddb9a81f491a2941c976a"
+ },
+ {
+  "file": "assets/audio/sfx/hit_2.ogg",
+  "source": "atlantis-mix/pickups/hit_2.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "2339950495d0a8de16c98378476fb876041b386637a4a56aed6741a0d15e7f4c"
+ },
+ {
+  "file": "assets/audio/sfx/hit_3.ogg",
+  "source": "atlantis-mix/pickups/hit_3.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "dd8003477515420b2d1d35a814305dbd28700df7c3c624d2f65dfda53b76b3ca"
+ },
+ {
+  "file": "assets/audio/sfx/hit_4.ogg",
+  "source": "atlantis-mix/pickups/hit_4.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "621b58b732e416a56a8d6a213c396c30256444b6f63d7091794ddf3e140484cf"
+ },
+ {
+  "file": "assets/audio/sfx/hit_5.ogg",
+  "source": "atlantis-mix/pickups/hit_5.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "1177451e55b15c12d35c18a1e71a0ec4771072db5b1da4773b7445e5d9c6e1a8"
  },
  {
   "file": "assets/audio/sfx/isaiah658_underwater_pad.ogg",

@@ -1,0 +1,8 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "deva_8bit_sfx_vol1",
+	"note": "Mistura de tools/mix_pickup_audio.py: Coin 3 (Deva) com as fichas do Kenney Casino Audio (kenney_audio). Coleta de medalha.",
+	"files": {
+		"pickups/coin_medal.ogg": "audio/sfx/coin_medal.ogg"
+	}
+}

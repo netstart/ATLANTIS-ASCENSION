@@ -6,6 +6,10 @@ extends Node
 ## Buses: Master → Music, SFX, UI; SFX → Ambience (clima em laço e trovões, segue o volume dos efeitos).
 ## Volumes de Settings (linear 0..1). Music e Ambience têm um passa-baixa desligado que o clima liga
 ## sob a água (`set_muffle`): a trilha e a chuva chegam abafadas, os alertas e tiros (SFX) não.
+##
+## Variantes: um efeito sem arquivo próprio que tem `id_1`, `id_2`... (ex.: `hit` → hit_1..hit_5) toca uma
+## delas a cada vez, sem repetir a anterior, para a rajada não soar como uma metralhadora de um som só.
+## A escolha usa um gerador só do áudio, nunca o RNG da simulação (que é determinística por semente).
 
 const MUSIC_DIR := "res://assets/audio/music/"
 const SFX_DIR := "res://assets/audio/sfx/"
@@ -38,6 +42,10 @@ var _fade_tween: Tween
 ## Camadas de ambiente: id → {player, level, target, db}.
 var _ambience: Dictionary = {}
 var _muffle: float = 0.0
+## Variantes por id (id → Array[String], vazio se não há arquivo) e a última tocada (id → índice).
+var _variants: Dictionary = {}
+var _last_variant: Dictionary = {}
+var _variant_rng := RandomNumberGenerator.new()
 
 
 func _ready() -> void:
@@ -133,7 +141,8 @@ func music_id() -> String:
 	return _music_id
 
 
-## Toca um efeito. Devolve false se o arquivo não existe, o som passou do limite ou está em recarga.
+## Toca um efeito (ou uma das variantes `id_N`). Devolve false se o arquivo não existe, o som passou do
+## limite ou está em recarga. Limite e recarga contam por `id`, somando as variantes.
 func play(id: String, pitch: float = 1.0, pitch_jitter: float = 0.0, volume_db: float = 0.0,
 		bus: String = "SFX") -> bool:
 	var now := Time.get_ticks_msec()
@@ -141,14 +150,17 @@ func play(id: String, pitch: float = 1.0, pitch_jitter: float = 0.0, volume_db: 
 		return false
 	if int(_playing.get(id, 0)) >= MAX_PER_SOUND:
 		return false
-	var stream := _stream(SFX_DIR, id)
-	if stream == null:
+	var ids := variants(id)
+	if ids.is_empty():
+		missing[id] = int(missing.get(id, 0)) + 1
 		return false
 	var player := _free_player()
 	if player == null:
 		return false
 	_last_play_ms[id] = now
-	player.stream = stream
+	var pick := next_variant(ids.size(), int(_last_variant.get(id, -1)), _variant_rng.randi())
+	_last_variant[id] = pick
+	player.stream = _stream(SFX_DIR, ids[pick])
 	player.bus = bus
 	player.volume_db = volume_db
 	player.pitch_scale = pitch + randf_range(-pitch_jitter, pitch_jitter)
@@ -161,6 +173,30 @@ func play(id: String, pitch: float = 1.0, pitch_jitter: float = 0.0, volume_db: 
 
 func play_ui(id: String) -> bool:
 	return play(id, 1.0, 0.0, 0.0, "UI")
+
+
+## Ids que tocam por `id`: ele mesmo se tem arquivo, senão `id_1`, `id_2`... em sequência; vazio se nada.
+func variants(id: String) -> Array[String]:
+	if _variants.has(id):
+		return _variants[id]
+	var out: Array[String] = []
+	if not _path(SFX_DIR, id).is_empty():
+		out.append(id)
+	else:
+		while not _path(SFX_DIR, "%s_%d" % [id, out.size() + 1]).is_empty():
+			out.append("%s_%d" % [id, out.size() + 1])
+	_variants[id] = out
+	return out
+
+
+## Próxima variante entre `count`, nunca igual à `last` (-1 = nenhuma ainda); `roll` é um inteiro >= 0.
+static func next_variant(count: int, last: int, roll: int) -> int:
+	if count <= 1:
+		return 0
+	if last < 0 or last >= count:
+		return roll % count
+	var pick := roll % (count - 1)
+	return pick + 1 if pick >= last else pick
 
 
 ## Camada de ambiente em laço (chuva, vento, corrente): `level` 0..1 chega aos poucos; `db` é o volume
@@ -278,13 +314,21 @@ func _stream(dir: String, id: String) -> AudioStream:
 	var key := dir + id
 	if _streams.has(key):
 		return _streams[key]
+	var file_path := _path(dir, id)
+	if file_path.is_empty():
+		missing[id] = int(missing.get(id, 0)) + 1
+		return null
+	var stream := load(file_path) as AudioStream
+	if dir == MUSIC_DIR and not id.begins_with("kenney_jingle"):
+		_make_loop(stream)
+	_streams[key] = stream
+	return stream
+
+
+## Caminho do arquivo de `id` na pasta (a primeira extensão que existe), ou "" se não há.
+static func _path(dir: String, id: String) -> String:
 	for ext: String in EXTENSIONS:
 		var file_path := "%s%s.%s" % [dir, id, ext]
 		if ResourceLoader.exists(file_path):
-			var stream := load(file_path) as AudioStream
-			if dir == MUSIC_DIR and not id.begins_with("kenney_jingle"):
-				_make_loop(stream)
-			_streams[key] = stream
-			return stream
-	missing[id] = int(missing.get(id, 0)) + 1
-	return null
+			return file_path
+	return ""

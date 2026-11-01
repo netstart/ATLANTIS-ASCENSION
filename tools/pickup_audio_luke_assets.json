@@ -1,0 +1,8 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "luke_rustltd_coin_sounds",
+	"note": "Recorte de tools/mix_pickup_audio.py: coin1 (Luke.RUSTLTD) com passa-baixa e corte em 300 ms. Coleta de cápsula.",
+	"files": {
+		"pickups/coin_capsule.ogg": "audio/sfx/coin_capsule.ogg"
+	}
+}

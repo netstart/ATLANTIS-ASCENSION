@@ -93,6 +93,8 @@ python -I tools\check_licenses.py
 python -I tools\sync_assets.py
 # Áudio do clima: recorta trovões e normaliza os laços baixados (precisa de numpy e soundfile; rode antes do sync)
 python tools\cut_weather_audio.py
+# Sons de coleta (medalha, pérola, cápsula) e de acerto em inimigo: mistura as camadas baixadas (numpy e soundfile; antes do sync)
+python tools\mix_pickup_audio.py
 # Missões e chefes (fontes: tools\gen_missions.py e tools\gen_bosses_*.py; rode os chefes antes das missões)
 python -I tools\gen_bosses_beta.py
 python -I tools\gen_bosses_post.py

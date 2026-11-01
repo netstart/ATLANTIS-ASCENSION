@@ -129,13 +129,17 @@ comercial: 🔶, só com decisão registrada.
 | Sci-fi Sounds | Kenney | https://kenney.nl/assets/sci-fi-sounds | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/sci-fi-sounds.zip` | Lasers, motores, escudo, especial |
 | Impact Sounds | Kenney | https://kenney.nl/assets/impact-sounds | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/impact-sounds.zip` | Acertos, destruição, dano |
 | Interface Sounds | Kenney | https://kenney.nl/assets/interface-sounds | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/interface-sounds.zip` | Toques, abas, cartões do hub |
-| UI Audio | Kenney | https://kenney.nl/assets/ui-audio | CC0-1.0 | ✅ catálogo | `kenney/ui-audio.zip` | Confirmação, cancelamento |
+| UI Audio | Kenney | https://kenney.nl/assets/ui-audio | CC0-1.0 | ✅ baixado 01/11 (1.14.3), na licença `kenney_audio` | `kenney/ui-audio/` | `click4`: estalo do acerto em inimigo (`hit_1..5`) |
+| Casino Audio | Kenney | https://kenney.nl/assets/casino-audio | CC0-1.0 | ✅ baixado 01/11 (1.14.3), na licença `kenney_audio` | `kenney/casino-audio/` | `chips-stack-2`: o "tchim" da medalha (`coin_medal`) |
 | Digital Audio | Kenney | https://kenney.nl/assets/digital-audio | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/digital-audio.zip` | Power-up, nível de arma, alerta |
 | Music Jingles | Kenney | https://kenney.nl/assets/music-jingles | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/music-jingles.zip` | Vitória, derrota, recompensa |
 | Space Laser, Chunky Explosion | OpenGameArt | título no catálogo | CC0-1.0 | ⚠️ URL exata a registrar | `opengameart/` | Variações de tiro e explosão |
 | Laser Fire | OpenGameArt | título no catálogo | CC-BY-3.0 | 🔶 | `opengameart/` | Só se CC-BY-3.0 for ratificada |
 | rain and thunders | kindland | https://opengameart.org/content/rain-and-thunders | CC0-1.0 | ✅ baixado 01/11 (1.13) | `opengameart/rain-and-thunders/` | Três trovões recortados e a base da tempestade em laço (`tools/cut_weather_audio.py`) |
 | Underwater Ambient Pad | isaiah658 | https://opengameart.org/content/underwater-ambient-pad | CC0-1.0 | ✅ baixado 01/11 (1.13) | `opengameart/underwater-ambient-pad/` | Pad grave da água turva e funda |
+| 8-Bit Sound Effect Pack Vol. 001 (Coin 3) | Deva (pede crédito como @Shades) | https://opengameart.org/content/8-bit-sound-effect-pack-vol-001 | CC0-1.0 | ✅ baixado 01/11 (1.14.3) | `opengameart/8-bit-sound-effect-pack-vol-001/` | Corpo da medalha (`coin_medal`, `tools/mix_pickup_audio.py`) |
+| 10 8bit Coin Sounds (coin1) | Luke.RUSTLTD | https://opengameart.org/content/10-8bit-coin-sounds | CC0-1.0 | ✅ baixado 01/11 (1.14.3) | `opengameart/10-8bit-coin-sounds/` | Cápsula (`coin_capsule`), tom sobe com o combo |
+| 100 CC0 SFX (plop_01) | rubberduck | https://opengameart.org/content/100-cc0-sfx | CC0-1.0 | ✅ baixado 01/11 (1.14.3) | `opengameart/100-cc0-sfx/` | Bolha da pérola (`coin_pearl_1..3`, com os cristais glass_006/005/002 do Interface Sounds) |
 | 30 CC0 SFX loops (rain, noise_01, water_flowing) | rubberduck | https://opengameart.org/content/30-cc0-sfx-loops | CC0-1.0 | ✅ já registrado; 3 laços novos (1.13) | `opengameart/30-cc0-sfx-loops/` | Chuva fina, vento e água correndo do clima |
 
 **Criar (sfxr/jsfxr, ChipTone, Audacity, MIT):** alerta de chefe "WARNING" sem voz, som de graze, carga da especial,

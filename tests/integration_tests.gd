@@ -145,6 +145,26 @@ func _test_audio() -> void:
 		_check(AudioServer.get_bus_index(bus) >= 0, "Áudio: bus %s existe" % bus)
 	_check(not AudioManager.play("som_que_nao_existe"), "Áudio: id sem arquivo é ignorado")
 	_check(AudioManager.missing.has("som_que_nao_existe"), "Áudio: id sem arquivo é registrado")
+	_check(AudioManager.variants("kenney_medal") == ["kenney_medal"], "Áudio: id com arquivo próprio não vira variante")
+	# Coletas e acerto (1.14.3, tools/mix_pickup_audio.py): curtos, para não embolar na rajada.
+	var limits := {"coin_medal": [1, 0.40], "coin_capsule": [1, 0.32], "coin_pearl": [3, 0.15], "hit": [5, 0.10]}
+	for id: String in limits:
+		var ids := AudioManager.variants(id)
+		_check(ids.size() == int(limits[id][0]), "Áudio: %s tem %d variante(s)" % [id, limits[id][0]])
+		for variant: String in ids:
+			var stream := load(AudioManager.SFX_DIR + variant + ".ogg") as AudioStream
+			_check(stream != null and stream.get_length() > 0.05 and stream.get_length() <= float(limits[id][1]),
+					"Áudio: %s carrega e dura até %.2f s" % [variant, limits[id][1]])
+	var last := -1
+	var seen := {}
+	var repeats := 0
+	for roll: int in range(200):
+		var pick := AudioManager.next_variant(5, last, roll * 7919 + 13)
+		repeats += 1 if pick == last else 0
+		seen[pick] = true
+		last = pick
+	_check(repeats == 0 and seen.size() == 5, "Áudio: variantes alternam sem repetir a anterior e cobrem todas")
+	_check(AudioManager.next_variant(1, 0, 99) == 0, "Áudio: uma variante só sempre toca a mesma")
 
 
 func _test_licenses() -> void:

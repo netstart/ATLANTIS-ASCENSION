@@ -401,16 +401,16 @@ func _on_event(ev: Dictionary) -> void:
 			if bool(ev.get("big", false)):
 				Settings.vibrate(18, 0.45, 0)
 		&"hit":
-			AudioManager.play("kenney_hit", 1.0, 0.1, -16.0)
+			AudioManager.play("hit", 1.0, 0.1, -16.0)
 		&"graze":
 			AudioManager.play("kenney_graze", 1.0, 0.05, -12.0)
 			Settings.vibrate(8, 0.25, 0)
 		&"orb":
 			AudioManager.play("kenney_weapon_up" if bool(ev.get("up", false)) else "kenney_orb")
 		&"medal":
-			AudioManager.play("kenney_medal", 1.0 + minf(0.6, float(ev.get("value", 100)) / 20000.0))
+			AudioManager.play("coin_medal", 1.0 + minf(0.6, float(ev.get("value", 100)) / 20000.0), 0.0, -3.0)
 		&"pearl":
-			AudioManager.play("kenney_pearl", 1.0, 0.1, -10.0)
+			AudioManager.play("coin_pearl", 1.0, 0.1, -1.0)
 		&"player_hit":
 			AudioManager.play("kenney_player_hit")
 			Settings.vibrate(80, -1.0, 2)
@@ -503,7 +503,7 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_ocean_shift", 0.6, 0.0, -4.0)
 			_hud.show_banner(tr("hud.gravity_breach"))
 		&"capsule":
-			AudioManager.play("kenney_medal", 1.0 + 0.08 * float(ev.get("combo", 1)))
+			AudioManager.play("coin_capsule", 1.0 + 0.08 * float(ev.get("combo", 1)), 0.0, -1.0)
 			if int(ev.get("combo", 1)) >= 2:
 				_hud.show_radio_text(tr("hud.capsule_combo") % int(ev["combo"]), UiTheme.GOLD)
 		&"cover":

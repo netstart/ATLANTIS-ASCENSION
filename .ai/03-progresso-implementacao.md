@@ -315,3 +315,11 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   Jogar, A na missão escolhida joga. Reviver e bênção só recebem o foco 0,6 s depois de abrir
   (o A do tiro não escolhe sem o jogador ver). Testes em `tests/focus_nav_tests.gd`. Falta conferir num controle
   físico e no Steam Deck
+- ✅ `1.14.3` Sons de coleta e de acerto refeitos (o mantenedor achou os antigos terríveis: a medalha não soava como
+  moeda e o acerto era um sino metálico que embolava). `tools/mix_pickup_audio.py` mistura camadas CC0 baixadas:
+  medalha `coin_medal` (Coin 3 de Deva + fichas do Kenney Casino Audio, 366 ms), pérola `coin_pearl_1..3` (cristal do
+  Kenney Interface Sounds + bolha de rubberduck, 134 ms), cápsula `coin_capsule` (coin1 de Luke.RUSTLTD, 300 ms, tom
+  sobe com o combo) e acerto `hit_1..5` (batida do Kenney Impact Sounds + estalo do Kenney UI Audio, corte duro em
+  90 ms). `AudioManager` alterna variantes `id_N` sem repetir a anterior, com gerador próprio (fora da simulação
+  determinística); limite e recarga contam pelo id. `kenney_medal`, `kenney_pearl` e `kenney_hit` seguem nos outros
+  usos (resultado, Arca da Maré, selo, diário, glifo). Testes em `tests/integration_tests.gd`. Falta ouvir no aparelho

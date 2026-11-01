@@ -1,0 +1,15 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "kenney_audio",
+	"note": "Misturas de tools/mix_pickup_audio.py: cristal do Kenney Interface Sounds com a bolha de rubberduck (pérola) e batida do Kenney Impact Sounds com o estalo do Kenney UI Audio (dano em inimigo). O jogo alterna as variantes.",
+	"files": {
+		"pickups/coin_pearl_1.ogg": "audio/sfx/coin_pearl_1.ogg",
+		"pickups/coin_pearl_2.ogg": "audio/sfx/coin_pearl_2.ogg",
+		"pickups/coin_pearl_3.ogg": "audio/sfx/coin_pearl_3.ogg",
+		"pickups/hit_1.ogg": "audio/sfx/hit_1.ogg",
+		"pickups/hit_2.ogg": "audio/sfx/hit_2.ogg",
+		"pickups/hit_3.ogg": "audio/sfx/hit_3.ogg",
+		"pickups/hit_4.ogg": "audio/sfx/hit_4.ogg",
+		"pickups/hit_5.ogg": "audio/sfx/hit_5.ogg"
+	}
+}

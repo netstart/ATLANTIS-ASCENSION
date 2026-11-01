@@ -118,15 +118,16 @@
   },
   {
     "id": "kenney_audio",
-    "name": "Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio",
+    "name": "Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio, Casino Audio, UI Audio",
     "author": "Kenney (kenney.nl)",
     "license_id": "CC0-1.0",
     "category": "audio",
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
+    "modifications": "coin_medal (fichas do Casino Audio a -9 dB), coin_pearl_1..3 (glass_006/005/002) e hit_1..5 (impactGeneric_light_000..004 + click4 do UI Audio a -4 dB) misturados, recortados e com pico em -1 dBFS por tools/mix_pickup_audio.py",
     "source_url": "https://kenney.nl/assets/sci-fi-sounds",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
-    "files_count": 26
+    "files_count": 34
   },
   {
     "id": "kenney_music_jingles",
@@ -444,5 +445,44 @@
     "source_url": "https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "files_count": 1
+  },
+  {
+    "id": "deva_8bit_sfx_vol1",
+    "name": "8-Bit Sound Effect Pack Vol. 001",
+    "author": "Deva (@Shades)",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-11-01",
+    "verified_at": "2026-11-01",
+    "modifications": "Coin 3 com passa-baixa de 7 kHz, somado às fichas do Kenney Casino Audio, corte em 380 ms com fade de 40 ms, pico -1 dBFS (tools/mix_pickup_audio.py). O autor pede crédito como @Shades.",
+    "source_url": "https://opengameart.org/content/8-bit-sound-effect-pack-vol-001",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "notice_file": "res://licenses/notices/deva_8bit_sfx_vol1_README.txt",
+    "files_count": 1
+  },
+  {
+    "id": "luke_rustltd_coin_sounds",
+    "name": "10 8bit Coin Sounds",
+    "author": "Luke.RUSTLTD",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-11-01",
+    "verified_at": "2026-11-01",
+    "modifications": "coin1 com passa-baixa de 7 kHz, corte em 300 ms com fade de 40 ms, pico -1 dBFS (tools/mix_pickup_audio.py)",
+    "source_url": "https://opengameart.org/content/10-8bit-coin-sounds",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "files_count": 1
+  },
+  {
+    "id": "rubberduck_100_cc0_sfx",
+    "name": "100 CC0 SFX",
+    "author": "rubberduck",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-11-01",
+    "verified_at": "2026-11-01",
+    "modifications": "plop_01 reamostrado para 44,1 kHz e somado a -12 dB aos cristais do Kenney nas três variantes de coin_pearl (tools/mix_pickup_audio.py)",
+    "source_url": "https://opengameart.org/content/100-cc0-sfx",
+    "license_file": "res://licenses/texts/CC0-1.0.txt"
   }
 ]

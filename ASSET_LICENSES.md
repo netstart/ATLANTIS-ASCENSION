@@ -15,7 +15,7 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Galmuri (Fusion Pixel upstream) | Lee Minseo (quiple) | OFL-1.1 | included in Fusion Pixel 2026.10.16 | sim | sim | `licenses/texts/OFL-1.1.txt` | https://github.com/quiple/galmuri |
 | Kenney — Pixel Shmup, Space Shooter Redux/Extension, Particle Pack, Smoke Particles, UI Pack Sci-fi, Game Icons, Input Prompts | Kenney (kenney.nl) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://kenney.nl/assets/pixel-shmup |
 | Kenney Fonts | Kenney (kenney.nl) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://kenney.nl/assets/kenney-fonts |
-| Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio | Kenney (kenney.nl) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://kenney.nl/assets/sci-fi-sounds |
+| Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio, Casino Audio, UI Audio | Kenney (kenney.nl) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://kenney.nl/assets/sci-fi-sounds |
 | Kenney — Music Jingles | Kenney (kenney.nl) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://kenney.nl/assets/music-jingles |
 | Void — Main Ship | Foozle (foozle.io) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://foozlecc.itch.io/void-main-ship |
 | Void — Fleet Pack 1 (Kla'ed) | Foozle (foozle.io) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://foozlecc.itch.io/void-fleet-pack-1 |
@@ -42,6 +42,9 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Underwater Ambient Pad | isaiah658 | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/underwater-ambient-pad |
 | Electricity Game Sound Pack | faxcorp | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/electricity-game-sound-pack |
 | NES Shooter Music (5 tracks, 3 jingles) | SketchyLogic | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles |
+| 8-Bit Sound Effect Pack Vol. 001 | Deva (@Shades) | CC0-1.0 |  | sim | sim | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-sound-effect-pack-vol-001 |
+| 10 8bit Coin Sounds | Luke.RUSTLTD | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/10-8bit-coin-sounds |
+| 100 CC0 SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/100-cc0-sfx |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em
