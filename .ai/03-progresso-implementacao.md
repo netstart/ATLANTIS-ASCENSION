@@ -27,7 +27,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ✅ Fase 3 (Beta) concluída na versão `0.9.0`: campanha completa de 9 capítulos (37 missões) vencida pelo bot de
   ponta a ponta com a carga do hangar; ver o checklist da Fase 3 para os números e o que ficou de fora.
 - ✅ Fase 4 (Lançamento) com o código da `1.0.0` pronto: Segunda Maré, Correntes, replay e Fantasma do Abismo,
-  placares, passe, conquistas, modo foto e documentos de loja. O que depende de contas e contratos (Play Console,
+  placares, passe, conquistas e documentos de loja. O que depende de contas e contratos (Play Console,
   AdMob, Billing, Steamworks, Android SDK) está em `docs/store/release-checklist.md`.
   `tools/run_checks.ps1`: `TUDO OK` (892 verificações de regras, 71.619 de integração, layout e fluxo, 609 textos x
   11 idiomas, 21 componentes de licença e 169 arquivos, mesmo hash em 1x/2x/3x/Baixa). Benchmarks: partida com
@@ -172,7 +172,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   casco de vidro)
 - ✅ Passe da Maré por trimestre: 30 níveis, trilha grátis e trilha dourada com 3 pinturas (compra simulada)
 - ✅ 22 conquistas locais (`data/achievements.json`, mesmas ids para a Steam) no Diário e no resultado
-- ✅ Modo foto do mapa (esconde a interface, salva PNG em `user://photos/`)
+- ~~Modo foto do mapa~~ removido em 1.14.2 a pedido do mantenedor
 - ✅ Ícone do jogo (`1.0.1`): pixel art gerada por `tools/gen_sprites.py` (nave subindo pelo portal atlante sobre as
   ondas), em 512 e 192 px e nas camadas do ícone adaptativo do Android (432 px, conteúdo na zona segura)
 - ✅ Política de privacidade (pt-BR e en), textos das lojas, questionários IARC e de Segurança de dados, modelo do
@@ -312,6 +312,6 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   história, botão principal no resultado, primeiro item das listas); pelo toque nada muda, e o primeiro D-pad numa
   tela sem foco só acorda o foco. As listas rolam atrás do foco e, remontadas depois de comprar ou equipar, devolvem
   o foco ao mesmo item. Mapa: cima e baixo andam pelas missões abertas com a câmera junto, baixo na primeira leva ao
-  Jogar, A na missão escolhida joga, B sai do modo foto. Reviver e bênção só recebem o foco 0,6 s depois de abrir
+  Jogar, A na missão escolhida joga. Reviver e bênção só recebem o foco 0,6 s depois de abrir
   (o A do tiro não escolhe sem o jogador ver). Testes em `tests/focus_nav_tests.gd`. Falta conferir num controle
   físico e no Steam Deck

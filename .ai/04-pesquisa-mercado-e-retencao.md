@@ -170,7 +170,7 @@ Custo: P (até 1 semana), M (1 a 4 semanas), G (mais de 1 mês). Fase: VS (Verti
 | 33 | **Ecos dos Caídos** | A nave de um jogador que caiu numa missão vira um eco preso numa bolha na partida de outro; resgatar dá recompensa aos dois | Original | M | Pós (backend) |
 | 34 | **Elevação Global** | Meta comunitária semanal: os abates de todos erguem uma torre no hub; ao completar, todos ganham cosmético | Original | M | Pós (backend) |
 | 35 | **Abismo Infinito** | Sobrevivência vira roguelite: módulos e bênçãos entre ondas, sinergias, placar | Nova Drift | G | Pós |
-| 36 | **Modo foto do mapa** | Congelar o mapa em parallax ou o hub e compartilhar o cartão da missão com estrelas | Original | P | 1.0 |
+| 36 | ~~**Modo foto do mapa**~~ (fora do escopo: removido em 1.14.2 a pedido do mantenedor) | Congelar o mapa em parallax ou o hub e compartilhar o cartão da missão com estrelas | Original | P | 1.0 |
 | 37 | **Casas Atlantes** | Guildas de até 30 com meta cooperativa semanal | SWGoH | G | Pós (backend) |
 | 38 | **Mergulho como risco** | Toque para mergulhar entre duas camadas jogáveis (superfície e abismo), com recarga | Original (2.5D real) | G | Pós, protótipo no Alpha |
 | 39 | **Co-op local** | 2 jogadores no PC com escudo-bolha compartilhado | Jamestown | G | Pós |

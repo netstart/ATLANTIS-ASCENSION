@@ -43,7 +43,7 @@ func _ready() -> void:
 	await LayoutTests.new().run(self, _check)
 	await CreditsScreenTests.new().run(self, _check)
 	await FlowTests.new().run(self, _check)
-	await LaunchTests.new().run(self, _check)
+	LaunchTests.new().run(_check)
 	await LiveryTests.new().run_view(self, _check)
 	await GloryTests.new().run_view(self, _check)
 	await WeatherViewTests.new().run_view(self, _check)

@@ -7,7 +7,7 @@ Steam, só com assets gratuitos e livres para uso comercial.
 
 **Estado:** 1.0.0 (código de lançamento pronto; contas das lojas pendentes, ver
 [docs/store/release-checklist.md](docs/store/release-checklist.md)): Segunda Maré, Correntes semanais, replays e
-Fantasma do recorde, placares, Passe da Maré, 22 conquistas e modo foto, sobre a campanha completa de 9 capítulos (37 missões, 7 rotas de Abismo, 4 missões
+Fantasma do recorde, placares, Passe da Maré, 22 conquistas, sobre a campanha completa de 9 capítulos (37 missões, 7 rotas de Abismo, 4 missões
 secretas), 8 mini-chefes, 4 chefes de ato e 3 finais; 6 aeronaves, 12 asas, 18 Bênçãos, Maré Alta, Gravity Breach;
 modos Arcade, Boss Rush, Desafio Diário, Sobrevivência e Prática; login, tarefas e Núcleo; Cidade de Thalassa; loja e
 anúncios simulados; daltonismo e escala de texto; 11 idiomas. O export Android depende de

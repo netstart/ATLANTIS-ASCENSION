@@ -15,7 +15,7 @@ opções (idioma, volume, acessibilidade) e replays dos seus recordes. Tudo fica
 (`user://save.json`, `user://settings.cfg`, `user://replays/`). Nós não recebemos esses dados.
 
 **O que o jogo NÃO coleta.** Nome, e-mail, contatos, localização, fotos, microfone, câmera, identificador de
-publicidade ou dados de uso. O modo foto salva imagens apenas no armazenamento do próprio jogo. A única
+publicidade ou dados de uso. A única
 permissão pedida no Android é a vibração (para o retorno tátil, que pode ser desligado nas opções).
 
 **Anúncios e compras.** A versão atual **não tem anúncios nem compras no app**. Se uma versão futura do Android
@@ -44,7 +44,7 @@ and no server, and does not collect, send or share personal data.
 device**. We receive none of this data.
 
 **What the game does NOT collect.** Name, e-mail, contacts, location, photos, microphone, camera, advertising ID
-or usage data. Photo mode saves images only to the game's own storage. The only Android permission requested is
+or usage data. The only Android permission requested is
 vibration (for haptic feedback, which can be turned off in the options).
 
 **Ads and purchases.** The current version **has no ads and no in-app purchases**. If a future Android version

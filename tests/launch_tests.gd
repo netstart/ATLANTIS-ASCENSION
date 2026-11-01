@@ -6,14 +6,13 @@ extends RefCounted
 const SaveManagerScript := preload("res://scripts/autoload/save_manager.gd")
 
 
-func run(host: Node, check: Callable) -> void:
+func run(check: Callable) -> void:
 	_replay(check)
 	_boards(check)
 	_second_tide(check)
 	_currents(check)
 	_season(check)
 	_achievements(check)
-	await _photo(host, check)
 
 
 func _replay(check: Callable) -> void:
@@ -118,18 +117,3 @@ func _achievements(check: Callable) -> void:
 	check.call(Achievements.check(p, {}).is_empty(), "Conquistas: não repetem")
 	p["missions"]["c5m3a"] = {"cleared": true, "stars": [true, false, false, false], "best_score": 1}
 	check.call("sky_leviathan" in Achievements.check(p, {}), "Conquistas: qualquer rota conta (5-3 Abismo)")
-
-
-func _photo(host: Node, check: Callable) -> void:
-	var app := App.new()
-	host.add_child(app)
-	await host.get_tree().process_frame
-	app.go(&"map")
-	await host.get_tree().process_frame
-	var map := app.screen(&"map") as MapScreen
-	map.set_photo_mode(true)
-	check.call(not (map.find_child("Back", true, false) as Control).visible, "Modo foto: esconde a interface")
-	map.set_photo_mode(false)
-	check.call((map.find_child("Back", true, false) as Control).visible, "Modo foto: volta a interface")
-	app.queue_free()
-	await host.get_tree().process_frame

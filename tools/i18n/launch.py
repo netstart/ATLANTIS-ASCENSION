@@ -1,5 +1,5 @@
-"""Textos do Lançamento (1.0): Segunda Maré, Correntes semanais, replay e placares, passe de temporada,
-conquistas e modo foto. Ordem: pt_BR, en, es, de, fr, ru, id, ja, ko, zh_TW, zh_CN.
+"""Textos do Lançamento (1.0): Segunda Maré, Correntes semanais, replay e placares, passe de temporada e
+conquistas. Ordem: pt_BR, en, es, de, fr, ru, id, ja, ko, zh_TW, zh_CN.
 """
 
 STRINGS = {
@@ -91,9 +91,6 @@ STRINGS = {
     "logbook.achievements": ["Conquistas (%d de %d)", "Achievements (%d of %d)", "Logros (%d de %d)", "Erfolge (%d von %d)",
                              "Succès (%d sur %d)", "Достижения (%d из %d)", "Pencapaian (%d dari %d)", "実績（%d/%d）", "업적 (%d/%d)",
                              "成就（%d/%d）", "成就（%d/%d）"],
-    "map.photo": ["Foto", "Photo", "Foto", "Foto", "Photo", "Фото", "Foto", "写真", "사진", "拍照", "拍照"],
-    "map.photo_save": ["Salvar", "Save", "Guardar", "Speichern", "Enregistrer", "Сохранить", "Simpan", "保存", "저장", "儲存", "保存"],
-    "map.photo_exit": ["Sair", "Exit", "Salir", "Zurück", "Quitter", "Выйти", "Keluar", "戻る", "나가기", "離開", "退出"],
     "options.ghost": ["Fantasma do recorde", "Record ghost", "Fantasma del récord", "Rekord-Geist", "Fantôme du record",
                       "Призрак рекорда", "Hantu rekor", "記録のゴースト", "기록 유령", "紀錄幽靈", "纪录幽灵"],
 }

@@ -634,7 +634,8 @@ céu, o céu vira estrelas).
 - A partir do cap. 3, o último nó de cada capítulo se bifurca em **Superfície** (trilha dourada, camada 3) e
   **Abismo** (trilha bioluminescente que desce para a camada 2,5, com parallax próprio e mais escura). As fendas
   dos Glifos aparecem como rachaduras de luz entre as camadas.
-- **Modo foto:** congelar o mapa, esconder a interface e compartilhar o cartão da missão com as estrelas.
+- ~~**Modo foto:** congelar o mapa, esconder a interface e compartilhar o cartão da missão com as estrelas.~~
+  Fora do escopo: removido em 1.14.2 a pedido do mantenedor.
 - Toque num nó abre um cartão: nome, objetivo da 4ª estrela, recompensas, melhor pontuação, botão Jogar.
 - Inclinação do aparelho adiciona ±6 pt de deslocamento horizontal por camada (fator de inclinação).
 - Desempenho: camadas 0 a 2 são texturas assadas por estrato (`StaticBake`), camada 4 é `GPUParticles2D` com no
@@ -984,7 +985,7 @@ Cada fase termina com `tools/run_checks.ps1` em `TUDO OK`, versão marcada e che
 - Política de privacidade, `app-ads.txt`, créditos públicos.
 - Traduções: as 11 línguas saem como estão; não haverá revisão por nativos (decisão do mantenedor, 31/10/2026).
 - Segunda Maré, Fantasma do Abismo (replay do melhor e do 1º do dia), placares com replay anexado, Correntes
-  semanais, passe de temporada (grátis + cosmético), modo foto do mapa.
+  semanais, passe de temporada (grátis + cosmético). O modo foto do mapa saiu em 1.14.2 (fora do escopo).
 - Critério de pronto: aprovado nas duas lojas; crash-free ≥ 99,5% no teste fechado; D1 ≥ 40% no teste fechado.
 
 ### Pós-lançamento

@@ -44,15 +44,11 @@ const KIND_MARK := {&"miniboss": " ◆", &"boss": " ♛", &"secret": " ◎", &"r
 var camera: float = 600.0
 var velocity: float = 0.0
 var selected: StringName = &""
-## Modo foto: esconde a interface e deixa só as camadas do mapa (arrastar continua rolando).
-var photo_mode: bool = false
 
 var _view: _MapView
 var _beacon: _Beacon
 var _ring: Texture2D
 var _back: Button
-var _photo: Button
-var _photo_bar: HBoxContainer
 var _title: Label
 var _node_buttons: Dictionary = {}
 var _card: PanelContainer
@@ -112,21 +108,6 @@ func _build() -> void:
 		AudioManager.play_ui("kenney_ui_back")
 		navigate.emit(&"back"))
 	add_child(_back)
-	_photo = Button.new()
-	_photo.name = "Photo"
-	_photo.custom_minimum_size = Vector2(UiTheme.TOUCH_MIN + 20.0, UiTheme.TOUCH_MIN)
-	_photo.pressed.connect(func() -> void: set_photo_mode(true))
-	add_child(_photo)
-	_photo_bar = HBoxContainer.new()
-	_photo_bar.add_theme_constant_override("separation", 8)
-	for entry: Array in [["Save", save_photo], ["Exit", func() -> void: set_photo_mode(false)]]:
-		var b := Button.new()
-		b.name = entry[0]
-		b.custom_minimum_size = Vector2(96, UiTheme.TOUCH_MIN)
-		b.pressed.connect(entry[1])
-		_photo_bar.add_child(b)
-	_photo_bar.visible = false
-	add_child(_photo_bar)
 	_title = UiTheme.heading("", UiTheme.HEADING_SIZE, UiTheme.WHITE)
 	_title.clip_text = true
 	_title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
@@ -218,9 +199,6 @@ func on_show(app: Node) -> void:
 func refresh_texts() -> void:
 	_back.tooltip_text = tr("credits.back")
 	_title.text = tr("map.title")
-	_photo.text = tr("map.photo")
-	(_photo_bar.get_node("Save") as Button).text = tr("map.photo_save")
-	(_photo_bar.get_node("Exit") as Button).text = tr("map.photo_exit")
 	for n: Dictionary in Economy.CAMPAIGN:
 		var b: Button = _node_buttons[n["id"]]
 		b.text = node_label(n)
@@ -254,27 +232,17 @@ func _on_node(id: StringName) -> void:
 
 ## Pelo controle a tela abre na missão escolhida, assim que a câmera a mostrar.
 func default_focus() -> Control:
-	if photo_mode:
-		return _photo_bar.get_node("Save") as Control
 	_pad_focus = selected
 	if _focus_y < 0.0 and size.y > 0.0:
 		_target = maxf(0.0, float(Economy.node(selected)["y"]) - size.y * 0.55)
 	return null
 
 
-## Modo foto: o voltar sai dele (em vez de sair do mapa).
-func back() -> bool:
-	if photo_mode:
-		set_photo_mode(false)
-		return true
-	return false
-
-
 ## Controle e teclado: cima e baixo andam pelas missões abertas (de baixo para cima, como a subida no
 ## mapa) com a câmera indo junto; baixo na primeira leva ao Jogar do cartão. Esquerda e direita ficam com
 ## a navegação do Godot (rotas lado a lado).
 func _input(event: InputEvent) -> void:
-	if not is_visible_in_tree() or photo_mode:
+	if not is_visible_in_tree():
 		return
 	var step := 1 if event.is_action_pressed("ui_up") else -1 if event.is_action_pressed("ui_down") else 0
 	if step == 0:
@@ -329,7 +297,7 @@ func _select(id: StringName) -> void:
 func _update_card() -> void:
 	if _card == null or selected == &"":
 		return
-	_card.visible = not photo_mode
+	_card.visible = true
 	var record := SaveManager.mission_record(selected)
 	var stars: Array = record["stars"]
 	_card_title.text = tr("stage." + String(selected))
@@ -358,13 +326,8 @@ func _layout() -> void:
 		return
 	_back.size = _back.custom_minimum_size
 	_back.position = Vector2(safe.position.x + 8.0, safe.position.y + 8.0)
-	_photo.reset_size()
-	_photo.position = Vector2(safe.end.x - _photo.size.x - 8.0, safe.position.y + 8.0)
 	_title.position = Vector2(_back.position.x + _back.size.x + 10.0, safe.position.y + 14.0)
-	_title.size = Vector2(maxf(0.0, _photo.position.x - 8.0 - _title.position.x), 0)
-	_photo_bar.reset_size()
-	_photo_bar.position = Vector2(floorf(safe.position.x + (safe.size.x - _photo_bar.size.x) * 0.5),
-			safe.end.y - _photo_bar.size.y - 10.0)
+	_title.size = Vector2(maxf(0.0, safe.end.x - 8.0 - _title.position.x), 0)
 	var width := minf(safe.size.x - 16.0, 340.0)
 	# Rótulos com quebra precisam da largura antes do cálculo da altura do cartão.
 	var inner := width - 24.0
@@ -456,36 +419,8 @@ func _place_nodes() -> void:
 
 
 func layout_controls() -> Array[Control]:
-	var list: Array[Control] = [_back, _title, _card, _photo]
+	var list: Array[Control] = [_back, _title, _card]
 	return list
-
-
-## Liga ou desliga o modo foto (plano mestre Fase 4): só o mapa em parallax e os botões Salvar/Sair.
-func set_photo_mode(on: bool) -> void:
-	photo_mode = on
-	for c: Control in [_back, _title, _card, _photo]:
-		c.visible = not on if c != _card else (not on and selected != &"")
-	for b: Button in _node_buttons.values():
-		b.modulate.a = 0.0 if on else 1.0
-		b.focus_mode = Control.FOCUS_NONE if on else Control.FOCUS_ALL
-	_photo_bar.visible = on
-	if FocusNav.pad:
-		FocusNav.focus(_photo_bar.get_node("Save") as Control if on else _node_buttons.get(selected) as Control)
-	_drawn_camera = -1.0
-	AudioManager.play_ui("kenney_ui_click")
-
-
-## Salva a tela (sem a barra do modo foto) em user://photos/ e devolve o caminho.
-func save_photo() -> String:
-	_photo_bar.visible = false
-	await RenderingServer.frame_post_draw
-	var image := get_viewport().get_texture().get_image()
-	_photo_bar.visible = photo_mode
-	DirAccess.make_dir_recursive_absolute("user://photos")
-	var path := "user://photos/atlantis_%d.png" % Time.get_unix_time_from_system()
-	image.save_png(path)
-	AudioManager.play_ui("kenney_ui_confirm")
-	return path
 
 
 func draw_map(ci: CanvasItem) -> void:
@@ -581,14 +516,13 @@ func draw_map(ci: CanvasItem) -> void:
 		var rr := 2.0 + float(i % 3)
 		ci.draw_texture_rect(_glow, Rect2(x - rr, y - rr, rr * 2.0, rr * 2.0), false, Color(0.75, 0.95, 1.0, 0.35))
 	# Cabeçalho: faixa escura com filete ciano para o título ler sobre qualquer estrato.
-	if not photo_mode:
-		var head := safe.position.y + HEADER
-		ci.draw_rect(Rect2(0, 0, w, head), Color(UiTheme.ABYSS, 0.72))
-		ci.draw_rect(Rect2(0, head, w, 1.0), Color(UiTheme.CYAN, 0.3))
+	var head := safe.position.y + HEADER
+	ci.draw_rect(Rect2(0, 0, w, head), Color(UiTheme.ABYSS, 0.72))
+	ci.draw_rect(Rect2(0, head, w, 1.0), Color(UiTheme.CYAN, 0.3))
 
 
 ## Camada aditiva por cima da rota: luzes que sobem pelos traços abertos até cada farol e o sonar do
-## farol escolhido (dois anéis que abrem e somem). Sem anel no modo foto (os faróis somem).
+## farol escolhido (dois anéis que abrem e somem).
 func draw_beacon(ci: CanvasItem) -> void:
 	var w := size.x
 	var h := size.y
@@ -606,7 +540,7 @@ func draw_beacon(ci: CanvasItem) -> void:
 			var fade := sin(u * PI)
 			ci.draw_texture_rect(_glow, Rect2(p - Vector2(9, 9), Vector2(18, 18)), false, Color(UiTheme.GOLD, 0.55 * fade))
 			ci.draw_texture_rect(_glow, Rect2(p - Vector2(3, 3), Vector2(6, 6)), false, Color(1.0, 0.97, 0.85, fade))
-	if photo_mode or selected == &"":
+	if selected == &"":
 		return
 	var chosen := Economy.node(selected)
 	var c := Vector2(w * float(chosen["x"]), screen_y(float(chosen["y"]), 1.0))
