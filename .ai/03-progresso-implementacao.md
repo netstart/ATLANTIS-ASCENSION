@@ -282,3 +282,27 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `bombs_left` e `cause`). **Câmera lenta** de 1,1 s quando o chefe final cai (`GameClock.time_scale`, sem mudar a
   partida) e **vibração em camadas** por prioridade (o raspão nunca abafa o dano). 3 conquistas novas (Maestria,
   Lenda Atlante, Tesouro de Atlântida; 28 no total), 34 textos x 11 idiomas. Testes em `tests/glory_tests.gd`
+- ✅ `1.13.0` Céu e Mar Vivos: clima dinâmico em 37 das 40 missões (o núcleo do cap. 9 fica de fora: é circuito, sem céu nem mar), sempre coerente com o meio do cenário
+  (`data/weather.json`, 19 estados; `scripts/sim/weather.gd`, determinístico, fluxo próprio do `SimRng`). **Céu**:
+  nuvens passando, chuva, tempestade com relâmpago ramificado, olho da tempestade (abre antes do mini-chefe Olho da
+  Tempestade), neve, nevasca com véu nas bordas, chuva de cinzas com brasas, corrente de jato. **Mar**: cor da água
+  que muda (turquesa, verde do plâncton, azul da termoclina, marrom do sedimento), neve marinha, filetes da corrente
+  que muda de direção, ressaca, termoclina com borda ondulada, corrente abissal, fontes termais, tempestade na
+  superfície (o raio ilumina a água de cima). **Órbita**: tempestade solar com aurora. **Pilotagem**: vento e
+  corrente com rajadas que levam a nave e curvam as balas inimigas, turbulência que o modo preciso segura pela
+  metade, resistência do meio (água fria ou turva, gelo no casco, cinzas) que responde no mesmo passo; biruta no
+  canto do campo com seta, turbulência e lentidão. Frente anunciada no rádio (coral quando severa: 3 s de aviso,
+  5 s de rampa). **Navegador da Tormenta**: frente severa atravessada sem dano dá 3.000 pontos e Eco de Estilo.
+  **Surpresas**: arco-íris e sol rompendo quando a tempestade passa, nuvem acesa por dentro pelo relâmpago, sombra
+  das nuvens no chão, gotas no casco e escorrendo das asas, vapor nas pontas das asas nas curvas dentro da nuvem,
+  bolhas do motor arrastadas pela corrente, gelo cintilando no casco. **Som**: chuva fina e forte, vento, água
+  correndo, pad grave na água funda (camadas no novo barramento Ambience), trovão atrasado pela distância e com
+  vibração quando perto, música e ambiente abafados sob a água (passa-baixa), silêncio de vento no vácuo. Leitura
+  intacta: base sob o teto de brilho do cenário, camada de perto abaixo das balas inimigas, ≤ 35% e some em padrão
+  denso; "reduzir flashes" corta o clarão e o raio. Áudio CC0 do catálogo (kindland, isaiah658, rubberduck) recortado
+  por `tools/cut_weather_audio.py`; nuvens procedurais (o pacote "Pixel Clouds and Thunderstorms" do catálogo é
+  música). Bot compensa a deriva como a mão do jogador. Replays antigos seguem válidos (o clima padrão não mexe em
+  nada). Testes de regras em `tests/weather_tests.gd` (mistura do som pura em `scripts/game/weather_mix.gd`), de tela
+  em `tests/weather_view_tests.gd`; galeria em `tests/weather_shots_runner.tscn`. Benchmark (`game_bench --strict`,
+  1.000 balas, nave nível 10, Radeon integrada): partida padrão 3,86 ms de média (p99 5,93, nenhum quadro > 20 ms);
+  `--mission=c3m3s --weather=storm` 4,04 ms de média (p99 7,07, 1 quadro > 20 ms, nenhum > 33 ms)

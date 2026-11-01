@@ -157,6 +157,13 @@
 			"t": 27.0
 		},
 		{
+			"op": "weather",
+			"to": "jetstream",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 33.36
+		},
+		{
 			"op": "wave",
 			"enemy": "gold_lance",
 			"formation": "line",
@@ -351,6 +358,13 @@
 			"t": 71.83
 		},
 		{
+			"op": "weather",
+			"to": "clouds",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 72.28
+		},
+		{
 			"op": "wave",
 			"enemy": "nautilus",
 			"formation": "single",
@@ -528,5 +542,6 @@
 			"op": "end",
 			"t": 107.2
 		}
-	]
+	],
+	"weather": "clear"
 }

@@ -536,5 +536,6 @@
 		}
 	],
 	"secret_mission": true,
-	"dark": true
+	"dark": true,
+	"weather": "ash"
 }

@@ -119,6 +119,13 @@
 			"t": 16.69
 		},
 		{
+			"op": "weather",
+			"to": "storm",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 17.21
+		},
+		{
 			"op": "wave",
 			"enemy": "herald",
 			"formation": "single",
@@ -343,6 +350,13 @@
 			"t": 61.31
 		},
 		{
+			"op": "weather",
+			"to": "eye",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 62.31
+		},
+		{
 			"op": "blessing",
 			"t": 64.81
 		},
@@ -383,6 +397,13 @@
 			"t": 74.37
 		},
 		{
+			"op": "weather",
+			"to": "rain",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 75.74
+		},
+		{
 			"op": "wave",
 			"enemy": "spark_swarm",
 			"formation": "column",
@@ -416,5 +437,6 @@
 			"op": "end",
 			"t": 82.06
 		}
-	]
+	],
+	"weather": "rain"
 }

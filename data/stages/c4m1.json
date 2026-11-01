@@ -144,6 +144,13 @@
 			"t": 29.5
 		},
 		{
+			"op": "weather",
+			"to": "ash",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 31.3
+		},
+		{
 			"op": "lightning",
 			"kind": "lava",
 			"x": 0.5,
@@ -468,6 +475,13 @@
 			"t": 95.1
 		},
 		{
+			"op": "weather",
+			"to": "clear",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 100.16
+		},
+		{
 			"op": "blessing",
 			"t": 101.6
 		},
@@ -572,5 +586,6 @@
 	"secret": {
 		"glyphs": 3,
 		"mission": "s2"
-	}
+	},
+	"weather": "clear"
 }

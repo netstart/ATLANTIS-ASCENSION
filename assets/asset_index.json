@@ -1266,6 +1266,12 @@
   "sha256": "fa7943c117f367b205bf808486d249c22e894f19e5641608a1a25c25d6d7ad39"
  },
  {
+  "file": "assets/audio/sfx/isaiah658_underwater_pad.ogg",
+  "source": "opengameart/weather-cuts/underwater_pad.ogg",
+  "license_id": "isaiah658_underwater_pad",
+  "sha256": "b29060015214c10b1ca5d0156b1550fdf13456eca8b5a499f6747793ce6720e3"
+ },
+ {
   "file": "assets/audio/sfx/kenney_ascend_bell.ogg",
   "source": "kenney/impact-sounds/Audio/impactBell_heavy_001.ogg",
   "license_id": "kenney_audio",
@@ -1422,6 +1428,30 @@
   "sha256": "e4d2c7707655361678ccd358048b7956753e4f333e99545b4ae25e07a9b2ef9b"
  },
  {
+  "file": "assets/audio/sfx/kindland_storm_bed.ogg",
+  "source": "opengameart/weather-cuts/storm_bed.ogg",
+  "license_id": "kindland_rain_thunders",
+  "sha256": "2b13750e59e9f6193e5432a86874ebab62563954a839441fd6dc51ebc1ad9b8c"
+ },
+ {
+  "file": "assets/audio/sfx/kindland_thunder_1.ogg",
+  "source": "opengameart/weather-cuts/thunder_1.ogg",
+  "license_id": "kindland_rain_thunders",
+  "sha256": "193018e0f502750e6081af37c0064f60c43be8580ade2b83924f83d53239d6b5"
+ },
+ {
+  "file": "assets/audio/sfx/kindland_thunder_2.ogg",
+  "source": "opengameart/weather-cuts/thunder_2.ogg",
+  "license_id": "kindland_rain_thunders",
+  "sha256": "7143e97f2089d1a377ab7397f5cbda40a5cb58a1c7517ddb9bd10c27f6749957"
+ },
+ {
+  "file": "assets/audio/sfx/kindland_thunder_3.ogg",
+  "source": "opengameart/weather-cuts/thunder_3.ogg",
+  "license_id": "kindland_rain_thunders",
+  "sha256": "27f86c9b5b450c26be139b7af5483fd6c43169fe20d27a2818c72eba07360845"
+ },
+ {
   "file": "assets/audio/sfx/rubberduck_alarm.ogg",
   "source": "opengameart/30-cc0-sfx-loops/x/alarm_02.ogg",
   "license_id": "rubberduck_sfx_loops",
@@ -1434,10 +1464,28 @@
   "sha256": "1208729886f3f66e7d8018e8880dff073275fd37b30e1016dd5b164161482df1"
  },
  {
+  "file": "assets/audio/sfx/rubberduck_rain.ogg",
+  "source": "opengameart/weather-cuts/rain_light.ogg",
+  "license_id": "rubberduck_sfx_loops",
+  "sha256": "78a85b90998c76e03391c3ed980944734521a8fe1a484ef30fd1e00a864bc236"
+ },
+ {
   "file": "assets/audio/sfx/rubberduck_roar.ogg",
   "source": "opengameart/80-cc0-creature-sfx/x2/roar_04.ogg",
   "license_id": "rubberduck_creature_sfx",
   "sha256": "4bd8be77b058410e1af9a3a5aa5c62b8ec9ac214672be4ab84180e156e8c0a20"
+ },
+ {
+  "file": "assets/audio/sfx/rubberduck_water.ogg",
+  "source": "opengameart/weather-cuts/water_flow.ogg",
+  "license_id": "rubberduck_sfx_loops",
+  "sha256": "ad65da51c60ff1431101bc6e5ce7402115acf107e07067d21c1efff8db960e8f"
+ },
+ {
+  "file": "assets/audio/sfx/rubberduck_wind.ogg",
+  "source": "opengameart/weather-cuts/wind.ogg",
+  "license_id": "rubberduck_sfx_loops",
+  "sha256": "59a8e6dc1269421a31ff4d46de76bc36d786f2dd6ad6d1796df2f0721af88d7e"
  },
  {
   "file": "assets/fonts/exo2_variable.ttf",

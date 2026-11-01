@@ -213,6 +213,13 @@
 			"t": 42.27
 		},
 		{
+			"op": "weather",
+			"to": "solar",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 43.82
+		},
+		{
 			"op": "wave",
 			"enemy": "spark_swarm",
 			"formation": "column",
@@ -473,6 +480,13 @@
 			"t": 87.1
 		},
 		{
+			"op": "weather",
+			"to": "vacuum",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 87.64
+		},
+		{
 			"op": "wave",
 			"enemy": "glyph",
 			"formation": "single",
@@ -604,5 +618,6 @@
 	"secret": {
 		"glyphs": 3,
 		"mission": "s4"
-	}
+	},
+	"weather": "vacuum"
 }

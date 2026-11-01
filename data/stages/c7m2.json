@@ -153,6 +153,13 @@
 			"t": 23.55
 		},
 		{
+			"op": "weather",
+			"to": "jetstream",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 24.64
+		},
+		{
 			"op": "wave",
 			"enemy": "nautilus",
 			"formation": "single",
@@ -360,6 +367,13 @@
 			"t": 66.98
 		},
 		{
+			"op": "weather",
+			"to": "clear",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 68.99
+		},
+		{
 			"op": "wave",
 			"enemy": "volt_ray",
 			"formation": "line",
@@ -485,5 +499,6 @@
 			"op": "end",
 			"t": 94.56
 		}
-	]
+	],
+	"weather": "clouds"
 }

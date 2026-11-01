@@ -95,6 +95,13 @@
 			"t": 17.48
 		},
 		{
+			"op": "weather",
+			"to": "rain",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 19.12
+		},
+		{
 			"op": "wave",
 			"enemy": "volt_ray",
 			"formation": "line",
@@ -204,6 +211,13 @@
 			},
 			"marked": true,
 			"t": 44.82
+		},
+		{
+			"op": "weather",
+			"to": "storm",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 48.45
 		},
 		{
 			"op": "wave",
@@ -414,6 +428,13 @@
 			"t": 91.6
 		},
 		{
+			"op": "weather",
+			"to": "clouds",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 91.8
+		},
+		{
 			"op": "wind",
 			"dx": -1,
 			"strength": 34,
@@ -520,5 +541,6 @@
 			"op": "end",
 			"t": 123.5
 		}
-	]
+	],
+	"weather": "clouds"
 }

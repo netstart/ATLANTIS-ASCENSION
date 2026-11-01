@@ -284,6 +284,13 @@
 			"t": 54.88
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 55.38
+		},
+		{
 			"op": "wave",
 			"enemy": "prism_jelly",
 			"formation": "line",
@@ -556,5 +563,6 @@
 		}
 	],
 	"weapon_lock": "railgun",
-	"secret_mission": true
+	"secret_mission": true,
+	"weather": "abyssal"
 }

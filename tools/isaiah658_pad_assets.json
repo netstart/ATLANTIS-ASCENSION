@@ -1,0 +1,8 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "isaiah658_underwater_pad",
+	"note": "Laço normalizado por tools/cut_weather_audio.py: ambiente sob a água turva e funda.",
+	"files": {
+		"weather-cuts/underwater_pad.ogg": "audio/sfx/isaiah658_underwater_pad.ogg"
+	}
+}

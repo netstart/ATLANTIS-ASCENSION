@@ -52,7 +52,8 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"style.{k}" for k in ("chain", "chain_max", "graze_dance", "point_blank", "pearl_rain", "medal_max", "flawless",
                            "close_call")] + [f"chest.{t}" for t in ("bronze", "silver", "gold")] + [
     f"tip.{t}" for t in ("boss_close", "bombs_left", "beam", "contact", "precise", "tide", "hangar", "blessing",
-                         "graze")] + ["options.style_callouts"]
+                         "graze")] + ["options.style_callouts"] + [
+    "style.storm_master", "weather.front", "weather.front_severe"]
 
 
 def _json_keys(value, out: set) -> None:

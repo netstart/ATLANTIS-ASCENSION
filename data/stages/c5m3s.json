@@ -136,6 +136,13 @@
 			"t": 24.55
 		},
 		{
+			"op": "weather",
+			"to": "storm",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 26.94
+		},
+		{
 			"op": "wave",
 			"enemy": "phalanx",
 			"formation": "v",
@@ -384,6 +391,13 @@
 			"t": 78.28
 		},
 		{
+			"op": "weather",
+			"to": "eye",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 79.78
+		},
+		{
 			"op": "dialogue",
 			"id": "sky_leviathan_intro",
 			"t": 81.78
@@ -398,5 +412,6 @@
 			"t": 87.78
 		}
 	],
-	"route": "surface"
+	"route": "surface",
+	"weather": "clouds"
 }

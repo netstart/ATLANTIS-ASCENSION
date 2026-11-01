@@ -121,6 +121,13 @@
 			"t": 25.0
 		},
 		{
+			"op": "weather",
+			"to": "thermocline",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 32.45
+		},
+		{
 			"op": "wave",
 			"enemy": "gold_lance",
 			"formation": "line",
@@ -363,6 +370,13 @@
 			"t": 87.8
 		},
 		{
+			"op": "weather",
+			"to": "plankton",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 90.86
+		},
+		{
 			"op": "log",
 			"x": 0.4,
 			"t": 95.8
@@ -481,5 +495,6 @@
 	"secret": {
 		"glyphs": 3,
 		"mission": "s1"
-	}
+	},
+	"weather": "calm"
 }

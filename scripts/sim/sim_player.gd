@@ -38,6 +38,9 @@ var cap_bonus: int = 0
 var weapon_lock: StringName = &""
 ## Velocidade do último passo (inclinação da nave no desenho).
 var last_move := Vector2.ZERO
+## Resistência do meio (Weather: água turva, gelo no casco, cinzas): multiplica o movimento pedido no
+## mesmo passo, sem atraso.
+var resist: float = 1.0
 
 
 func setup(p_ship: Dictionary, sensitivity: float) -> void:
@@ -62,7 +65,7 @@ func move(input: SimInput) -> void:
 	var axis := input.axis.limit_length(1.0) * AXIS_SPEED * float(ship.get("speed", 1.0))
 	if input.precise:
 		axis *= precise_mult
-	pos += drag + axis
+	pos += (drag + axis) * resist
 	pos.x = clampf(pos.x, MARGIN.x, Playfield.FIELD.x - MARGIN.x)
 	pos.y = clampf(pos.y, MARGIN.y, Playfield.FIELD.y - MARGIN.y)
 	last_move = pos - before

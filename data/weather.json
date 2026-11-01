@@ -1,0 +1,124 @@
+[
+	{
+		"id": "clear", "medium": "air", "name_key": "weather.clear",
+		"wind": 0, "angle": 0, "gust": 0, "meander": 0, "period": 10, "turbulence": 0, "drag": 1.0, "push": 0,
+		"fx": {"clouds_low": 0.15, "clouds_high": 0.0, "rays": 1.0, "grade": "#5a7890", "grade_amount": 0.0}
+	},
+	{
+		"id": "clouds", "medium": "air", "name_key": "weather.clouds",
+		"wind": 6, "angle": 15, "gust": 0.2, "meander": 0.2, "period": 12, "turbulence": 0.5, "drag": 1.0, "push": 0,
+		"fx": {"dim": 0.06, "clouds_low": 0.55, "clouds_high": 0.45, "cloud_tone": 0.85, "rays": 0.7, "grade": "#405060",
+				"grade_amount": 0.12}
+	},
+	{
+		"id": "rain", "medium": "air", "name_key": "weather.rain",
+		"wind": 10, "angle": 20, "gust": 0.3, "meander": 0.25, "period": 9, "turbulence": 0.8, "drag": 0.97,
+		"push": 0.15,
+		"fx": {"dim": 0.15, "clouds_low": 0.7, "clouds_high": 0.35, "cloud_tone": 0.55, "rain": 0.55, "rays": 0.3,
+				"grade": "#2a3440", "grade_amount": 0.28, "wet": 1.0}
+	},
+	{
+		"id": "storm", "medium": "air", "name_key": "weather.storm", "severe": true,
+		"wind": 22, "angle": 25, "gust": 0.6, "meander": 0.5, "period": 7, "turbulence": 1.6, "drag": 0.93,
+		"push": 0.3,
+		"fx": {"dim": 0.3, "clouds_low": 0.9, "clouds_high": 0.6, "cloud_tone": 0.35, "rain": 1.0, "rays": 0.0,
+				"grade": "#141a24", "grade_amount": 0.45, "flashes": 9, "wet": 1.0}
+	},
+	{
+		"id": "eye", "medium": "air", "name_key": "weather.eye",
+		"wind": 0, "angle": 0, "gust": 0, "meander": 0, "period": 10, "turbulence": 0.2, "drag": 1.0, "push": 0,
+		"fx": {"dim": -0.05, "clouds_low": 0.9, "clouds_high": 0.0, "cloud_tone": 0.6, "eye": 1.0, "rays": 1.6,
+				"grade": "#3a4a60", "grade_amount": 0.1, "flashes": 2}
+	},
+	{
+		"id": "snow", "medium": "air", "name_key": "weather.snow",
+		"wind": 8, "angle": 10, "gust": 0.25, "meander": 0.3, "period": 11, "turbulence": 0.5, "drag": 0.97,
+		"push": 0.1,
+		"fx": {"dim": -0.08, "clouds_low": 0.5, "clouds_high": 0.2, "cloud_tone": 0.9, "snow": 0.6, "rays": 0.4,
+				"grade": "#c8d8e8", "grade_amount": 0.15}
+	},
+	{
+		"id": "blizzard", "medium": "air", "name_key": "weather.blizzard", "severe": true,
+		"wind": 24, "angle": 5, "gust": 0.5, "meander": 0.4, "period": 6, "turbulence": 1.2, "drag": 0.9, "push": 0.3,
+		"fx": {"dim": -0.1, "clouds_low": 0.8, "clouds_high": 0.5, "cloud_tone": 0.95, "snow": 1.0, "haze": 0.6,
+				"haze_color": "#b8c8d8", "rays": 0.0, "grade": "#d0dce8", "grade_amount": 0.3, "icing": 1.0}
+	},
+	{
+		"id": "ash", "medium": "air", "name_key": "weather.ash",
+		"wind": 6, "angle": 30, "gust": 0.3, "meander": 0.3, "period": 10, "turbulence": 0.6, "drag": 0.94,
+		"push": 0.1,
+		"fx": {"dim": 0.2, "clouds_low": 0.6, "clouds_high": 0.3, "cloud_tone": 0.25, "ash": 1.0, "haze": 0.35,
+				"haze_color": "#3a2620", "rays": 0.2, "grade": "#3a2a24", "grade_amount": 0.35, "shimmer": 1.0}
+	},
+	{
+		"id": "jetstream", "medium": "air", "name_key": "weather.jetstream", "severe": true,
+		"wind": 26, "angle": 0, "gust": 0.4, "meander": 0.15, "period": 8, "turbulence": 1.3, "drag": 1.0,
+		"push": 0.25,
+		"fx": {"dim": 0.05, "clouds_low": 0.5, "clouds_high": 0.4, "cloud_tone": 0.95, "streaks": 1.0, "rays": 0.8,
+				"grade": "#203050", "grade_amount": 0.15}
+	},
+	{
+		"id": "calm", "medium": "water", "name_key": "weather.calm",
+		"wind": 0, "angle": 0, "gust": 0, "meander": 0, "period": 10, "turbulence": 0, "drag": 1.0, "push": 0,
+		"fx": {"snow": 0.25, "rays": 1.0, "caustics": 1.0, "grade": "#2a6a80", "grade_amount": 0.0}
+	},
+	{
+		"id": "plankton", "medium": "water", "name_key": "weather.plankton",
+		"wind": 4, "angle": -60, "gust": 0.2, "meander": 0.6, "period": 14, "turbulence": 0.2, "drag": 1.0,
+		"push": 0,
+		"fx": {"dim": 0.0, "snow": 0.5, "glow": 1.0, "flow": 0.2, "rays": 1.2, "caustics": 1.2, "grade": "#1d5a3a",
+				"grade_amount": 0.38}
+	},
+	{
+		"id": "surge", "medium": "water", "name_key": "weather.surge", "severe": true,
+		"wind": 20, "angle": 0, "gust": 0.4, "meander": 1.2, "period": 9, "turbulence": 0.6, "drag": 1.0,
+		"push": 0.25,
+		"fx": {"dim": 0.1, "snow": 0.8, "flow": 1.0, "haze": 0.2, "haze_color": "#20404a", "rays": 0.6, "caustics": 1.4,
+				"grade": "#20404a", "grade_amount": 0.3}
+	},
+	{
+		"id": "thermocline", "medium": "water", "name_key": "weather.thermocline",
+		"wind": 8, "angle": 180, "gust": 0.15, "meander": 0.3, "period": 16, "turbulence": 0.3, "drag": 0.9,
+		"push": 0.1,
+		"fx": {"dim": 0.15, "snow": 0.35, "flow": 0.4, "layer": 1.0, "rays": 0.4, "caustics": 0.5, "grade": "#0a2a6a",
+				"grade_amount": 0.42}
+	},
+	{
+		"id": "silt", "medium": "water", "name_key": "weather.silt", "severe": true,
+		"wind": 14, "angle": 20, "gust": 0.35, "meander": 0.6, "period": 8, "turbulence": 0.5, "drag": 0.9,
+		"push": 0.2,
+		"fx": {"dim": 0.25, "snow": 1.0, "flow": 0.8, "haze": 0.7, "haze_color": "#3a2e1c", "rays": 0.2, "caustics": 0.3,
+				"grade": "#4a3a20", "grade_amount": 0.5}
+	},
+	{
+		"id": "abyssal", "medium": "water", "name_key": "weather.abyssal",
+		"wind": 16, "angle": 90, "gust": 0.3, "meander": 1.6, "period": 18, "turbulence": 0.4, "drag": 0.95,
+		"push": 0.2,
+		"fx": {"dim": 0.35, "snow": 0.6, "flow": 0.7, "haze": 0.3, "haze_color": "#02121c", "rays": 0.1, "caustics": 0.2,
+				"grade": "#02121c", "grade_amount": 0.5, "glow": 0.5}
+	},
+	{
+		"id": "vents", "medium": "water", "name_key": "weather.vents",
+		"wind": 8, "angle": -90, "gust": 0.5, "meander": 0.3, "period": 5, "turbulence": 1.0, "drag": 0.97,
+		"push": 0.15,
+		"fx": {"dim": 0.05, "snow": 0.4, "flow": 0.5, "shimmer": 1.0, "rays": 0.3, "caustics": 0.6, "grade": "#5a2a18",
+				"grade_amount": 0.3}
+	},
+	{
+		"id": "storm_above", "medium": "water", "name_key": "weather.storm_above", "severe": true,
+		"wind": 16, "angle": 30, "gust": 0.5, "meander": 1.0, "period": 7, "turbulence": 0.8, "drag": 1.0,
+		"push": 0.2,
+		"fx": {"dim": 0.3, "snow": 0.7, "flow": 0.9, "haze": 0.25, "haze_color": "#18242c", "rays": 0.15, "caustics": 1.8,
+				"grade": "#18242c", "grade_amount": 0.45, "flashes": 8}
+	},
+	{
+		"id": "vacuum", "medium": "void", "name_key": "weather.vacuum",
+		"wind": 0, "angle": 0, "gust": 0, "meander": 0, "period": 10, "turbulence": 0, "drag": 1.0, "push": 0,
+		"fx": {"grade": "#000000", "grade_amount": 0.0}
+	},
+	{
+		"id": "solar", "medium": "void", "name_key": "weather.solar", "severe": true,
+		"wind": 12, "angle": 90, "gust": 0.5, "meander": 0.4, "period": 6, "turbulence": 0.9, "drag": 1.0, "push": 0.2,
+		"fx": {"dim": 0.05, "aurora": 1.0, "streaks": 0.6, "grade": "#3a1a50", "grade_amount": 0.22}
+	}
+]

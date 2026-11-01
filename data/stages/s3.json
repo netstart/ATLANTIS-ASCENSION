@@ -297,6 +297,13 @@
 			"t": 58.75
 		},
 		{
+			"op": "weather",
+			"to": "blizzard",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 58.75
+		},
+		{
 			"op": "wave",
 			"enemy": "glass_siren",
 			"formation": "single",
@@ -466,6 +473,13 @@
 			"t": 90.55
 		},
 		{
+			"op": "weather",
+			"to": "snow",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 94.0
+		},
+		{
 			"op": "wave",
 			"enemy": "glass_siren",
 			"formation": "single",
@@ -566,5 +580,6 @@
 			"t": 113.5
 		}
 	],
-	"secret_mission": true
+	"secret_mission": true,
+	"weather": "snow"
 }

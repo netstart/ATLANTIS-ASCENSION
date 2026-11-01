@@ -168,6 +168,13 @@
 			"t": 27.0
 		},
 		{
+			"op": "weather",
+			"to": "solar",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 27.8
+		},
+		{
 			"op": "lightning",
 			"kind": "debris",
 			"x": 0.75,
@@ -349,6 +356,13 @@
 			"t": 59.7
 		},
 		{
+			"op": "weather",
+			"to": "vacuum",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 61.16
+		},
+		{
 			"op": "capsule",
 			"x": 0.3,
 			"t": 62.7
@@ -417,6 +431,13 @@
 			},
 			"marked": true,
 			"t": 76.87
+		},
+		{
+			"op": "weather",
+			"to": "solar",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 77.84
 		},
 		{
 			"op": "wave",
@@ -568,6 +589,13 @@
 			"t": 101.53
 		},
 		{
+			"op": "weather",
+			"to": "vacuum",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 102.3
+		},
+		{
 			"op": "wave",
 			"enemy": "trireme",
 			"formation": "single",
@@ -586,5 +614,6 @@
 			"t": 107.2
 		}
 	],
-	"route": "surface"
+	"route": "surface",
+	"weather": "vacuum"
 }

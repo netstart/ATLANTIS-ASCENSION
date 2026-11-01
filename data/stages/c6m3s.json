@@ -142,6 +142,13 @@
 			"t": 21.91
 		},
 		{
+			"op": "weather",
+			"to": "blizzard",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 22.24
+		},
+		{
 			"op": "wave",
 			"enemy": "tide_wasp",
 			"formation": "v",
@@ -356,6 +363,13 @@
 			"t": 59.7
 		},
 		{
+			"op": "weather",
+			"to": "snow",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 61.16
+		},
+		{
 			"op": "capsule",
 			"x": 0.3,
 			"t": 62.7
@@ -427,6 +441,13 @@
 			"from_depth": true,
 			"marked": true,
 			"t": 76.87
+		},
+		{
+			"op": "weather",
+			"to": "blizzard",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 77.84
 		},
 		{
 			"op": "wave",
@@ -565,6 +586,13 @@
 			"t": 98.93
 		},
 		{
+			"op": "weather",
+			"to": "snow",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 100.08
+		},
+		{
 			"op": "wave",
 			"enemy": "prism_jelly",
 			"formation": "line",
@@ -601,5 +629,6 @@
 			"t": 107.2
 		}
 	],
-	"route": "surface"
+	"route": "surface",
+	"weather": "snow"
 }

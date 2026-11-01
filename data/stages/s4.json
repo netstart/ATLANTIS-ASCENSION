@@ -54,6 +54,13 @@
 			"t": 42.0
 		},
 		{
+			"op": "weather",
+			"to": "surge",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 48.69
+		},
+		{
 			"op": "wave",
 			"enemy": "hunter",
 			"formation": "line",
@@ -297,6 +304,13 @@
 			"t": 90.12
 		},
 		{
+			"op": "weather",
+			"to": "plankton",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 91.29
+		},
+		{
 			"op": "wave",
 			"enemy": "squid_probe",
 			"formation": "column",
@@ -424,5 +438,6 @@
 			"t": 117.72
 		}
 	],
-	"secret_mission": true
+	"secret_mission": true,
+	"weather": "plankton"
 }

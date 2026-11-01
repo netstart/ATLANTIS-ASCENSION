@@ -134,6 +134,9 @@ comercial: 🔶, só com decisão registrada.
 | Music Jingles | Kenney | https://kenney.nl/assets/music-jingles | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/music-jingles.zip` | Vitória, derrota, recompensa |
 | Space Laser, Chunky Explosion | OpenGameArt | título no catálogo | CC0-1.0 | ⚠️ URL exata a registrar | `opengameart/` | Variações de tiro e explosão |
 | Laser Fire | OpenGameArt | título no catálogo | CC-BY-3.0 | 🔶 | `opengameart/` | Só se CC-BY-3.0 for ratificada |
+| rain and thunders | kindland | https://opengameart.org/content/rain-and-thunders | CC0-1.0 | ✅ baixado 01/11 (1.13) | `opengameart/rain-and-thunders/` | Três trovões recortados e a base da tempestade em laço (`tools/cut_weather_audio.py`) |
+| Underwater Ambient Pad | isaiah658 | https://opengameart.org/content/underwater-ambient-pad | CC0-1.0 | ✅ baixado 01/11 (1.13) | `opengameart/underwater-ambient-pad/` | Pad grave da água turva e funda |
+| 30 CC0 SFX loops (rain, noise_01, water_flowing) | rubberduck | https://opengameart.org/content/30-cc0-sfx-loops | CC0-1.0 | ✅ já registrado; 3 laços novos (1.13) | `opengameart/30-cc0-sfx-loops/` | Chuva fina, vento e água correndo do clima |
 
 **Criar (sfxr/jsfxr, ChipTone, Audacity, MIT):** alerta de chefe "WARNING" sem voz, som de graze, carga da especial,
 Ocean Shift (onda subindo), Gravity Breach (grave descendente), voz atlante (síntese granular sobre coral).

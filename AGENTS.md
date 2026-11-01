@@ -91,6 +91,8 @@ python -I tools\gen_missions.py
 python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
+# Áudio do clima: recorta trovões e normaliza os laços baixados (precisa de numpy e soundfile; rode antes do sync)
+python tools\cut_weather_audio.py
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
 # Balanceamento: quanto o bot leva em cada luta de chefe e em cada fase (todas ou -- --only=c1m1,c9m3)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/boss_timing.gd
@@ -101,6 +103,8 @@ C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/ga
 python -I tools\gen_sprites.py
 python -I tools\gen_portraits.py
 # Evolução visual da nave por nível do hangar (peças de 48x48 alinhadas à nave; --preview DIR grava os 10 níveis)
+# Galeria do clima (cada estado de data/weather.json no auge, com relâmpago na tempestade)
+C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
 python -I tools\gen_livery.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)
 powershell -ExecutionPolicy Bypass -File tools\build_release.ps1

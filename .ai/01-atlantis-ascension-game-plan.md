@@ -330,6 +330,30 @@ relativo à tela.
 
 **Perigos ambientais por capítulo** em 5.2.
 
+**Clima e mar vivos (1.13).** Frentes de clima roteirizadas por missão (`data/weather.json`, `scripts/sim/weather.gd`),
+sempre coerentes com o meio do cenário: **céu** (céu limpo, nuvens passando, chuva, tempestade, olho da tempestade,
+neve, nevasca, chuva de cinzas, corrente de jato), **mar** (águas calmas, florada de plâncton, ressaca, termoclina,
+tempestade de sedimentos, corrente abissal, fontes termais, tempestade na superfície) e **órbita** (vácuo, tempestade
+solar). Regras:
+
+- Toda frente é anunciada no rádio (coral se for severa) e entra aos poucos: aviso de 2 s (3 s no severo) e rampa de
+  4 s (5 s no severo). Todo efeito na pilotagem cresce com a mistura.
+- **Vento ou corrente** com rajadas e direção que oscila devagar (a corrente "muda"): leva a nave e empurra as balas
+  inimigas com uma fração (a chuva inclinada e os filetes da corrente mostram para onde).
+- **Turbulência** limitada e de média zero; o modo preciso corta pela metade (o piloto segura o manche).
+- **Resistência do meio** (água fria ou turva, gelo no casco, cinzas no filtro): a nave responde no mesmo passo, só
+  anda menos. Latência de 1 passo mantida.
+- **Navegador da Tormenta**: atravessar uma frente severa inteira sem dano vale 3.000 pontos (x multiplicadores) e um
+  Eco de Estilo.
+- Ordem de ensino: a 1-1 só mostra a florada de plâncton (visual); a ressaca da 1-2 é a primeira que mexe na nave.
+  O olho da tempestade abre 6 s antes do Olho da Tempestade (mini-chefe da 3-2). Quando a tempestade passa para céu
+  aberto, o sol rompe e o arco-íris aparece.
+- Visual: cor da água ou do céu, escurecimento e luz do relâmpago dentro do teto de brilho do cenário (contraste das
+  balas intacto); nuvens baixas com sombra no chão e altas passando pela nave (abaixo das balas, ≤ 35% e somem em
+  padrão denso); chuva, neve, cinzas, neve marinha e filetes da corrente; raio ramificado; aurora na órbita. Som:
+  chuva fina e forte, vento, água correndo, pad grave na água funda; trovão atrasado pela distância; música e
+  ambiente abafados sob a água; no vácuo, nenhum som de vento.
+
 ### 4.9 Economia
 
 | Moeda | Como ganha | Para que serve |

@@ -157,6 +157,13 @@
 			"t": 25.91
 		},
 		{
+			"op": "weather",
+			"to": "surge",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 28.33
+		},
+		{
 			"op": "current",
 			"dx": 1,
 			"strength": 40,
@@ -304,6 +311,13 @@
 			"t": 54.97
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 56.66
+		},
+		{
 			"op": "wave",
 			"enemy": "prism_jelly",
 			"formation": "line",
@@ -442,5 +456,6 @@
 			"op": "end",
 			"t": 90.43
 		}
-	]
+	],
+	"weather": "plankton"
 }

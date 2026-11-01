@@ -38,6 +38,8 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Animated Explosions | Luis Zuno (ansimuz) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/animated-explosions |
 | 80 CC0 creature SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/80-cc0-creature-sfx |
 | 30 CC0 SFX loops | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/30-cc0-sfx-loops |
+| rain and thunders | kindland | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/rain-and-thunders |
+| Underwater Ambient Pad | isaiah658 | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/underwater-ambient-pad |
 | Electricity Game Sound Pack | faxcorp | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/electricity-game-sound-pack |
 | NES Shooter Music (5 tracks, 3 jingles) | SketchyLogic | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles |
 

@@ -390,6 +390,13 @@
 			"t": 74.96
 		},
 		{
+			"op": "weather",
+			"to": "clear",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 75.12
+		},
+		{
 			"op": "wave",
 			"enemy": "tide_wasp",
 			"formation": "v",
@@ -605,5 +612,6 @@
 	"secret": {
 		"glyphs": 3,
 		"mission": "s3"
-	}
+	},
+	"weather": "snow"
 }

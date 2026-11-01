@@ -54,6 +54,8 @@ var dark: bool = false
 var colorblind: String = "off"
 ## Fantasma do Abismo: a Sim do recorde (só a nave dele é desenhada, translúcida).
 var ghost_sim: Sim
+## Encaixe do clima de perto (WeatherView): acima das naves e dos efeitos, abaixo das balas inimigas.
+var weather_slot := Node2D.new()
 
 var sim: Sim
 var time: float = 0.0
@@ -186,6 +188,7 @@ func setup(p_sim: Sim) -> void:
 	_fx_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	add_child(_fx_add)
 	add_child(fx.light)
+	add_child(weather_slot)
 	_enemy_bullets = BulletRenderer.new()
 	_enemy_bullets.palette = colorblind
 	# Halo discreto e só em Alta: centenas de balas somando luz não podem lavar o campo.
@@ -344,7 +347,9 @@ func _age(list: Array[Dictionary], delta: float) -> void:
 func _bank_target(pl: SimPlayer) -> float:
 	if reduce_motion or not pl.alive:
 		return 0.0
-	return clampf(pl.last_move.x / 2.5, -1.0, 1.0)
+	# A turbulência (Weather) balança as asas da nave 1 junto com o tranco.
+	var wobble := sim.weather.shake.x * 0.35 if pl == sim.player else 0.0
+	return clampf(pl.last_move.x / 2.5 + wobble, -1.0, 1.0)
 
 
 ## Quanto um inimigo já subiu do fundo (0 = no chão, 1 = no campo de jogo), suavizado.

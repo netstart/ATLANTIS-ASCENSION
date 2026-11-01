@@ -185,6 +185,13 @@
 			"t": 35.55
 		},
 		{
+			"op": "weather",
+			"to": "thermocline",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 35.91
+		},
+		{
 			"op": "wave",
 			"enemy": "phalanx",
 			"formation": "v",
@@ -374,6 +381,13 @@
 			"t": 62.14
 		},
 		{
+			"op": "weather",
+			"to": "plankton",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 62.85
+		},
+		{
 			"op": "wave",
 			"enemy": "hunter",
 			"formation": "line",
@@ -503,5 +517,6 @@
 		}
 	],
 	"route": "abyss",
-	"score_mult": 1.5
+	"score_mult": 1.5,
+	"weather": "plankton"
 }

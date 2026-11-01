@@ -1,0 +1,11 @@
+{
+	"pack_root": "opengameart",
+	"license_id": "kindland_rain_thunders",
+	"note": "Recortes de tools/cut_weather_audio.py (trovões e base da tempestade em laço) da gravação \"rain and thunders\".",
+	"files": {
+		"weather-cuts/thunder_1.ogg": "audio/sfx/kindland_thunder_1.ogg",
+		"weather-cuts/thunder_2.ogg": "audio/sfx/kindland_thunder_2.ogg",
+		"weather-cuts/thunder_3.ogg": "audio/sfx/kindland_thunder_3.ogg",
+		"weather-cuts/storm_bed.ogg": "audio/sfx/kindland_storm_bed.ogg"
+	}
+}

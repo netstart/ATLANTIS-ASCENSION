@@ -275,6 +275,13 @@
 			"t": 51.74
 		},
 		{
+			"op": "weather",
+			"to": "surge",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 52.01
+		},
+		{
 			"op": "wave",
 			"enemy": "phalanx",
 			"formation": "v",
@@ -533,6 +540,13 @@
 			"t": 90.19
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 92.46
+		},
+		{
 			"op": "wave",
 			"enemy": "squid_probe",
 			"formation": "column",
@@ -643,5 +657,6 @@
 		}
 	],
 	"route": "abyss",
-	"score_mult": 1.5
+	"score_mult": 1.5,
+	"weather": "storm_above"
 }

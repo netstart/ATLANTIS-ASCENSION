@@ -82,6 +82,9 @@ var kind: StringName = &"ocean"
 var drift := Vector2.ZERO
 ## Desenhar algas e bolhas por cima do campo (z_index 1); a partida liga, a história não.
 var foreground_on_top: bool = false
+## Partículas próprias do cenário (chuva, neve...). A partida desliga quando o clima já cai do céu
+## (WeatherView): duas chuvas ao mesmo tempo nunca.
+var particles_on: bool = true
 
 var _floor: ColorRect
 var _material: ShaderMaterial
@@ -155,6 +158,30 @@ func set_drift(value: Vector2) -> void:
 	drift = value
 
 
+## Clima sobre o chão (WeatherView): `grade` muda o matiz (quantidade no alfa), `dim` escurece
+## (negativo clareia), cáusticas e raios multiplicados e o clarão do relâmpago em `flash_pos` (tela).
+## Tudo passa pelo teto de brilho do shader: a leitura das balas não muda.
+func set_weather(grade: Color, dim: float, caustics: float, rays: float, flash: float, flash_pos: Vector2) -> void:
+	if _material == null:
+		return
+	_material.set_shader_parameter("weather_grade", grade)
+	_material.set_shader_parameter("weather_dim", dim)
+	_material.set_shader_parameter("weather_caustics", caustics)
+	_material.set_shader_parameter("weather_rays", rays)
+	_material.set_shader_parameter("weather_flash", flash)
+	_material.set_shader_parameter("weather_flash_pos", flash_pos)
+
+
+## Deslocamento atual da câmera que segue a nave (o clima anda junto, em parallax).
+func cam() -> float:
+	return _cam_x
+
+
+## Teto de brilho do cenário (luminância WCAG): o clima desenhado por cima respeita o mesmo.
+func luma_cap() -> float:
+	return luminance(palette_of(kind)["lit"]) * 0.96
+
+
 func set_view(size: Vector2) -> void:
 	view_size = size
 	if field.size == Vector2.ZERO or not Rect2(Vector2.ZERO, size).encloses(field):
@@ -210,7 +237,7 @@ func apply(p_scroll: float, p_emerge: float, p_tilt: Vector2 = Vector2.ZERO, red
 		_front.reduce_motion = reduce_motion
 		_front.queue_redraw()
 	var kind_p := StringName(String(palette.get("particles", "")))
-	_rain.visible = PARTICLES.has(kind_p) and detail >= 1
+	_rain.visible = PARTICLES.has(kind_p) and detail >= 1 and particles_on
 	if _rain.visible:
 		var cfg: Dictionary = PARTICLES[kind_p]
 		_rain.position = ParallaxRig.layer_offset(0.0, 1.0, 0.0, tilt, 1.2, reduce_motion)

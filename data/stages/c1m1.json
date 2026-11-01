@@ -179,6 +179,13 @@
 			"t": 39.9
 		},
 		{
+			"op": "weather",
+			"to": "plankton",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 40.44
+		},
+		{
 			"op": "wave",
 			"enemy": "squid_probe",
 			"formation": "line",
@@ -464,6 +471,13 @@
 			"t": 113.37
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 114.58
+		},
+		{
 			"op": "wave",
 			"enemy": "skiff",
 			"formation": "line",
@@ -539,5 +553,6 @@
 			"t": 130.8
 		}
 	],
-	"tutorial": true
+	"tutorial": true,
+	"weather": "calm"
 }

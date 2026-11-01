@@ -39,6 +39,8 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio** — Kenney (kenney.nl) (CC0-1.0) — https://kenney.nl/assets/sci-fi-sounds
 - **80 CC0 creature SFX** — rubberduck (CC0-1.0) — https://opengameart.org/content/80-cc0-creature-sfx
 - **30 CC0 SFX loops** — rubberduck (CC0-1.0) — https://opengameart.org/content/30-cc0-sfx-loops
+- **rain and thunders** — kindland (CC0-1.0) — https://opengameart.org/content/rain-and-thunders
+- **Underwater Ambient Pad** — isaiah658 (CC0-1.0) — https://opengameart.org/content/underwater-ambient-pad
 - **Electricity Game Sound Pack** — faxcorp (CC0-1.0) — https://opengameart.org/content/electricity-game-sound-pack
 
 ## Fontes

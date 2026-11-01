@@ -1,8 +1,11 @@
 {
 	"pack_root": "opengameart",
 	"license_id": "rubberduck_sfx_loops",
-	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo.",
+	"note": "Extraído do zip baixado (pasta x/) com tools: só os arquivos listados entram no jogo. Os laços do clima saem normalizados de tools/cut_weather_audio.py.",
 	"files": {
-		"30-cc0-sfx-loops/x/alarm_02.ogg": "audio/sfx/rubberduck_alarm.ogg"
+		"30-cc0-sfx-loops/x/alarm_02.ogg": "audio/sfx/rubberduck_alarm.ogg",
+		"weather-cuts/rain_light.ogg": "audio/sfx/rubberduck_rain.ogg",
+		"weather-cuts/wind.ogg": "audio/sfx/rubberduck_wind.ogg",
+		"weather-cuts/water_flow.ogg": "audio/sfx/rubberduck_water.ogg"
 	}
 }

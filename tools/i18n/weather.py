@@ -1,0 +1,60 @@
+"""Textos da 1.13 "Céu e Mar Vivos" (scripts/sim/weather.gd): nomes dos climas do céu, do mar e da
+órbita, o aviso de frente no rádio e o Eco de Estilo de quem atravessa a tormenta sem dano.
+Ordem: pt_BR, en, es, de, fr, ru, id, ja, ko, zh_TW, zh_CN.
+"""
+
+STRINGS = {
+    # --- Aviso de frente (rádio) -----------------------------------------------------------------
+    "weather.front": ["Clima: %s", "Weather: %s", "Clima: %s", "Wetter: %s", "Météo : %s", "Погода: %s",
+                      "Cuaca: %s", "天候: %s", "기상: %s", "天候：%s", "天气：%s"],
+    "weather.front_severe": ["Alerta de clima: %s", "Weather alert: %s", "Alerta climática: %s",
+                             "Unwetterwarnung: %s", "Alerte météo : %s", "Штормовое предупреждение: %s",
+                             "Peringatan cuaca: %s", "気象警報: %s", "기상 경보: %s", "天候警報：%s", "天气警报：%s"],
+    "style.storm_master": ["Navegador da Tormenta!", "Storm Navigator!", "¡Navegante de la Tormenta!",
+                           "Sturmnavigator!", "Navigateur de la Tempête !", "Штурман бури!", "Navigator Badai!",
+                           "嵐の航海士！", "폭풍의 항해사!", "風暴領航員！", "风暴领航员！"],
+    # --- Céu -------------------------------------------------------------------------------------
+    "weather.clear": ["Céu limpo", "Clear sky", "Cielo despejado", "Klarer Himmel", "Ciel dégagé", "Ясное небо",
+                      "Langit cerah", "快晴", "맑은 하늘", "晴空", "晴空"],
+    "weather.clouds": ["Nuvens passando", "Passing clouds", "Nubes pasajeras", "Ziehende Wolken", "Nuages de passage",
+                       "Плывущие облака", "Awan berarak", "流れる雲", "지나가는 구름", "浮雲飄過", "浮云飘过"],
+    "weather.rain": ["Chuva", "Rain", "Lluvia", "Regen", "Pluie", "Дождь", "Hujan", "雨", "비", "降雨", "降雨"],
+    "weather.storm": ["Tempestade", "Storm", "Tormenta", "Sturm", "Tempête", "Гроза", "Badai", "嵐", "폭풍우",
+                      "暴風雨", "暴风雨"],
+    "weather.eye": ["Olho da tempestade", "Eye of the storm", "Ojo de la tormenta", "Auge des Sturms",
+                    "Œil de la tempête", "Око бури", "Mata badai", "嵐の目", "폭풍의 눈", "風暴之眼", "风暴之眼"],
+    "weather.snow": ["Neve", "Snow", "Nieve", "Schnee", "Neige", "Снег", "Salju", "雪", "눈", "降雪", "降雪"],
+    "weather.blizzard": ["Nevasca", "Blizzard", "Ventisca", "Schneesturm", "Blizzard", "Метель", "Badai salju",
+                         "猛吹雪", "눈보라", "暴風雪", "暴风雪"],
+    "weather.ash": ["Chuva de cinzas", "Ashfall", "Lluvia de ceniza", "Ascheregen", "Pluie de cendres",
+                    "Пепельный дождь", "Hujan abu", "降灰", "화산재", "火山灰雨", "火山灰雨"],
+    "weather.jetstream": ["Corrente de jato", "Jet stream", "Corriente en chorro", "Jetstream", "Courant-jet",
+                          "Струйное течение", "Aliran jet", "ジェット気流", "제트 기류", "噴射氣流", "急流"],
+    # --- Mar -------------------------------------------------------------------------------------
+    "weather.calm": ["Águas calmas", "Calm waters", "Aguas tranquilas", "Ruhiges Wasser", "Eaux calmes",
+                     "Спокойные воды", "Air tenang", "穏やかな海", "잔잔한 바다", "平靜海域", "平静海域"],
+    "weather.plankton": ["Florada de plâncton", "Plankton bloom", "Floración de plancton", "Planktonblüte",
+                         "Efflorescence de plancton", "Цветение планктона", "Ledakan plankton", "プランクトンの大発生",
+                         "플랑크톤 대번식", "浮游生物大爆發", "浮游生物大爆发"],
+    "weather.surge": ["Ressaca", "Undertow", "Resaca", "Sog", "Ressac", "Отбойное течение", "Arus balik", "離岸流",
+                      "이안류", "離岸流", "离岸流"],
+    "weather.thermocline": ["Termoclina", "Thermocline", "Termoclina", "Sprungschicht", "Thermocline", "Термоклин",
+                            "Termoklin", "水温躍層", "수온약층", "溫躍層", "温跃层"],
+    "weather.silt": ["Tempestade de sedimentos", "Silt storm", "Tormenta de sedimentos", "Schlammsturm",
+                     "Tempête de sédiments", "Илистая буря", "Badai lumpur", "泥煙の嵐", "퇴적물 폭풍", "泥沙風暴",
+                     "泥沙风暴"],
+    "weather.abyssal": ["Corrente abissal", "Abyssal current", "Corriente abisal", "Tiefseeströmung",
+                        "Courant abyssal", "Абиссальное течение", "Arus abisal", "深海流", "심해 해류", "深淵洋流",
+                        "深渊洋流"],
+    "weather.vents": ["Fontes termais", "Thermal vents", "Fuentes termales", "Hydrothermalquellen",
+                      "Sources hydrothermales", "Гидротермальные источники", "Ventilasi termal", "熱水噴出孔",
+                      "열수 분출구", "熱泉噴口", "热泉喷口"],
+    "weather.storm_above": ["Tempestade na superfície", "Storm overhead", "Tormenta en la superficie",
+                            "Sturm über Wasser", "Tempête en surface", "Шторм над водой", "Badai di permukaan",
+                            "海上の嵐", "수면 위의 폭풍", "海面風暴", "海面风暴"],
+    # --- Órbita ----------------------------------------------------------------------------------
+    "weather.vacuum": ["Vácuo", "Vacuum", "Vacío", "Vakuum", "Vide", "Вакуум", "Hampa", "真空", "진공", "真空",
+                       "真空"],
+    "weather.solar": ["Tempestade solar", "Solar storm", "Tormenta solar", "Sonnensturm", "Tempête solaire",
+                      "Солнечная буря", "Badai matahari", "太陽嵐", "태양 폭풍", "太陽風暴", "太阳风暴"],
+}

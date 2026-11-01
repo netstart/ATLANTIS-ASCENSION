@@ -2,7 +2,8 @@ class_name StyleTracker
 extends RefCounted
 ## Ecos de Estilo (pesquisa em .ai/07-pesquisa-diversao-e-surpresa.md, seção 3.1): reconhece na hora a
 ## jogada bonita — corrente que sobe de degrau, raspões em série, abates à queima-roupa, medalha máxima,
-## chuva de pérolas, chefe final vencido sem dano ou por um fio — e devolve frases curtas para o HUD.
+## chuva de pérolas, chefe final vencido sem dano ou por um fio, frente severa de clima atravessada sem
+## dano (Navegador da Tormenta) — e devolve frases curtas para o HUD.
 ## Só lê a Sim e os eventos dela (o tempo vem de `sim.frame`): não muda a partida, o hash nem o replay.
 ##
 ## Cada frase é {key, arg, tier}; tier 0 a 3 escolhe cor, tamanho, som e vibração (StyleCallouts).
@@ -73,6 +74,8 @@ func observe(ev: Dictionary, sim: Sim) -> Array[Dictionary]:
 					_add(out, "style.flawless", 0, 3, now)
 				elif sim.player.hull == 1:
 					_add(out, "style.close_call", 0, 3, now)
+		&"weather_mastered":
+			_add(out, "style.storm_master", 0, 2, now)
 		&"player_hit":
 			_grazes.clear()
 			_blanks.clear()

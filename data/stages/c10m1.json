@@ -243,6 +243,13 @@
 			"t": 53.7
 		},
 		{
+			"op": "weather",
+			"to": "vents",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 56.9
+		},
+		{
 			"op": "wave",
 			"enemy": "magma_larva",
 			"formation": "line",
@@ -472,6 +479,13 @@
 			"t": 94.53
 		},
 		{
+			"op": "weather",
+			"to": "abyssal",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 96.73
+		},
+		{
 			"op": "wave",
 			"enemy": "magma_larva",
 			"formation": "line",
@@ -535,5 +549,6 @@
 			"t": 109.8
 		}
 	],
-	"dark": true
+	"dark": true,
+	"weather": "abyssal"
 }

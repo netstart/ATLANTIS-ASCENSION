@@ -75,6 +75,13 @@
 			"t": 11.27
 		},
 		{
+			"op": "weather",
+			"to": "storm",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 12.94
+		},
+		{
 			"op": "wave",
 			"enemy": "gold_lance",
 			"formation": "line",
@@ -333,6 +340,13 @@
 			"t": 64.06
 		},
 		{
+			"op": "weather",
+			"to": "rain",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 64.68
+		},
+		{
 			"op": "wave",
 			"enemy": "volt_ray",
 			"formation": "line",
@@ -399,6 +413,13 @@
 			"escort": true,
 			"spacing": 36,
 			"t": 80.67
+		},
+		{
+			"op": "weather",
+			"to": "storm",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 80.85
 		},
 		{
 			"op": "miniboss",
@@ -516,6 +537,13 @@
 			"t": 99.55
 		},
 		{
+			"op": "weather",
+			"to": "clear",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 100.25
+		},
+		{
 			"op": "wave",
 			"enemy": "herald",
 			"formation": "single",
@@ -535,5 +563,6 @@
 			"t": 103.8
 		}
 	],
-	"route": "surface"
+	"route": "surface",
+	"weather": "rain"
 }

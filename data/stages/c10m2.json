@@ -166,6 +166,13 @@
 			"t": 28.55
 		},
 		{
+			"op": "weather",
+			"to": "vents",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 29.57
+		},
+		{
 			"op": "lightning",
 			"x": 0.5,
 			"t": 31.55
@@ -352,6 +359,13 @@
 			"t": 62.14
 		},
 		{
+			"op": "weather",
+			"to": "abyssal",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 64.06
+		},
+		{
 			"op": "wave",
 			"enemy": "protocol_shard",
 			"formation": "single",
@@ -503,5 +517,6 @@
 			"op": "end",
 			"t": 94.56
 		}
-	]
+	],
+	"weather": "abyssal"
 }

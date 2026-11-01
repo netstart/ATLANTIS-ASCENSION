@@ -232,6 +232,13 @@
 			"t": 50.7
 		},
 		{
+			"op": "weather",
+			"to": "silt",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 51.84
+		},
+		{
 			"op": "blessing",
 			"t": 54.2
 		},
@@ -434,6 +441,13 @@
 			"t": 91.0
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 93.31
+		},
+		{
 			"op": "blessing",
 			"t": 94.5
 		},
@@ -598,5 +612,6 @@
 			"op": "end",
 			"t": 125.6
 		}
-	]
+	],
+	"weather": "plankton"
 }

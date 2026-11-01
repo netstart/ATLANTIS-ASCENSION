@@ -129,6 +129,13 @@
 			"t": 19.47
 		},
 		{
+			"op": "weather",
+			"to": "storm_above",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 22.19
+		},
+		{
 			"op": "wave",
 			"enemy": "skiff",
 			"formation": "v",
@@ -321,6 +328,13 @@
 			"t": 62.46
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 63.96
+		},
+		{
 			"op": "dialogue",
 			"id": "c1m1_boss",
 			"t": 65.96
@@ -334,5 +348,6 @@
 			"op": "end",
 			"t": 71.96
 		}
-	]
+	],
+	"weather": "calm"
 }

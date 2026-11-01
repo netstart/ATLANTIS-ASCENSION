@@ -207,6 +207,13 @@
 			"t": 32.0
 		},
 		{
+			"op": "weather",
+			"to": "vents",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 33.36
+		},
+		{
 			"op": "lightning",
 			"kind": "lava",
 			"x": 0.35,
@@ -517,6 +524,13 @@
 			"t": 82.61
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 83.4
+		},
+		{
 			"op": "wave",
 			"enemy": "magma_larva",
 			"formation": "line",
@@ -677,5 +691,6 @@
 		}
 	],
 	"route": "abyss",
-	"score_mult": 1.5
+	"score_mult": 1.5,
+	"weather": "calm"
 }

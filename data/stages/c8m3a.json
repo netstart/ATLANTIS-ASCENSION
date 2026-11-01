@@ -209,6 +209,13 @@
 			"t": 33.0
 		},
 		{
+			"op": "weather",
+			"to": "abyssal",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 33.36
+		},
+		{
 			"op": "lightning",
 			"kind": "debris",
 			"x": 0.6,
@@ -546,6 +553,13 @@
 			"t": 86.5
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 86.74
+		},
+		{
 			"op": "miniboss",
 			"id": "elite_depth_charger_c8",
 			"t": 87.05
@@ -669,5 +683,6 @@
 		}
 	],
 	"route": "abyss",
-	"score_mult": 1.5
+	"score_mult": 1.5,
+	"weather": "calm"
 }

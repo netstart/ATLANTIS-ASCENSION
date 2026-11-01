@@ -471,6 +471,70 @@ def script(mission_id: str, spec: dict, scale: float) -> tuple:
     return events, cuts, t
 
 
+# Clima de cada missão (1.13 "Céu e Mar Vivos", scripts/sim/weather.gd): estado inicial e frentes. Cada frente é
+# (âncora, estado): a âncora é a fração do roteiro ou "before:<chefe>" (6 s antes dele entrar). O estado precisa ser
+# do meio do cenário (água, céu ou vácuo). Ordem de ensino: a primeira frente que mexe na nave (a ressaca da 1-2)
+# vem depois de duas missões de clima só visual, e todo clima severo entra com 3 s de aviso.
+WEATHER = {
+    "c1m1": ("calm", [(0.3, "plankton"), (0.85, "calm")]),
+    "c1m2": ("calm", [(0.35, "surge"), (0.62, "calm")]),
+    "c1m3": ("plankton", [(0.4, "silt"), (0.72, "calm")]),
+    "c2m1": ("calm", [(0.25, "thermocline"), (0.7, "plankton")]),
+    "c2m2": ("plankton", [(0.3, "surge"), (0.6, "calm")]),
+    "c2m3": ("calm", [(0.3, "storm_above"), ("before:kraken_engine", "calm")]),
+    "c3m1": ("clouds", [(0.15, "rain"), (0.38, "storm"), (0.72, "clouds")]),
+    "c3m2": ("rain", [(0.2, "storm"), ("before:storm_eye", "eye"), (0.88, "rain")]),
+    "c3m3s": ("rain", [(0.12, "storm"), (0.6, "rain"), (0.75, "storm"), (0.93, "clear")]),
+    "c3m3a": ("storm_above", [(0.45, "surge"), (0.8, "calm")]),
+    "c4m1": ("clear", [(0.25, "ash"), (0.8, "clear")]),
+    "c4m2": ("ash", [(0.55, "clouds")]),
+    "c4m3s": ("clouds", [(0.3, "ash"), (0.75, "clouds")]),
+    "c4m3a": ("calm", [(0.3, "vents"), (0.75, "calm")]),
+    "c5m1": ("clouds", [(0.35, "rain"), (0.8, "clouds")]),
+    "c5m2": ("rain", [(0.3, "storm"), (0.65, "clouds")]),
+    "c5m3s": ("clouds", [(0.3, "storm"), ("before:sky_leviathan", "eye")]),
+    "c5m3a": ("plankton", [(0.4, "thermocline"), (0.7, "plankton")]),
+    "c6m1": ("snow", [(0.6, "clear")]),
+    "c6m2": ("snow", [(0.3, "blizzard"), (0.62, "snow")]),
+    "c6m3s": ("snow", [(0.2, "blizzard"), (0.55, "snow"), (0.7, "blizzard"), (0.9, "snow")]),
+    "c6m3a": ("calm", [(0.3, "thermocline"), (0.75, "calm")]),
+    "c7m1": ("clear", [(0.3, "jetstream"), (0.65, "clouds")]),
+    "c7m2": ("clouds", [(0.25, "jetstream"), (0.7, "clear")]),
+    "c7m3s": ("clouds", [(0.2, "jetstream"), (0.45, "clouds"), (0.62, "jetstream"), ("before:poseidon_prime", "clear")]),
+    "c7m3a": ("calm", [(0.35, "abyssal"), (0.8, "calm")]),
+    "c8m1": ("vacuum", [(0.35, "solar"), (0.7, "vacuum")]),
+    "c8m2": ("vacuum", [(0.2, "solar"), (0.6, "vacuum")]),
+    "c8m3s": ("vacuum", [(0.25, "solar"), (0.55, "vacuum"), (0.7, "solar"), (0.92, "vacuum")]),
+    "c8m3a": ("calm", [(0.3, "abyssal"), (0.78, "calm")]),
+    "c10m1": ("abyssal", [(0.5, "vents"), (0.85, "abyssal")]),
+    "c10m2": ("abyssal", [(0.3, "vents"), (0.65, "abyssal")]),
+    "c10m3": ("abyssal", [(0.3, "vents"), ("before:hadal_matriarch", "calm")]),
+    "s1": ("abyssal", [(0.5, "calm")]),
+    "s2": ("ash", []),
+    "s3": ("snow", [(0.5, "blizzard"), (0.8, "snow")]),
+    "s4": ("plankton", [(0.4, "surge"), (0.75, "plankton")]),
+}
+SEVERE = {"storm", "blizzard", "jetstream", "surge", "silt", "storm_above", "solar"}
+
+
+def add_weather(mission_id: str, out: dict, length: float) -> None:
+    """Estado inicial e eventos {"op": "weather"} da missão (aviso de 3 s no severo, 2 s nos outros)."""
+    if mission_id not in WEATHER:
+        return
+    start, fronts = WEATHER[mission_id]
+    out["weather"] = start
+    for anchor, to in fronts:
+        if isinstance(anchor, str):
+            boss = anchor.split(":", 1)[1]
+            t = next(e["t"] for e in out["events"] if e["op"] in ("boss", "miniboss") and e["id"] == boss) - 6.0
+        else:
+            t = anchor * length
+        severe = to in SEVERE
+        out["events"].append({"op": "weather", "to": to, "warn": 3.0 if severe else 2.0,
+                              "ramp": 5.0 if severe else 4.0, "t": round(max(0.5, t), 2)})
+    out["events"].sort(key=lambda e: e["t"])
+
+
 def build(mission_id: str, spec: dict) -> dict:
     events, cuts, t = script(mission_id, spec, 1.0)
     if any(e["op"] in ("boss", "miniboss") for e in events):
@@ -482,6 +546,7 @@ def build(mission_id: str, spec: dict) -> dict:
     for key in ("secret", "route", "score_mult", "weapon_lock", "tutorial", "secret_mission", "dark"):
         if key in spec:
             out[key] = spec[key]
+    add_weather(mission_id, out, t)
     return out
 
 

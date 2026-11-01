@@ -170,6 +170,13 @@
 			"t": 23.55
 		},
 		{
+			"op": "weather",
+			"to": "abyssal",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 31.42
+		},
+		{
 			"op": "wave",
 			"enemy": "nautilus",
 			"formation": "single",
@@ -443,6 +450,13 @@
 			"t": 70.02
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 71.83
+		},
+		{
 			"op": "wave",
 			"enemy": "gold_lance",
 			"formation": "line",
@@ -512,5 +526,6 @@
 		}
 	],
 	"route": "abyss",
-	"score_mult": 1.5
+	"score_mult": 1.5,
+	"weather": "calm"
 }

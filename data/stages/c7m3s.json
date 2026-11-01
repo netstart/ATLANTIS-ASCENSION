@@ -121,6 +121,13 @@
 			"t": 15.97
 		},
 		{
+			"op": "weather",
+			"to": "jetstream",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 17.96
+		},
+		{
 			"op": "blessing",
 			"t": 20.05
 		},
@@ -177,6 +184,13 @@
 			},
 			"marked": true,
 			"t": 40.39
+		},
+		{
+			"op": "weather",
+			"to": "clouds",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 40.4
 		},
 		{
 			"op": "wave",
@@ -282,6 +296,13 @@
 			"op": "log",
 			"x": 0.6364740329790546,
 			"t": 53.14
+		},
+		{
+			"op": "weather",
+			"to": "jetstream",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 55.67
 		},
 		{
 			"op": "capsule",
@@ -402,6 +423,13 @@
 			"t": 78.28
 		},
 		{
+			"op": "weather",
+			"to": "clear",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 79.78
+		},
+		{
 			"op": "dialogue",
 			"id": "poseidon_intro",
 			"t": 81.78
@@ -416,5 +444,6 @@
 			"t": 87.78
 		}
 	],
-	"route": "surface"
+	"route": "surface",
+	"weather": "clouds"
 }

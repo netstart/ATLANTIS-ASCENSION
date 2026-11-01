@@ -169,6 +169,13 @@
 			"t": 32.0
 		},
 		{
+			"op": "weather",
+			"to": "ash",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 33.36
+		},
+		{
 			"op": "lightning",
 			"kind": "lava",
 			"x": 0.35,
@@ -441,6 +448,13 @@
 			"t": 82.31
 		},
 		{
+			"op": "weather",
+			"to": "clouds",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 83.4
+		},
+		{
 			"op": "wave",
 			"enemy": "tide_wasp",
 			"formation": "v",
@@ -581,5 +595,6 @@
 			"t": 107.2
 		}
 	],
-	"route": "surface"
+	"route": "surface",
+	"weather": "clouds"
 }

@@ -65,7 +65,9 @@ func decide(sim: Sim) -> SimInput:
 		if cost < best - 0.0001:
 			best = cost
 			best_dir = c - me
-	input.move = best_dir / maxf(sim.player.speed_mult, 0.01)
+	# Como a mão do jogador: desconta a deriva do vento ou da corrente e vence a resistência do meio.
+	var want := best_dir - sim.weather.wind * Sim.STEP
+	input.move = want / maxf(sim.player.speed_mult * sim.player.resist, 0.01)
 	var danger_now := _danger(sim, me, near, near_vel, near_r)
 	input.bomb = danger_now > 60.0 and sim.player.bombs > 0 and sim.player.vulnerable()
 	input.special = sim.player.special_charge >= 1.0 and near.size() > 25

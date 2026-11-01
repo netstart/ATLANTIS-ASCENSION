@@ -33,6 +33,15 @@ uniform vec4 floor_dark : source_color = vec4(0.05, 0.2, 0.27, 1.0);
 uniform vec4 floor_lit : source_color = vec4(0.13, 0.31, 0.4, 1.0);
 uniform vec4 foam : source_color = vec4(0.7, 0.95, 1.0, 1.0);
 uniform vec4 accent : source_color = vec4(0.38, 0.29, 0.09, 1.0);
+// Clima (scripts/sim/weather.gd, só visual): cor da água ou do céu (rgb, quantidade em a) que troca o
+// matiz e mantém o claro e escuro, escurecimento (negativo clareia), cáusticas e raios de luz
+// multiplicados, e o clarão do relâmpago em volta de um ponto. Tudo antes do teto de brilho.
+uniform vec4 weather_grade : source_color = vec4(0.0, 0.0, 0.0, 0.0);
+uniform float weather_dim = 0.0;
+uniform float weather_caustics = 1.0;
+uniform float weather_rays = 1.0;
+uniform float weather_flash = 0.0;
+uniform vec2 weather_flash_pos = vec2(150.0, 200.0);
 
 // Fendas: frequência do ruído (alongadas no sentido da rolagem) e limiar da borda.
 const vec2 TRENCH_FREQ = vec2(0.016, 0.0052);
@@ -300,7 +309,8 @@ void fragment() {
 		float c = pow(1.0 - abs(a - b), 14.0);
 		// Só em manchas de sol que passam devagar: a rede fina não cobre o campo inteiro.
 		float patch = smoothstep(0.5, 0.75, vnoise(t * 0.006 + vec2(TIME * 0.03, 0.0)));
-		col += foam.rgb * floor(c * 3.0) / 3.0 * 0.11 * caustics * patch * (1.0 + emerge) * (1.0 - depth);
+		col += foam.rgb * floor(c * 3.0) / 3.0 * 0.11 * caustics * weather_caustics * patch * (1.0 + emerge)
+				* (1.0 - depth);
 	}
 	// Pontos bioluminescentes (fossa hadal) e estrelas.
 	if (dots > 0.0 && hash12(t + 7.0) > 1.0 - 0.006 * dots) {
@@ -325,7 +335,16 @@ void fragment() {
 	// Raios de luz da superfície: faixas diagonais lentas, mais visíveis na água funda.
 	if (detail > 1.5 && rays > 0.0) {
 		float r = vnoise(vec2((px.x + px.y * 0.42) * 0.028 + TIME * 0.05, TIME * 0.03));
-		col += foam.rgb * smoothstep(0.58, 0.86, r) * 0.05 * rays * (0.4 + 0.6 * depth);
+		col += foam.rgb * smoothstep(0.58, 0.86, r) * 0.05 * rays * weather_rays * (0.4 + 0.6 * depth);
+	}
+	if (weather_grade.a > 0.0) {
+		float v = dot(col, vec3(0.3, 0.59, 0.11));
+		vec3 tinted = weather_grade.rgb * v / max(dot(weather_grade.rgb, vec3(0.3, 0.59, 0.11)), 0.02);
+		col = mix(col, tinted, weather_grade.a);
+	}
+	col *= 1.0 - weather_dim;
+	if (weather_flash > 0.0) {
+		col += foam.rgb * weather_flash * (0.25 + 0.75 * exp(-distance(px, weather_flash_pos) / 120.0)) * 0.35;
 	}
 	// Fora do campo (faixa do HUD, zona do polegar, laterais): um pouco mais escuro.
 	vec2 outside = max(field.xy - px, px - field.xy - field.zw);

@@ -38,7 +38,7 @@ const DIFFICULTY := {
 	&"veteran": {"hull": 0, "bullet": 1.1, "rank": true, "score": 1.3},
 	&"abyssal": {"hull": -2, "bullet": 1.15, "rank": true, "score": 1.6},
 }
-const TABLES: Array[String] = ["enemies", "patterns", "bosses", "weapons", "ships", "blessings", "wings"]
+const TABLES: Array[String] = ["enemies", "patterns", "bosses", "weapons", "ships", "blessings", "wings", "weather"]
 
 var mission_id: StringName
 var mission: Dictionary = {}
@@ -59,6 +59,8 @@ var beams: Array[Dictionary] = []
 var missiles: Array[Dictionary] = []
 var drones: Array[Vector2] = []
 var stage := StageScript.new()
+## Clima e mar (frentes, vento ou corrente, turbulência, resistência do meio).
+var weather := Weather.new()
 var events: Array[Dictionary] = []
 var hitstop: int = 0
 var no_fire: int = 0
@@ -197,6 +199,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	_bubble_timer = mods.bubble_recharge
 	_abyss_points = scoring.point_mult
 	stage.setup(mission)
+	weather.setup(mission, tables.get("weather", {}), rng)
 	for c: int in range(COLUMNS):
 		_columns.append([])
 
@@ -301,6 +304,7 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 		_player_actions(input)
 		if wing != null:
 			_wing_actions(input2 if input2 != null else SimInput.new())
+	weather.step(self, input.precise, input2 != null and input2.precise)
 	SecondaryFire.step(self)
 	ShipTraits.step(self)
 	Specials.step(self)
@@ -314,7 +318,7 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 		boss.step(self)
 		if boss.state == SimBoss.State.DEAD:
 			boss = null
-	enemy_bullets.step(STEP, BOUNDS, gravity + breach_dir, Specials.frozen(self))
+	enemy_bullets.step(STEP, BOUNDS, gravity + breach_dir + weather.bullet_accel(), Specials.frozen(self))
 	player_bullets.step(STEP, BOUNDS, breach_dir * Hazards.BREACH_PLAYER_SHARE)
 	if tide_frames > 0:
 		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_RADIUS))
@@ -625,6 +629,8 @@ func on_stage_event(ev: Dictionary) -> void:
 			emit(&"abyss", {"depth": abyss_depth})
 		&"gravity_breach", &"cover", &"capsule":
 			Hazards.on_event(self, ev)
+		&"weather":
+			weather.start(self, ev)
 		&"log":
 			pickups.append({"kind": &"log", "pos": Vector2(float(ev.get("x", 0.5)) * Playfield.FIELD.x, -12.0),
 					"vel": Vector2(0, 34), "frames": 0})
@@ -1096,6 +1102,7 @@ func state_hash() -> String:
 			str(rescued), str(breach_frames), str(captured)])
 	if wing != null:
 		parts.append("w%.3f,%.3f:%d" % [wing.pos.x, wing.pos.y, wing.level])
+	parts.append("%s:%.3f:%d" % [weather.state, weather.blend, weather.mastered])
 	for e: SimEnemy in enemies:
 		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
 	var sum := Vector2.ZERO

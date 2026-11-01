@@ -859,13 +859,16 @@
     "category": "audio",
     "commercial_use": true,
     "files": [
-      "assets/audio/sfx/rubberduck_alarm*"
+      "assets/audio/sfx/rubberduck_alarm*",
+      "assets/audio/sfx/rubberduck_rain*",
+      "assets/audio/sfx/rubberduck_wind*",
+      "assets/audio/sfx/rubberduck_water*"
     ],
     "id": "rubberduck_sfx_loops",
     "license_file": "licenses/texts/CC0-1.0.txt",
     "license_id": "CC0-1.0",
     "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
+    "modifications": "rain, noise_01 e water_flowing normalizados (RMS -22 dBFS, mono 44,1 kHz) por tools/cut_weather_audio.py",
     "name": "30 CC0 SFX loops",
     "snapshot_url": "https://opengameart.org/content/30-cc0-sfx-loops",
     "source_url": "https://opengameart.org/content/30-cc0-sfx-loops",
@@ -878,6 +881,60 @@
       "snapshot_file": "d111f5a969036d4e36a6ed66904d933529f5720a1c199eef1464dc9c21a963de"
     },
     "snapshot_file": "docs/licenses/rubberduck_sfx_loops_2026-10-31.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "category": "audio",
+    "commercial_use": true,
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "verified_at": "2026-11-01",
+    "verified_by": "Claude (clima 1.13); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "author": "kindland",
+    "files": [
+      "assets/audio/sfx/kindland_*"
+    ],
+    "id": "kindland_rain_thunders",
+    "modifications": "três trovões recortados no ataque e um trecho de 24 s sem trovão em laço com emenda cruzada, mono 44,1 kHz, pico -1,5 dBFS (tools/cut_weather_audio.py)",
+    "name": "rain and thunders",
+    "snapshot_url": "https://opengameart.org/content/rain-and-thunders",
+    "source_url": "https://opengameart.org/content/rain-and-thunders",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "ac9b2630ab08f6e096d21c9b019fbec358f7f4ced6bd20d5610064379ae6377b"
+    },
+    "snapshot_file": "docs/licenses/kindland_rain_thunders_2026-11-01.pdf",
+    "downloaded_at": "2026-11-01"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "category": "audio",
+    "commercial_use": true,
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "verified_at": "2026-11-01",
+    "verified_by": "Claude (clima 1.13); revisão final por Clayton antes do lançamento",
+    "version": "",
+    "author": "isaiah658",
+    "files": [
+      "assets/audio/sfx/isaiah658_*"
+    ],
+    "id": "isaiah658_underwater_pad",
+    "modifications": "normalizado (RMS -22 dBFS, mono) por tools/cut_weather_audio.py",
+    "name": "Underwater Ambient Pad",
+    "snapshot_url": "https://opengameart.org/content/underwater-ambient-pad",
+    "source_url": "https://opengameart.org/content/underwater-ambient-pad",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "9fcaf0becb4fa9d97398db66fb60d8578e48891100dff77977f3c93e33917aac"
+    },
+    "snapshot_file": "docs/licenses/isaiah658_underwater_pad_2026-11-01.pdf",
+    "downloaded_at": "2026-11-01"
   },
   {
     "ai_generated": false,

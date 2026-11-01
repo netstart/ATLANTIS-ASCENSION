@@ -44,6 +44,8 @@ var _bot: BotPilot
 var _wing_bomb_held: bool = false
 var _ghost_sim: Sim
 var _backdrop: OceanBackdrop
+var _weather: WeatherView
+var _weather_audio := WeatherAudio.new()
 var _clip: Control
 var _world: WorldView
 var _screen: ScreenFx
@@ -117,6 +119,15 @@ func _ready() -> void:
 	if _ghost_sim != null:
 		_world.ghost_sim = _ghost_sim
 	_clip.add_child(_world)
+	# Clima entre o chão e o campo (nuvens baixas, chuva ao longe); o de perto entra no WorldView.
+	_weather = WeatherView.new()
+	_weather.detail = GfxQuality.level()
+	_weather.reduce_flashes = _world.reduce_flashes
+	_weather.reduce_motion = _world.reduce_motion
+	add_child(_weather)
+	move_child(_weather, _clip.get_index())
+	_weather.setup(sim, _world, _backdrop)
+	_weather.thunder.connect(_weather_audio.on_thunder)
 	_screen = ScreenFx.new()
 	_screen.reduce_flashes = _world.reduce_flashes
 	_screen.fx_level = _world.fx_level
@@ -151,6 +162,7 @@ func _ready() -> void:
 func _exit_tree() -> void:
 	if GameClock.ticked.is_connected(_on_tick):
 		GameClock.ticked.disconnect(_on_tick)
+	_weather_audio.stop()
 	GameClock.paused = true
 	GameClock.time_scale = 1.0
 
@@ -166,6 +178,7 @@ func relayout_for(view: Vector2) -> void:
 	var field: Rect2 = layout["field"]
 	_backdrop.set_view(view)
 	_backdrop.set_field(field)
+	_weather.set_layout(view, field)
 	_clip.position = field.position
 	_clip.size = field.size
 	_hud.size = view
@@ -184,11 +197,17 @@ func callouts() -> StyleCallouts:
 	return _callouts
 
 
+## Clima na tela (testes e capturas).
+func weather_view() -> WeatherView:
+	return _weather
+
+
 func set_paused(value: bool) -> void:
 	if sim.finished:
 		return
 	paused = value
 	GameClock.paused = value
+	_weather_audio.paused = value
 	_hud.set_paused(value)
 
 
@@ -345,7 +364,9 @@ func _process(delta: float) -> void:
 	# Câmera 2,5D: o chão acompanha a nave na horizontal (só visual; a Sim não lê nada daqui).
 	var cam_tilt := Vector2(clampf(sim.player.pos.x / Playfield.FIELD.x * 2.0 - 1.0, -1.0, 1.0), 0.0)
 	_backdrop.apply(sim.scroll, _emerge, cam_tilt, bool(Settings.get_value("reduce_motion")))
-	_backdrop.set_drift(sim.gravity if sim.drift_frames > 0 else Vector2.ZERO)
+	_backdrop.set_drift((sim.gravity if sim.drift_frames > 0 else Vector2.ZERO) + sim.weather.wind)
+	_weather.refresh(delta)
+	_weather_audio.update(sim.weather, delta)
 	_world.refresh(delta)
 	_hud.refresh(sim, delta)
 	if quit_at > 0.0 and sim.frame >= int(quit_at * 60.0):
@@ -460,6 +481,12 @@ func _on_event(ev: Dictionary) -> void:
 		&"current", &"wind":
 			AudioManager.play("kenney_ocean_shift", 0.7, 0.0, -8.0)
 			_hud.show_banner(tr("hud." + String(ev["type"])))
+		&"weather":
+			_on_weather(ev)
+		&"weather_mastered":
+			AudioManager.play("kenney_weapon_up", 0.9)
+			Settings.vibrate(40, 0.5, 1)
+			_world.fx.popup(ev["pos"], int(ev.get("points", 0)), UiTheme.GOLD)
 		&"log":
 			AudioManager.play("kenney_medal", 0.8)
 			_hud.show_radio_text(tr("hud.log_found"), UiTheme.CYAN)
@@ -503,6 +530,18 @@ func _on_event(ev: Dictionary) -> void:
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)
+
+
+## Frente de clima anunciada: aviso no rádio (coral se for severa) com o tempo que falta, e um som.
+func _on_weather(ev: Dictionary) -> void:
+	var def := sim.weather.def_of(StringName(String(ev.get("to", ""))))
+	var label := tr(String(def.get("name_key", "")))
+	var severe := bool(ev.get("severe", false))
+	var key := "weather.front_severe" if severe else "weather.front"
+	_hud.show_radio_text(tr(key) % label, UiTheme.CORAL if severe else UiTheme.CYAN)
+	AudioManager.play("kenney_ocean_shift", 0.6 if severe else 0.9, 0.0, -6.0 if severe else -10.0)
+	if severe:
+		Settings.vibrate(25, 0.3, 0)
 
 
 ## Ecos de Estilo: frase no campo, som que sobe com o destaque e um toque leve na mão.

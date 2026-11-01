@@ -167,6 +167,13 @@
 			"t": 27.46
 		},
 		{
+			"op": "weather",
+			"to": "surge",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 36.52
+		},
+		{
 			"op": "wave",
 			"enemy": "sentinel_buoy",
 			"formation": "single",
@@ -345,6 +352,13 @@
 			"t": 61.96
 		},
 		{
+			"op": "weather",
+			"to": "calm",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 64.69
+		},
+		{
 			"op": "wave",
 			"enemy": "tide_wasp",
 			"formation": "line",
@@ -483,5 +497,6 @@
 			"op": "end",
 			"t": 100.33
 		}
-	]
+	],
+	"weather": "calm"
 }

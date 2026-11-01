@@ -143,6 +143,13 @@
 			"t": 19.5
 		},
 		{
+			"op": "weather",
+			"to": "solar",
+			"warn": 3.0,
+			"ramp": 5.0,
+			"t": 19.71
+		},
+		{
 			"op": "blessing",
 			"t": 20.05
 		},
@@ -347,6 +354,13 @@
 			"t": 59.14
 		},
 		{
+			"op": "weather",
+			"to": "vacuum",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 59.14
+		},
+		{
 			"op": "wave",
 			"enemy": "bulwark",
 			"formation": "single",
@@ -511,5 +525,6 @@
 			"op": "end",
 			"t": 94.56
 		}
-	]
+	],
+	"weather": "vacuum"
 }

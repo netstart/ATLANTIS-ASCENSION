@@ -158,6 +158,13 @@
 			"t": 28.0
 		},
 		{
+			"op": "weather",
+			"to": "rain",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 38.92
+		},
+		{
 			"op": "wave",
 			"enemy": "gold_lance",
 			"formation": "line",
@@ -424,6 +431,13 @@
 			"t": 87.6
 		},
 		{
+			"op": "weather",
+			"to": "clouds",
+			"warn": 2.0,
+			"ramp": 4.0,
+			"t": 88.96
+		},
+		{
 			"op": "wave",
 			"enemy": "gold_lance",
 			"formation": "line",
@@ -511,5 +525,6 @@
 			"op": "end",
 			"t": 107.2
 		}
-	]
+	],
+	"weather": "clouds"
 }
