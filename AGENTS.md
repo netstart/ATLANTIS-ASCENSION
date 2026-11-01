@@ -93,7 +93,7 @@ C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/sc
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
 # Balanceamento: quanto o bot leva em cada luta de chefe e em cada fase (todas ou -- --only=c1m1,c9m3)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/boss_timing.gd
-# Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas
+# Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas (nave no nível 10)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/scroll_bench.tscn -- --strict
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_bench.tscn -- --strict
 # Arte gerada pelo projeto (balas, coletáveis, efeitos, ícone) e retratos dos personagens

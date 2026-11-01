@@ -7,6 +7,8 @@ extends ListScreen
 ## de nível e o ganho do próximo nível em menta ("antes → depois"), para o jogador ver o que compra.
 ## Cada nível monta uma peça nova na nave (ShipLivery): o cartão diz qual vem a seguir, a subida
 ## revela a peça com uma onda de luz e um selo dourado, e o cartão "Evolução" mostra as nove peças.
+## Som: a trava metálica na compra e o brilho de vidro na revelação; a Ascendida (nível máximo) tem
+## celebração própria — raios de ouro, título "Nave Ascendida", sino e vinheta de tambor de aço.
 
 ## Nível recém-comprado: a próxima montagem da tela revela a peça dele.
 var _revealed: int = 0
@@ -33,12 +35,7 @@ func _fill() -> void:
 	hero.add_child(view)
 	if _revealed == level and ShipLivery.part_at(level) != &"":
 		view.reveal()
-		var fresh := badge(tr("hangar.livery_new") % tr("livery." + String(ShipLivery.part_at(level))), UiTheme.GOLD,
-				&"star")
-		fresh.name = "NewPart"
-		fresh.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		hero.add_child(fresh)
-		_pop_in(fresh)
+		_announce(hero, level)
 	_revealed = 0
 	var head := title_row(hero, tr("ship." + String(ship)), UiTheme.WHITE, 18)
 	head.add_child(badge(tr("hangar.level") % level, UiTheme.GOLD))
@@ -54,7 +51,7 @@ func _fill() -> void:
 		button(hero, tr("hangar.upgrade") % Locale.format_number(cost), func() -> void:
 			if Economy.upgrade_ship(SaveManager.data, ship):
 				_revealed = Economy.ship_level(SaveManager.data, ship)
-				AudioManager.play_ui("kenney_weapon_up")
+				AudioManager.play_ui("kenney_part_clamp")
 				SaveManager.save_profile(), Economy.can_pay(profile, {"credits": cost}), "UpgradeShip", true)
 	else:
 		hero.add_child(badge(tr("hangar.max"), UiTheme.GOLD, &"star"))
@@ -79,6 +76,27 @@ func _fill_livery(level: int, tint: Color) -> void:
 		var row := title_row(box, tr("livery." + String(p["id"])), color, UiTheme.SMALL_SIZE,
 				&"check" if on else &"lock", accent if on else color)
 		row.add_child(UiTheme.label(tr("hangar.level") % at, UiTheme.SMALL_SIZE, UiTheme.GOLD if on else color))
+
+
+## Anuncia a peça recém-montada: selo dourado e brilho de vidro; na Ascendida, antes do selo, o
+## título grande, o sino e a vinheta (a trilha abaixa enquanto ela toca).
+func _announce(hero: VBoxContainer, level: int) -> void:
+	if level >= Economy.SHIP_MAX_LEVEL:
+		var title := UiTheme.label(tr("hangar.ascended"), 18, UiTheme.GOLD)
+		title.name = "Ascended"
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		hero.add_child(title)
+		_pop_in(title)
+		AudioManager.play_ui("kenney_ascend_bell")
+		AudioManager.play_jingle("kenney_jingle_ascend")
+	else:
+		get_tree().create_timer(0.2).timeout.connect(func() -> void: AudioManager.play_ui("kenney_part_shine"))
+	var fresh := badge(tr("hangar.livery_new") % tr("livery." + String(ShipLivery.part_at(level))), UiTheme.GOLD,
+			&"star")
+	fresh.name = "NewPart"
+	fresh.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	hero.add_child(fresh)
+	_pop_in(fresh)
 
 
 ## Selo que salta para dentro (escala 0,6 → 1 com mola), salvo em "reduzir movimento".

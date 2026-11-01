@@ -370,5 +370,8 @@ LIVERY = {
     "livery.trim": ["Friso Ascendido", "Ascended trim", "Moldura Ascendida", "Aufgestiegene Zierleiste",
                     "Liseré ascendant", "Кайма Вознесения", "Lis Kenaikan", "昇華の金縁", "승천의 금테", "昇華金邊",
                     "升华金边"],
+    "hangar.ascended": ["Nave Ascendida!", "Ship Ascended!", "¡Nave Ascendida!", "Schiff aufgestiegen!",
+                        "Vaisseau ascendu !", "Корабль вознесён!", "Pesawat Naik Tingkat!", "機体、昇華！",
+                        "기체 승천!", "機體昇華！", "机体升华！"],
 }
 STRINGS.update(LIVERY)

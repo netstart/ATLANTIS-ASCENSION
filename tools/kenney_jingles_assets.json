@@ -4,6 +4,7 @@
 	"files": {
 		"music-jingles/Audio/8-Bit jingles/jingles_NES00.ogg": "audio/music/kenney_jingle_victory.ogg",
 		"music-jingles/Audio/8-Bit jingles/jingles_NES03.ogg": "audio/music/kenney_jingle_defeat.ogg",
-		"music-jingles/Audio/8-Bit jingles/jingles_NES08.ogg": "audio/music/kenney_jingle_reward.ogg"
+		"music-jingles/Audio/8-Bit jingles/jingles_NES08.ogg": "audio/music/kenney_jingle_reward.ogg",
+		"music-jingles/Audio/Steel jingles/jingles_STEEL07.ogg": "audio/music/kenney_jingle_ascend.ogg"
 	}
 }

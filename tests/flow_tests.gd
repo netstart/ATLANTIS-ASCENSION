@@ -80,6 +80,14 @@ func run(host: Node, check: Callable) -> void:
 			"Fluxo: a subida monta a peça nova na nave e mostra o selo")
 	(hangar as ListScreen).refill()
 	check.call(hangar.find_child("NewPart", true, false) == null, "Fluxo: o selo da peça nova aparece uma vez só")
+	check.call(hangar.find_child("Ascended", true, false) == null, "Fluxo: subida comum não celebra a Ascendida")
+	SaveManager.data["hangar"]["ship_levels"]["falcon"] = Economy.SHIP_MAX_LEVEL - 1
+	SaveManager.add_currency("credits", Economy.ship_level_cost(Economy.SHIP_MAX_LEVEL - 1))
+	(hangar as ListScreen).refill()
+	(hangar.find_child("UpgradeShip", true, false) as Button).pressed.emit()
+	check.call(hangar.find_child("Ascended", true, false) != null and hangar.find_child("NewPart", true, false) != null,
+			"Fluxo: chegar ao nível máximo celebra a nave Ascendida")
+	SaveManager.data["hangar"]["ship_levels"]["falcon"] = 2
 	app.go(&"back")
 	await LayoutTests.settle(host)
 	(app.screen(&"hub").find_child("Tab_ships", true, false) as Button).pressed.emit()

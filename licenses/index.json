@@ -126,7 +126,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://kenney.nl/assets/sci-fi-sounds",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
-    "files_count": 23
+    "files_count": 26
   },
   {
     "id": "kenney_music_jingles",
@@ -138,7 +138,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://kenney.nl/assets/music-jingles",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
-    "files_count": 3
+    "files_count": 4
   },
   {
     "id": "foozle_void_main_ship",

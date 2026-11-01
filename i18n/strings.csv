@@ -247,6 +247,7 @@ events.season,Temporada %s · nível %d de %d,Season %s · tier %d of %d,Tempora
 events.season_open,Abrir o passe,Open the pass,Abrir el pase,Pass öffnen,Ouvrir le passe,Открыть пропуск,Buka pass,パスを開く,패스 열기,開啟通行證,打开通行证
 events.shield,Escudo da sequência: %d (perdoa 1 dia por semana),Streak shield: %d (forgives 1 day a week),Escudo de racha: %d (perdona 1 día por semana),Serienschild: %d (verzeiht 1 Tag/Woche),Bouclier de série : %d (pardonne 1 jour/semaine),Щит серии: %d (прощает 1 день в неделю),Perisai beruntun: %d (maafkan 1 hari/minggu),連続ログイン保護：%d（週1日まで）,연속 보호: %d (주 1일 용서),連續保護：%d（每週可補1天）,连续保护：%d（每周可补1天）
 events.weekly,Tarefas da semana,Weekly tasks,Tareas de la semana,Wochenaufgaben,Tâches de la semaine,Задания недели,Tugas mingguan,ウィークリー任務,주간 과제,每週任務,每周任务
+hangar.ascended,Nave Ascendida!,Ship Ascended!,¡Nave Ascendida!,Schiff aufgestiegen!,Vaisseau ascendu !,Корабль вознесён!,Pesawat Naik Tingkat!,機体、昇華！,기체 승천!,機體昇華！,机体升华！
 hangar.bonus,Dano +%d%% · Casco +%d,Damage +%d%% · Hull +%d,Daño +%d%% · Casco +%d,Schaden +%d%% · Rumpf +%d,Dégâts +%d%% · Coque +%d,Урон +%d%% · Корпус +%d,Kerusakan +%d%% · Lambung +%d,ダメージ+%d%%・船体+%d,피해 +%d%% · 선체 +%d,傷害 +%d%%・船體 +%d,伤害 +%d%%・船体 +%d
 hangar.buy,Comprar · %s créditos,Buy · %s credits,Comprar · %s créditos,Kaufen · %s Credits,Acheter · %s crédits,Купить · %s кредитов,Beli · %s kredit,購入・%sクレジット,구매 · %s 크레딧,購買・%s 點數,购买・%s 点数
 hangar.difficulty,Dificuldade,Difficulty,Dificultad,Schwierigkeit,Difficulté,Сложность,Kesulitan,難易度,난이도,難度,难度

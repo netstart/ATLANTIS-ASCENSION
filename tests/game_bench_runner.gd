@@ -1,7 +1,8 @@
 extends Node
 ## Benchmark da partida (docs/policies/testes.md). Sem --headless e sem VSync:
 ##   godot --path . res://tests/game_bench.tscn -- [--strict] [--res=305x678] [--stress=1000] [--seconds=20]
-## O bot joga a missão 1-1 com `stress` balas inimigas vivas (além das da fase) na qualidade Alta.
+## O bot joga a missão 1-1 com `stress` balas inimigas vivas (além das da fase) na qualidade Alta, com a nave
+## no nível do hangar `--level` (padrão: o máximo, a Ascendida, que desenha todas as peças e o rastro).
 ## Critério com --strict: p95 ≤ 8 ms e nenhum quadro > 33 ms depois do aquecimento.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
@@ -26,9 +27,12 @@ func _ready() -> void:
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	Engine.max_fps = 0
 	var res := "305x678"
+	var level := Economy.SHIP_MAX_LEVEL
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--res="):
 			res = arg.trim_prefix("--res=")
+		elif arg.begins_with("--level="):
+			level = clampi(int(arg.trim_prefix("--level=")), 1, Economy.SHIP_MAX_LEVEL)
 		elif arg.begins_with("--seconds="):
 			_seconds = float(arg.trim_prefix("--seconds="))
 	_strict = "--strict" in OS.get_cmdline_user_args()
@@ -41,7 +45,9 @@ func _ready() -> void:
 	await get_tree().create_timer(0.3).timeout
 	get_tree().root.get_node(^"PixelScaler").call("_apply")
 	_game = GAME.instantiate() as Game
-	_game.configure(&"c1m1", &"falcon", 7, true)
+	var loadout := Sim.default_loadout(&"falcon")
+	loadout["ship_level"] = level
+	_game.configure(&"c1m1", loadout, 7, true)
 	if not "--stress=" in " ".join(OS.get_cmdline_user_args()):
 		_game.stress = 1000
 	add_child(_game)
@@ -61,8 +67,8 @@ func _process(_delta: float) -> void:
 			sim_avg += v
 		sim_avg /= maxf(1.0, _sim_ms.size())
 		var ok := float(s["p95_ms"]) <= P95_MAX and float(s["max_ms"]) <= WORST_MAX
-		print("%s partida: %s; simulação média %.2f ms; balas inimigas %d" % ["ok" if ok else "FALHOU",
-				FrameStats.describe(s), sim_avg, _game.sim.enemy_bullets.count])
+		print("%s partida: %s; simulação média %.2f ms; balas inimigas %d; nave nível %d" % ["ok" if ok else "FALHOU",
+				FrameStats.describe(s), sim_avg, _game.sim.enemy_bullets.count, int(_game.sim.loadout.get("ship_level", 1))])
 		_game = null
 		SpriteBank.clear()
 		get_tree().quit(1 if _strict and not ok else 0)

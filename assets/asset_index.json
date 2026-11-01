@@ -1194,6 +1194,12 @@
   "sha256": "35f75b4381dfbb053992876f7dfc567d9fd959d61b73954d5b1cd519753e7df1"
  },
  {
+  "file": "assets/audio/music/kenney_jingle_ascend.ogg",
+  "source": "kenney/music-jingles/Audio/Steel jingles/jingles_STEEL07.ogg",
+  "license_id": "kenney_music_jingles",
+  "sha256": "206b5cb18870c1faa393047cb857eda28441b9682380c9eb5910119ea04c2ece"
+ },
+ {
   "file": "assets/audio/music/kenney_jingle_defeat.ogg",
   "source": "kenney/music-jingles/Audio/8-Bit jingles/jingles_NES03.ogg",
   "license_id": "kenney_music_jingles",
@@ -1258,6 +1264,12 @@
   "source": "opengameart/electricity-sound-pack/deathboom.wav",
   "license_id": "faxcorp_electricity_sfx",
   "sha256": "fa7943c117f367b205bf808486d249c22e894f19e5641608a1a25c25d6d7ad39"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_ascend_bell.ogg",
+  "source": "kenney/impact-sounds/Audio/impactBell_heavy_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "9df61e3ae9a83dc65e5a1fd3ed19d480876f3b22b963a1b9ef6fa293592dcec4"
  },
  {
   "file": "assets/audio/sfx/kenney_beam.ogg",
@@ -1330,6 +1342,18 @@
   "source": "kenney/digital-audio/Audio/powerUp1.ogg",
   "license_id": "kenney_audio",
   "sha256": "8c361b624b560c0bc30ea3063b71212bc30caebf425c9df2481c13b25561485c"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_part_clamp.ogg",
+  "source": "kenney/impact-sounds/Audio/impactMetal_light_001.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "fba69c467ddd85da7b1d82e259f936b876d9ba6a3d6f1b24bdd10468e46bfe08"
+ },
+ {
+  "file": "assets/audio/sfx/kenney_part_shine.ogg",
+  "source": "kenney/interface-sounds/Audio/glass_004.ogg",
+  "license_id": "kenney_audio",
+  "sha256": "2379b58f953e3d86982aa8cddcae763022c6258e9820171bf905ce58b4e97766"
  },
  {
   "file": "assets/audio/sfx/kenney_pearl.ogg",

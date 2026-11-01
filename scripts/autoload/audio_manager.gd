@@ -141,6 +141,22 @@ func play_ui(id: String) -> bool:
 	return play(id, 1.0, 0.0, 0.0, "UI")
 
 
+## Vinheta curta (da pasta da música) por cima da trilha, que abaixa `db` enquanto ela toca; a música
+## não troca. Toca no barramento UI (o volume da música não a abafa).
+func play_jingle(id: String, db: float = -14.0) -> bool:
+	var stream := _stream(MUSIC_DIR, id)
+	var player := _free_player()
+	if stream == null or player == null:
+		return false
+	player.stream = stream
+	player.bus = "UI"
+	player.volume_db = 0.0
+	player.pitch_scale = 1.0
+	player.play()
+	duck(db, stream.get_length())
+	return true
+
+
 ## Abaixa a música por `seconds` (falas, alertas de chefe).
 func duck(db: float, seconds: float) -> void:
 	if _duck_tween != null:

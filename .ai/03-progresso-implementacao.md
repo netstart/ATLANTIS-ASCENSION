@@ -264,3 +264,9 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (15 pacotes CC0 avaliados, `.ai/02-catalogo-assets-licencas.md`): entraram explosões em pixel art do ansimuz
   (peças e quedas de chefe), alarme e rugidos (rubberduck), estrondo de queda (faxcorp) e o tema de chefe
   intermediário (SketchyLogic). Os conjuntos de chefes em desenho liso ficaram de fora por destoar da arte Void
+- ✅ `1.11.0` Evolução da nave fechada: som próprio da peça montada (trava metálica na compra e brilho de vidro na
+  revelação, Kenney CC0) e celebração da nave Ascendida no nível 10 — doze raios de ouro atrás da nave, segunda
+  onda dourada, dezesseis centelhas, título "Nave Ascendida!" (11 idiomas), sino e vinheta de tambor de aço por cima
+  da trilha (`AudioManager.play_jingle`, abaixa a música sem trocá-la). O benchmark da partida passa a jogar com a
+  nave no nível máximo (`--level=N` para outro): Ascendida p95 4,10 ms contra 4,19 ms no nível 1 (custo
+  desprezível); `run_checks.ps1` `TUDO OK` (1.207 regras, 82.907 de integração, 726 textos, 254 arquivos)

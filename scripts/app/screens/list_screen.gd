@@ -699,6 +699,7 @@ class ShipView:
 	const REDRAW_HZ := 15.0
 	const SIZE := 48.0
 	const REVEAL_TIME := 1.4
+	const ASCEND_TIME := 2.4
 
 	var tint := Color.WHITE
 	var zoom: int = 2
@@ -733,7 +734,7 @@ class ShipView:
 		_wait -= delta
 		if _reveal >= 0.0:
 			_reveal += delta
-			if _reveal > REVEAL_TIME:
+			if _reveal > _reveal_time():
 				_reveal = -1.0
 		if _wait <= 0.0:
 			_wait = 1.0 / (60.0 if _reveal >= 0.0 else REDRAW_HZ)
@@ -754,6 +755,8 @@ class ShipView:
 		var col := Color(0.16, 0.24, 0.34, 0.9) if dim else tint
 		var z := float(zoom)
 		var calm := UiFx.reduced()
+		if _reveal >= 0.0 and level >= Economy.SHIP_MAX_LEVEL:
+			_draw_ascend(center, radius, clampf(_reveal / ASCEND_TIME, 0.0, 1.0))
 		draw_set_transform(center.round(), 0.0, Vector2(z, z))
 		var half := Vector2(SIZE, SIZE) * 0.5
 		if _engine != null and not dim:
@@ -769,9 +772,13 @@ class ShipView:
 		if _reveal >= 0.0:
 			_draw_reveal(center, radius)
 
+	## A Ascendida (nível máximo) ganha a revelação longa, com raios de ouro.
+	func _reveal_time() -> float:
+		return ASCEND_TIME if level >= Economy.SHIP_MAX_LEVEL else REVEAL_TIME
+
 	## Onda de luz que sai da nave, brilho que apaga e oito centelhas que se abrem (ouro e acento).
 	func _draw_reveal(center: Vector2, radius: float) -> void:
-		var t := clampf(_reveal / REVEAL_TIME, 0.0, 1.0)
+		var t := clampf(_reveal / _reveal_time(), 0.0, 1.0)
 		var accent := ShipLivery.accent_of(tint)
 		var fade := 1.0 - t
 		var wave := ease(t, 0.4)
@@ -784,3 +791,24 @@ class ShipView:
 			var from := center + dir * radius * (0.3 + 0.8 * wave)
 			draw_line(from, from + dir * radius * 0.16 * fade, Color(UiTheme.GOLD if i % 2 == 0 else accent, fade),
 					1.5, true)
+
+	## Ascensão: doze raios de ouro que crescem e giram devagar por trás da nave, uma segunda onda
+	## dourada que sai atrasada e dezesseis centelhas que se espalham e apagam.
+	func _draw_ascend(center: Vector2, radius: float, t: float) -> void:
+		var fade := 1.0 - t
+		var rise := ease(minf(1.0, t * 3.0), 0.3)
+		for i: int in range(12):
+			var a := TAU * float(i) / 12.0 + t * 0.6
+			var dir := Vector2(cos(a), sin(a))
+			var side := Vector2(-dir.y, dir.x) * radius * 0.07
+			var tip := center + dir * radius * (0.6 + 0.9 * rise)
+			draw_colored_polygon(PackedVector2Array([center + side, center - side, tip]),
+					Color(UiTheme.GOLD, 0.16 * fade))
+		var late := clampf((t - 0.25) / 0.75, 0.0, 1.0)
+		if late > 0.0:
+			draw_arc(center, radius * (0.4 + 1.1 * ease(late, 0.4)), 0.0, TAU, 64,
+					Color(UiTheme.GOLD, 0.7 * (1.0 - late)), 2.0, true)
+		for i: int in range(16):
+			var a := TAU * (float(i) + 0.5) / 16.0
+			var p := center + Vector2(cos(a), sin(a)) * radius * (0.2 + 1.3 * ease(t, 0.35))
+			draw_circle(p, 0.5 + 1.5 * fade, Color(1.0, 0.95, 0.7, fade), true, -1.0, true)
