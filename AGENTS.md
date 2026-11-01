@@ -114,3 +114,9 @@ powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1
 3. Siga a definição de pronto de [docs/policies/qualidade.md](docs/policies/qualidade.md).
 4. Atualize [.ai/03-progresso-implementacao.md](.ai/03-progresso-implementacao.md) ao terminar cada item.
 5. Nunca use arte, nomes, interface ou música dos jogos de referência. Inspiração de mecânica, sim; cópia, nunca.
+6. Vigie todo processo longo (build, export, gradle, testes, benchmarks). Se ele ficar **8 minutos sem resposta ou
+   sem progresso**, considere travado: sem saída nova, sem arquivo novo e sem uso de CPU. Nesse caso:
+   1. Mate o processo e os filhos (Godot, `java`/gradle, o script que os chamou).
+   2. Apague os `*.lock` de `android\build\.gradle`.
+   3. Reinicie o comando do começo.
+   4. Se travar de novo no mesmo ponto, investigue a causa antes de reiniciar outra vez.
