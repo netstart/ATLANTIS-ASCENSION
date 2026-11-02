@@ -1,0 +1,45 @@
+"""Textos da aba Campanha da 1.15 "Menus de comando" (scripts/app/screens/hub_screen.gd,
+scripts/app/ui/campaign_parts.gd e scripts/app/ui/mission_card.gd): atalhos curtos ao lado da trilha, os
+botões do rodapé, as setas de capítulo e o marco do capítulo.
+Ordem: pt_BR, en, es, de, fr, ru, id, ja, ko, zh_TW, zh_CN.
+Os rótulos dos atalhos são curtos de propósito (cabem em 46 pontos; a fonte encolhe se precisar).
+"""
+
+STRINGS = {
+    "campaign.short_logbook": ["Diário", "Logbook", "Diario", "Logbuch", "Journal", "Журнал", "Jurnal", "日誌", "일지",
+                               "日誌", "日志"],
+    "campaign.short_city": ["Cidade", "City", "Ciudad", "Stadt", "Cité", "Город", "Kota", "都市", "도시", "城市", "城市"],
+    "campaign.short_season": ["Passe", "Pass", "Pase", "Pass", "Passe", "Пропуск", "Pass", "パス", "패스", "通行證",
+                              "通行证"],
+    "campaign.short_records": ["Recordes", "Records", "Récords", "Rekorde", "Records", "Рекорды", "Rekor", "記録", "기록",
+                               "紀錄", "纪录"],
+    "campaign.short_practice": ["Prática", "Practice", "Práctica", "Training", "Pratique", "Практика", "Latihan", "練習",
+                                "연습", "練習", "练习"],
+    "campaign.short_credits": ["Créditos", "Credits", "Créditos", "Credits", "Crédits", "Титры", "Kredit", "クレジット",
+                               "크레딧", "製作群", "制作组"],
+    "campaign.full_map": ["Carta", "Chart", "Carta", "Karte", "Carte", "Карта", "Peta", "海図", "해도", "海圖", "海图"],
+    "campaign.daily": ["Desafio", "Daily", "Desafío", "Täglich", "Défi", "Вызов", "Harian", "デイリー", "일일", "每日",
+                       "每日"],
+    "campaign.prev_chapter": ["Capítulo anterior", "Previous chapter", "Capítulo anterior", "Vorheriges Kapitel",
+                              "Chapitre précédent", "Предыдущая глава", "Bab sebelumnya", "前の章", "이전 장", "上一章",
+                              "上一章"],
+    "campaign.next_chapter": ["Próximo capítulo", "Next chapter", "Capítulo siguiente", "Nächstes Kapitel",
+                              "Chapitre suivant", "Следующая глава", "Bab berikutnya", "次の章", "다음 장", "下一章",
+                              "下一章"],
+    "campaign.milestone_ship": ["Conclua %s: nave %s", "Clear %s: unlock %s", "Supera %s: nave %s",
+                                "Schaffe %s: Schiff %s", "Terminez %s : vaisseau %s", "Пройдите %s: корабль %s",
+                                "Selesaikan %s: kapal %s", "%sクリア：機体%s", "%s 클리어: 기체 %s", "通關 %s：機體%s",
+                                "通关 %s：机体%s"],
+    "campaign.milestone_wing": ["Próxima ala: %s", "Next wing: %s", "Siguiente ala: %s", "Nächster Flügel: %s",
+                                "Prochaine aile : %s", "Следующее крыло: %s", "Sayap berikutnya: %s", "次の翼：%s",
+                                "다음 날개: %s", "下一個僚翼：%s", "下一个僚翼：%s"],
+    "campaign.milestone_done": ["Capítulo completo", "Chapter complete", "Capítulo completo", "Kapitel abgeschlossen",
+                                "Chapitre terminé", "Глава пройдена", "Bab selesai", "章クリア", "장 완료", "本章完成",
+                                "本章完成"],
+    "campaign.stars": ["Estrelas", "Stars", "Estrellas", "Sterne", "Étoiles", "Звёзды", "Bintang", "スター", "별", "星數",
+                       "星数"],
+    "campaign.rec_short": ["Rec. %s", "Rec. %s", "Rec. %s", "Empf. %s", "Cons. %s", "Рек. %s", "Disar. %s", "推奨 %s",
+                           "권장 %s", "建議 %s", "建议 %s"],
+    "campaign.close": ["Fechar", "Close", "Cerrar", "Schließen", "Fermer", "Закрыть", "Tutup", "閉じる", "닫기", "關閉",
+                       "关闭"],
+}

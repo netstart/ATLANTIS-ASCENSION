@@ -12,8 +12,11 @@ signal play_mode(mode: StringName)
 ## Pede uma missão de prática (sem recompensas).
 signal play_practice(mission_id: StringName)
 
-## Área segura atual (fora do recorte da câmera), em coordenadas da própria tela.
+## Área útil atual: a área segura (fora do recorte da câmera), em coordenadas da própria tela, já sem a
+## casca de navegação nas telas-aba (NavShell: barra de cima e barra de abas).
 var safe := Rect2()
+## Tela-aba dentro da casca de navegação (o App liga antes de adicionar a tela).
+var shell: bool = false
 ## O idioma mudou com a tela escondida: os textos esperam a próxima abertura (present), em vez de
 ## remontar no mesmo quadro todas as telas já criadas.
 var _stale_texts: bool = false
@@ -54,7 +57,22 @@ func _on_language_changed(_code: String) -> void:
 
 func relayout() -> void:
 	safe = MenuKit.safe_rect(size, MenuKit.safe_margins(self))
+	var insets := shell_insets()
+	safe.position.y += insets.x
+	safe.size.y = maxf(0.0, safe.size.y - insets.x - insets.y)
 	_layout()
+
+
+## A tela vive dentro da casca de navegação (Loja, Oficina, Campanha, Naves e Eventos).
+func in_shell() -> bool:
+	return shell
+
+
+## Pontos que a casca ocupa em cima e embaixo da área segura (Vector2(cima, baixo)); zero fora dela.
+func shell_insets() -> Vector2:
+	if not shell:
+		return Vector2.ZERO
+	return NavShell.insets_for(size, MenuKit.safe_rect(size, MenuKit.safe_margins(self)))
 
 
 ## Cria os nós (uma vez).

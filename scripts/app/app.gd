@@ -4,6 +4,10 @@ extends Node
 ## "voltar"), inicia e encerra missões e grava o progresso. As telas pedem navegação pelo sinal
 ## Screen.navigate e missões pelo Screen.play.
 ##
+## Casca de navegação (NavShell, 1.15): as cinco telas-aba (Loja, Oficina, Campanha = hub, Naves e
+## Eventos) ficam entre a barra de cima e a barra de abas, criadas uma vez acima das telas. Trocar de
+## aba não empilha histórico; voltar numa aba que não é a Campanha leva à Campanha.
+##
 ## Linha de comando (depois de "--"): --bot ou --mission=<id> começa direto na missão (sem menus),
 ## com --seed=N; o resto é lido pela própria cena Game.
 
@@ -52,6 +56,7 @@ var _replay_return: StringName = &""
 var _layer: CanvasLayer
 var _root: Control
 var _backdrop: AbyssBackdrop
+var _shell: NavShell
 var _screens: Dictionary = {}
 var _history: Array[StringName] = []
 
@@ -74,6 +79,10 @@ func _ready() -> void:
 	_backdrop.name = "Backdrop"
 	_backdrop.reduce_motion = bool(Settings.get_value("reduce_motion"))
 	_root.add_child(_backdrop)
+	_make_shell()
+	SaveManager.saved.connect(func() -> void:
+		if _shell.visible:
+			_shell.refresh())
 	Settings.changed.connect(_on_setting_changed)
 	Locale.language_changed.connect(_on_language_changed)
 	var args := OS.get_cmdline_user_args()
@@ -99,6 +108,9 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	if not SCREENS.has(screen_name):
 		Log.error("App: tela desconhecida " + String(screen_name))
 		return
+	# Entre abas não há histórico: a barra de baixo já é o caminho de volta.
+	if NavShell.is_tab(current) and NavShell.is_tab(screen_name):
+		remember = false
 	if remember and not current.is_empty() and current != screen_name:
 		_history.append(current)
 		if screen_name == ROOT_SCREEN:
@@ -108,6 +120,7 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	if not _screens.has(screen_name):
 		var screen := (SCREENS[screen_name] as GDScript).new() as Screen
 		screen.name = String(screen_name).capitalize().replace(" ", "")
+		screen.shell = NavShell.is_tab(screen_name)
 		screen.navigate.connect(go)
 		screen.play.connect(_play_from_screen)
 		screen.play_mode.connect(func(mode: StringName) -> void: start_mode(mode))
@@ -116,6 +129,8 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 			screen.connect("watch", func(key: String) -> void: watch_replay(key))
 		_root.add_child(screen)
 		_screens[screen_name] = screen
+		# A casca fica sempre por cima das telas.
+		_root.move_child(_shell, -1)
 	var changed := current != screen_name
 	current = screen_name
 	_backdrop.set_mood(MOODS.get(screen_name, &"default"))
@@ -125,6 +140,10 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	if game == null:
 		AudioManager.play_music(MENU_MUSIC)
 	(_screens[screen_name] as Screen).present(self)
+	_shell.visible = NavShell.is_tab(screen_name)
+	if _shell.visible:
+		_shell.select(screen_name)
+		_shell.refresh()
 	# Depois do present (on_show): a cascata de entrada respeita o que a tela acabou de esconder ou animar.
 	if changed:
 		UiFx.enter(_screens[screen_name] as CanvasItem)
@@ -296,6 +315,19 @@ func backdrop() -> AbyssBackdrop:
 	return _backdrop
 
 
+## Casca de navegação (barra de cima e abas) das telas-aba.
+func shell() -> NavShell:
+	return _shell
+
+
+func _make_shell() -> void:
+	_shell = NavShell.new()
+	_shell.visible = false
+	_shell.tab_selected.connect(func(tab: StringName) -> void: go(tab, false))
+	_shell.options_requested.connect(func() -> void: go(&"options"))
+	_root.add_child(_shell)
+
+
 ## Raiz das telas (testes ajustam o tamanho para simular cada aparelho).
 func root() -> Control:
 	return _root
@@ -304,6 +336,10 @@ func root() -> Control:
 func back() -> void:
 	if game != null:
 		game.set_paused(not game.paused)
+		return
+	# Numa aba, voltar leva à Campanha; da Campanha, a própria tela decide (volta ao título).
+	if NavShell.is_tab(current) and current != NavShell.HOME:
+		go(NavShell.HOME, false)
 		return
 	var screen := screen(current)
 	if screen != null and screen.back():
@@ -345,6 +381,8 @@ func _on_setting_changed(key: String) -> void:
 	for screen: Node in _screens.values():
 		screen.queue_free()
 	_screens.clear()
+	_shell.queue_free()
+	_make_shell()
 	current = &""
 	go(here, false)
 

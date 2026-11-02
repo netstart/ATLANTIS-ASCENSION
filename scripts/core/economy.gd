@@ -76,6 +76,23 @@ const FRAGMENTS_FIRST := 15
 const FRAGMENTS_REPEAT := 3
 ## Pérolas recolhidas na missão viram Pérolas de Maré da carteira nesta razão.
 const PEARLS_PER_WALLET := 10
+## Poder (power, mais abaixo): pesos de cada parte.
+const POWER_BASE := 1000
+const POWER_PER_LEVEL := 1200
+const POWER_HULL := 300
+const POWER_SECONDARY_BASE := 600
+const POWER_SECONDARY_PER_LEVEL := 700
+const POWER_WING_BASE := 400
+const POWER_WING_PER_STAR := 25
+## Nível típico da aeronave ao chegar a cada capítulo (1 a 10): a âncora do Poder recomendado. Medido
+## pela simulação da economia (tests/economy_tests.gd: o bot joga a campanha e gasta tudo na nave, e
+## chega aos capítulos nos níveis 1, 3, 4, 4, 5, 5, 6, 6, 7 e 7). A curva fica meio passo abaixo e sobe
+## suave (+0,5 por capítulo depois do 3): quem joga sem pressa encosta nela, quem investe passa.
+const TYPICAL_LEVEL: Array[float] = [1.0, 2.0, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5]
+## Nível máximo do piloto (pilot, mais abaixo).
+const PILOT_MAX_LEVEL := 99
+
+static var _rows_cache: Dictionary = {}
 
 
 static func node(id: StringName) -> Dictionary:
@@ -368,3 +385,115 @@ static func _open_ids(profile: Dictionary) -> Array[StringName]:
 		if mission_unlocked(profile, n["id"]):
 			out.append(n["id"])
 	return out
+
+
+# --- Poder e piloto (menus de comando, 1.15) ---------------------------------------------------------
+#
+# Poder: um número só que resume a força da carga levada para a missão, para o jogador comparar com o
+# recomendado de cada capítulo (verde quando alcança, vermelho quando falta). Determinístico e sem
+# sorte: cresce com o nível da aeronave escolhida (o bônus de dano e o casco extra do nível 6), com a
+# arma secundária equipada e o nível dela, com as asas equipadas (asa mais cara em estrelas vale mais)
+# e com a própria aeronave (casco, velocidade, cadência e tamanho do alvo em data/ships.json).
+#
+#   núcleo     = 1.000 + 1.200 x (nível - 1) + 300 se nível ≥ 6     (Falcon nível 1 = 1.000)
+#   secundária = 600 + 700 x (nível - 1), só equipada               (nível 5 = 3.400)
+#   asa        = 400 + 25 x estrelas que a abrem, por asa equipada  (as duas mais caras = 3.550)
+#   fator      = 1 + 0,08 x (casco - 3) + 0,4 x (velocidade - 1) + 0,4 x (cadência - 1)
+#                  - 0,05 x (alvo - 3) + 0,04 com traço próprio, entre 0,9 e 1,15
+#   Poder      = (núcleo + secundária + asas) x fator, arredondado a 10
+#
+# Tudo no máximo dá cerca de 20.000. A dificuldade escolhida não entra: é desafio, não força.
+
+
+## Poder da carga atual do perfil. `ships` e `wings` são as linhas de data/ (vazias: lê os JSON).
+static func power(profile: Dictionary, ships: Array = [], wings: Array = []) -> int:
+	var sel: Dictionary = profile["selected"]
+	var ship := StringName(String(sel.get("ship", "falcon")))
+	var total := float(core_power(ship_level(profile, ship)))
+	var secondary := StringName(String(sel.get("secondary", "")))
+	total += float(secondary_power(secondary_level(profile, secondary)))
+	var wing_rows := wings if not wings.is_empty() else data_rows("wings")
+	for w: Variant in sel.get("wings", []):
+		for row: Variant in wing_rows:
+			if String((row as Dictionary)["id"]) == String(w):
+				total += float(POWER_WING_BASE + POWER_WING_PER_STAR * int((row as Dictionary).get("stars", 0)))
+	return _round10(total * ship_factor(_find(ships if not ships.is_empty() else data_rows("ships"), String(ship))))
+
+
+## Parte do Poder que vem do nível da aeronave (aceita nível fracionário para a curva recomendada).
+static func core_power(level: float) -> int:
+	var l := clampf(level, 1.0, float(SHIP_MAX_LEVEL))
+	return roundi(POWER_BASE + POWER_PER_LEVEL * (l - 1.0) + (POWER_HULL if l >= 6.0 else 0))
+
+
+## Parte do Poder da secundária equipada (0 sem secundária).
+static func secondary_power(level: int) -> int:
+	return 0 if level <= 0 else POWER_SECONDARY_BASE + POWER_SECONDARY_PER_LEVEL * (mini(level, SECONDARY_MAX_LEVEL) - 1)
+
+
+## Fator da aeronave pelos atributos (Falcon = 1,0).
+static func ship_factor(def: Dictionary) -> float:
+	if def.is_empty():
+		return 1.0
+	var f := 1.0 + 0.08 * (float(def.get("hull", 3)) - 3.0) + 0.4 * (float(def.get("speed", 1.0)) - 1.0) \
+			+ 0.4 * (float(def.get("fire_rate", 1.0)) - 1.0) - 0.05 * (float(def.get("hitbox", 3.0)) - 3.0) \
+			+ (0.04 if def.has("trait") else 0.0)
+	return clampf(f, 0.9, 1.15)
+
+
+## Poder recomendado de um capítulo (1 a 10): o núcleo do nível típico de quem chega lá (TYPICAL_LEVEL),
+## sem secundária nem asas. Quem investe na oficina passa do recomendado; quem só joga, encosta nele.
+static func recommended_power(chapter: int) -> int:
+	return _round10(float(core_power(TYPICAL_LEVEL[clampi(chapter, 1, TYPICAL_LEVEL.size()) - 1])))
+
+
+## Poder recomendado da missão (o do capítulo dela).
+static func mission_recommended_power(mission: StringName) -> int:
+	var n := node(mission)
+	return recommended_power(int(n.get("chapter", 1)))
+
+
+# Nível do piloto: experiência que só cresce, tirada do que já fica no perfil — 100 por estrela ganha,
+# 40 por missão vencida e 1 a cada 10 inimigos abatidos (estatísticas do SaveManager). Do nível n para
+# o n+1 faltam 300 + 50 x n de experiência: a campanha inteira leva a Maré perto do nível 15, e repetir
+# missões continua subindo devagar até o 99. Não dá poder: é a marca de quanto o jogador já voou.
+
+
+static func pilot_xp(profile: Dictionary) -> int:
+	var stats: Dictionary = profile.get("stats", {})
+	return (100 * total_stars(profile) + 40 * int(stats.get("missions_cleared", 0))
+			+ int(float(stats.get("kills", 0)) / 10.0))
+
+
+## Experiência para ir do nível `level` ao seguinte.
+static func pilot_step(level: int) -> int:
+	return 300 + 50 * level
+
+
+## Nível do piloto (1 a 99) e a experiência dentro dele: {level, xp, need}.
+static func pilot(profile: Dictionary) -> Dictionary:
+	var xp := pilot_xp(profile)
+	var level := 1
+	while level < PILOT_MAX_LEVEL and xp >= pilot_step(level):
+		xp -= pilot_step(level)
+		level += 1
+	return {"level": level, "xp": xp if level < PILOT_MAX_LEVEL else 0, "need": pilot_step(level)}
+
+
+static func _round10(value: float) -> int:
+	return roundi(value / 10.0) * 10
+
+
+static func _find(rows: Array, id: String) -> Dictionary:
+	for row: Variant in rows:
+		if String((row as Dictionary).get("id", "")) == id:
+			return row
+	return {}
+
+
+## Linhas de data/<name>.json (cache), para as regras rodarem sem o autoload DB.
+static func data_rows(name: String) -> Array:
+	if not _rows_cache.has(name):
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/%s.json" % name))
+		_rows_cache[name] = parsed if typeof(parsed) == TYPE_ARRAY else []
+	return _rows_cache[name]

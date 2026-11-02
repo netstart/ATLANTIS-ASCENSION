@@ -19,6 +19,10 @@ const WeatherViewTests := preload("res://tests/weather_view_tests.gd")
 const FocusNavTests := preload("res://tests/focus_nav_tests.gd")
 const ScreenBuildTests := preload("res://tests/screen_build_tests.gd")
 const TestShard := preload("res://tests/test_shard.gd")
+const CommandTests := preload("res://tests/command_tests.gd")
+const CampaignTests := preload("res://tests/campaign_tests.gd")
+const HangarTests := preload("res://tests/hangar_tests.gd")
+const StoreTests := preload("res://tests/store_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -81,6 +85,22 @@ func _ready() -> void:
 		await WeatherViewTests.new().run_view(self, _check)
 		await FocusNavTests.new().run(self, _check)
 		await ScreenBuildTests.new().run(self, _check)})
+	units.append({"name": "Menus de comando (regras)", "weight": 1.0, "run": func() -> void:
+		CommandTests.new().run(_check)
+		CampaignTests.new().run(_check)
+		StoreTests.new().run(_check)})
+	units.append({"name": "Casca de comando", "weight": 1.0, "run": func() -> void:
+		await CommandTests.new().run_view(self, _check)})
+	units.append({"name": "Campanha", "weight": 4.5, "run": func() -> void:
+		await CampaignTests.new().run_view(self, _check)})
+	# A Oficina em todas as resoluções custa mais que a economia inteira: um caso por unidade.
+	var hangar := HangarTests.new()
+	for c: Dictionary in cases:
+		units.append({"name": "Oficina [%s]" % c["label"], "weight": 3.5,
+				"run": func() -> void: await hangar.run_layout_case(self, _check, c)})
+	units.append({"name": "Oficina (fluxo)", "weight": 2.0, "run": func() -> void: await hangar.run_flow(self, _check)})
+	units.append({"name": "Loja, Naves e Eventos", "weight": 1.5, "run": func() -> void:
+		await StoreTests.new().run_view(self, _check)})
 	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
 	# Unidades do prefixo ficam fora da divisão: rodam em toda fatia, no lugar de sempre.
 	var shardable: Array[Dictionary] = units.filter(func(u: Dictionary) -> bool: return not u.has("prefix"))

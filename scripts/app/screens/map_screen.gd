@@ -220,9 +220,9 @@ static func node_label(n: Dictionary) -> String:
 	var id := String(n["id"])
 	if n["kind"] == &"secret":
 		return "◎"
-	var text := "%s-%s" % [id.substr(1, 1), id.substr(3, 1)]
+	var text := CampaignParts.short_label(n["id"])
 	if n.has("route"):
-		text += " " + id.substr(4, 1).to_upper()
+		text += " " + id.right(1).to_upper()
 	return text + String(KIND_MARK.get(n["kind"], ""))
 
 

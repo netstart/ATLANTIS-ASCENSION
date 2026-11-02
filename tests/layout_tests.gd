@@ -49,7 +49,7 @@ func _visit_case(host: Node, check: Callable, c: Dictionary) -> void:
 			await settle(host)
 			if check.is_valid():
 				var tag := "Layout %s %s [%s]" % [screen_name, lang, c["label"]]
-				check_screen(app.screen(screen_name), safe, check, tag)
+				check_screen(app.screen(screen_name), safe, check, tag, app.shell())
 		app.queue_free()
 		await host.get_tree().process_frame
 
@@ -103,11 +103,21 @@ static func settle(host: Node) -> void:
 		await host.get_tree().process_frame
 
 
-static func check_screen(screen: Screen, safe: Rect2, check: Callable, tag: String) -> void:
+## Telas-aba (NavShell): a casca à vista e os controles dela entram junto, então nada da tela pode
+## encostar nas barras; fora das abas a casca fica escondida.
+static func check_screen(screen: Screen, safe: Rect2, check: Callable, tag: String, shell: NavShell = null) -> void:
 	check.call(screen != null and screen.visible, "%s: tela visível" % tag)
 	if screen == null:
 		return
 	var controls: Array[Control] = screen.call("layout_controls")
+	if shell != null:
+		var tab := screen.in_shell()
+		check.call(shell.visible == tab, "%s: casca %s" % [tag, "à vista" if tab else "escondida"])
+		if tab:
+			controls.append_array(shell.layout_controls())
+			var insets := screen.shell_insets()
+			check.call(screen.safe.size.y > 0.0 and is_equal_approx(screen.safe.position.y, safe.position.y + insets.x),
+					"%s: área útil entre as barras da casca" % tag)
 	check_screen_controls(controls, safe, check, tag)
 
 

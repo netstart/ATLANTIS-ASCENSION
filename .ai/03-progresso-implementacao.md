@@ -346,3 +346,34 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `tests/screens_runner.tscn` com `--fixed-fps 60` e user:// novo: as 576 iguais pixel a pixel, salvo o número da
   versão no título. Teste novo `tests/screen_build_tests.gd` (33 verificações): uma montagem por abertura, reabrir com
   dado novo (nível, saldo, resultado), idioma trocado com a tela escondida e com a tela aberta.
+- 🔧 Menus de comando, fase 1 (fundação; branch `feat/menus-comando`, inspirado na estrutura dos shmups mobile, sem
+  copiar arte nem monetização). Casca de navegação `NavShell` (`scripts/ui/nav_shell.gd`) por cima das cinco
+  telas-aba — Loja, Oficina, Campanha (hub, no meio), Naves e Eventos: barra de cima com a piloto (retrato da Maré,
+  nível e barrinha de XP, `Economy.pilot`), Poder em ouro (`Economy.power`), moedas em pílulas com "+" (levam à
+  Loja) e Opções; barra de abas com a ativa elevada, bolinha "!" (`scripts/core/notices.gd`), LB/RB e Q/E. Trocar de
+  aba não empilha histórico; voltar numa aba leva à Campanha. As telas-aba perderam Voltar e moedas próprias (título
+  vira faixa `CommandKit.ribbon`) e recebem `safe` já sem a casca (`Screen.shell_insets`). Poder recomendado por
+  capítulo ancorado na curva do bot (`Economy.recommended_power`). Kit visual para a fase 2 em
+  `scripts/ui/command_kit.gd` (aviso, faixa, ladrilho por raridade, atributo, encaixe, selo do Poder). Textos em
+  `tools/i18n/command.py`. Testes em `tests/command_tests.gd`, layout das abas com a casca em `tests/layout_tests.gd`.
+  Falta a fase 2 (conteúdo de Campanha, Oficina e Loja) e conferir no aparelho
+- 🔧 Menus de comando, fase 2 — aba Campanha: a casa é a trilha do capítulo (`hub_screen.gd`, regras puras em
+  `scripts/core/campaign_trail.gd`, peças em `scripts/app/ui/campaign_parts.gd`, cartão em `mission_card.gd`):
+  número do capítulo em ouro, Poder contra o recomendado, nós em zigue-zague com estrelas, sonar e nave na próxima
+  missão, setas/deslize entre capítulos abertos, marco com prêmio que já existe (aeronave dos fragmentos ou próxima
+  asa), atalhos dos dois lados, JOGAR entre Carta e Desafio. Textos em `tools/i18n/command_campaign.py`; testes em
+  `tests/campaign_tests.gd` (todos os capítulos no layout apertado e no desktop). Falta conferir no aparelho
+- 🔧 Menus de comando, fase 2 — Loja, Naves e Eventos: Loja com sub-abas em pílula (`scripts/app/ui/pill_tabs.gd`),
+  baú no cartão-destaque com retrato pixel art em escala física inteira (`store_banner.gd`), pinturas em grade de
+  ladrilhos por raridade com estado sempre legível e painel de detalhe Comprar/Equipar (`command_sheet.gd`,
+  `ship_icon.gd`), tira discreta da versão de teste; Naves com palco da nave em foco, atributos em placas e grade
+  com aviso de nova; Eventos com faixas de seção e modos em banners ilustrados (`mode_banner.gd`). Regras intactas.
+  Textos em `tools/i18n/command_store.py`; testes em `tests/store_tests.gd`. Falta conferir no aparelho
+- 🔧 Menus de comando, fase 2 — aba Oficina (`hangar_screen.gd`): palco com a nave grande entre seis encaixes (arma,
+  asas 1 e 2 | pintura, núcleo, desafio), atributos e "Evoluir nave" dourado com ganho de dano, Poder e peça; sub-abas
+  Nave, Armas, Asas, Pinturas e Desafio em grade de ladrilhos por raridade (regra e figuras em
+  `scripts/app/ui/loadout_art.gd`) e cartão de detalhe com antes → depois e preço sempre legível; palco e grade lado a
+  lado no desktop. Regras intactas. Textos em `tools/i18n/command_hangar.py`; testes em `tests/hangar_tests.gd`,
+  capturas em `tests/hangar_shots_runner.tscn`. Rebase sobre a 1.14.5: telas novas abrem por `Screen.present()` e
+  montam uma vez por abertura; os testes novos entram nas fatias da integração (Oficina com um caso de resolução por
+  unidade, ~2 min em série). Falta conferir no aparelho

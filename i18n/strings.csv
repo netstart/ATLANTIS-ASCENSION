@@ -126,6 +126,22 @@ boss.sky_leviathan,SKY LEVIATHAN,SKY LEVIATHAN,SKY LEVIATHAN,SKY LEVIATHAN,SKY L
 boss.steel_albatross,ALBATROZ DE AÇO,STEEL ALBATROSS,ALBATROS DE ACERO,STAHLALBATROS,ALBATROS D'ACIER,СТАЛЬНОЙ АЛЬБАТРОС,ALBATROS BAJA,鋼のアホウドリ,강철 알바트로스,鋼鐵信天翁,钢铁信天翁
 boss.storm_eye,OLHO DA TEMPESTADE,EYE OF THE STORM,OJO DE LA TORMENTA,AUGE DES STURMS,ŒIL DE LA TEMPÊTE,ОКО БУРИ,MATA BADAI,嵐の眼,폭풍의 눈,風暴之眼,风暴之眼
 boss.tidebreaker,QUEBRA-MARÉ,TIDEBREAKER,ROMPEOLAS,WELLENBRECHER,BRISE-LAMES,ВОЛНОЛОМ,PEMECAH OMBAK,タイドブレイカー,타이드브레이커,破浪者,破浪者
+campaign.close,Fechar,Close,Cerrar,Schließen,Fermer,Закрыть,Tutup,閉じる,닫기,關閉,关闭
+campaign.daily,Desafio,Daily,Desafío,Täglich,Défi,Вызов,Harian,デイリー,일일,每日,每日
+campaign.full_map,Carta,Chart,Carta,Karte,Carte,Карта,Peta,海図,해도,海圖,海图
+campaign.milestone_done,Capítulo completo,Chapter complete,Capítulo completo,Kapitel abgeschlossen,Chapitre terminé,Глава пройдена,Bab selesai,章クリア,장 완료,本章完成,本章完成
+campaign.milestone_ship,Conclua %s: nave %s,Clear %s: unlock %s,Supera %s: nave %s,Schaffe %s: Schiff %s,Terminez %s : vaisseau %s,Пройдите %s: корабль %s,Selesaikan %s: kapal %s,%sクリア：機体%s,%s 클리어: 기체 %s,通關 %s：機體%s,通关 %s：机体%s
+campaign.milestone_wing,Próxima ala: %s,Next wing: %s,Siguiente ala: %s,Nächster Flügel: %s,Prochaine aile : %s,Следующее крыло: %s,Sayap berikutnya: %s,次の翼：%s,다음 날개: %s,下一個僚翼：%s,下一个僚翼：%s
+campaign.next_chapter,Próximo capítulo,Next chapter,Capítulo siguiente,Nächstes Kapitel,Chapitre suivant,Следующая глава,Bab berikutnya,次の章,다음 장,下一章,下一章
+campaign.prev_chapter,Capítulo anterior,Previous chapter,Capítulo anterior,Vorheriges Kapitel,Chapitre précédent,Предыдущая глава,Bab sebelumnya,前の章,이전 장,上一章,上一章
+campaign.rec_short,Rec. %s,Rec. %s,Rec. %s,Empf. %s,Cons. %s,Рек. %s,Disar. %s,推奨 %s,권장 %s,建議 %s,建议 %s
+campaign.short_city,Cidade,City,Ciudad,Stadt,Cité,Город,Kota,都市,도시,城市,城市
+campaign.short_credits,Créditos,Credits,Créditos,Credits,Crédits,Титры,Kredit,クレジット,크레딧,製作群,制作组
+campaign.short_logbook,Diário,Logbook,Diario,Logbuch,Journal,Журнал,Jurnal,日誌,일지,日誌,日志
+campaign.short_practice,Prática,Practice,Práctica,Training,Pratique,Практика,Latihan,練習,연습,練習,练习
+campaign.short_records,Recordes,Records,Récords,Rekorde,Records,Рекорды,Rekor,記録,기록,紀錄,纪录
+campaign.short_season,Passe,Pass,Pase,Pass,Passe,Пропуск,Pass,パス,패스,通行證,通行证
+campaign.stars,Estrelas,Stars,Estrellas,Sterne,Étoiles,Звёзды,Bintang,スター,별,星數,星数
 chest.bronze,Bronze,Bronze,Bronce,Bronze,Bronze,Бронза,Perunggu,ブロンズ,브론즈,青銅,青铜
 chest.gold,Ouro,Gold,Oro,Gold,Or,Золото,Emas,ゴールド,골드,黃金,黄金
 chest.jackpot,TESOURO DE ATLÂNTIDA!,TREASURE OF ATLANTIS!,¡TESORO DE ATLANTIS!,SCHATZ VON ATLANTIS!,TRÉSOR D'ATLANTIDE !,СОКРОВИЩЕ АТЛАНТИДЫ!,HARTA ATLANTIS!,アトランティスの秘宝！,아틀란티스의 보물!,亞特蘭提斯寶藏！,亚特兰蒂斯宝藏！
@@ -142,6 +158,10 @@ city.records,Registros Abissais (%d de %d),Abyssal Records (%d of %d),Registros 
 city.records_desc,Os 4 abrem o final verdadeiro.,All 4 open the true ending.,Los 4 abren el final verdadero.,Alle 4 öffnen das wahre Ende.,Les 4 ouvrent la vraie fin.,Все 4 открывают истинную концовку.,Keempatnya membuka akhir sejati.,4つ揃うと真のエンディング。,4개를 모으면 진 엔딩.,集齊4份開啟真結局。,集齐4份开启真结局。
 city.rescued,Atlantes resgatados: %s,Atlanteans rescued: %s,Atlantes rescatados: %s,Gerettete Atlanter: %s,Atlantes sauvés : %s,Спасено атлантов: %s,Atlantis diselamatkan: %s,救出：%s人,구조: %s명,已救出：%s人,已救出：%s人
 city.title,Cidade,City,Ciudad,Stadt,Cité,Город,Kota,都市,도시,城市,城市
+command.get_more,%s: ver na Loja,%s: see the Shop,%s: ver en la Tienda,%s: im Shop ansehen,%s : voir la Boutique,%s: открыть магазин,%s: lihat di Toko,%s：ショップへ,%s: 상점 보기,%s：前往商店,%s：前往商店
+command.pilot,Pilota · nível %d,Pilot · level %d,Piloto · nivel %d,Pilotin · Stufe %d,Pilote · niveau %d,Пилот · уровень %d,Pilot · level %d,パイロット · Lv.%d,파일럿 · 레벨 %d,駕駛員 · 等級 %d,驾驶员 · 等级 %d
+command.power,Poder,Power,Poder,Stärke,Puissance,Мощь,Kekuatan,戦力,전투력,戰力,战力
+command.recommended,Recomendado %s,Recommended %s,Recomendado %s,Empfohlen %s,Conseillé %s,Рекомендуется %s,Disarankan %s,推奨 %s,권장 %s,建議 %s,建议 %s
 cosmetic.tint_abyss,Azul abissal,Abyss blue,Azul abisal,Abgrundblau,Bleu abyssal,Бездонный синий,Biru jurang,深淵ブルー,심연 파랑,深淵藍,深渊蓝
 cosmetic.tint_coral,Coral,Coral,Coral,Koralle,Corail,Коралл,Karang,コーラル,산호,珊瑚,珊瑚
 cosmetic.tint_kelp,Alga,Kelp,Alga,Seetang,Varech,Ламинария,Rumput laut,ケルプ,다시마,海帶,海带
@@ -242,6 +262,7 @@ enemy.tide_wasp,Vespa de Maré,Tide Wasp,Avispa de Marea,Gezeitenwespe,Guêpe de
 enemy.trawler,Arrastão,Trawler,Arrastrero,Trawler,Chalutier,Траулер,Kapal Pukat,トロール船,트롤선,拖網船,拖网船
 enemy.trireme,Trirreme,Trireme,Trirreme,Trireme,Trirème,Трирема,Trireme,三段櫂船,삼단노선,三列槳船,三列桨船
 enemy.volt_ray,Raia Voltaica,Volt Ray,Raya Voltaica,Voltrochen,Raie Voltaïque,Электроскат,Pari Volt,ボルトエイ,볼트 가오리,電鰩,电鳐
+events.best,Recorde %s,Best %s,Récord %s,Rekord %s,Record %s,Рекорд %s,Rekor %s,ベスト %s,최고 %s,最佳 %s,最佳 %s
 events.claim,Resgatar,Claim,Reclamar,Abholen,Récupérer,Забрать,Klaim,受け取る,받기,領取,领取
 events.claimed,resgatada,claimed,reclamada,abgeholt,récupérée,получено,diklaim,受取済み,받음,已領取,已领取
 events.core,Núcleo de Oricalco %d/%d,Orichalcum Core %d/%d,Núcleo de Oricalco %d/%d,Orichalkum-Kern %d/%d,Noyau d'orichalque %d/%d,Орихалковое ядро %d/%d,Inti Orikalkum %d/%d,オリハルコン・コア %d/%d,오리하르콘 코어 %d/%d,山銅核心 %d/%d,山铜核心 %d/%d
@@ -252,12 +273,15 @@ events.locked,Abre ao vencer %s,Unlocks after %s,Se abre al superar %s,Frei nach
 events.login,Entrada diária · dia %d de %d,Daily login · day %d of %d,Entrada diaria · día %d de %d,Täglicher Login · Tag %d von %d,Connexion · jour %d sur %d,Ежедневный вход · день %d из %d,Masuk harian · hari %d dari %d,ログイン %d/%d日目,출석 %d/%d일차,每日登入 · 第%d/%d天,每日登录 · 第%d/%d天
 events.modes,Modos,Modes,Modos,Modi,Modes,Режимы,Mode,モード,모드,模式,模式
 events.mutator,Regra desta semana: %s,This week's rule: %s,Regla de esta semana: %s,Regel dieser Woche: %s,Règle de la semaine : %s,Правило недели: %s,Aturan minggu ini: %s,今週のルール：%s,이번 주 규칙: %s,本週規則：%s,本周规则：%s
+events.play,Jogar,Play,Jugar,Spielen,Jouer,Играть,Main,プレイ,플레이,開始,开始
 events.play_mode,Jogar · recorde %s,Play · best %s,Jugar · récord %s,Spielen · Rekord %s,Jouer · record %s,Играть · рекорд %s,Main · terbaik %s,プレイ・ベスト %s,플레이 · 최고 %s,開始・最佳 %s,开始・最佳 %s
 events.practice,Escolher missão,Pick a mission,Elegir misión,Mission wählen,Choisir une mission,Выбрать миссию,Pilih misi,ミッションを選ぶ,임무 선택,選擇任務,选择任务
 events.records,Recordes e replays,Records and replays,Récords y repeticiones,Rekorde und Replays,Records et replays,Рекорды и повторы,Rekor dan tayangan ulang,記録とリプレイ,기록과 리플레이,紀錄與重播,纪录与回放
 events.season,Temporada %s · nível %d de %d,Season %s · tier %d of %d,Temporada %s · nivel %d de %d,Saison %s · Stufe %d von %d,Saison %s · palier %d sur %d,Сезон %s · уровень %d из %d,Musim %s · tingkat %d dari %d,シーズン %s・%d/%d,시즌 %s · %d/%d 단계,賽季 %s・第%d/%d級,赛季 %s・第%d/%d级
 events.season_open,Abrir o passe,Open the pass,Abrir el pase,Pass öffnen,Ouvrir le passe,Открыть пропуск,Buka pass,パスを開く,패스 열기,開啟通行證,打开通行证
+events.section_rewards,Recompensas,Rewards,Recompensas,Belohnungen,Récompenses,Награды,Hadiah,報酬,보상,獎勵,奖励
 events.shield,Escudo da sequência: %d (perdoa 1 dia por semana),Streak shield: %d (forgives 1 day a week),Escudo de racha: %d (perdona 1 día por semana),Serienschild: %d (verzeiht 1 Tag/Woche),Bouclier de série : %d (pardonne 1 jour/semaine),Щит серии: %d (прощает 1 день в неделю),Perisai beruntun: %d (maafkan 1 hari/minggu),連続ログイン保護：%d（週1日まで）,연속 보호: %d (주 1일 용서),連續保護：%d（每週可補1天）,连续保护：%d（每周可补1天）
+events.today,Disponível hoje,Available today,Disponible hoy,Heute verfügbar,Disponible aujourd'hui,Доступно сегодня,Tersedia hari ini,本日挑戦できます,오늘 도전 가능,今日可挑戰,今日可挑战
 events.weekly,Tarefas da semana,Weekly tasks,Tareas de la semana,Wochenaufgaben,Tâches de la semaine,Задания недели,Tugas mingguan,ウィークリー任務,주간 과제,每週任務,每周任务
 hangar.ascended,Nave Ascendida!,Ship Ascended!,¡Nave Ascendida!,Schiff aufgestiegen!,Vaisseau ascendu !,Корабль вознесён!,Pesawat Naik Tingkat!,機体、昇華！,기체 승천!,機體昇華！,机体升华！
 hangar.bonus,Dano +%d%% · Casco +%d,Damage +%d%% · Hull +%d,Daño +%d%% · Casco +%d,Schaden +%d%% · Rumpf +%d,Dégâts +%d%% · Coque +%d,Урон +%d%% · Корпус +%d,Kerusakan +%d%% · Lambung +%d,ダメージ+%d%%・船体+%d,피해 +%d%% · 선체 +%d,傷害 +%d%%・船體 +%d,伤害 +%d%%・船体 +%d
@@ -293,10 +317,8 @@ hub.banner_c6,Capítulo 6 · O gelo lembra,Chapter 6 · The ice remembers,Capít
 hub.banner_c7,Capítulo 7 · Acima das nuvens,Chapter 7 · Above the clouds,Capítulo 7 · Sobre las nubes,Kapitel 7 · Über den Wolken,Chapitre 7 · Au-dessus des nuages,Глава 7 · Над облаками,Bab 7 · Di atas awan,第7章・雲の上へ,7장 · 구름 위로,第7章・雲層之上,第7章・云层之上
 hub.banner_c8,Capítulo 8 · Fortaleza em órbita,Chapter 8 · Fortress in orbit,Capítulo 8 · Fortaleza en órbita,Kapitel 8 · Festung im Orbit,Chapitre 8 · Forteresse en orbite,Глава 8 · Крепость на орбите,Bab 8 · Benteng di orbit,第8章・軌道要塞,8장 · 궤도 요새,第8章・軌道要塞,第8章・轨道要塞
 hub.banner_c9,Capítulo 9 · O coração do Protocolo,Chapter 9 · The Protocol's heart,Capítulo 9 · El corazón del Protocolo,Kapitel 9 · Das Herz des Protokolls,Chapitre 9 · Le cœur du Protocole,Глава 9 · Сердце Протокола,Bab 9 · Jantung Protokol,第9章・プロトコルの心臓,9장 · 프로토콜의 심장,第9章・協議之心,第9章・协议之心
-hub.banner_daily,Desafio Diário · em breve,Daily Challenge · soon,Desafío diario · pronto,Tägliche Herausforderung · bald,Défi du jour · bientôt,Ежедневное испытание · скоро,Tantangan Harian · segera,デイリーチャレンジ・近日公開,일일 도전 · 곧 공개,每日挑戰・即將推出,每日挑战・即将推出
 hub.login_reward,Dia %d da sequência: %s,Streak day %d: %s,Día %d de la racha: %s,Serientag %d: %s,Jour %d de la série : %s,День серии %d: %s,Hari ke-%d: %s,連続%d日目：%s,연속 %d일차: %s,連續第%d天：%s,连续第%d天：%s
 hub.play,JOGAR · %s,PLAY · %s,JUGAR · %s,SPIELEN · %s,JOUER · %s,ИГРАТЬ · %s,MAIN · %s,プレイ · %s,플레이 · %s,開始 · %s,开始 · %s
-hub.soon,Em breve,Soon,Pronto,Bald,Bientôt,Скоро,Segera,近日公開,곧 공개,即將推出,即将推出
 hub.tab_campaign,Campanha,Campaign,Campaña,Kampagne,Campagne,Кампания,Kampanye,キャンペーン,캠페인,戰役,战役
 hub.tab_events,Eventos,Events,Eventos,Events,Événements,События,Acara,イベント,이벤트,活動,活动
 hub.tab_hangar,Hangar,Hangar,Hangar,Hangar,Hangar,Ангар,Hanggar,格納庫,격납고,機庫,机库
@@ -590,11 +612,16 @@ ship.swarm,Enxame,Swarm,Enjambre,Schwarm,Essaim,Рой,Kawanan,スウォーム,�
 ship.tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest,Tempest
 ship.titan,Titã,Titan,Titán,Titan,Titan,Титан,Titan,タイタン,타이탄,泰坦,泰坦
 ship.trident,Tridente,Trident,Tridente,Dreizack,Trident,Трезубец,Trisula,トライデント,트라이던트,三叉戟,三叉戟
+ships.collection,Coleção · %d de %d,Collection · %d of %d,Colección · %d de %d,Sammlung · %d von %d,Collection · %d sur %d,Коллекция · %d из %d,Koleksi · %d dari %d,コレクション · %d/%d,컬렉션 · %d/%d,收藏 · %d/%d,收藏 · %d/%d
 ships.ending_unlock,Abre com o %s,Unlocked by %s,Se abre con %s,Freigeschaltet durch %s,Débloqué par %s,Открывается: %s,Terbuka lewat %s,%sで解放,%s 달성 시 해금,達成%s後解鎖,达成%s后解锁
 ships.fragments,Fragmentos %d de %d · em %s,Fragments %d of %d · from %s,Fragmentos %d de %d · en %s,Fragmente %d von %d · in %s,Fragments %d sur %d · dans %s,Фрагменты %d из %d · в %s,Fragmen %d dari %d · di %s,欠片 %d/%d・入手: %s,조각 %d/%d · 획득처 %s,碎片 %d/%d・取得：%s,碎片 %d/%d・获取：%s
 ships.select,Escolher,Select,Elegir,Wählen,Choisir,Выбрать,Pilih,選ぶ,선택,選擇,选择
 ships.selected,Na missão,In use,En uso,Im Einsatz,En service,В строю,Dipakai,出撃中,출격 중,出擊中,出击中
 ships.special,Especial,Special,Especial,Spezial,Spéciale,Спецприём,Jurus,必殺,필살,特技,特技
+ships.stat_hitbox,Alvo,Hitbox,Hitbox,Trefferzone,Hitbox,Хитбокс,Hitbox,当たり判定,피격 판정,判定,判定
+ships.stat_hull,Casco,Hull,Casco,Rumpf,Coque,Корпус,Lambung,船体,선체,船體,船体
+ships.stat_rate,Cadência,Fire rate,Cadencia,Feuerrate,Cadence,Темп,Laju tembak,連射,연사,射速,射速
+ships.stat_speed,Velocidade,Speed,Velocidad,Tempo,Vitesse,Скорость,Kecepatan,速度,속도,速度,速度
 ships.title,Naves,Ships,Naves,Schiffe,Vaisseaux,Корабли,Kapal,機体,기체,機體,机体
 ships.weapon,Arma,Weapon,Arma,Waffe,Arme,Оружие,Senjata,武器,무기,武器,武器
 shop.buy,%s · %d pérolas,%s · %d pearls,%s · %d perlas,%s · %d Perlen,%s · %d perles,%s · %d жемчужин,%s · %d mutiara,%s・真珠%d,%s · 진주 %d,%s・珍珠 %d,%s・珍珠 %d
@@ -667,6 +694,23 @@ stage.s4,Segredo · Maré Eterna,Secret · Endless Tide,Secreto · Marea Eterna,
 star.all_marked,Destruir todos os alvos marcados,Destroy every marked target,Destruir todos los objetivos marcados,Alle markierten Ziele zerstören,Détruire toutes les cibles marquées,Уничтожить все отмеченные цели,Hancurkan semua target bertanda,マーク対象を全破壊,표시된 목표 전부 파괴,摧毀所有標記目標,摧毁所有标记目标
 star.clear,Concluir a missão,Clear the mission,Completar la misión,Mission abschließen,Terminer la mission,Пройти миссию,Selesaikan misi,ミッションクリア,임무 완료,完成任務,完成任务
 star.no_damage,Sem perder casco,No hull damage,Sin daño al casco,Ohne Rumpfschaden,Sans dégât à la coque,Без повреждений корпуса,Tanpa kerusakan lambung,被弾なし,선체 피해 없음,船體無損,船体无损
+store.buy,Comprar,Buy,Comprar,Kaufen,Acheter,Купить,Beli,購入,구매,購買,购买
+store.chest_every,Grátis a cada %d h,Free every %d h,Gratis cada %d h,Alle %d h gratis,Gratuit toutes les %d h,Бесплатно раз в %d ч,Gratis tiap %d jam,%d時間ごとに無料,%d시간마다 무료,每 %d 小時免費,每 %d 小时免费
+store.chest_ready,Pronto,Ready,Listo,Bereit,Prêt,Готово,Siap,開封可,준비됨,可開啟,可开启
+store.close,Fechar,Close,Cerrar,Schließen,Fermer,Закрыть,Tutup,閉じる,닫기,關閉,关闭
+store.owned,Possuída,Owned,Tuya,Im Besitz,Possédée,Есть,Dimiliki,所持,보유,已擁有,已拥有
+store.preview,Prévia na sua nave,Preview on your ship,Vista previa en tu nave,Vorschau auf deinem Schiff,Aperçu sur ton vaisseau,Так выглядит ваш корабль,Pratinjau di kapalmu,あなたの機体でプレビュー,내 기체로 미리 보기,在你的機體上預覽,在你的机体上预览
+store.rarity_common,Comum,Common,Común,Gewöhnlich,Commun,Обычный,Biasa,コモン,일반,普通,普通
+store.rarity_epic,Épica,Epic,Épica,Episch,Épique,Эпический,Epik,エピック,에픽,史詩,史诗
+store.rarity_legendary,Lendária,Legendary,Legendaria,Legendär,Légendaire,Легендарный,Legendaris,レジェンド,전설,傳說,传说
+store.rarity_rare,Rara,Rare,Rara,Selten,Rare,Редкий,Langka,レア,희귀,稀有,稀有
+store.see_all,Ver todas as pinturas,See all paints,Ver todas las pinturas,Alle Lacke ansehen,Voir toutes les peintures,Все окраски,Lihat semua cat,塗装をすべて見る,도색 모두 보기,查看全部塗裝,查看全部涂装
+store.short,Faltam %s pérolas,%s pearls short,Faltan %s perlas,Es fehlen %s Perlen,Il manque %s perles,Не хватает жемчужин: %s,Kurang %s mutiara,真珠があと%s個必要,진주 %s개 부족,還差 %s 顆珍珠,还差 %s 颗珍珠
+store.support_note,"Compra única, sem assinatura. Nenhum poder extra.","One-time purchase, no subscription. No extra power.","Compra única, sin suscripción. Sin poder extra.","Einmalkauf, kein Abo. Keine zusätzliche Stärke.","Achat unique, sans abonnement. Aucune puissance en plus.","Разовая покупка, без подписки. Без бонуса к мощи.","Sekali beli, tanpa langganan. Tanpa kekuatan tambahan.",買い切り・定期購入なし。戦力は増えません。,"1회 구매, 구독 없음. 전투력은 오르지 않습니다.",一次性購買，無訂閱。不增加戰力。,一次性购买，无订阅。不增加战力。
+store.tab_chest,Baú,Chest,Cofre,Truhe,Coffre,Сундук,Peti,宝箱,상자,寶箱,宝箱
+store.tab_paints,Pinturas,Paints,Pinturas,Lacke,Peintures,Окраски,Cat,塗装,도색,塗裝,涂装
+store.tab_support,Apoio,Support,Apoyo,Support,Soutien,Поддержка,Dukungan,応援,후원,支持,支持
+store.test_strip,Versão de teste · nada é cobrado,Test build · nothing is charged,Versión de prueba · no se cobra nada,Testversion · nichts wird berechnet,Version de test · rien n'est facturé,Тестовая версия · оплаты нет,Versi uji · tidak ada tagihan,テスト版 · 課金されません,테스트 버전 · 결제되지 않음,測試版 · 不會收費,测试版 · 不会收费
 story.act1_end_1,A tempestade abriu. Lá no alto... a Halcyon está presa numa torre de energia.,The storm broke. Up there... the Halcyon is caught in an energy spire.,La tormenta se abrió. Allá arriba... la Halcyon está atrapada en una torre de energía.,Der Sturm reißt auf. Da oben... die Halcyon hängt in einer Energiespitze fest.,La tempête s'ouvre. Là-haut... la Halcyon est prise dans une flèche d'énergie.,Буря расступилась. Наверху... «Халкион» застрял в энергетическом шпиле.,Badai terbuka. Di atas sana... Halcyon terjebak di menara energi.,嵐が晴れた。上空……ハルシオンがエネルギーの塔に捕まっている。,폭풍이 걷혔다. 저 위에... 할시온이 에너지 첨탑에 갇혀 있다.,風暴散開了。上面……翠鳥號被困在能量尖塔裡。,风暴散开了。上面……翠鸟号被困在能量尖塔里。
 story.act1_end_2,"A torre leva o Coração de Poseidon ao céu. Se ela subir, o mar sobe junto.","The spire carries the Heart of Poseidon skyward. If it rises, the sea rises with it.","La torre lleva el Corazón de Poseidón al cielo. Si sube, el mar sube con ella.","Die Spitze trägt das Herz Poseidons gen Himmel. Steigt sie, steigt das Meer mit.","La flèche porte le Cœur de Poséidon vers le ciel. Si elle monte, la mer monte avec elle.",Шпиль несёт Сердце Посейдона в небо. Поднимется он — поднимется и море.,"Menara membawa Jantung Poseidon ke langit. Jika naik, laut ikut naik.",塔はポセイドンの心臓を空へ運ぶ。塔が昇れば、海も昇る。,첨탑이 포세이돈의 심장을 하늘로 옮긴다. 첨탑이 오르면 바다도 오른다.,尖塔把波塞頓之心送往天空。它升起，海也會跟著上升。,尖塔把波塞顿之心送往天空。它升起，海也会跟着上升。
 story.act1_end_3,PROTOCOLO LEVIATÃ: INTRUSO CLASSIFICADO. ADAPTAÇÃO INICIADA.,LEVIATHAN PROTOCOL: INTRUDER CLASSIFIED. ADAPTATION STARTED.,PROTOCOLO LEVIATÁN: INTRUSO CLASIFICADO. ADAPTACIÓN INICIADA.,LEVIATHAN-PROTOKOLL: EINDRINGLING ERFASST. ANPASSUNG GESTARTET.,PROTOCOLE LÉVIATHAN : INTRUS CLASSÉ. ADAPTATION LANCÉE.,ПРОТОКОЛ «ЛЕВИАФАН»: НАРУШИТЕЛЬ КЛАССИФИЦИРОВАН. АДАПТАЦИЯ НАЧАТА.,PROTOKOL LEVIATHAN: PENYUSUP TERKLASIFIKASI. ADAPTASI DIMULAI.,リヴァイアサン・プロトコル：侵入者を分類。適応を開始。,리바이어던 프로토콜: 침입자 분류 완료. 적응 개시.,利維坦協議：入侵者已分類。開始適應。,利维坦协议：入侵者已分类。开始适应。
@@ -778,3 +822,32 @@ wing.wing_slip,Ala Esguia,Slip Wing,Ala Esbelta,Schlankflügel,Aile Fine,Узк�
 wing.wing_slip_desc,Ponto de dano 10% menor,Hitbox 10% smaller,Punto de impacto 10% menor,Trefferzone 10% kleiner,Zone d'impact -10%,Хитбокс меньше на 10%,Hitbox 10% lebih kecil,当たり判定10%縮小,피격 판정 10% 축소,判定縮小10%,判定缩小10%
 wing.wing_tide,Ala Maré,Tide Wing,Ala Marea,Flutflügel,Aile Marée,Крыло прилива,Sayap Pasang,潮翼,조수 날개,潮汐翼,潮汐翼
 wing.wing_tide_desc,Maré Alta dura +2 s,High Tide lasts +2 s,Marea Alta dura +2 s,Springflut hält +2 s,Grande Marée +2 s,Высокий прилив +2 с,Pasang Tinggi +2 dtk,満潮が2秒延長,만조 +2초,滿潮延長2秒,满潮延长2秒
+workshop.buy,Comprar,Buy,Comprar,Kaufen,Acheter,Купить,Beli,購入,구매,購買,购买
+workshop.chosen,Escolhida,Selected,Elegida,Gewählt,Choisie,Выбрано,Dipilih,選択中,선택됨,已選擇,已选择
+workshop.close,Fechar,Close,Cerrar,Schließen,Fermer,Закрыть,Tutup,閉じる,닫기,關閉,关闭
+workshop.damage,Dano,Damage,Daño,Schaden,Dégâts,Урон,Daya,攻撃,피해,傷害,伤害
+workshop.evolve,Evoluir,Upgrade,Mejorar,Verbessern,Améliorer,Улучшить,Tingkatkan,強化,강화,強化,强化
+workshop.hull,Casco,Hull,Casco,Rumpf,Coque,Корпус,Lambung,船体,선체,船體,船体
+workshop.in_shop,Comprar na Loja,Buy in the Shop,Comprar en la Tienda,Im Shop kaufen,Acheter en boutique,Купить в магазине,Beli di Toko,ショップで購入,상점에서 구매,前往商店購買,前往商店购买
+workshop.installed,Peça montada,Part installed,Pieza montada,Teil montiert,Pièce montée,Деталь установлена,Bagian terpasang,装着済み,장착 완료,已安裝,已安装
+workshop.level,Nível,Level,Nivel,Stufe,Niveau,Уровень,Level,レベル,레벨,等級,等级
+workshop.part_at,Monta no nível %d,Installs at level %d,Se monta en el nivel %d,Kommt auf Stufe %d,Montée au niveau %d,Ставится на уровне %d,Terpasang di level %d,Lv.%dで装着,레벨 %d에 장착,等級 %d 安裝,等级 %d 安装
+workshop.parts,Peças,Parts,Piezas,Teile,Pièces,Детали,Bagian,パーツ,부품,零件,零件
+workshop.rarity_common,Comum,Common,Común,Gewöhnlich,Commun,Обычный,Biasa,コモン,일반,普通,普通
+workshop.rarity_epic,Épica,Epic,Épica,Episch,Épique,Эпический,Epik,エピック,영웅,史詩,史诗
+workshop.rarity_legendary,Lendária,Legendary,Legendaria,Legendär,Légendaire,Легендарный,Legendaris,レジェンド,전설,傳說,传说
+workshop.rarity_rare,Rara,Rare,Rara,Selten,Rare,Редкий,Langka,レア,희귀,稀有,稀有
+workshop.remove,Remover,Remove,Quitar,Entfernen,Retirer,Снять,Lepas,外す,해제,卸下,卸下
+workshop.select,Escolher,Choose,Elegir,Wählen,Choisir,Выбрать,Pilih,選択,선택,選擇,选择
+workshop.short,Faltam %s,%s short,Faltan %s,Es fehlen %s,Il manque %s,Не хватает: %s,Kurang %s,あと %s,%s 부족,還差 %s,还差 %s
+workshop.slot_core,Núcleo,Core,Núcleo,Kern,Noyau,Ядро,Inti,コア,코어,核心,核心
+workshop.slot_paint,Pintura,Paint,Pintura,Lack,Couleur,Окраска,Cat,塗装,도색,塗裝,涂装
+workshop.slot_weapon,Arma,Weapon,Arma,Waffe,Arme,Оружие,Senjata,武器,무기,武器,武器
+workshop.slot_wing,Asa %d,Wing %d,Ala %d,Flügel %d,Aile %d,Крыло %d,Sayap %d,ウイング%d,날개 %d,僚翼 %d,僚翼 %d
+workshop.slots_full,Encaixes cheios (%d de %d): remova uma asa,Slots full (%d of %d): remove a wing,Ranuras llenas (%d de %d): quita un ala,Plätze voll (%d von %d): Flügel entfernen,Emplacements pleins (%d sur %d) : retirez une aile,Слоты заняты (%d из %d): снимите крыло,Slot penuh (%d dari %d): lepas satu sayap,スロット満杯（%d/%d）：ウイングを外してください,슬롯 가득 참 (%d/%d): 날개를 해제하세요,欄位已滿（%d/%d）：請卸下一個僚翼,栏位已满（%d/%d）：请卸下一个僚翼
+workshop.tab_mode,Desafio,Challenge,Desafío,Gefahr,Défi,Угроза,Tantangan,難易度,난이도,難度,难度
+workshop.tab_paints,Pinturas,Paints,Pinturas,Lacke,Couleurs,Окраска,Cat,塗装,도색,塗裝,涂装
+workshop.tab_ship,Nave,Ship,Nave,Schiff,Vaisseau,Корабль,Kapal,機体,기체,機體,机体
+workshop.tab_weapons,Armas,Weapons,Armas,Waffen,Armes,Оружие,Senjata,武器,무기,武器,武器
+workshop.tab_wings,Asas,Wings,Alas,Flügel,Ailes,Крылья,Sayap,ウイング,날개,僚翼,僚翼
+workshop.upgrade,Evoluir nave,Evolve ship,Evolucionar,Entwickeln,Évoluer,Улучшить,Evolusi,機体進化,기체 진화,機體進化,机体进化

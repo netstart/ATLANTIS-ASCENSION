@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Atlantis Ascension"
 config/description="Atlantis Ascension — The ocean remembers. The sky belongs to whoever survives."
-config/version="1.14.5"
+config/version="1.15.0"
 run/main_scene="res://scenes/app/App.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")

@@ -74,9 +74,18 @@ func _campaign(check: Callable) -> void:
 			&"c10m1", &"c10m2", &"c10m3"]
 	var act1_level := 0
 	var ending := ""
+	var chapter := 0
 	for id: StringName in order:
 		if Economy.node(id)["kind"] == &"secret" and not Economy.mission_unlocked(p, id):
 			continue
+		# Poder recomendado ancorado na curva do bot: ao chegar em cada capítulo ele alcança o recomendado,
+		# sem passar demais (senão o número não diz nada a quem joga sem pressa).
+		if int(Economy.node(id)["chapter"]) != chapter:
+			chapter = int(Economy.node(id)["chapter"])
+			var power := Economy.power(p)
+			var rec := Economy.recommended_power(chapter)
+			check.call(power >= rec and power <= rec * 1.6,
+					"Economia: Poder do bot no capítulo %d perto do recomendado (%d para %d)" % [chapter, power, rec])
 		check.call(Economy.mission_unlocked(p, id), "Economia: %s aberta na hora certa" % id)
 		var sim := Sim.new()
 		sim.setup(Sim.load_mission(id), tables, Economy.loadout(p), 7)

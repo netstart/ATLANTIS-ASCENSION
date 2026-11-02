@@ -10,6 +10,10 @@ extends Screen
 ## cabeçalho ler bem sobre a água. Os ícones (moedas, cadeado, visto...) são desenhados aqui em
 ## código, por distância com suavização, numa textura de 64 px: ficam nítidos na resolução física em
 ## qualquer escala e não dependem de a fonte ter o glifo (Exo 2 não tem ✓ nem cadeado).
+##
+## 1.15: dentro da casca de navegação (telas-aba: Oficina, Naves, Eventos e Loja; in_shell()) não há
+## Voltar nem moedas próprias — a casca tem as duas barras — e o título vira uma faixa de seção
+## (CommandKit.ribbon) no topo do conteúdo.
 
 const MAX_WIDTH := 360.0
 ## Margem lateral mínima da coluna (pontos lógicos).
@@ -31,6 +35,7 @@ var _title: Label
 var _wallet: HBoxContainer
 var _wallet_values: Dictionary = {}
 var _divider: TextureRect
+var _ribbon: CommandKit.Ribbon
 var _scroll: ScrollContainer
 var _list: VBoxContainer
 var _grids: Array[GridContainer] = []
@@ -84,6 +89,13 @@ func _build() -> void:
 	_divider.stretch_mode = TextureRect.STRETCH_SCALE
 	_divider.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_divider)
+	_ribbon = CommandKit.ribbon("")
+	add_child(_ribbon)
+	if in_shell():
+		for node: CanvasItem in [_back, _title, _wallet, _divider, _shade_top, _shade_bottom]:
+			node.visible = false
+	else:
+		_ribbon.visible = false
 	_scroll = ScrollContainer.new()
 	_scroll.name = "List"
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -116,6 +128,7 @@ func refresh_texts() -> void:
 		return
 	_back.text = tr("credits.back")
 	_title.text = tr(title_key())
+	_ribbon.set_text(tr(title_key()))
 	refill()
 
 
@@ -131,7 +144,7 @@ func refill() -> void:
 		_list.remove_child(child)
 		child.queue_free()
 	_grids.clear()
-	_wallet.visible = show_wallet()
+	_wallet.visible = show_wallet() and not in_shell()
 	var wallet := SaveManager.data["wallet"] as Dictionary
 	for kind: String in CURRENCIES:
 		var value := _wallet_values[kind] as Label
@@ -182,6 +195,16 @@ func _layout() -> void:
 	var left := floorf(safe.position.x + (safe.size.x - _width) * 0.5)
 	var right := left + _width
 	var top := safe.position.y + 6.0
+	for grid: GridContainer in _grids:
+		grid.columns = 2 if _width >= TWO_COLUMNS else 1
+	if in_shell():
+		# Na casca: só a faixa do título e a lista, entre as duas barras.
+		_ribbon.position = Vector2(left, top)
+		_ribbon.size = Vector2(_width, _ribbon.get_combined_minimum_size().y)
+		var list_y := _ribbon.position.y + _ribbon.size.y + 6.0
+		_scroll.position = Vector2(left - 3.0, list_y)
+		_scroll.size = Vector2(_width + 9.0, maxf(0.0, safe.end.y - list_y))
+		return
 	_back.size = Vector2.ZERO
 	_back.size = Vector2(_back.get_combined_minimum_size().x, UiTheme.TOUCH_MIN)
 	_back.position = Vector2(left, top)
@@ -211,8 +234,6 @@ func _layout() -> void:
 	_shade_bottom.position = Vector2(0.0, size.y - _shade_bottom.size.y)
 	_scroll.position = Vector2(left - 3.0, y)
 	_scroll.size = Vector2(_width + 9.0, maxf(0.0, safe.end.y - y))
-	for grid: GridContainer in _grids:
-		grid.columns = 2 if _width >= TWO_COLUMNS else 1
 
 
 func back() -> bool:
@@ -221,6 +242,8 @@ func back() -> bool:
 
 
 func layout_controls() -> Array[Control]:
+	if in_shell():
+		return [_ribbon, _scroll]
 	var out: Array[Control] = [_back, _title, _scroll]
 	if show_wallet():
 		out.append(_wallet)
@@ -332,11 +355,14 @@ func button(parent: Container, value: String, on_press: Callable, enabled: bool 
 		b.name = button_name
 	b.text = value
 	b.disabled = not enabled
+	# Texto desabilitado legível sobre o vidro escuro (o padrão do tema some no fundo).
+	b.add_theme_color_override("font_disabled_color", Color(UiTheme.TEXT_DIM, 0.95))
 	b.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	b.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
 	b.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if primary:
 		UiTheme.style_primary(b, 13)
+		b.add_theme_color_override("font_disabled_color", Color(UiTheme.GOLD, 0.9))
 		b.custom_minimum_size.y = 40.0
 	b.pressed.connect(_press.bind(on_press))
 	parent.add_child(b)
@@ -354,10 +380,11 @@ func price_button(parent: Container, amount: int, currency: String, on_press: Ca
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var mark := glyph(StringName(currency), Color(1, 1, 1, 1.0 if enabled else 0.5), 13)
+	# Desabilitado (sem saldo): o fundo vira vidro escuro, então o número passa a ouro claro, legível.
+	var mark := glyph(StringName(currency), Color(1, 1, 1, 1.0 if enabled else 0.85), 13)
 	mark.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(mark)
-	var value := UiTheme.label(Locale.format_number(amount), 14, Color(UiTheme.GOLD_DARK, 1.0 if enabled else 0.5))
+	var value := UiTheme.label(Locale.format_number(amount), 14, UiTheme.GOLD_DARK if enabled else UiTheme.GOLD)
 	_bold(value)
 	value.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	value.size_flags_vertical = Control.SIZE_SHRINK_CENTER
@@ -667,6 +694,20 @@ static func _icon_pixel(kind: StringName, p: Vector2) -> Color:
 		&"play":
 			out = _over(out, Color.WHITE, _cov(_poly_sd(p, PackedVector2Array([Vector2(0.26, 0.12),
 					Vector2(0.86, 0.5), Vector2(0.26, 0.88)])) - 0.03))
+		&"ship":
+			# Asa-delta vista de cima (aba Naves): bico, asas enflechadas e dois motores.
+			out = _over(out, Color.WHITE, _cov(_poly_sd(p, PackedVector2Array([Vector2(0.5, 0.05),
+					Vector2(0.61, 0.4), Vector2(0.95, 0.74), Vector2(0.92, 0.84), Vector2(0.6, 0.74),
+					Vector2(0.58, 0.95), Vector2(0.42, 0.95), Vector2(0.4, 0.74), Vector2(0.08, 0.84),
+					Vector2(0.05, 0.74), Vector2(0.39, 0.4)])) - 0.01))
+		&"bolt":
+			# Raio do Poder.
+			out = _over(out, Color.WHITE, _cov(_poly_sd(p, PackedVector2Array([Vector2(0.64, 0.03),
+					Vector2(0.16, 0.58), Vector2(0.46, 0.58), Vector2(0.34, 0.97), Vector2(0.86, 0.4),
+					Vector2(0.55, 0.4)])) - 0.01))
+		&"plus":
+			var d := minf(_rect_sd(p, c, Vector2(0.36, 0.09)), _rect_sd(p, c, Vector2(0.09, 0.36)))
+			out = _over(out, Color.WHITE, _cov(d - 0.02))
 	return out
 
 

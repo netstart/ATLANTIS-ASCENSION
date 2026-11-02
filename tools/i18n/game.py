@@ -18,18 +18,12 @@ STRINGS = {
     "hub.tab_ships": ["Naves", "Ships", "Naves", "Schiffe", "Vaisseaux", "Корабли", "Kapal", "機体", "기체", "機體", "机体"],
     "hub.tab_events": ["Eventos", "Events", "Eventos", "Events", "Événements", "События", "Acara", "イベント", "이벤트", "活動", "活动"],
     "hub.tab_shop": ["Loja", "Shop", "Tienda", "Shop", "Boutique", "Магазин", "Toko", "ショップ", "상점", "商店", "商店"],
-    "hub.soon": ["Em breve", "Soon", "Pronto", "Bald", "Bientôt", "Скоро", "Segera", "近日公開", "곧 공개", "即將推出", "即将推出"],
     "hub.banner_c1": [
         "Capítulo 1 · A Halcyon pede socorro", "Chapter 1 · The Halcyon calls for help",
         "Capítulo 1 · La Halcyon pide ayuda", "Kapitel 1 · Die Halcyon ruft um Hilfe",
         "Chapitre 1 · La Halcyon appelle à l'aide", "Глава 1 · «Халкион» зовёт на помощь",
         "Bab 1 · Halcyon meminta bantuan", "第1章・ハルシオンの救難信号", "1장 · 할시온의 구조 요청",
         "第1章・翠鳥號求救", "第1章・翠鸟号求救",
-    ],
-    "hub.banner_daily": [
-        "Desafio Diário · em breve", "Daily Challenge · soon", "Desafío diario · pronto", "Tägliche Herausforderung · bald",
-        "Défi du jour · bientôt", "Ежедневное испытание · скоро", "Tantangan Harian · segera", "デイリーチャレンジ・近日公開",
-        "일일 도전 · 곧 공개", "每日挑戰・即將推出", "每日挑战・即将推出",
     ],
     "currency.credits": ["Créditos", "Credits", "Créditos", "Credits", "Crédits", "Кредиты", "Kredit", "クレジット", "크레딧", "點數", "点数"],
     "currency.orichalcum": [

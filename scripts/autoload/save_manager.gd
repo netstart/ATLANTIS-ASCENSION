@@ -50,6 +50,8 @@ static func default_profile() -> Dictionary:
 		"consent": {"asked": false, "personalized": false},
 		"tutorial_done": false,
 		"launches": 0,
+		# Avisos dos menus (Notices): aeronaves que o jogador já viu na coleção (as outras abertas acendem "!").
+		"seen": {"ships": ["falcon"]},
 	}
 
 

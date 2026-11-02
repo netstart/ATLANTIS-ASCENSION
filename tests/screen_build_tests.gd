@@ -73,7 +73,10 @@ func run(host: Node, check: Callable) -> void:
 	for screen_name: StringName in LISTS:
 		still = still and _fills(app, screen_name) == int(before[screen_name])
 	check.call(still, "Montagem: trocar de idioma não remonta as listas escondidas")
-	check.call((app.screen(&"hub").find_child("Logbook", true, false) as Button).text == tr_in("logbook.title"),
+	# Atalho da Campanha: rótulo curto à vista, nome inteiro na dica.
+	var logbook := app.screen(&"hub").find_child("Logbook", true, false) as Control
+	check.call(String(logbook.get("label")) == tr_in("campaign.short_logbook")
+			and logbook.tooltip_text == tr_in("logbook.title"),
 			"Montagem: a tela aberta troca de idioma na hora")
 	app.go(&"hangar")
 	await LayoutTests.settle(host)
