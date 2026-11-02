@@ -5,6 +5,10 @@ extends RefCounted
 ## (ordem determinística), e o desenho usa os primeiros `count` direto num MultiMesh.
 
 const MIN_SPEED := 12.0
+## Alvos que uma bala perfurante já acertou (inimigo, corpo do chefe, cada parte): cada um leva dano uma
+## vez só por bala. Anel fixo por bala, sem alocação; 4 basta porque a bala segue em frente e só
+## sobrepõe poucos alvos ao mesmo tempo (o mais antigo sai do anel quando ela já passou por ele).
+const HIT_SLOTS := 4
 
 var capacity: int = 0
 var count: int = 0
@@ -25,6 +29,9 @@ var age := PackedInt32Array()
 ## Tiros do jogador: alvos que ainda atravessa (Railgun) e raio do dano em área (Plasma).
 var pierce := PackedInt32Array()
 var splash := PackedFloat32Array()
+## Anel de alvos já acertados (HIT_SLOTS por bala) e quantos acertos a bala já marcou.
+var hit_ids := PackedInt64Array()
+var hit_n := PackedInt32Array()
 
 
 func _init(p_capacity: int) -> void:
@@ -40,6 +47,8 @@ func _init(p_capacity: int) -> void:
 	age.resize(capacity)
 	pierce.resize(capacity)
 	splash.resize(capacity)
+	hit_ids.resize(capacity * HIT_SLOTS)
+	hit_n.resize(capacity)
 
 
 ## Cria uma bala; devolve o índice ou -1 se o pool está cheio.
@@ -59,6 +68,7 @@ func spawn(p: Vector2, v: Vector2, r: float, k: int, dmg: float = 1.0, p_turn: f
 	age[i] = 0
 	pierce[i] = 0
 	splash[i] = 0.0
+	hit_n[i] = 0
 	count += 1
 	return i
 
@@ -79,6 +89,26 @@ func kill(i: int) -> void:
 		age[i] = age[count]
 		pierce[i] = pierce[count]
 		splash[i] = splash[count]
+		var n: int = hit_n[count]
+		hit_n[i] = n
+		for k: int in range(mini(n, HIT_SLOTS)):
+			hit_ids[i * HIT_SLOTS + k] = hit_ids[count * HIT_SLOTS + k]
+
+
+## Se a bala `i` já acertou o alvo `target` (ver Sim.target_id).
+func has_hit(i: int, target: int) -> bool:
+	var base := i * HIT_SLOTS
+	for k: int in range(mini(hit_n[i], HIT_SLOTS)):
+		if hit_ids[base + k] == target:
+			return true
+	return false
+
+
+## Guarda o alvo `target` no anel da bala `i` (o mais antigo sai quando enche).
+func mark_hit(i: int, target: int) -> void:
+	var n: int = hit_n[i]
+	hit_ids[i * HIT_SLOTS + n % HIT_SLOTS] = target
+	hit_n[i] = n + 1
 
 
 func clear() -> void:

@@ -5,6 +5,8 @@
 - a licença não está na lista permitida (sem NC, ND, SA, GPL, personal_only...);
 - o componente exige crédito e não aparece em CREDITS.md;
 - a verificação tem mais de 180 dias ou a entrada está marcada needs_review;
+- a entrada é gerada por IA (ai_generated) ou usa termos próprios (LicenseRef-) sem decisão do mantenedor
+  registrada no campo decision;
 - licenses/index.json ou os .md gerados estão desatualizados.
 Uso: python -I tools/check_licenses.py
 
@@ -53,8 +55,12 @@ def main() -> int:
                 errors.append(f"{tag}: marcada {flag}")
         if not e.get("commercial_use"):
             errors.append(f"{tag}: uso comercial não confirmado")
-        if e.get("ai_generated"):
-            errors.append(f"{tag}: asset gerado por IA precisa de decisão registrada do mantenedor")
+        # Gerado por IA só entra com decisão do mantenedor registrada no campo "decision".
+        if e.get("ai_generated") and not str(e.get("decision", "")).strip():
+            errors.append(f"{tag}: asset gerado por IA precisa de decisão registrada do mantenedor (campo decision)")
+        # Termos próprios (LicenseRef-) também exigem decisão registrada.
+        if lic.startswith("LicenseRef-") and not str(e.get("decision", "")).strip():
+            errors.append(f"{tag}: licença {lic} precisa de decisão registrada do mantenedor (campo decision)")
         for key in ("license_file", "notice_file", "snapshot_file"):
             if not e.get(key):
                 continue

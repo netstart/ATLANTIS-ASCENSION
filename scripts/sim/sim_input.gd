@@ -9,6 +9,8 @@ var precise: bool = false
 var fire: bool = true
 var special: bool = false
 var bomb: bool = false
+## Botão PODER (gasta os segmentos cheios da Corrente).
+var power: bool = false
 ## Toques no duelo de raio neste passo.
 var taps: int = 0
 ## Maré Alta (medidor de Pressão cheio).
@@ -25,6 +27,7 @@ func copy() -> SimInput:
 	c.fire = fire
 	c.special = special
 	c.bomb = bomb
+	c.power = power
 	c.taps = taps
 	c.tide = tide
 	c.choice = choice

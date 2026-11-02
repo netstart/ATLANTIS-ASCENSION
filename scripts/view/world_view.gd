@@ -69,6 +69,8 @@ var explosions: Array[Dictionary] = []
 var rings: Array[Dictionary] = []
 ## Receitas e partículas (explosões, faíscas, fumaça, destroços, números de pontos).
 var fx := CombatFx.new()
+## Poderes das naves (PowerView): projéteis, feixes, raios, ondas e a escuridão do eclipse.
+var powers := PowerView.new()
 
 var _shadows: _Layer
 var _entities: _Layer
@@ -76,6 +78,8 @@ var _player: _Layer
 var _fx_below: _Layer
 var _fx_add: _Layer
 var _fx_above: _Layer
+var _power_below: _Layer
+var _power_add: _Layer
 var _wrecks: _Layer
 var _player_bullets: BulletRenderer
 var _enemy_bullets: BulletRenderer
@@ -115,6 +119,8 @@ var _ticks: int = 0
 var _nozzle: int = 0
 ## Clarão da boca do canhão (s restantes).
 var _muzzle: float = 0.0
+## As camadas dos poderes desenharam algo no último quadro (redesenha uma vez a mais para limpar).
+var _power_drawn := false
 
 
 func setup(p_sim: Sim) -> void:
@@ -181,12 +187,25 @@ func setup(p_sim: Sim) -> void:
 	add_child(_player)
 	_fx_below = _Layer.new(self, _draw_fx_below)
 	add_child(_fx_below)
+	powers.reduce_flashes = reduce_flashes
+	powers.fx_level = fx_level
+	powers.ship_texture = _ship_bases[3]
+	powers.setup()
+	# Onda e muralha repetem a textura na horizontal (rolagem da espuma e das runas).
+	_power_below = _Layer.new(self, _draw_power_below)
+	_power_below.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	add_child(_power_below)
 	_fx_add = _Layer.new(self, _draw_fx_add)
 	var add := CanvasItemMaterial.new()
 	add.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	_fx_add.material = add
 	_fx_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	add_child(_fx_add)
+	_power_add = _Layer.new(self, _draw_power_add)
+	_power_add.material = add
+	_power_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_power_add.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
+	add_child(_power_add)
 	add_child(fx.light)
 	add_child(weather_slot)
 	_enemy_bullets = BulletRenderer.new()
@@ -211,6 +230,7 @@ func refresh(delta: float) -> void:
 		_emit_clock -= EMIT_STEP
 		_emit()
 	fx.advance(delta)
+	powers.advance(sim, delta)
 	_player_bullets.render(sim.player_bullets)
 	_enemy_bullets.render(sim.enemy_bullets)
 	var ease := 1.0 - exp(-delta * 12.0)
@@ -225,6 +245,12 @@ func refresh(delta: float) -> void:
 	_fx_below.queue_redraw()
 	_fx_add.queue_redraw()
 	_fx_above.queue_redraw()
+	# Sem poder vivo as camadas dos poderes ficam vazias (não custam desenho).
+	var busy := powers.busy(sim)
+	if busy or _power_drawn:
+		_power_below.queue_redraw()
+		_power_add.queue_redraw()
+	_power_drawn = busy
 
 
 func on_event(ev: Dictionary) -> void:
@@ -295,8 +321,45 @@ func on_event(ev: Dictionary) -> void:
 		&"bomb_pickup", &"capsule", &"log", &"heal", &"revive":
 			fx.collect(at, Color(0.5, 1.0, 0.9), true)
 			_ring_at(at, 0.4, 40.0, Color(0.5, 1.0, 0.9))
+			if StringName(ev["type"]) == &"heal":
+				powers.heal_burst(fx, at)
 		&"splash":
 			_ring_at(at, 0.25, float(ev.get("radius", 20.0)), Color(0.8, 0.55, 1.0))
+		&"power":
+			_on_power(ev, at)
+		&"power_blast":
+			_on_power_blast(ev, at)
+
+
+## Poder lançado: clarão e anel na cor da nave, maiores a cada nível.
+func _on_power(ev: Dictionary, at: Vector2) -> void:
+	var tier := int(ev.get("tier", 1))
+	var def: Dictionary = (sim.tables.get("powers", {}) as Dictionary).get(StringName(String(ev.get("id", ""))), {})
+	var col := Color(String(def.get("color", "#ffffff")))
+	fx.collect(at, col, true)
+	_ring_at(at, 0.3 + 0.12 * tier, 30.0 + 28.0 * tier, col)
+	if tier >= 3:
+		_ring_at(at, 0.7, 260.0, Color(1, 1, 1))
+		fx.light.spawn(CombatFx.FLARE, at, Vector2.ZERO, 0.35, 1.0, 4.0, Color(1, 1, 1, 0.6 if reduce_flashes else 1.0),
+				Color(col, 0.0))
+
+
+## Explosão de um poder (artilharia, granada, supernova, eclipse): fogo do tamanho do raio, anel e, nas
+## grandes, as balas apagadas viram brilho em onda.
+func _on_power_blast(ev: Dictionary, at: Vector2) -> void:
+	var radius := float(ev.get("radius", 40.0))
+	var def: Dictionary = (sim.tables.get("powers", {}) as Dictionary).get(StringName(String(ev.get("id", ""))), {})
+	var col := Color(String(def.get("color", "#ffffff")))
+	if radius < 120.0:
+		fx.explosion(at, clampf(radius / 30.0, 0.8, 2.4))
+		_ring_at(at, 0.35, radius * 1.15, col.lerp(Color(1.0, 0.7, 0.4), 0.5))
+		return
+	_ring_at(at, 0.9, radius, Color(1, 1, 1))
+	_ring_at(at, 0.6, radius * 0.55, col)
+	fx.explosion(at, 2.5, col.lerp(CombatFx.FIRE, 0.4))
+	var seen := _enemy_bullets.last_positions(180)
+	if sim.enemy_bullets.count * 2 < seen.size():
+		fx.cancel_wave(at, seen)
 
 
 func _ring_at(at: Vector2, duration: float, radius: float, color: Color) -> void:
@@ -312,6 +375,7 @@ func _weapon_tint() -> Color:
 func _emit() -> void:
 	_ticks += 1
 	var pl := sim.player
+	powers.emit(sim, fx, _ticks)
 	if pl.alive and fx_level >= 1:
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
 		_nozzle = 1 - _nozzle
@@ -575,8 +639,12 @@ func _draw_player(ci: CanvasItem) -> void:
 		ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.18, top, w * 0.36, p.y - 14.0 - top), false, Color(1, 1, 1, 0.9))
 	var hull_frac := float(pl.hull) / maxf(1.0, float(pl.max_hull))
 	var base := _ship_bases[clampi(int(ceil(hull_frac * 3.0)), 0, 3)]
-	var blink := pl.invuln > 0 and int(time * 20.0) % 2 == 0
+	# Durante um poder a invulnerabilidade é do poder: o escudo aparece, a nave não pisca.
+	var blink := pl.invuln > 0 and int(time * 20.0) % 2 == 0 and sim.power_fx.is_empty()
 	var col := Color(_ship_tint, 0.45 if blink else 1.0)
+	if PowerView.has_active(sim, &"cloak"):
+		# Manto (Umbra, Ascensão): a nave fica translúcida e tremeluz.
+		col.a = 0.38 + 0.14 * sin(time * 23.0)
 	if sim.tide_frames > 0:
 		var pulse := 1.0 + 0.15 * sin(time * 12.0)
 		_tex_centered(ci, _ring, p, Sim.TIDE_RADIUS / 14.0 * pulse, TIDE_COLOR)
@@ -805,6 +873,14 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 				false, Color(r["color"] as Color, alpha))
 
 
+func _draw_power_below(ci: CanvasItem) -> void:
+	powers.draw_below(ci, sim)
+
+
+func _draw_power_add(ci: CanvasItem) -> void:
+	powers.draw_add(ci, sim)
+
+
 ## Destroços caindo: a nave abatida gira, encolhe e escurece até a sombra no chão (CombatFx.wreck).
 func _draw_wrecks(ci: CanvasItem) -> void:
 	for w: Dictionary in fx.wrecks:
@@ -823,6 +899,8 @@ func _draw_wrecks(ci: CanvasItem) -> void:
 func _draw_fx_above(ci: CanvasItem) -> void:
 	if dark and sim.player.alive:
 		_draw_dark(ci)
+	if not sim.power_fx.is_empty():
+		powers.draw_above(ci, sim)
 	for pop: Dictionary in fx.popups:
 		var u := float(pop["t"]) / 0.75
 		var pop_scale := 1.0 + 0.5 * maxf(0.0, 1.0 - u * 6.0)

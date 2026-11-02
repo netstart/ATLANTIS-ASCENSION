@@ -9,6 +9,7 @@ extends RefCounted
 ## perfil, em "boards", apontando para o replay do recorde.
 
 const DIR := "user://replays"
+## Versão 1 continua: o bit 32 (PODER) é novo e replays antigos, sem ele, reproduzem igual.
 const VERSION := 1
 const BOARD_SIZE := 10
 
@@ -32,7 +33,7 @@ func _init(p_mission: Dictionary = {}, p_seed: int = 0, p_loadout: Dictionary = 
 ## Grava a entrada de um passo (a mesma que foi para Sim.step).
 func record(input: SimInput) -> void:
 	var bits := (1 if input.precise else 0) | (2 if input.fire else 0) | (4 if input.special else 0) \
-			| (8 if input.bomb else 0) | (16 if input.tide else 0)
+			| (8 if input.bomb else 0) | (16 if input.tide else 0) | (32 if input.power else 0)
 	var row := [input.move.x, input.move.y, input.axis.x, input.axis.y, bits, input.taps, input.choice]
 	if row == _last and not blocks.is_empty():
 		blocks[-1][0] = int(blocks[-1][0]) + 1
@@ -66,6 +67,7 @@ func next_input() -> SimInput:
 	input.special = bits & 4 != 0
 	input.bomb = bits & 8 != 0
 	input.tide = bits & 16 != 0
+	input.power = bits & 32 != 0
 	input.taps = int(b[6])
 	input.choice = int(b[7])
 	return input

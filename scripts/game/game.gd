@@ -20,6 +20,14 @@ const MID_BOSS_MUSIC := "sketchylogic_boss_main"
 ## primeira metade e volta suave à velocidade normal. Tempo real; a partida não muda.
 const SLOWMO_TIME := 1.1
 const SLOWMO_SCALE := 0.22
+## Poderes por nível (índice = nível): tremor da câmera, clarão, vibração (ms e força) e a música abaixada
+## no supremo. A pausa de impacto do nível III é da Sim (Powers.SUPREME_HITSTOP).
+const POWER_SHAKE: Array[float] = [0.0, 2.5, 4.5, 9.0]
+const POWER_FLASH: Array[float] = [0.0, 0.12, 0.25, 0.55]
+const POWER_BUZZ: Array[int] = [0, 25, 55, 140]
+const POWER_BUZZ_AMP: Array[float] = [0.0, 0.35, 0.55, 1.0]
+const POWER_DUCK_DB := -9.0
+const POWER_DUCK_SECONDS := 1.8
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
@@ -55,6 +63,7 @@ var _callouts: StyleCallouts
 var _drag := Vector2.ZERO
 var _taps: int = 0
 var _want_special: bool = false
+var _want_power: bool = false
 var _want_bomb: bool = false
 var _want_tide: bool = false
 var _choice: int = -1
@@ -147,6 +156,7 @@ func _ready() -> void:
 	_hud.quit_pressed.connect(func() -> void: _finish(true))
 	_hud.special_pressed.connect(func() -> void: _want_special = true)
 	_hud.bomb_pressed.connect(func() -> void: _want_bomb = true)
+	_hud.power_pressed.connect(_on_power_pressed)
 	_hud.tide_pressed.connect(func() -> void: _want_tide = true)
 	_hud.revive_chosen.connect(_on_revive_choice)
 	_hud.blessing_chosen.connect(func(index: int) -> void: _choice = index)
@@ -245,6 +255,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_drag += (event as InputEventScreenDrag).relative
 	elif event.is_action_pressed("special"):
 		_want_special = true
+	elif event.is_action_pressed("power"):
+		_want_power = true
 	elif event.is_action_pressed("bomb"):
 		_want_bomb = true
 	elif event.is_action_pressed("tide"):
@@ -265,11 +277,13 @@ func _human_input() -> SimInput:
 	input.precise = Input.is_action_pressed(&"precise") or _touch_ids.size() >= 2
 	input.fire = bool(Settings.get_value("auto_fire")) or Input.is_action_pressed(&"fire") or not _touch_ids.is_empty()
 	input.special = _want_special
+	input.power = _want_power
 	input.bomb = _want_bomb
 	input.tide = _want_tide
 	input.taps = _taps
 	input.choice = _choice
 	_want_special = false
+	_want_power = false
 	_want_bomb = false
 	_want_tide = false
 	_choice = -1
@@ -300,6 +314,11 @@ func _on_tick(_dt: float) -> void:
 	if stress > 0:
 		_stress()
 	sim.step(input, input2)
+
+
+## Botão PODER do HUD (zona do polegar): mesmo caminho da tecla, entra no próximo SimInput.
+func _on_power_pressed() -> void:
+	_want_power = true
 
 
 func _key(a: Key, b: Key) -> float:
@@ -423,6 +442,26 @@ func _on_event(ev: Dictionary) -> void:
 			_shake = 6.0
 			_screen.flash(0.45, Color(0.75, 1.0, 1.0))
 			_screen.shockwave(ev["pos"], 0.03)
+		&"power":
+			_on_power(ev)
+		&"power_charge":
+			var segments := clampi(int(ev.get("segments", 1)), 1, 3)
+			AudioManager.play("power_charge_%d" % segments, 1.0, 0.0, -4.0)
+			_hud.power_button().charged(segments)
+			if segments >= 3:
+				Settings.vibrate(20, 0.4, 0)
+		&"power_empty":
+			AudioManager.play("power_empty", 1.0, 0.0, -6.0)
+			_hud.power_button().empty()
+		&"power_blast":
+			var radius := float(ev.get("radius", 40.0))
+			AudioManager.play("kenney_explosion_big" if radius >= 120.0 else "kenney_explosion_medium", 1.0, 0.08,
+					-2.0 if radius >= 120.0 else -6.0)
+			_shake = maxf(_shake, clampf(radius / 16.0, 2.0, 10.0))
+			_screen.shockwave(ev["pos"], clampf(radius / 6000.0, 0.008, 0.045))
+			if radius >= 120.0:
+				_screen.flash(0.6, Color(1.0, 0.97, 0.9))
+				Settings.vibrate(90, 0.8, 1)
 		&"beam_warn":
 			AudioManager.play("kenney_beam_warn", 1.0, 0.0, -6.0)
 		&"boss_intro":
@@ -530,6 +569,28 @@ func _on_event(ev: Dictionary) -> void:
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)
+
+
+## Poder lançado: o som do poder, tremor, clarão e vibração que crescem com o nível e a faixa com o nome
+## (no Eco de Atlântida, também o poder ecoado). No supremo a música abaixa enquanto o golpe soa.
+func _on_power(ev: Dictionary) -> void:
+	var id := StringName(String(ev.get("id", "")))
+	var tier := clampi(int(ev.get("tier", 1)), 1, 3)
+	var def: Dictionary = (sim.tables.get("powers", {}) as Dictionary).get(id, {})
+	var tint := Color(String(def.get("color", "#ffffff")))
+	AudioManager.play(String(def.get("sfx", "power_" + String(id))))
+	_shake = maxf(_shake, POWER_SHAKE[tier])
+	Settings.vibrate(POWER_BUZZ[tier], POWER_BUZZ_AMP[tier], 1 if tier < 3 else 2)
+	_screen.flash(POWER_FLASH[tier], tint.lerp(Color.WHITE, 0.5))
+	if tier >= 2:
+		_screen.shockwave(ev.get("pos", sim.player.pos), 0.01 * tier)
+	var title := tr(String(def.get("name_key", "")))
+	var echo := String(ev.get("echo", ""))
+	if not echo.is_empty():
+		title = "%s: %s" % [title, tr("power." + echo)]
+	_hud.show_power(title, tier, tint, SpriteBank.texture(String(def.get("icon", ""))))
+	if tier >= 3:
+		AudioManager.duck(POWER_DUCK_DB, POWER_DUCK_SECONDS)
 
 
 ## Frente de clima anunciada: aviso no rádio (coral se for severa) com o tempo que falta, e um som.

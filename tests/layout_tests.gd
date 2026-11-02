@@ -80,6 +80,16 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		check.call(Playfield.fits(layout, safe), "%s: campo na área segura" % tag)
 		check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
 		check_screen_controls(game.hud().layout_controls(), safe, check, tag)
+		# PODER com a Corrente cheia: o nome do poder aparece e também cabe, nas duas mãos.
+		game.sim.player.power_charge = Powers.SEGMENTS
+		game.hud().refresh(game.sim, 0.5)
+		check.call(game.hud().power_button().name_label.visible, "%s: nome do poder visível com a Corrente cheia" % tag)
+		check_screen_controls(game.hud().layout_controls(), safe, check, tag + " poder")
+		Settings.set_value("handedness", "left")
+		game.relayout_for(view)
+		check_screen_controls(game.hud().layout_controls(), safe, check, tag + " poder canhoto")
+		Settings.set_value("handedness", "right")
+		game.relayout_for(view)
 		game.sim.offer_blessings()
 		game.hud().show_offer(game.sim)
 		await host.get_tree().process_frame

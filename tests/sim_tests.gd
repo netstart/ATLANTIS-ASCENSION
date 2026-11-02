@@ -23,6 +23,7 @@ func run_basics(check: Callable) -> void:
 	_scoring(check)
 	_orbs(check)
 	_data(check)
+	_pierce(check)
 
 
 func _pool(check: Callable) -> void:
@@ -41,6 +42,59 @@ func _pool(check: Callable) -> void:
 	pool.spawn(Vector2(90, 50), Vector2.ZERO, 3.0, 0)
 	var cancelled := pool.cancel_near(Vector2(50, 50), 10.0)
 	check.call(cancelled.size() == 1 and pool.count == 1, "Balas: cancelamento por raio")
+
+
+## Bala perfurante (Railgun, Eclipse, poderes): cada alvo leva dano dela uma vez só, mesmo ficando
+## vários passos por cima dele (antes a mesma agulha batia no corpo do chefe a cada passo).
+func _pierce(check: Callable) -> void:
+	var sim := Sim.new()
+	sim.setup(Sim.load_mission(&"c1m1"), Sim.load_tables(), &"falcon", 7)
+	sim.enemies.clear()
+	sim.player_bullets.clear()
+	var boss := SimBoss.new()
+	boss.setup({"id": "pierce_test", "hp": 100000.0, "body_radius": 30.0, "phases": [{"id": "a"}],
+			"parts": [{"id": "core", "x": 0.0, "y": 0.0, "radius": 10.0, "hp": 1000.0, "leak": 0.0}]}, {})
+	boss.pos = Vector2(135, 100)
+	boss.phase_index = 0
+	boss.state = SimBoss.State.FIGHT
+	sim.boss = boss
+	var i := sim.player_bullets.spawn(Vector2(135, 100), Vector2.ZERO, 3.0, 0, 10.0)
+	sim.player_bullets.pierce[i] = 6
+	for k: int in range(20):
+		sim._collide_player_bullets()
+	var part: Dictionary = boss.parts[0]
+	check.call(is_equal_approx(float(part["hp"]), 990.0) and is_equal_approx(boss.hp, 100000.0 - 10.0),
+			"Perfuração: 20 passos sobre o chefe acertam a parte e o corpo uma vez cada (parte %.0f, corpo %.0f)"
+			% [float(part["hp"]), boss.max_hp - boss.hp])
+	check.call(sim.player_bullets.count == 1 and sim.player_bullets.pierce[0] == 4,
+			"Perfuração: só gasta perfuração em alvo novo (%d)" % sim.player_bullets.pierce[0])
+	sim.boss = null
+	sim.player_bullets.clear()
+	for y: float in [200.0, 170.0, 140.0]:
+		var e := SimEnemy.new()
+		e.pos = Vector2(135, y)
+		e.radius = 8.0
+		e.hp = 100.0
+		e.max_hp = 100.0
+		sim.enemies.append(e)
+	i = sim.player_bullets.spawn(Vector2(135, 215), Vector2(0, -WeaponFire.RAIL_SPEED), 3.0, 0, 10.0)
+	sim.player_bullets.pierce[i] = 2
+	for k: int in range(15):
+		sim.player_bullets.step(Sim.STEP, Sim.BOUNDS)
+		sim._collide_player_bullets()
+	var hps := PackedFloat32Array()
+	for e: SimEnemy in sim.enemies:
+		hps.append(e.hp)
+	check.call(hps == PackedFloat32Array([90.0, 90.0, 90.0]) and sim.player_bullets.count == 0,
+			"Perfuração: atravessa 3 inimigos acertando cada um uma vez e some no último (%s)" % str(hps))
+	var pool := BulletPool.new(2)
+	pool.spawn(Vector2.ZERO, Vector2.ZERO, 3.0, 0)
+	pool.spawn(Vector2.ZERO, Vector2.ZERO, 3.0, 0)
+	pool.mark_hit(1, 77)
+	pool.kill(0)
+	check.call(pool.has_hit(0, 77) and not pool.has_hit(0, 5), "Perfuração: matar uma bala leva o anel de alvos junto")
+	pool.spawn(Vector2.ZERO, Vector2.ZERO, 3.0, 0)
+	check.call(not pool.has_hit(1, 77), "Perfuração: bala nova nasce sem alvos")
 
 
 func _paths(check: Callable) -> void:

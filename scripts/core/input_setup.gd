@@ -6,7 +6,7 @@ extends RefCounted
 ## Origem: input_setup.gd do projeto hyakki (mesmo autor, MIT), com as ações deste jogo.
 
 const ACTIONS: Array[StringName] = [&"move_left", &"move_right", &"move_up", &"move_down", &"precise",
-		&"fire", &"special", &"tide", &"bomb", &"pause", &"tab_prev", &"tab_next"]
+		&"fire", &"special", &"power", &"tide", &"bomb", &"pause", &"tab_prev", &"tab_next"]
 
 
 static func ensure_actions() -> void:
@@ -28,6 +28,9 @@ static func ensure_actions() -> void:
 	_add_button(&"fire", JOY_BUTTON_A)
 	_add_keys(&"special", [KEY_K])
 	_add_button(&"special", JOY_BUTTON_X)
+	# PODER: H (a J já é o tiro), ao lado de tiro, especial e bomba; Y/triângulo no controle.
+	_add_keys(&"power", [KEY_H])
+	_add_button(&"power", JOY_BUTTON_Y)
 	_add_keys(&"tide", [KEY_SPACE])
 	_add_axis(&"tide", JOY_AXIS_TRIGGER_RIGHT, 1.0)
 	_add_keys(&"bomb", [KEY_L])

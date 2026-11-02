@@ -11,6 +11,8 @@ extends Control
 
 signal pause_pressed
 signal special_pressed
+## Botão PODER (terceiro da zona do polegar): lança o poder do nível da Corrente.
+signal power_pressed
 signal bomb_pressed
 signal tide_pressed
 ## Reviver depois da derrota (true) ou desistir (false).
@@ -38,6 +40,8 @@ const LIFE_MAX_ICONS := 6
 const SCORE_PULSE := 500
 ## Degraus do anel do especial (redesenho só quando muda de degrau: ~a cada 30 quadros).
 const CHARGE_STEPS := 48
+## Título do Poder III: segundos na tela (os níveis I e II usam o PowerChip).
+const SUPREME_BANNER_SECONDS := 1.1
 const BOSS_FILL_SECONDS := 1.2
 const BOSS_BAR_H := 6.0
 ## Nave do jogador (Void) recortada para os ícones de casco.
@@ -94,6 +98,11 @@ var _bomb: Button
 var _bomb_gauge: Control
 var _bomb_caption: Label
 var _bombs_shown: int = -1
+## PODER (PowerButton) e o rótulo com o nome do poder que sairia agora.
+var _power: PowerButton
+var _power_name: Label
+var _power_hinted := false
+var _tutorial := false
 var _tide: Button
 var _pressure_track: ColorRect
 var _pressure: ColorRect
@@ -118,12 +127,8 @@ var _radio: Label
 var _portrait: TextureRect
 var _radio_type: float = 0.0
 var _radio_tween: Tween
-var _banner_root: Control
-var _banner_band: ColorRect
-var _banner_bars: Array[Control] = []
-var _banner: Label
-var _banner_warning := false
-var _banner_tween: Tween
+var _banner: HudBanner
+var _chip: PowerChip
 var _prompt: Label
 ## Barra do chefe: placa com o nome, trilho, rastro do dano, preenchimento e marcas das etapas.
 var _boss_root: Control
@@ -144,7 +149,6 @@ var _pause_box: VBoxContainer
 var _side_shade: Array[ColorRect] = []
 var _frame_lines: Array[ColorRect] = []
 var _radio_left: float = 0.0
-var _banner_left: float = 0.0
 var _dialogue: Dictionary = {}
 var _objective_left: float = 0.0
 var _hints: Array = []
@@ -280,6 +284,14 @@ func _build_buttons() -> void:
 	_bomb_gauge = _glyph(_bomb, func(c: Control) -> void: HudKit.draw_bomb(c, _btn >= BIG_BUTTON, _bombs_shown))
 	_bomb_gauge.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_bomb_caption = HudKit.caption(_bomb)
+	_power = PowerButton.new()
+	_power.name = "Power"
+	_power.focus_mode = Control.FOCUS_NONE
+	_power.custom_minimum_size = Vector2(BUTTON, BUTTON)
+	_power.pressed.connect(func() -> void: power_pressed.emit())
+	add_child(_power)
+	_power_name = _label(UiTheme.SMALL_SIZE, UiTheme.WHITE, true)
+	_power.setup(_power_name, _reduced)
 	_weapon = _label(UiTheme.FONT_SIZE, UiTheme.TEXT, true)
 	_weapon_pips = HudKit.ignore(Control.new())
 	_weapon_pips.draw.connect(func() -> void: HudKit.draw_pips(_weapon_pips, _pip_level, _pip_max))
@@ -372,23 +384,10 @@ func _build_radio() -> void:
 
 
 func _build_banner() -> void:
-	_banner_root = HudKit.ignore(Control.new())
-	_banner_root.visible = false
-	add_child(_banner_root)
-	_banner_band = HudKit.ignore(ColorRect.new()) as ColorRect
-	_banner_root.add_child(_banner_band)
-	for i: int in range(2):
-		var bar := HudKit.ignore(Control.new())
-		bar.draw.connect(func() -> void: HudKit.draw_banner_bar(bar, i, _banner_warning))
-		_banner_root.add_child(bar)
-		_banner_bars.append(bar)
-	_banner = UiTheme.heading("", UiTheme.TITLE_SIZE, UiTheme.WHITE)
-	_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_banner.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_banner.add_theme_color_override("font_outline_color", UiTheme.ABYSS)
-	_banner.add_theme_constant_override("outline_size", 4)
-	_banner_root.add_child(_banner)
+	_banner = HudBanner.new()
+	add_child(_banner)
+	_chip = PowerChip.new()
+	add_child(_chip)
 
 
 ## Painel das bênçãos (plano mestre 4.11): a fase congela até o jogador escolher 1 de 3.
@@ -508,6 +507,7 @@ func _sync_dim() -> void:
 func refresh_texts() -> void:
 	_special_caption.text = tr("hud.special")
 	_bomb_caption.text = tr("hud.bomb")
+	_power.retext()
 	_tide.text = tr("hud.tide_button")
 	_offer_title.text = tr("hud.blessing_title")
 	(_pause_box.get_node("Title") as Label).text = tr("hud.paused")
@@ -535,7 +535,8 @@ func setup_mission(sim: Sim) -> void:
 	_objective_left = OBJECTIVE_SECONDS
 	_objective_panel.visible = true
 	_refit_panels()
-	_hints = HINTS.duplicate() if bool(sim.mission.get("tutorial", false)) else []
+	_tutorial = bool(sim.mission.get("tutorial", false))
+	_hints = HINTS.duplicate() if _tutorial else []
 
 
 func show_offer(sim: Sim) -> void:
@@ -622,10 +623,7 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	_objective_panel.size = Vector2(field.size.x - 16.0, 0)
 	_objective_panel.reset_size()
 	_objective_panel.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.18)
-	_banner_root.position = Vector2(field.position.x, field.position.y + field.size.y * 0.3)
-	_banner_root.size = Vector2(field.size.x, 60)
-	_banner.position = Vector2(10, 10)
-	_banner.size = Vector2(field.size.x - 20.0, 0)
+	_banner.place(field)
 	_prompt.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.62)
 	_prompt.size = Vector2(field.size.x - 16.0, 0)
 	_place_boss(field)
@@ -694,13 +692,17 @@ func _place_buttons(field: Rect2) -> void:
 	for b: Button in [_special, _bomb]:
 		b.custom_minimum_size = Vector2(_btn, _btn)
 		b.size = b.custom_minimum_size
+	_power.set_side(_btn, _btn >= BIG_BUTTON)
+	# Da borda para dentro: especial, bomba e PODER (o polegar alcança os três sem cruzar a nave).
 	if left_handed:
 		_special.position = Vector2(left_x, buttons_y)
 		_bomb.position = Vector2(left_x + _btn + 10.0, buttons_y)
+		_power.position = Vector2(left_x + (_btn + 10.0) * 2.0, buttons_y)
 		_weapon_right_edge = field.end.x - 6.0
 	else:
 		_special.position = Vector2(right_x, buttons_y)
 		_bomb.position = Vector2(right_x - _btn - 10.0, buttons_y)
+		_power.position = Vector2(right_x - (_btn + 10.0) * 2.0, buttons_y)
 		_weapon_right_edge = -1.0
 	_weapon.position = Vector2(left_x, buttons_y + maxf(4.0, _btn * 0.5 - 13.0))
 	_place_weapon()
@@ -712,10 +714,16 @@ func _place_buttons(field: Rect2) -> void:
 		cap.size = Vector2(_btn - 4.0, 13)
 	# Botões dentro do campo (sem zona do polegar): translúcidos para as balas aparecerem.
 	var inside := _portrait_mode and not sep
-	for node: CanvasItem in [_special, _bomb, _weapon, _weapon_pips]:
+	for node: CanvasItem in [_special, _bomb, _power, _weapon, _weapon_pips, _power_name]:
 		node.modulate.a = 0.62 if inside else 1.0
 	_special_gauge.queue_redraw()
 	_bomb_gauge.queue_redraw()
+	# Nome do poder: embaixo dos botões quando a zona do polegar tem altura, senão em cima; corre do PODER
+	# para dentro (a arma fica na altura do meio dos botões, sem encostar).
+	var name_y := buttons_y - 16.0
+	if sep and _portrait_mode and thumb.end.y - (buttons_y + _btn + 3.0) >= 15.0:
+		name_y = buttons_y + _btn + 3.0
+	_power.place_name(name_y, field.end.x - 6.0 if left_handed else left_x, left_handed)
 	_tide.reset_size()
 	var tide_y := buttons_y - _tide.size.y - (10.0 if not _portrait_mode else 8.0)
 	var below := buttons_y + _btn + 8.0
@@ -838,48 +846,29 @@ func _open_radio(text: String, color: Color) -> void:
 		_radio_tween.tween_property(_radio_panel, "modulate:a", 1.0, 0.16)
 
 
+## Poder lançado: os níveis I e II viram o selo pequeno no alto do campo (abaixo da barra do chefe ou da faixa
+## do placar); o III é o título grande e curto da HudBanner no terço de cima. O objetivo da missão sai da frente.
+func show_power(title: String, tier: int, tint: Color, icon: Texture2D) -> void:
+	_objective_left = minf(_objective_left, 0.0)
+	var numeral := PowerButton.ROMAN[clampi(tier, 1, 3)]
+	if tier >= 3:
+		_chip.visible = false
+		# Espaço sem quebra: o número do nível nunca desce sozinho para a linha de baixo.
+		_banner.show_text("%s\u00a0\u00a0%s" % [title, numeral], false, tint, true, SUPREME_BANNER_SECONDS, _reduced)
+		return
+	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
+	var top := field.position.y + (30.0 if bool(layout.get("hud_overlay", false)) else 8.0)
+	if _boss_root.visible:
+		top = _boss_root.position.y + _boss_root.size.y + 4.0
+	_chip.pop(icon, "%s · %s" % [title, numeral], tint, field.get_center().x, top, field.size.x - 24.0, _reduced)
+
+
 ## Faixa grande no centro do campo. O nome do chefe que entra vira aviso em coral com listras de
 ## perigo (o jogo já mostra ≥ 0,5 s antes do perigo: o chefe entra invulnerável por 3 s).
 func show_banner(text: String) -> void:
-	_banner.text = text
-	_banner_left = BANNER_SECONDS
-	_banner_warning = _sim != null and _sim.boss != null and _sim.boss.state == SimBoss.State.ENTER \
-			and text == tr(String(_sim.boss.def.get("name_key", "")))
-	var accent := UiTheme.CORAL if _banner_warning else UiTheme.CYAN
-	_banner.add_theme_color_override("font_color", UiTheme.CORAL if _banner_warning else UiTheme.WHITE)
-	_banner.add_theme_color_override("font_shadow_color", Color(accent, 0.45))
-	_banner_band.color = Color(0.22, 0.02, 0.07, 0.62) if _banner_warning else Color(UiTheme.ABYSS, 0.55)
-	var w := _banner_root.size.x
-	_banner.size = Vector2(w - 20.0, 0)
-	var text_h := _banner.get_minimum_size().y
-	_banner.size.y = text_h
-	var bar_h := 7.0 if _banner_warning else 3.0
-	var h := text_h + 20.0
-	_banner_root.size.y = h
-	_banner_band.position = Vector2(0, 0)
-	_banner_band.size = Vector2(w, h)
-	_banner_bars[0].position = Vector2(0, -bar_h)
-	_banner_bars[1].position = Vector2(0, h)
-	for i: int in range(2):
-		var bar := _banner_bars[i]
-		bar.size = Vector2(w, bar_h)
-		bar.pivot_offset = Vector2(0.0 if i == 0 else w, bar_h * 0.5)
-		bar.queue_redraw()
-	_banner.pivot_offset = _banner.size * 0.5
-	_banner_band.pivot_offset = Vector2(w * 0.5, h * 0.5)
-	_banner_root.visible = true
-	_banner_root.modulate.a = 1.0
-	if _banner_tween != null and _banner_tween.is_valid():
-		_banner_tween.kill()
-	if _reduced:
-		_banner.scale = Vector2.ONE
-		_banner.modulate.a = 1.0
-		_banner_band.scale = Vector2.ONE
-		for bar: Control in _banner_bars:
-			bar.scale = Vector2.ONE
-		return
-	_banner_tween = HudKit.banner_in(_banner_root, _banner_band, _banner_bars, _banner,
-			_banner_warning and not bool(Settings.get_value("reduce_flashes")))
+	var boss := _sim.boss if _sim != null else null
+	var warning := boss != null and boss.state == SimBoss.State.ENTER and text == tr(String(boss.def.get("name_key", "")))
+	_banner.show_text(text, warning, Color(0, 0, 0, 0), false, BANNER_SECONDS, _reduced)
 
 
 # --- Quadro a quadro -------------------------------------------------------------------------
@@ -891,6 +880,10 @@ func refresh(sim: Sim, delta: float) -> void:
 	_refresh_hull(sim)
 	_refresh_weapon(sim)
 	_refresh_buttons(sim)
+	_power.refresh(sim, delta)
+	if _tutorial and not _power_hinted and _power.segments() >= 1:
+		_power_hinted = true
+		show_radio_text(tr("hint.power"), UiTheme.CYAN)
 	_objective_left -= delta
 	_objective_panel.visible = _objective_left > 0.0
 	_objective_panel.modulate.a = clampf(_objective_left, 0.0, 1.0)
@@ -907,10 +900,8 @@ func refresh(sim: Sim, delta: float) -> void:
 		_prompt.text = tr("hud.duel")
 		_prompt.modulate.a = 1.0 if _reduced else 0.6 + 0.4 * sin(Time.get_ticks_msec() * 0.02)
 	_refresh_radio(delta)
-	_banner_left -= delta
-	if _banner_root.visible:
-		_banner_root.visible = _banner_left > 0.0
-		_banner_root.modulate.a = clampf(_banner_left / 0.35, 0.0, 1.0)
+	_banner.tick(delta)
+	_chip.tick(delta)
 
 
 ## Placar com contagem rápida (alcança o alvo em ~0,3 s) e pulso dourado nos saltos grandes.
@@ -1196,4 +1187,9 @@ func _boss_appear(boss: SimBoss) -> void:
 
 ## Controles que precisam caber na área segura (testes de layout).
 func layout_controls() -> Array[Control]:
-	return [_score, _pause, _special, _bomb, _weapon, _tide]
+	return [_score, _pause, _special, _bomb, _power, _weapon, _tide, _power_name]
+
+
+## Botão PODER (o Game chama charged/empty; testes leem o nome em name_label).
+func power_button() -> PowerButton:
+	return _power

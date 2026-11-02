@@ -28,6 +28,8 @@ var signature: StringName = &"pulsar"
 var fire_timer: int = 0
 var invuln: int = 0
 var special_charge: float = 0.0
+## Corrente dos poderes (0,0 a 3,0; um segmento por unidade). Regras em Powers.
+var power_charge: float = 0.0
 var bombs: int = START_BOMBS
 var alive: bool = true
 ## Modificadores do hangar e das bênçãos (SimMods).

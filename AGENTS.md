@@ -95,6 +95,10 @@ python -I tools\sync_assets.py
 python tools\cut_weather_audio.py
 # Sons de coleta (medalha, pérola, cápsula) e de acerto em inimigo: mistura as camadas baixadas (numpy e soundfile; antes do sync)
 python tools\mix_pickup_audio.py
+# Sons dos poderes das naves (36 poderes, tons do medidor, recusa): síntese + camadas CC0 (numpy e soundfile; antes do sync)
+python tools\mix_power_audio.py
+# Tema do menu: laço sem emenda do WAV gerado no Google Flow Music (numpy e soundfile; antes do sync)
+python tools\prepare_menu_music.py
 # Missões e chefes (fontes: tools\gen_missions.py e tools\gen_bosses_*.py; rode os chefes antes das missões)
 python -I tools\gen_bosses_beta.py
 python -I tools\gen_bosses_post.py
@@ -118,6 +122,8 @@ python -I tools\gen_sprites.py
 python tools\gen_portraits.py
 # Evolução visual da nave por nível do hangar (peças de 48x48 alinhadas à nave; --preview DIR grava os 10 níveis)
 python -I tools\gen_livery.py
+# Arte dos poderes (projéteis, efeitos e os 36 ícones; numpy; --preview DIR grava a folha de revisão fora de assets)
+python tools\gen_power_sprites.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)
 powershell -ExecutionPolicy Bypass -File tools\build_release.ps1
 # Google Play: arte da ficha (capturas e destaque nos 11 idiomas) e página da política de privacidade

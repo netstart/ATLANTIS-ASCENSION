@@ -8,6 +8,10 @@ extends RefCounted
 const PIP_W := 9.0
 const PIP_H := 4.0
 const PIP_GAP := 3.0
+## Corrente (PODER): vão entre os 3 segmentos do anel (rad), tremida do aperto sem carga (s) e amplitude (px).
+const POWER_GAP := 0.34
+const POWER_SHAKE := 0.32
+const POWER_SHAKE_PX := 3.0
 
 
 static func ignore(node: Control) -> Control:
@@ -227,6 +231,38 @@ static func draw_special(c: Control, big: bool, charge: float, ready: bool) -> v
 	draw_trident(c, o, r * 0.68, UiTheme.WHITE if ready else Color(UiTheme.TEXT_DIM, 0.95))
 
 
+## PODER: anel da Corrente em 3 segmentos (de cima, sentido horário) que enchem com `value` (0 a 3), na cor
+## da nave; segmento cheio fica aceso e com um ponto de luz na ponta. No centro, o ícone do poder que sairia
+## agora (apagado sem carga ou com um poder no ar). `shake` (s restantes) treme o medidor no aperto vazio.
+static func draw_power(c: Control, big: bool, value: float, tint: Color, icon: Texture2D, live: bool,
+		shake: float) -> void:
+	var o := gauge_center(c, big)
+	if shake > 0.0:
+		o.x += sin(shake * 70.0) * POWER_SHAKE_PX * shake / POWER_SHAKE
+	var r := gauge_radius(c, big)
+	var span := TAU / Powers.SEGMENTS
+	c.draw_arc(o, r, 0.0, TAU, 48, Color(UiTheme.ABYSS, 0.75), 4.5, true)
+	var whole := Powers.whole(value)
+	for i: int in range(int(Powers.SEGMENTS)):
+		var a0 := -PI * 0.5 + i * span + POWER_GAP * 0.5
+		var arc := span - POWER_GAP
+		c.draw_arc(o, r, a0, a0 + arc, 16, Color(tint, 0.2), 2.5, true)
+		var fill := clampf(value - i, 0.0, 1.0)
+		if fill <= 0.0:
+			continue
+		var full := i < whole
+		var col := tint.lerp(UiTheme.WHITE, 0.3) if full else Color(tint, 0.7)
+		c.draw_arc(o, r, a0, a0 + arc * fill, maxi(3, int(16 * fill)), col, 3.0 if full else 2.5, true)
+		if full and not live:
+			c.draw_circle(o + Vector2.from_angle(a0 + arc) * r, 1.6, UiTheme.WHITE, true, -1.0, true)
+	if icon == null:
+		return
+	var side := 24.0 if r >= 13.0 else 16.0
+	var dim := whole < 1 or live
+	c.draw_texture_rect(icon, Rect2((o - Vector2(side, side) * 0.5).round(), Vector2(side, side)), false,
+			Color(0.55, 0.6, 0.7, 0.55) if dim else Color.WHITE)
+
+
 ## Tridente de Poseidon (especial): haste, travessa e três pontas.
 static func draw_trident(c: Control, o: Vector2, k: float, col: Color) -> void:
 	var w := maxf(1.5, k * 0.17)
@@ -303,11 +339,11 @@ static func draw_pips(c: Control, level: int, max_level: int) -> void:
 				Vector2(x + PIP_W - 2.0, PIP_H), Vector2(x, PIP_H)]), col)
 
 
-## Barras da faixa: tira chanfrada (a de cima entra pela esquerda, a de baixo pela direita); no aviso
-## de chefe fica larga, coral e com listras de perigo.
-static func draw_banner_bar(c: Control, index: int, warning: bool) -> void:
+## Barras da faixa: tira chanfrada (a de cima entra pela esquerda, a de baixo pela direita), em ciano ou
+## na cor da nave (poderes); no aviso de chefe fica larga, coral e com listras de perigo.
+static func draw_banner_bar(c: Control, index: int, warning: bool, accent: Color = UiTheme.CYAN) -> void:
 	var s := c.size
-	var col := UiTheme.CORAL if warning else UiTheme.CYAN
+	var col := UiTheme.CORAL if warning else accent
 	var cut := minf(s.y * 2.0, 10.0)
 	var pts := PackedVector2Array([Vector2(cut, 0), Vector2(s.x, 0), Vector2(s.x - cut, s.y), Vector2(0, s.y)]) \
 			if index == 0 else PackedVector2Array([Vector2(0, 0), Vector2(s.x - cut, 0), Vector2(s.x, s.y),

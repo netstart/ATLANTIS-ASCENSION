@@ -9,6 +9,8 @@ const TestShard := preload("res://tests/test_shard.gd")
 const ParallaxTests := preload("res://tests/parallax_tests.gd")
 const VfxTests := preload("res://tests/vfx_tests.gd")
 const WeatherTests := preload("res://tests/weather_tests.gd")
+const PowerTests := preload("res://tests/power_tests.gd")
+const ScriptGate := preload("res://tests/script_gate.gd")
 const SEMVER := "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
 
 var _count: int = 0
@@ -16,16 +18,23 @@ var _failures: int = 0
 
 
 func _initialize() -> void:
+	var gate := ScriptGate.new()
+	gate.install()
+	for bad: String in ScriptGate.check_all():
+		_check(false, "script quebrado: " + bad)
 	var shard := TestShard.parse(OS.get_cmdline_user_args())
 	if shard.y == 0:
 		printerr("FALHOU: argumento --shard malformado (use --shard=I/N, com 0 <= I < N)")
 		quit(1)
 		return
 	var sim := SimTests.new()
+	# Guardado aqui: as unidades só seguram o método, e o RefCounted sumiria antes de rodar.
+	var powers := PowerTests.new()
 	# Unidades (tests/test_shard.gd): as regras rápidas numa só; cada missão inteira pelo bot numa
 	# unidade própria, porque são elas que custam (de 1 a 10 s cada).
 	var units: Array[Dictionary] = [{"name": "Regras rápidas", "weight": 2.0, "run": _rules.bind(sim)}]
 	units.append_array(sim.mission_units())
+	units.append_array(powers.units())
 	var mine := TestShard.mine(units, shard)
 	for unit: Dictionary in mine:
 		var start := Time.get_ticks_msec()
@@ -33,6 +42,8 @@ func _initialize() -> void:
 		(unit["run"] as Callable).call(_check)
 		if TestShard.timing_enabled():
 			print("tempo %6d ms  %5d verificações  %s" % [Time.get_ticks_msec() - start, _count - before, unit["name"]])
+	for error: String in gate.take():
+		_check(false, "erro de script durante os testes: " + error)
 	print(TestShard.summary("regras", shard, mine.size(), units.size()))
 	print("%d verificações, %d falhas" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -53,6 +64,7 @@ func _rules(_unit_check: Callable, sim: SimTests) -> void:
 	ParallaxTests.new().run_unit(_check)
 	VfxTests.new().run_unit(_check)
 	WeatherTests.new().run_unit(_check)
+	PowerTests.new().run_unit(_check)
 
 
 func _check(condition: bool, label: String) -> void:

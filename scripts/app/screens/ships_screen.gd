@@ -9,6 +9,8 @@ extends ListScreen
 ## fragmentos e onde caem, ou o final que abre). Embaixo, a grade de ladrilhos (CommandKit.item_tile) com
 ## raridade por cor, nível, cadeado nas fechadas e a bolinha "!" nas que abriram desde a última visita.
 ## Tocar num ladrilho só troca o palco; escolher continua sendo um toque explícito.
+## O palco lista também os três poderes da aeronave (Corrente, .ai/08-poderes-das-naves.md): ícone, nome,
+## nível e a frase do que fazem; o supremo (nível III) em ouro. Só leitura: o foco segue nos ladrilhos e botões.
 
 ## Largura mínima de cada coluna da grade (pontos lógicos).
 const CELL := 60.0
@@ -163,6 +165,7 @@ func _stage(profile: Dictionary, def: Dictionary, selected: String) -> void:
 	col.add_child(_chips(def))
 	if def.has("trait"):
 		text(col, tr("trait." + String(def["trait"])), UiTheme.TEXT)
+	_powers(col, id, owned)
 	_stage_action(col, profile, def, owned, on, level)
 	_list.add_child(stage)
 
@@ -217,6 +220,51 @@ func _stat(icon_kind: StringName, label: String, value: String, color: Color) ->
 	row.add_child(col)
 	pill.add_child(row)
 	return pill
+
+
+## Os três poderes da aeronave, um por linha numa placa escura: ícone 24x24 (pixel art, sem filtro), nome em
+## negrito com o nível numa pílula e a descrição embaixo. Nada aqui recebe foco.
+func _powers(col: VBoxContainer, ship: String, owned: bool) -> void:
+	var table := DB.table("powers")
+	var panel := PanelContainer.new()
+	panel.name = "Powers"
+	var box := UiTheme.panel_box(UiTheme.CYAN, 0.55)
+	box.set_content_margin_all(8)
+	panel.add_theme_stylebox_override("panel", box)
+	col.add_child(panel)
+	var list := VBoxContainer.new()
+	list.add_theme_constant_override("separation", 5)
+	panel.add_child(list)
+	var head := UiTheme.label(tr("power.list"), UiTheme.SMALL_SIZE, UiTheme.CYAN if owned else UiTheme.TEXT_DIM)
+	_bold(head)
+	list.add_child(head)
+	for tier: int in [1, 2, 3]:
+		var def: Dictionary = table.get(StringName("%s_%d" % [ship, tier]), {})
+		if def.is_empty():
+			continue
+		var row := HBoxContainer.new()
+		row.add_theme_constant_override("separation", 8)
+		list.add_child(row)
+		var icon := TextureRect.new()
+		icon.texture = SpriteBank.texture(String(def.get("icon", "")))
+		icon.custom_minimum_size = Vector2(24, 24)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		icon.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if not owned:
+			icon.modulate = Color(0.6, 0.65, 0.75, 0.6)
+		row.add_child(icon)
+		var info := VBoxContainer.new()
+		info.add_theme_constant_override("separation", 1)
+		info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(info)
+		var supreme := tier >= 3
+		var name_color := (UiTheme.GOLD if supreme else UiTheme.WHITE) if owned else UiTheme.TEXT
+		var title := title_row(info, tr(String(def.get("name_key", ""))), name_color, 12)
+		title.add_child(badge(tr("power.tier") % tier, UiTheme.GOLD if supreme else UiTheme.CYAN))
+		text(info, tr(String(def.get("desc_key", ""))), UiTheme.TEXT_DIM, UiTheme.SMALL_SIZE)
 
 
 func _stage_action(col: VBoxContainer, profile: Dictionary, def: Dictionary, owned: bool, on: bool,

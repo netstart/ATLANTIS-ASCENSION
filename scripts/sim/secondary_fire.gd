@@ -36,7 +36,7 @@ static func step(sim: Sim) -> void:
 			for side: float in [-1.0, 1.0]:
 				sim.missiles.append({"pos": p.pos + Vector2(side * (10.0 + k * 4.0), 4.0),
 						"vel": Vector2(side * 90.0, -160.0), "life": 0, "dmg": dmg,
-						"pierce": 1 if sim.mods.harpoon else 0})
+						"pierce": 1 if sim.mods.harpoon else 0, "last": 0})
 	_guide(sim)
 	var count := 0
 	if sim.secondary == &"drones":
@@ -79,11 +79,14 @@ static func _guide(sim: Sim) -> void:
 		m["pos"] = pos
 		m["vel"] = vel
 		m["life"] = int(m["life"]) + 1
-		var hit := sim.hit_at(pos, MISSILE_RADIUS, float(m["dmg"]))
+		# O arpão atravessa um alvo: o que já levou o golpe fica de fora enquanto o míssil passa por ele.
+		var struck := sim.hit_at_id(pos, MISSILE_RADIUS, float(m["dmg"]), int(m.get("last", 0)))
+		var hit := struck != 0
 		if hit:
 			sim.emit(&"hit", {"pos": pos})
 			if int(m["pierce"]) > 0:
 				m["pierce"] = int(m["pierce"]) - 1
+				m["last"] = struck
 				hit = false
 		if hit or int(m["life"]) > MISSILE_LIFE or not Sim.BOUNDS.has_point(pos):
 			sim.missiles.remove_at(i)

@@ -1,0 +1,8 @@
+{
+	"pack_root": "flow-music",
+	"license_id": "flow_tide_rising_music",
+	"note": "Tema do menu gerado pelo mantenedor no Google Flow Music (Lyria) e preparado para laço sem emenda por tools/prepare_menu_music.py.",
+	"files": {
+		"menu/flow_tide_rising.ogg": "audio/music/flow_tide_rising.ogg"
+	}
+}

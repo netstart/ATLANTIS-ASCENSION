@@ -9,7 +9,8 @@ Para cada entrada de licenses/registry.json:
    (Chrome/Edge headless), porque páginas de itch.io/GitHub podem mudar;
 4. grava SHA-256 e downloaded_at no registro.
 Nunca sobrescreve uma cópia diferente: guarda a nova com a data e marca needs_review.
-Uso: python -I tools/fetch_licenses.py [--no-snapshot]
+Uso: python -I tools/fetch_licenses.py [--no-snapshot] [--only=id1,id2]
+(--only processa só essas entradas: útil ao registrar um asset novo sem rebaixar todo o registro.)
 """
 import datetime
 import hashlib
@@ -78,7 +79,13 @@ def snapshot(entry: dict) -> None:
 def main() -> int:
     entries = json.loads(REGISTRY.read_text(encoding="utf-8"))
     texts_done: dict = {}
+    only = set()
+    for arg in sys.argv[1:]:
+        if arg.startswith("--only="):
+            only = {x for x in arg[len("--only="):].split(",") if x}
     for entry in entries:
+        if only and entry["id"] not in only:
+            continue
         print(entry["id"])
         hashes = entry.setdefault("sha256", {})
         license_file = ROOT / entry["license_file"]

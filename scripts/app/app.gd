@@ -31,8 +31,9 @@ const SCREENS := {
 	&"records": preload("res://scripts/app/screens/records_screen.gd"),
 }
 const ROOT_SCREEN := &"boot"
-## Música dos menus (Deep Sea, Umplix, CC0): água funda e calma entre as missões.
-const MENU_MUSIC := "umplix_deep_sea"
+## Música dos menus: o tema do Atlantis Ascension (Clayton K. N. Passos com Google Flow Music), em laço sem emenda
+## (tools/prepare_menu_music.py). Começa calmo, cresce até o tema heroico e volta à calma.
+const MENU_MUSIC := "flow_tide_rising"
 ## Humor do fundo por tela (AbyssBackdrop.MOODS); as que não estão aqui usam o padrão.
 const MOODS := {
 	&"boot": &"title", &"map": &"map", &"results": &"gold", &"shop": &"gold", &"story": &"calm",

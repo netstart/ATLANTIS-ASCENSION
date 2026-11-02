@@ -1,0 +1,54 @@
+Termos de Serviço do Google — resumo local para conteúdo gerado no Google Flow Music
+====================================================================================
+
+Este arquivo é a cópia local exigida por docs/policies/licencas.md para os termos que regem o conteúdo
+gerado pelo mantenedor no Google Flow Music (modelo Lyria). Os termos são proprietários do Google e não
+são uma licença de software; por isso o projeto guarda aqui um resumo com os links e as cláusulas que
+importam. As páginas inteiras, datadas, ficam fora do APK em docs/licenses/:
+flow_tide_rising_music_<data>.pdf (Termos de Serviço) e flow_tide_rising_music_genai_terms_<data>.pdf
+(termos adicionais de IA generativa).
+
+Documentos
+----------
+
+1. Google Terms of Service (Termos de Serviço do Google)
+   https://policies.google.com/terms
+   Versão consultada: vigente desde 30 de julho de 2026, versão do país: Brasil.
+   Contratante: Google LLC.
+
+2. Generative AI Additional Terms of Service (Termos adicionais de IA generativa)
+   https://policies.google.com/terms/generative-ai
+   Última modificação: 9 de agosto de 2023. A própria página informa que, desde a atualização dos
+   Termos de Serviço do Google em 22 de maio de 2024 (que passaram a cobrir IA), esses termos adicionais
+   não se aplicam mais, salvo a parceiros com contrato assinado que os cite. O mantenedor não tem tal
+   contrato; vale o documento 1.
+
+3. Política de uso proibido de IA generativa
+   https://policies.google.com/terms/generative-ai/use-policy
+
+Cláusulas relevantes (documento 1, seção "Content in Google services" > "Your content")
+---------------------------------------------------------------------------------------
+
+- Propriedade: o Google afirma que alguns serviços permitem gerar conteúdo original e que não reivindica
+  a propriedade desse conteúdo ("Google won't claim ownership over that content"). O conteúdo gerado é
+  tratado como conteúdo do usuário, que mantém os direitos de propriedade intelectual que tiver sobre ele.
+- Licença ao Google: a licença que o usuário concede ao Google sobre o próprio conteúdo tem propósito
+  limitado (operar e melhorar os serviços, promovê-los com conteúdo público, desenvolver tecnologia
+  do Google). Ela não é exclusiva e não limita o uso comercial do conteúdo pelo próprio usuário.
+- Restrições de uso (seção "What we expect from you"): não usar o serviço, nem o conteúdo gerado, para
+  desenvolver modelos de aprendizado de máquina; respeitar a política de uso proibido. Usar a música
+  como trilha de um jogo vendido não é restringido por essas cláusulas.
+
+Marca d'água
+------------
+
+O áudio gerado pelo Lyria/Flow Music carrega a marca d'água inaudível SynthID do Google, que identifica
+o conteúdo como gerado por IA. O projeto não remove nem tenta ocultar a marca d'água.
+
+Uso no Atlantis Ascension
+-------------------------
+
+Faixa "Atlantis Ascension - Main Theme (Alt Take)", gerada pelo mantenedor (Clayton K. N. Passos) no
+Google Flow Music em 2026-11-01, a pedido explícito dele, e preparada para laço sem emenda por
+tools/prepare_menu_music.py (assets/audio/music/flow_tide_rising.ogg). A decisão registrada do
+mantenedor está no campo "decision" da entrada flow_tide_rising_music de licenses/registry.json.

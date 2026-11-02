@@ -255,7 +255,7 @@
   },
   {
     "id": "kenney_audio",
-    "name": "Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio, Casino Audio, UI Audio",
+    "name": "Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio, Casino Audio, UI Audio, RPG Audio",
     "category": "audio",
     "author": "Kenney (kenney.nl)",
     "version": "",
@@ -267,12 +267,13 @@
     "attribution_required": false,
     "commercial_use": true,
     "ai_generated": false,
-    "modifications": "coin_medal (fichas do Casino Audio a -9 dB), coin_pearl_1..3 (glass_006/005/002) e hit_1..5 (impactGeneric_light_000..004 + click4 do UI Audio a -4 dB) misturados, recortados e com pico em -1 dBFS por tools/mix_pickup_audio.py",
+    "modifications": "coin_medal (fichas do Casino Audio a -9 dB), coin_pearl_1..3 (glass_006/005/002) e hit_1..5 (impactGeneric_light_000..004 + click4 do UI Audio a -4 dB) misturados, recortados e com pico em -1 dBFS por tools/mix_pickup_audio.py; sons dos poderes (power_*: forceField, laserLarge/Small/Retro, explosões, impactMetal/Plate/Soft/Mining, zaps do Digital Audio, glass e tick/select do Interface Sounds, drawKnife1 e knifeSlice2 do RPG Audio) misturados por tools/mix_power_audio.py",
     "files": [
       "assets/audio/sfx/kenney_*",
       "assets/audio/sfx/coin_medal.ogg",
       "assets/audio/sfx/coin_pearl_*",
-      "assets/audio/sfx/hit_*"
+      "assets/audio/sfx/hit_*",
+      "assets/audio/sfx/power_*"
     ],
     "sha256": {
       "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
@@ -835,13 +836,14 @@
     "commercial_use": true,
     "files": [
       "assets/audio/sfx/rubberduck_roar*",
-      "assets/audio/sfx/rubberduck_growl*"
+      "assets/audio/sfx/rubberduck_growl*",
+      "assets/audio/sfx/power_*"
     ],
     "id": "rubberduck_creature_sfx",
     "license_file": "licenses/texts/CC0-1.0.txt",
     "license_id": "CC0-1.0",
     "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
+    "modifications": "bug_03, scream_01 e roar_05 misturados nos sons dos poderes do Swarm e da Hydra (tools/mix_power_audio.py)",
     "name": "80 CC0 creature SFX",
     "snapshot_url": "https://opengameart.org/content/80-cc0-creature-sfx",
     "source_url": "https://opengameart.org/content/80-cc0-creature-sfx",
@@ -946,13 +948,14 @@
     "category": "audio",
     "commercial_use": true,
     "files": [
-      "assets/audio/sfx/faxcorp_*"
+      "assets/audio/sfx/faxcorp_*",
+      "assets/audio/sfx/power_*"
     ],
     "id": "faxcorp_electricity_sfx",
     "license_file": "licenses/texts/CC0-1.0.txt",
     "license_id": "CC0-1.0",
     "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
+    "modifications": "charge.wav misturado nos sons dos poderes da Manta e da Tempest (tools/mix_power_audio.py)",
     "name": "Electricity Game Sound Pack",
     "snapshot_url": "https://opengameart.org/content/electricity-game-sound-pack",
     "source_url": "https://opengameart.org/content/electricity-game-sound-pack",
@@ -1065,9 +1068,10 @@
     "author": "rubberduck",
     "attribution_required": false,
     "files": [
-      "assets/audio/sfx/coin_pearl_*"
+      "assets/audio/sfx/coin_pearl_*",
+      "assets/audio/sfx/power_*"
     ],
-    "modifications": "plop_01 reamostrado para 44,1 kHz e somado a -12 dB aos cristais do Kenney nas três variantes de coin_pearl (tools/mix_pickup_audio.py)",
+    "modifications": "plop_01 reamostrado para 44,1 kHz e somado a -12 dB aos cristais do Kenney nas três variantes de coin_pearl (tools/mix_pickup_audio.py); splash_01/02, plop_01 e gong_01/02 misturados nos sons dos poderes (tools/mix_power_audio.py)",
     "source_url": "https://opengameart.org/content/100-cc0-sfx",
     "snapshot_url": "https://opengameart.org/content/100-cc0-sfx",
     "sha256": {
@@ -1105,5 +1109,118 @@
     "verified_at": "2026-11-02",
     "verified_by": "Claude (retratos 1.15.1); revisão final por Clayton antes do lançamento",
     "snapshot_file": "docs/licenses/hyptosis_cyberpunk_portraits_2026-11-02.pdf"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "category": "audio",
+    "commercial_use": true,
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "version": "",
+    "verified_at": "2026-11-02",
+    "verified_by": "Claude (poderes das naves 1.16.0); revisão final por Clayton antes do lançamento",
+    "id": "junkala_512_sfx",
+    "name": "512 Sound Effects (8-bit style)",
+    "author": "Juhani Junkala (SubspaceAudio)",
+    "source_url": "https://opengameart.org/content/512-sound-effects-8-bit-style",
+    "files": [
+      "assets/audio/sfx/power_*"
+    ],
+    "modifications": "sfx_wpn_missilelaunch, sfx_wpn_cannon*, sfx_exp_long*, sfx_exp_short_hard*, sfx_exp_shortest_hard* e sfx_movement_portal5 recortados, reamostrados, filtrados e misturados nos sons dos poderes (tools/mix_power_audio.py)",
+    "snapshot_url": "https://opengameart.org/content/512-sound-effects-8-bit-style",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "48686c3dc5a5d580c3edb4e0ddfd9f90ab040886337918db332ab16d7e40641e"
+    },
+    "snapshot_file": "docs/licenses/junkala_512_sfx_2026-11-02.pdf",
+    "downloaded_at": "2026-11-02"
+  },
+  {
+    "ai_generated": false,
+    "attribution_required": false,
+    "category": "audio",
+    "commercial_use": true,
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "version": "",
+    "verified_at": "2026-11-02",
+    "verified_by": "Claude (poderes das naves 1.16.0); revisão final por Clayton antes do lançamento",
+    "id": "rubberduck_100_cc0_sfx_2",
+    "name": "100 CC0 SFX #2",
+    "author": "rubberduck",
+    "source_url": "https://opengameart.org/content/100-cc0-sfx-2",
+    "files": [
+      "assets/audio/sfx/power_*"
+    ],
+    "modifications": "sfx100v2_air_01/03, sfx100v2_thunder_01 e sfx100v2_loop_water_02/03 reamostrados para 44,1 kHz e misturados nos sons dos poderes da Tempest e do Trident (tools/mix_power_audio.py)",
+    "snapshot_url": "https://opengameart.org/content/100-cc0-sfx-2",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "5d1073b6bb921b50ed44a6984ecd9801812e4eb718bf1a5a18d5015122ca4e05"
+    },
+    "snapshot_file": "docs/licenses/rubberduck_100_cc0_sfx_2_2026-11-02.pdf",
+    "downloaded_at": "2026-11-02"
+  },
+  {
+    "id": "atlantis_power_sfx",
+    "name": "Atlantis Ascension — sons dos poderes das naves (mistura e síntese)",
+    "category": "audio",
+    "author": "Clayton K. N. Passos",
+    "version": "tools/mix_power_audio.py",
+    "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
+    "license_id": "MIT",
+    "license_url": "https://raw.githubusercontent.com/netstart/ATLANTIS-ASCENSION/main/LICENSE",
+    "license_file": "licenses/texts/MIT-AtlantisAscension.txt",
+    "snapshot_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
+    "attribution_required": false,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada",
+    "files": [
+      "assets/audio/sfx/power_*"
+    ],
+    "verified_at": "2026-11-02",
+    "verified_by": "Claude (poderes das naves 1.16.0); revisão final por Clayton antes do lançamento",
+    "sha256": {
+      "license_file": "1ab2072c77bfa02b09e6c8bc14df394dea29fb7fde887901b599deff059b9ef3",
+      "snapshot_file": "1b98d06904b3f770d40f0df294251f37f0401ecd98d997fd1c3c573d3301719d"
+    },
+    "snapshot_file": "docs/licenses/atlantis_power_sfx_2026-11-02.pdf",
+    "downloaded_at": "2026-11-02"
+  },
+  {
+    "id": "flow_tide_rising_music",
+    "name": "Tema do menu",
+    "category": "audio",
+    "author": "Clayton K. N. Passos com Google Flow Music",
+    "version": "Atlantis Ascension - Main Theme (Alt Take), 2026-11-01",
+    "source_url": "https://flowmusic.google",
+    "license_id": "LicenseRef-Google-Terms-of-Service",
+    "license_url": "https://policies.google.com/terms",
+    "license_file": "licenses/texts/LicenseRef-Google-Terms-of-Service.txt",
+    "license_source": "licenses/texts/LicenseRef-Google-Terms-of-Service.txt",
+    "notice_file": "licenses/notices/flow_tide_rising_music_NOTICE.txt",
+    "notice_source": "licenses/notices/flow_tide_rising_music_NOTICE.txt",
+    "snapshot_url": "https://policies.google.com/terms?hl=en",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": true,
+    "decision": "Em 2026-11-01 o mantenedor (Clayton K. N. Passos) pediu explicitamente que o tema do menu fosse criado no Google Flow Music (modelo Lyria) e gerou ele mesmo a faixa \"Atlantis Ascension - Main Theme (Alt Take)\". Pelos Termos de Serviço do Google (seção \"Your content\"), o Google não reivindica a propriedade do conteúdo gerado; o uso comercial no jogo (Google Play e Steam) não é restringido. O áudio contém a marca d'água SynthID do Google, que não é removida. Autoria creditada: o mantenedor via Google Flow Music. Os termos adicionais de IA generativa (2023) deixaram de valer em 22/05/2024, absorvidos pelos Termos de Serviço.",
+    "modifications": "tools/prepare_menu_music.py: corte do silêncio final, laço sem emenda (últimos 4 s misturados sobre os primeiros 4 s, igual potência), -16 dB RMS com pico em -1 dBFS, Ogg Vorbis 48 kHz estéreo",
+    "files": [
+      "assets/audio/music/flow_tide_rising.ogg"
+    ],
+    "verified_at": "2026-11-02",
+    "verified_by": "Clayton K. N. Passos (decisão de 2026-11-01); registro por Claude (poderes das naves 1.16.0)",
+    "sha256": {
+      "license_file": "f9f2a3000e2eb7de4526fe5dc26dc3a0a90323c0b7f6b326604c564c7a08fa5f",
+      "notice_file": "83f9445776bdfcfef0717f042ec1149fbc1f94baec50ae0842614a933654df04",
+      "snapshot_file": "6e4a4583072fe123d1851f29e7ac65fe3b363ae95b12062d12d6eec7803e5901"
+    },
+    "snapshot_file": "docs/licenses/flow_tide_rising_music_2026-11-02.pdf",
+    "downloaded_at": "2026-11-02"
   }
 ]

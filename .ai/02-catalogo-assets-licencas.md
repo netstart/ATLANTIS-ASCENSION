@@ -142,6 +142,9 @@ código, expressão por deformação local, luz e fundo na cor da fala); substit
 | 10 8bit Coin Sounds (coin1) | Luke.RUSTLTD | https://opengameart.org/content/10-8bit-coin-sounds | CC0-1.0 | ✅ baixado 01/11 (1.14.3) | `opengameart/10-8bit-coin-sounds/` | Cápsula (`coin_capsule`), tom sobe com o combo |
 | 100 CC0 SFX (plop_01) | rubberduck | https://opengameart.org/content/100-cc0-sfx | CC0-1.0 | ✅ baixado 01/11 (1.14.3) | `opengameart/100-cc0-sfx/` | Bolha da pérola (`coin_pearl_1..3`, com os cristais glass_006/005/002 do Interface Sounds) |
 | 30 CC0 SFX loops (rain, noise_01, water_flowing) | rubberduck | https://opengameart.org/content/30-cc0-sfx-loops | CC0-1.0 | ✅ já registrado; 3 laços novos (1.13) | `opengameart/30-cc0-sfx-loops/` | Chuva fina, vento e água correndo do clima |
+| 512 Sound Effects (8-bit style) | Juhani Junkala (SubspaceAudio) | https://opengameart.org/content/512-sound-effects-8-bit-style | CC0-1.0 | ✅ baixado 01/11 (1.16.0) | `opengameart/512-sfx-8bit/` | Mísseis, canhões, explosões e portal dos poderes (`tools/mix_power_audio.py`) |
+| 100 CC0 SFX #2 (air, thunder, loop_water) | rubberduck | https://opengameart.org/content/100-cc0-sfx-2 | CC0-1.0 | ✅ baixado 01/11 (1.16.0) | `opengameart/100-cc0-sfx-2/` | Vento, trovão e água dos poderes da Tempest e do Trident |
+| Sons dos poderes (`power_*`, 40 arquivos) | Clayton K. N. Passos (síntese e mistura) | repositório | MIT + fontes CC0 | ✅ 1.16.0, licença `atlantis_power_sfx` | `atlantis-mix/powers/` | 36 poderes, `power_charge_1..3` e `power_empty`; fontes: Kenney (Sci-fi, Impact, Interface, Digital, RPG Audio), Junkala, rubberduck (100 CC0 SFX 1 e 2, creature), faxcorp |
 
 **Criar (sfxr/jsfxr, ChipTone, Audacity, MIT):** alerta de chefe "WARNING" sem voz, som de graze, carga da especial,
 Ocean Shift (onda subindo), Gravity Breach (grave descendente), voz atlante (síntese granular sobre coral).
@@ -159,6 +162,7 @@ Ocean Shift (onda subindo), Gravity Breach (grave descendente), voz atlante (sí
 | Another space background track, Outer Space Loop, Space 5 | OpenGameArt | títulos no catálogo | CC0-1.0 | ⚠️ URL a registrar | Hub e menus |
 | Space Dimensions (Techno) | Matthew Pablo | OpenGameArt | CC-BY-3.0 | 🔶 | Tempestade |
 | Space Boss Battle Theme | OpenGameArt | título no catálogo | CC-BY-3.0 | 🔶 | Leviathan Protocol |
+| Tema do menu "Atlantis Ascension - Main Theme (Alt Take)" | Clayton K. N. Passos com Google Flow Music (Lyria) | https://flowmusic.google | Termos de Serviço do Google (`LicenseRef-Google-Terms-of-Service`), gerado por IA com decisão registrada | ✅ 1.16.0, licença `flow_tide_rising_music` | Menus (`flow_tide_rising.ogg`, laço por `tools/prepare_menu_music.py`) |
 
 **Criar (compor, MIT):** tema principal "Return the Sky" (leitmotiv de 4 notas que volta em todo capítulo), coral
 atlante para as ruínas e o hub, e as variações de cada chefe a partir do leitmotiv. Ferramentas livres: LMMS,

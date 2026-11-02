@@ -53,8 +53,23 @@ decisão registrada no `licenses/registry.json` (campo `decision`).
 
 ## Assets gerados por IA
 
-Não entram sem decisão registrada do mantenedor (`ai_generated: true` reprova o `check_licenses.py`). Prefira
-assets feitos à mão, assets livres verificados ou arte procedural feita por código do próprio projeto (MIT).
+Não entram sem decisão registrada do mantenedor. Prefira assets feitos à mão, assets livres verificados ou arte
+procedural feita por código do próprio projeto (MIT).
+
+Quando o mantenedor decide usar um asset gerado por IA, a entrada em `licenses/registry.json` leva:
+
+- `ai_generated: true` e o campo `decision`, não vazio, com a data, quem pediu, a ferramenta e o modelo, por que os
+  termos da ferramenta permitem uso comercial e se há marca d'água (ex.: SynthID). Sem `decision`, o
+  `check_licenses.py` reprova. Uma decisão vale para aquele asset, não para a ferramenta.
+- `author`: o mantenedor "com" a ferramenta (ex.: "Clayton K. N. Passos com Google Flow Music"), que aparece
+  assim nos créditos.
+- `license_id` `LicenseRef-<termos>` com o resumo local dos termos em `licenses/texts/` (campo `license_source`),
+  o aviso de autoria em `licenses/notices/` e o snapshot datado dos termos em `docs/licenses/`.
+- O script que prepara o arquivo (corte, laço, normalização) fica em `tools/`, e o original gerado fica em
+  `c:\src\downloads\assets\<ferramenta>\`, como qualquer download.
+
+Primeiro caso: o tema do menu (`flow_tide_rising_music`), gerado pelo mantenedor no Google Flow Music em
+2026-11-01.
 
 ## Onde ficam os downloads
 
@@ -83,7 +98,8 @@ assets feitos à mão, assets livres verificados ou arte procedural feita por c�
 
 `tools/check_licenses.py` reprova o build se: um arquivo de `assets/` ou `addons/` não tem entrada no registro; a
 cópia da licença falta ou o SHA-256 não confere; a licença está fora da lista; o componente exige crédito e não
-aparece no `CREDITS.md`; a verificação tem mais de 180 dias; a entrada está `needs_review`; os arquivos gerados
+aparece no `CREDITS.md`; a verificação tem mais de 180 dias; a entrada está `needs_review`; a entrada é gerada por IA
+(`ai_generated`) ou usa `LicenseRef-` sem `decision`; os arquivos gerados
 estão desatualizados.
 
 ## Tela de créditos (obrigatório em toda versão)

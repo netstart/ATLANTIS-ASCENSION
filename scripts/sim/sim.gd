@@ -38,7 +38,12 @@ const DIFFICULTY := {
 	&"veteran": {"hull": 0, "bullet": 1.1, "rank": true, "score": 1.3},
 	&"abyssal": {"hull": -2, "bullet": 1.15, "rank": true, "score": 1.6},
 }
-const TABLES: Array[String] = ["enemies", "patterns", "bosses", "weapons", "ships", "blessings", "wings", "weather"]
+const TABLES: Array[String] = ["enemies", "patterns", "bosses", "weapons", "ships", "blessings", "wings", "weather",
+		"powers"]
+## Ids dos alvos do chefe para as balas perfurantes (os inimigos usam o id da instância, que nunca cai
+## nessa faixa pequena; 0 é "nenhum").
+const BOSS_BODY_ID := 1
+const BOSS_PART_ID := 2
 
 var mission_id: StringName
 var mission: Dictionary = {}
@@ -113,6 +118,9 @@ var bosses_met: int = 0
 var escorts: Array[Dictionary] = []
 var captured: int = 0
 var specials_used: int = 0
+## Poderes das naves (Powers): medidor de Corrente na nave e os efeitos vivos (contrato em powers.gd).
+var powers := Powers.new()
+var power_fx: Array[Dictionary] = []
 ## Abismo Infinito: profundidade atual (0 fora do modo); acelera as balas e multiplica os pontos.
 var abyss_depth: int = 0
 ## Segunda nave do co-op local (null no jogo solo) e se o Elo de Maré está ligado neste passo.
@@ -131,6 +139,7 @@ var _columns: Array = []
 var _boss_parts: Array[Dictionary] = []
 var _boss_part_pos := PackedVector2Array()
 var _boss_part_radius := PackedFloat64Array()
+var _boss_part_ids := PackedInt64Array()
 var _boss_body_pos := Vector2.ZERO
 var _boss_body_radius: float = 0.0
 var _abyss_points: float = 1.0
@@ -256,7 +265,7 @@ func emit(type: StringName, data: Dictionary = {}) -> void:
 
 
 func can_fire() -> bool:
-	return no_fire <= 0 and not finished and not Specials.frozen(self)
+	return no_fire <= 0 and not finished and not Specials.frozen(self) and not powers.frozen
 
 
 func bullet_speed_mult() -> float:
@@ -280,7 +289,7 @@ func damage_mult() -> float:
 	var m := mods.dmg_mult * (1.0 + 0.02 * fury_stacks)
 	if tide_frames > 0:
 		m *= 1.25
-	return m
+	return m * powers.dmg
 
 
 # --- Passo -------------------------------------------------------------------------------------
@@ -315,17 +324,21 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 	SecondaryFire.step(self)
 	ShipTraits.step(self)
 	Specials.step(self)
+	powers.step(self)
 	stage.step(self)
 	Hazards.step(self)
-	for e: SimEnemy in enemies:
-		e.step(self)
-	if boss != null:
+	# Eclipse Total: inimigos e chefe param junto com as balas.
+	if not powers.frozen:
+		for e: SimEnemy in enemies:
+			e.step(self)
+	if boss != null and not powers.frozen:
 		if boss.state == SimBoss.State.DUEL:
 			boss.add_taps(input.taps)
 		boss.step(self)
 		if boss.state == SimBoss.State.DEAD:
 			boss = null
-	enemy_bullets.step(STEP, BOUNDS, gravity + breach_dir + weather.bullet_accel(), Specials.frozen(self))
+	enemy_bullets.step(STEP * powers.time_scale, BOUNDS, gravity + breach_dir + weather.bullet_accel(),
+			Specials.frozen(self) or powers.frozen)
 	player_bullets.step(STEP, BOUNDS, breach_dir * Hazards.BREACH_PLAYER_SHARE)
 	if tide_frames > 0:
 		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_RADIUS))
@@ -370,8 +383,10 @@ func _player_actions(input: SimInput) -> void:
 			laser_active = true
 		else:
 			var before := player_bullets.count
-			if WeaponFire.fire(player, player_bullets, weapon_def, frame, damage_mult(), mods.fire_rate) > 0:
+			if WeaponFire.fire(player, player_bullets, weapon_def, frame, damage_mult(),
+					mods.fire_rate * powers.rate) > 0:
 				ShipTraits.on_fire(self, before)
+				powers.on_fire(self, before)
 				emit(&"shot", {"weapon": player.weapon})
 	if input.bomb and player.bombs > 0:
 		player.bombs -= 1
@@ -383,6 +398,7 @@ func _player_actions(input: SimInput) -> void:
 	elif input.special and player.special_charge >= 1.0:
 		player.special_charge = 0.0
 		Specials.activate(self, ShipTraits.special_for(self))
+	powers.press(self, input.power)
 	if input.tide and scoring.pressure >= Scoring.PRESSURE_MAX and tide_frames == 0:
 		tide_frames = TIDE_FRAMES + mods.tide_bonus
 		scoring.pressure = 0.0
@@ -583,6 +599,7 @@ func on_boss_defeated(b: SimBoss) -> void:
 	pearls_from(enemy_bullets.cancel_all())
 	beams.clear()
 	bosses_killed += 1
+	powers.on_boss_defeated(self, b)
 	scoring.add_bonus(int((b.bonus + int(b.def.get("points", 20000)) + int(b.duel_power * 10000.0)) * scoring.point_mult))
 	hitstop = maxi(hitstop, 10)
 	if _miniboss_start >= 0 and not b.is_final:
@@ -680,19 +697,24 @@ func _collide_player_bullets() -> void:
 		var p: Vector2 = player_bullets.pos[i]
 		var r: float = player_bullets.radius[i]
 		var dmg: float = player_bullets.damage[i]
-		var hit := false
+		# Uma bala perfurante continua sobre o alvo por vários passos: cada alvo (inimigo, corpo do chefe,
+		# cada parte) só leva dano dela uma vez; os já acertados ficam no anel da bala e são pulados.
+		var target := 0
 		for e: SimEnemy in _columns[clampi(floori(p.x / width), 0, COLUMNS - 1)]:
 			if e.alive and p.distance_squared_to(e.pos) <= (r + e.radius) * (r + e.radius):
-				hit = true
+				var id := e.get_instance_id()
+				if player_bullets.has_hit(i, id):
+					continue
+				target = id
 				if e.damage(dmg):
 					_kill_enemy(e)
 				break
-		if not hit and boss != null and boss.fighting():
+		if target == 0 and boss != null and boss.fighting():
 			if not boss_targets:
 				_gather_boss_targets()
 				boss_targets = true
-			hit = _hit_boss_targets(p, r, dmg)
-		if hit:
+			target = _hit_boss_targets(i, p, r, dmg)
+		if target != 0:
 			boss_targets = false
 			emit(&"hit", {"pos": p})
 			var area: float = player_bullets.splash[i]
@@ -700,6 +722,7 @@ func _collide_player_bullets() -> void:
 				splash(p, area, dmg)
 			if player_bullets.pierce[i] > 0:
 				player_bullets.pierce[i] -= 1
+				player_bullets.mark_hit(i, target)
 			else:
 				player_bullets.kill(i)
 		i -= 1
@@ -720,50 +743,60 @@ func _gather_boss_targets() -> void:
 	_boss_parts.clear()
 	_boss_part_pos.clear()
 	_boss_part_radius.clear()
-	for part: Dictionary in boss.parts:
+	_boss_part_ids.clear()
+	for k: int in range(boss.parts.size()):
+		var part: Dictionary = boss.parts[k]
 		if boss.part_active(part):
 			_boss_parts.append(part)
 			_boss_part_pos.append(boss.part_pos(part))
 			_boss_part_radius.append(float(part.get("radius", 10.0)))
+			_boss_part_ids.append(BOSS_PART_ID + k)
 	_boss_body_pos = boss.body_pos()
 	_boss_body_radius = boss.body_radius()
 
 
-## _hit_boss sobre a fotografia de _gather_boss_targets (válida até o próximo acerto).
-func _hit_boss_targets(p: Vector2, r: float, dmg: float) -> bool:
+## _hit_boss sobre a fotografia de _gather_boss_targets (válida até o próximo acerto), pulando os alvos
+## que a bala `bullet` já acertou. Devolve o id do alvo (BOSS_BODY_ID, BOSS_PART_ID + k) ou 0.
+func _hit_boss_targets(bullet: int, p: Vector2, r: float, dmg: float) -> int:
 	for k: int in range(_boss_parts.size()):
 		var pr: float = _boss_part_radius[k]
 		if p.distance_squared_to(_boss_part_pos[k]) <= (r + pr) * (r + pr):
+			var id: int = _boss_part_ids[k]
+			if player_bullets.has_hit(bullet, id):
+				continue
 			boss.damage_part(_boss_parts[k], dmg, self)
-			return true
+			return id
 	var br := _boss_body_radius
-	if p.distance_squared_to(_boss_body_pos) <= (r + br) * (r + br):
+	if p.distance_squared_to(_boss_body_pos) <= (r + br) * (r + br) \
+			and not player_bullets.has_hit(bullet, BOSS_BODY_ID):
 		boss.damage_body(dmg, self)
-		return true
-	return false
+		return BOSS_BODY_ID
+	return 0
 
 
-func _hit_boss(p: Vector2, r: float, dmg: float) -> bool:
-	for part: Dictionary in boss.parts:
-		var pr := float(part.get("radius", 10.0))
-		if boss.part_active(part) and p.distance_squared_to(boss.part_pos(part)) <= (r + pr) * (r + pr):
-			boss.damage_part(part, dmg, self)
-			return true
-	var br := boss.body_radius()
-	if p.distance_squared_to(boss.body_pos()) <= (r + br) * (r + br):
-		boss.damage_body(dmg, self)
-		return true
-	return false
-
-
-## Golpe genérico num ponto (mísseis): devolve se acertou algo.
-func hit_at(p: Vector2, r: float, dmg: float) -> bool:
+## Golpe genérico num ponto (mísseis) pulando o alvo `skip` (o arpão não acerta duas vezes o mesmo). Devolve
+## o id do alvo acertado (inimigo: id da instância; chefe: BOSS_BODY_ID ou BOSS_PART_ID + k) ou 0.
+func hit_at_id(p: Vector2, r: float, dmg: float, skip: int = 0) -> int:
 	for e: SimEnemy in enemies:
-		if e.active() and p.distance_squared_to(e.pos) <= (r + e.radius) * (r + e.radius):
+		if e.active() and e.get_instance_id() != skip \
+				and p.distance_squared_to(e.pos) <= (r + e.radius) * (r + e.radius):
 			if e.damage(dmg):
 				_kill_enemy(e)
-			return true
-	return boss != null and boss.fighting() and _hit_boss(p, r, dmg)
+			return e.get_instance_id()
+	if boss == null or not boss.fighting():
+		return 0
+	for k: int in range(boss.parts.size()):
+		var part: Dictionary = boss.parts[k]
+		var pr := float(part.get("radius", 10.0))
+		if boss.part_active(part) and BOSS_PART_ID + k != skip \
+				and p.distance_squared_to(boss.part_pos(part)) <= (r + pr) * (r + pr):
+			boss.damage_part(part, dmg, self)
+			return BOSS_PART_ID + k
+	var br := boss.body_radius()
+	if skip != BOSS_BODY_ID and p.distance_squared_to(boss.body_pos()) <= (r + br) * (r + br):
+		boss.damage_body(dmg, self)
+		return BOSS_BODY_ID
+	return 0
 
 
 ## Alvo mais próximo para os mísseis (Vector2.INF se não houver).
@@ -867,6 +900,7 @@ func _graze(p: Vector2, ship: SimPlayer = null) -> void:
 		scoring.on_graze()
 	scoring.add_pressure(mods.graze_bonus)
 	player.special_charge = minf(1.0, player.special_charge + SimPlayer.GRAZE_CHARGE * (1.0 + mods.graze_bonus))
+	powers.on_graze(self)
 	if ship != null and ship != player:
 		ship.special_charge = player.special_charge
 	emit(&"graze", {"pos": p})
@@ -912,6 +946,11 @@ func _player_hit(cause: StringName, ship: SimPlayer = null) -> void:
 	emit(&"player_hit", {"pos": ship.pos, "hull": player.hull, "down": down, "cause": cause})
 
 
+## Abate vindo de fora da Sim (poderes): pontos, corrente, traços e coletáveis como qualquer abate.
+func kill_enemy(e: SimEnemy) -> void:
+	_kill_enemy(e)
+
+
 func _kill_enemy(e: SimEnemy) -> void:
 	if not e.alive:
 		return
@@ -931,6 +970,7 @@ func _kill_enemy(e: SimEnemy) -> void:
 	if mods.undertow:
 		splash(e.pos, 30.0, 8.0 * damage_mult())
 	ShipTraits.on_kill(self, e)
+	powers.on_kill(self, e)
 	if e.glyph >= 0:
 		_glyph(e.glyph)
 	var drop := e.drop
@@ -1142,7 +1182,8 @@ func state_hash() -> String:
 	var parts := PackedStringArray([str(frame), str(scoring.score), str(scoring.grazes), str(player.hull),
 			"%.3f,%.3f" % [player.pos.x, player.pos.y], str(enemy_bullets.count), str(player_bullets.count),
 			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken),
-			str(rescued), str(breach_frames), str(captured)])
+			str(rescued), str(breach_frames), str(captured), "%.4f" % player.power_charge, str(power_fx.size()),
+			str(powers.casts)])
 	if wing != null:
 		parts.append("w%.3f,%.3f:%d" % [wing.pos.x, wing.pos.y, wing.level])
 	parts.append("%s:%.3f:%d" % [weather.state, weather.blend, weather.mastered])

@@ -366,6 +366,330 @@
   "sha256": "429ffbd29c853127800b0bfbd111771610da04dd4f1633642805d7be27d2f505"
  },
  {
+  "file": "assets/art/generated/powers/barrier.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "293558cc9d0b1f00e5d19606b5e266eb9ec4dcc6006150b88dd30b20d2bb5fdc"
+ },
+ {
+  "file": "assets/art/generated/powers/bolt.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "756c32fccde0b26fa5f6a88bdc707da45e495d9a41124d0358410ef2f168643f"
+ },
+ {
+  "file": "assets/art/generated/powers/corona.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "044b4fe2bf63305ee03b97aafda58132cf60d3c85ad0bc964c4344f463c89d10"
+ },
+ {
+  "file": "assets/art/generated/powers/dash_trail.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "1433c5655c429137a3d8929f835adef0f0cfb9c729c95bf4a0c3f6560a79f3b3"
+ },
+ {
+  "file": "assets/art/generated/powers/eclipse_disc.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "86130b49ecf621152e175ea6d0b80bca6938ba25ae85dd7055cf8318f963cc4f"
+ },
+ {
+  "file": "assets/art/generated/powers/feather.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "70ea77951cc846ffbc6be43625e85cebb7768b7a6a2db65f2445c0c582387333"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_ascension_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "b86d4794f7f63f5501a113dde788807a073be71d7d6e75c345039653c92ebc6f"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_ascension_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "16f781d6e8768a93249f82fa0fd6d42bec1b303549e3e707ced1c338bf927661"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_ascension_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "0f98dfcfe7ff9f7ad628516d7bdfdbcdd56f756eae134deddafa052afd6a8eaa"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_atlas_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "68ca8f3a62fd1a68330114563dbe4ab80c50e2e1ef38e95faa58554ccdc2e8b5"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_atlas_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "aac8d826186757d65f1d086b777291c142a16eb18f8ad4fa528f2b92b1f8ed83"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_atlas_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "7914ee9244f5bbff453b5c36fdfa592286ee8f40b7dfbad30e7d8b846724183e"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_eclipse_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8eff612ece10d4a0403a74b80667232f1bc0ec62de67b08af8b25b0c5e035c33"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_eclipse_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "0a39823d7190cd4c63b8f49147befcb757df715aa6d0dc2b3c78a2b7b3c9a67b"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_eclipse_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6354fd20d0f338ad80cbd99a00c753db61019d3f181e607108a3e42d761eccae"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_falcon_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "45b1d482383b928978e4d60f9ba5283f4a4cf4f43d70685619151da63d29c091"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_falcon_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6a364fc8b218aa163cc3c65e9ee3a3ec8044dbe347ef6774fa17e2f316c02466"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_falcon_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "e0af9d72f99e0cfba69ea010bd323217af6035fa354cf56a084799116faaa8d3"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_hydra_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "33746e69fd1bd9bacdfd84a0b0cc5146809d729533d29c2267415ff2d98795d5"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_hydra_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6b0979f6191f427b95773a0d0c0b62f2f1c9400d1fe3f64f2a6abab751238c96"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_hydra_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "5caecdf266058fbcffade941f9f44f6f0d892b54f3cfcd9c4a51cee1e7fc5c1b"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_manta_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "83dcdba1dea38746861f03512e6efd3445a67417e1470d1c9846a0c622a35d6c"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_manta_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6edbad89c37614f79aab7e149bcc251804093b11f63a2da93ec2524ea9219489"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_manta_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3f3af28c2b00705a5b8405889b1aac646e8edd11d966bc0869b563762dd86d22"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_nova_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3177005c8a61f5602b34ca6d5a316c03f70750a41597390d7a8fa0dc42dc451c"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_nova_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "d8fdd37df7be9275796c1e0f02254856751383775808ca30210a56218c7122ad"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_nova_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "c15841b1867241b1a2789548d04d2028c3355c3992eb3b86c5bfb0f061392f8b"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_ram_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8517548cfa72675179ac51ce67400e781514ae1f6845db50b714a3e012a16dc5"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_ram_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "853cddb1280543a46da944a5e55fc72d9ad1c27cb7c01a96f8a9f3c66b711076"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_ram_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "e194a9b56b71a3d153ceed2aed8c79c3258445c7634e0e6f2809429e09ebed35"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_swarm_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3bdffededff137bd162e3601e8d770206fc587367d1b391ef8c417f3fc0f4410"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_swarm_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "4201f3cce00487056b34d53f71ec017e4d0069793bd0fbcb956c45ae4974a265"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_swarm_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "e4cc0b8ddb407401525773380f02cc683f01304f766e90e2c57165615a6221e2"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_tempest_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "5be824bc047d6acde4d3d0a04b50d6b2f1a8bd7dbaa662f69a3d1e09340736c6"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_tempest_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8a6849e6185396656764eba1fa35374f4b04e8137e4fe364fb344a9189c95cb9"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_tempest_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f0b7a4f3efa8fa0bd0bb55db348da9772889e0d154b8bdc0d9fc9105be5d667c"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_titan_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "c69f74b30f8d24ec28eb829385da7f14b4f07cd25dba9b75ddf26599eb127dcb"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_titan_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8d15ac24ac41426d01b857320cf3897bdcfdc1a2c75b17c14dc3143f95173ddb"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_titan_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "d82a2386ea5762f8f47a76d1b100844129f2a3fdee140b6bb3584964dc2e4307"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_trident_1.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "b99adf895e395f23f1c83f8a2a3e110f92a40bf4273625acba39968b48d97187"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_trident_2.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "33ae141813e3046c2a94e4e317b95070d8f1e4d1ea21e8eac8411482ef3fb728"
+ },
+ {
+  "file": "assets/art/generated/powers/icons/power_trident_3.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "5c57df3ebee9999bca63c066935c716bb65b50ce792c2c125f611890cfdda986"
+ },
+ {
+  "file": "assets/art/generated/powers/kamikaze.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "7874cb66a186088c0ca1eb239509427e7e0e15b08d5766ac90ed8e8d96167506"
+ },
+ {
+  "file": "assets/art/generated/powers/lance.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "1bdf7c2a271c8648f461970396305890310afe6ebf3fe5b5505dca26669f6558"
+ },
+ {
+  "file": "assets/art/generated/powers/missile_mini.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "091439a006bb21c0f32fa04786c22112e5c11633266e225775d4c4be123eb56f"
+ },
+ {
+  "file": "assets/art/generated/powers/mortar.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "71230b40206735b8dfb7e033b182e9e9945378b2002f84454283f97340632f5e"
+ },
+ {
+  "file": "assets/art/generated/powers/orb.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "52414f321a69a97d4b7c7feb9705b95c36ad373b3eb835e425f3d68f1a13d6f6"
+ },
+ {
+  "file": "assets/art/generated/powers/reticle.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f1bb72280b88473b0adc80965aebaccfbd105cae3f73dc621ae67389fb6bdddd"
+ },
+ {
+  "file": "assets/art/generated/powers/shield_front.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "18c1e2b361d562bf619af21b71e7ea449456c2f1209001f67e815b286c30745c"
+ },
+ {
+  "file": "assets/art/generated/powers/supernova.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "35615450450d5d7187743178821a1297f07cd4a41d03553650b4c3b9f452bd44"
+ },
+ {
+  "file": "assets/art/generated/powers/torpedo.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "6a09c2b531443e8a6e55810c5ce7505104c30123716f57645a9cd49f06fc64f0"
+ },
+ {
+  "file": "assets/art/generated/powers/vortex.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "e8645e3e569e62a94a44badec2d21a7561027d1db78ec28c3b639a74cab21d02"
+ },
+ {
+  "file": "assets/art/generated/powers/warn_circle.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "7e8add6604c5feee82597b694d4feaa3493318fc59bff6e0bf49650fa203364a"
+ },
+ {
+  "file": "assets/art/generated/powers/wave.png",
+  "source": "tools/gen_power_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "5564f1f1f289b18aac00cf77f38c015d78215f3a25d4194bff6af03f7d2b21f4"
+ },
+ {
   "file": "assets/art/kenney/icons/arrowLeft.png",
   "source": "kenney/game-icons/PNG/White/2x/arrowLeft.png",
   "license_id": "kenney_art",
@@ -1176,6 +1500,12 @@
   "sha256": "2cf1ceb63bdcd989b8a2242d518d00140ef6678b9098cbeb5d2db32bf2c33bc0"
  },
  {
+  "file": "assets/audio/music/flow_tide_rising.ogg",
+  "source": "flow-music/menu/flow_tide_rising.ogg",
+  "license_id": "flow_tide_rising_music",
+  "sha256": "087907bbcc1acdd4b64bf2fa28abebaf4f6dc6d9493e0df5d2328f896d34bd20"
+ },
+ {
   "file": "assets/audio/music/hydrogene_space_shooter.mp3",
   "source": "opengameart/8bit-spaceshooter.mp3",
   "license_id": "hydrogene_space_shooter_music",
@@ -1510,6 +1840,246 @@
   "source": "opengameart/weather-cuts/thunder_3.ogg",
   "license_id": "kindland_rain_thunders",
   "sha256": "27f86c9b5b450c26be139b7af5483fd6c43169fe20d27a2818c72eba07360845"
+ },
+ {
+  "file": "assets/audio/sfx/power_ascension_1.ogg",
+  "source": "atlantis-mix/powers/power_ascension_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "26534c4c9f3476e3a2287b3cddc261dca8eaae34c831e925ba6956760da58d40"
+ },
+ {
+  "file": "assets/audio/sfx/power_ascension_2.ogg",
+  "source": "atlantis-mix/powers/power_ascension_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "0280b96f1215657a566b1de7485459af609372ea2c4f679d0a675533e216fc79"
+ },
+ {
+  "file": "assets/audio/sfx/power_ascension_3.ogg",
+  "source": "atlantis-mix/powers/power_ascension_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "fbf9739a6105362b3c3b3ad866107524b8fbb6b5b2ab54207c2326d1494fdc67"
+ },
+ {
+  "file": "assets/audio/sfx/power_atlas_1.ogg",
+  "source": "atlantis-mix/powers/power_atlas_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "b9b27277dbe15d40534087529fe9c4c0e1a064e0ca1c44ef6fd8bf4b25185037"
+ },
+ {
+  "file": "assets/audio/sfx/power_atlas_2.ogg",
+  "source": "atlantis-mix/powers/power_atlas_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "be339b81bbe82c376d0d2db5254b9584e5e89ae4accd9bc78df6643e9af7bbe7"
+ },
+ {
+  "file": "assets/audio/sfx/power_atlas_3.ogg",
+  "source": "atlantis-mix/powers/power_atlas_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "1e9bd76fe56b0c3f4b5b3ec6a3ec6c427571e293f8418b1d0ad49c707365874d"
+ },
+ {
+  "file": "assets/audio/sfx/power_charge_1.ogg",
+  "source": "atlantis-mix/powers/power_charge_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "596f4d3f07951361222fd21913088556fc5ad7a520e323773eb7d4f62f5025b9"
+ },
+ {
+  "file": "assets/audio/sfx/power_charge_2.ogg",
+  "source": "atlantis-mix/powers/power_charge_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "ebc084700aa4b00e7231ee95abe82417730dcc2fb5c40fd987fd038afc0d0d91"
+ },
+ {
+  "file": "assets/audio/sfx/power_charge_3.ogg",
+  "source": "atlantis-mix/powers/power_charge_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "4f82f3ea9d31507e8d9b48415bc2b60a5e9875390faea29d615f14c0f4eacdf1"
+ },
+ {
+  "file": "assets/audio/sfx/power_eclipse_1.ogg",
+  "source": "atlantis-mix/powers/power_eclipse_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "5b7764852e582fb3eefc6af9490ad179e552a8c92d2de1de33c383dcd297483d"
+ },
+ {
+  "file": "assets/audio/sfx/power_eclipse_2.ogg",
+  "source": "atlantis-mix/powers/power_eclipse_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "54040fb20de265ff3154fc1fe657d6209b1891fd5b9d735db4ccf40ec2580f19"
+ },
+ {
+  "file": "assets/audio/sfx/power_eclipse_3.ogg",
+  "source": "atlantis-mix/powers/power_eclipse_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "c58f7925bc2c16dc1468730fb6b6919885dee1b6b316c93a7368f89fb3899cd4"
+ },
+ {
+  "file": "assets/audio/sfx/power_empty.ogg",
+  "source": "atlantis-mix/powers/power_empty.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "8bdc282aad8aec88b2def65cee328606e59160a088eb96c0eea56f56927fb616"
+ },
+ {
+  "file": "assets/audio/sfx/power_falcon_1.ogg",
+  "source": "atlantis-mix/powers/power_falcon_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "c85587523d5f6d3e53e860ad9ba3145a9ab6182de7d3da3585240bec4a57b44d"
+ },
+ {
+  "file": "assets/audio/sfx/power_falcon_2.ogg",
+  "source": "atlantis-mix/powers/power_falcon_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "6f1e564e4bc063be89b49fddce46b775d6653f48c5ebd78e4f5429ede8728f0e"
+ },
+ {
+  "file": "assets/audio/sfx/power_falcon_3.ogg",
+  "source": "atlantis-mix/powers/power_falcon_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "14c9bd0b877b672c649839f4155a5459d9fb40870b9c6ad6153bcb96d216ef02"
+ },
+ {
+  "file": "assets/audio/sfx/power_hydra_1.ogg",
+  "source": "atlantis-mix/powers/power_hydra_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "e2bada77ddaa18d85f101e9fa46fb10c41d65e58d5bbcd2335b2f8a924af3811"
+ },
+ {
+  "file": "assets/audio/sfx/power_hydra_2.ogg",
+  "source": "atlantis-mix/powers/power_hydra_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "8fc9f33c730088f2ec86b63d8acfe8e13c6a289400fddf1569204c9459e9004c"
+ },
+ {
+  "file": "assets/audio/sfx/power_hydra_3.ogg",
+  "source": "atlantis-mix/powers/power_hydra_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "346c2d1aafdb0dc3ec376b9beb6f0dc9dd2111131bb6024d0ed3e0bd20f0e783"
+ },
+ {
+  "file": "assets/audio/sfx/power_manta_1.ogg",
+  "source": "atlantis-mix/powers/power_manta_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "88a3501277949c2647c5efb50889ae830722bbe2dfac714cff0146d4f3ac1371"
+ },
+ {
+  "file": "assets/audio/sfx/power_manta_2.ogg",
+  "source": "atlantis-mix/powers/power_manta_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "a889b9e7bb5af13c7ebf7f92b91dd6140bb14ab382b2290cac318f79047c0ac6"
+ },
+ {
+  "file": "assets/audio/sfx/power_manta_3.ogg",
+  "source": "atlantis-mix/powers/power_manta_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "4a64fec7733fe8a29f564004ccccc0257f1faf75519e22680d0516890ae38be4"
+ },
+ {
+  "file": "assets/audio/sfx/power_nova_1.ogg",
+  "source": "atlantis-mix/powers/power_nova_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "a3ac34f2f812c45190f2362c473b679cbb39d2d8fd79185ea592f74856166200"
+ },
+ {
+  "file": "assets/audio/sfx/power_nova_2.ogg",
+  "source": "atlantis-mix/powers/power_nova_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "69672c0d162955fbf48f22f35ddc685534bc5454a8501afbe2fe370ff780826d"
+ },
+ {
+  "file": "assets/audio/sfx/power_nova_3.ogg",
+  "source": "atlantis-mix/powers/power_nova_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "8c355de011d3519b010571644ebc25f68774709c98a824b50ea3f8e7e84e8e7b"
+ },
+ {
+  "file": "assets/audio/sfx/power_ram_1.ogg",
+  "source": "atlantis-mix/powers/power_ram_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "6a63ad37f022fa3cc663808d05e82c67ec1e8255232b910aa229f78328774260"
+ },
+ {
+  "file": "assets/audio/sfx/power_ram_2.ogg",
+  "source": "atlantis-mix/powers/power_ram_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "ad2d4fd857d89392e6b0c65df3e3b25d27299c3fb8eb9017ac1fd5c14659fa00"
+ },
+ {
+  "file": "assets/audio/sfx/power_ram_3.ogg",
+  "source": "atlantis-mix/powers/power_ram_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "b74b48fea0a1169dfe6da130b438583a06cf97674f98a0a3cc0600d812ad36d4"
+ },
+ {
+  "file": "assets/audio/sfx/power_swarm_1.ogg",
+  "source": "atlantis-mix/powers/power_swarm_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "8f1fbb606e506505400c2fb73c7742692a7dc7cc8eb5ef248dfe479074b95f80"
+ },
+ {
+  "file": "assets/audio/sfx/power_swarm_2.ogg",
+  "source": "atlantis-mix/powers/power_swarm_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "582b14703c34426457e699b861d84bcfc3650739017a9b82d3c47d8f49323adb"
+ },
+ {
+  "file": "assets/audio/sfx/power_swarm_3.ogg",
+  "source": "atlantis-mix/powers/power_swarm_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "6508804aff4db8ccf752a0a8fa1407a4748ec7c7fcb54b83a90db577d34bad36"
+ },
+ {
+  "file": "assets/audio/sfx/power_tempest_1.ogg",
+  "source": "atlantis-mix/powers/power_tempest_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "f61d8d87046250bd5cd9da3e8362cdd86149a087a4f0f50399ae2e23448f848a"
+ },
+ {
+  "file": "assets/audio/sfx/power_tempest_2.ogg",
+  "source": "atlantis-mix/powers/power_tempest_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "6e2b268cd5df1d08d2948b27ab5491ea48b5d796d0b1176051b312c993ae6e2e"
+ },
+ {
+  "file": "assets/audio/sfx/power_tempest_3.ogg",
+  "source": "atlantis-mix/powers/power_tempest_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "2bd91f6d3b794fc2d459f50fd1c009c34054d1ab14e241c6b87b993a54e05cc5"
+ },
+ {
+  "file": "assets/audio/sfx/power_titan_1.ogg",
+  "source": "atlantis-mix/powers/power_titan_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "665a8f9c5cd40623102444d029ea4648b8236da6211e1e2b165d35fd99a0b4ca"
+ },
+ {
+  "file": "assets/audio/sfx/power_titan_2.ogg",
+  "source": "atlantis-mix/powers/power_titan_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "01182ce1bfba7711eb64368ff6c75896cafba4400974c2659d1c9eedc1881367"
+ },
+ {
+  "file": "assets/audio/sfx/power_titan_3.ogg",
+  "source": "atlantis-mix/powers/power_titan_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "ec38c9b385dede15812acd34d3d5f66af13b3241bb57d9ebc56f809c7e67c97d"
+ },
+ {
+  "file": "assets/audio/sfx/power_trident_1.ogg",
+  "source": "atlantis-mix/powers/power_trident_1.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "a2b9a7de87f8b4fa1f7f245b3f34f0f12ccb56e4ca2b16698886ada3734bcdf2"
+ },
+ {
+  "file": "assets/audio/sfx/power_trident_2.ogg",
+  "source": "atlantis-mix/powers/power_trident_2.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "57ca75c477568a09af39c710fc6f88686605960413e8026470cc713931cb6f29"
+ },
+ {
+  "file": "assets/audio/sfx/power_trident_3.ogg",
+  "source": "atlantis-mix/powers/power_trident_3.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "dfbdae8446ab58639309f6780ce978c58019372219ac4f24a7cb4a031d60b810"
  },
  {
   "file": "assets/audio/sfx/rubberduck_alarm.ogg",

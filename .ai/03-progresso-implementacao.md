@@ -390,3 +390,24 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   fala nova faz a sintonia de 0,35 s (`Portraits.tune_in`: aberração, faixas, pixels entrando com chiado). Reduzir
   movimento ou flashes congela o efeito. Testes em `tests/post_tests.gd` (tamanho, shader, modo por voz, linhas por
   altura, acessibilidade, narrador sem efeito). Falta conferir no aparelho
+- ✅ `1.16.0` Poderes das naves (.ai/08-poderes-das-naves.md): 3 poderes por aeronave (36) com o medidor de Corrente.
+  Simulação em `scripts/sim/powers.gd` e `scripts/sim/power_effects.gd` (20 primitivas, determinísticas). Na tela:
+  botão PODER (H / Y) na zona do polegar, de fora para dentro especial, bomba e PODER (espelhado na mão esquerda),
+  com o anel da Corrente em 3 segmentos que enchem suave na cor da nave, o ícone do poder que sairia agora, pulso e
+  tom (`power_charge_1..3`) a cada segmento, halo no nível III, tremida e `power_empty` no aperto vazio, e o nome
+  do poder (encolhe a letra e termina em reticências em vez de quebrar). Poderes I e II: selo pequeno no alto
+  do campo (ícone, nome e nível, 0,9 s); o III: título grande e curto (1,1 s) no terço de cima, com a música
+  abaixada e a pausa de impacto da Sim; raio da Tempestade Elétrica com alcance 160; tremor, clarão e vibração por nível,
+  respeitando "reduzir flashes", "reduzir movimento", tremor da tela e vibração. `scripts/view/power_view.gd`
+  desenha os 20 tipos de efeito com os sprites de `assets/art/generated/powers/` (rastro da investida com imagens
+  da nave, anel de choque, salvas com sprite e rumo, feixes com halo e núcleo, ondas de tempo, raio encadeado,
+  onda e muralha com textura rolando, redemoinho girando, escudo frontal, orbes, morteiros caindo sobre o aviso,
+  drones e seus tiros, manto translúcido, coroa, eclipse com a tela escura e halo macio, sobrecarga com mira de
+  crítico, reparo com centelhas, implosão e explosão da supernova) em duas camadas novas do WorldView (normal e
+  aditiva), só texturas e partículas do ParticleField, nada de nó por quadro; o que a Sim encerra apaga em 0,28 s.
+  Dica `hint.power` no tutorial no primeiro segmento cheio. Tela Naves lista os 3 poderes de cada aeronave (ícone,
+  nome, nível, frase). Co-op: a Sim só lê PODER da nave 1 (a ala segue sem poder). Capturas:
+  `tests/game_shots_runner.tscn -- --powers[=naves]` lança os 36 no auge e grava também o medidor cheio. Testes:
+  `tests/power_view_tests.gd` (os 36 desenhados do começo ao fim sem erro de script, todo tipo visto, nenhum nó a
+  mais, HUD em cada carga) e o HUD de `tests/layout_tests.gd` com a Corrente cheia nas duas mãos, em todas as
+  resoluções

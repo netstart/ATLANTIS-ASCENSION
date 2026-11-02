@@ -18,11 +18,13 @@ const GloryTests := preload("res://tests/glory_tests.gd")
 const WeatherViewTests := preload("res://tests/weather_view_tests.gd")
 const FocusNavTests := preload("res://tests/focus_nav_tests.gd")
 const ScreenBuildTests := preload("res://tests/screen_build_tests.gd")
+const PowerViewTests := preload("res://tests/power_view_tests.gd")
 const TestShard := preload("res://tests/test_shard.gd")
 const CommandTests := preload("res://tests/command_tests.gd")
 const CampaignTests := preload("res://tests/campaign_tests.gd")
 const HangarTests := preload("res://tests/hangar_tests.gd")
 const StoreTests := preload("res://tests/store_tests.gd")
+const ScriptGate := preload("res://tests/script_gate.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -48,6 +50,10 @@ func _ready() -> void:
 		return
 	_owns_prefix = shard.x == 0
 	var prefix := _check if _owns_prefix else _check_uncounted
+	var gate := ScriptGate.new()
+	gate.install()
+	for bad: String in ScriptGate.check_all():
+		prefix.call(false, "script quebrado: " + bad)
 	for file: String in [SaveManager.PATH, SaveManager.BACKUP_PATH, Settings.PATH]:
 		_real_files[file] = FileAccess.get_md5(file) if FileAccess.file_exists(file) else ""
 	SaveManager.use_test_files()
@@ -102,6 +108,8 @@ func _ready() -> void:
 	units.append({"name": "Loja, Naves e Eventos", "weight": 1.5, "run": func() -> void:
 		await StoreTests.new().run_view(self, _check)})
 	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
+	units.append({"name": "Poderes na tela", "weight": 8.0, "run": func() -> void:
+		await PowerViewTests.new().run(self, _check)})
 	# Unidades do prefixo ficam fora da divisão: rodam em toda fatia, no lugar de sempre.
 	var shardable: Array[Dictionary] = units.filter(func(u: Dictionary) -> bool: return not u.has("prefix"))
 	var mine := TestShard.mine(shardable, shard)
@@ -124,6 +132,8 @@ func _ready() -> void:
 	for file: String in _real_files:
 		var now := FileAccess.get_md5(file) if FileAccess.file_exists(file) else ""
 		prefix.call(now == _real_files[file], "testes não mexeram em %s do jogador" % file)
+	for error: String in gate.take():
+		_check(false, "erro de script durante os testes: " + error)
 	print(TestShard.summary("integração", shard, mine.size(), shardable.size()))
 	print("%d verificações, %d falhas" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 or _uncounted_failures > 0 else 0)
@@ -154,6 +164,13 @@ func _test_data(check: Callable) -> void:
 		check.call(not DB.weapon(StringName(String(ship.get("signature", "")))).is_empty(),
 				"Dados: arma assinatura de %s existe" % id)
 		check.call(Locale.keys.has(String(ship.get("name_key", ""))), "Dados: nome de %s traduzido" % id)
+	check.call(DB.ids("powers").size() == 36, "Dados: 36 poderes, 3 por aeronave (validados em Powers.validate)")
+	for id: StringName in DB.ids("powers"):
+		var power := DB.row("powers", id)
+		check.call(Locale.keys.has(String(power.get("name_key", ""))) and Locale.keys.has(String(power.get("desc_key", ""))),
+				"Dados: nome e descrição do poder %s traduzidos" % id)
+	for key: String in ["hud.power", "hint.power", "power.tier"]:
+		check.call(Locale.keys.has(key), "Dados: texto %s existe" % key)
 	for id: StringName in DB.ids("weapons"):
 		var dps: Array = DB.weapon(id).get("dps", [])
 		check.call(dps.size() == 4, "Dados: %s com 4 níveis de DPS" % id)

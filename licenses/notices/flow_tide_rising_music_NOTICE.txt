@@ -1,0 +1,15 @@
+Tema do menu — "Atlantis Ascension - Main Theme (Alt Take)"
+
+Autor: Clayton K. N. Passos (mantenedor do Atlantis Ascension), com Google Flow Music (modelo Lyria).
+Gerado em 2026-11-01 no Google Flow Music, a pedido explícito do mantenedor, e baixado em WAV 48 kHz
+estéreo (main_theme_alt.wav, fora do repositório em c:\src\downloads\assets\flow-music\menu\).
+
+Arquivo no jogo: assets/audio/music/flow_tide_rising.ogg
+Modificações: tools/prepare_menu_music.py corta o silêncio do fim, mistura os últimos 4 s sobre os
+primeiros 4 s (igual potência) para o laço não ter emenda, normaliza para -16 dB RMS com pico em
+-1 dBFS e grava em Ogg Vorbis 48 kHz estéreo.
+
+Termos: Termos de Serviço do Google (https://policies.google.com/terms). O Google não reivindica a
+propriedade do conteúdo gerado pelo usuário. Resumo em licenses/texts/LicenseRef-Google-Terms-of-Service.txt.
+
+Conteúdo gerado por IA: o áudio contém a marca d'água inaudível SynthID do Google. Não removida.

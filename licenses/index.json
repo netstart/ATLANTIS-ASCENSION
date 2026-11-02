@@ -118,13 +118,13 @@
   },
   {
     "id": "kenney_audio",
-    "name": "Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio, Casino Audio, UI Audio",
+    "name": "Kenney — Sci-fi Sounds, Impact Sounds, Interface Sounds, Digital Audio, Casino Audio, UI Audio, RPG Audio",
     "author": "Kenney (kenney.nl)",
     "license_id": "CC0-1.0",
     "category": "audio",
     "downloaded_at": "2026-10-30",
     "verified_at": "2026-10-30",
-    "modifications": "coin_medal (fichas do Casino Audio a -9 dB), coin_pearl_1..3 (glass_006/005/002) e hit_1..5 (impactGeneric_light_000..004 + click4 do UI Audio a -4 dB) misturados, recortados e com pico em -1 dBFS por tools/mix_pickup_audio.py",
+    "modifications": "coin_medal (fichas do Casino Audio a -9 dB), coin_pearl_1..3 (glass_006/005/002) e hit_1..5 (impactGeneric_light_000..004 + click4 do UI Audio a -4 dB) misturados, recortados e com pico em -1 dBFS por tools/mix_pickup_audio.py; sons dos poderes (power_*: forceField, laserLarge/Small/Retro, explosões, impactMetal/Plate/Soft/Mining, zaps do Digital Audio, glass e tick/select do Interface Sounds, drawKnife1 e knifeSlice2 do RPG Audio) misturados por tools/mix_power_audio.py",
     "source_url": "https://kenney.nl/assets/sci-fi-sounds",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "files_count": 34
@@ -259,7 +259,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
-    "files_count": 46
+    "files_count": 100
   },
   {
     "id": "exo2_font",
@@ -379,6 +379,7 @@
     "category": "audio",
     "downloaded_at": "2026-10-31",
     "verified_at": "2026-10-31",
+    "modifications": "bug_03, scream_01 e roar_05 misturados nos sons dos poderes do Swarm e da Hydra (tools/mix_power_audio.py)",
     "source_url": "https://opengameart.org/content/80-cc0-creature-sfx",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "files_count": 2
@@ -430,6 +431,7 @@
     "category": "audio",
     "downloaded_at": "2026-10-31",
     "verified_at": "2026-10-31",
+    "modifications": "charge.wav misturado nos sons dos poderes da Manta e da Tempest (tools/mix_power_audio.py)",
     "source_url": "https://opengameart.org/content/electricity-game-sound-pack",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "files_count": 1
@@ -481,7 +483,7 @@
     "category": "audio",
     "downloaded_at": "2026-11-01",
     "verified_at": "2026-11-01",
-    "modifications": "plop_01 reamostrado para 44,1 kHz e somado a -12 dB aos cristais do Kenney nas três variantes de coin_pearl (tools/mix_pickup_audio.py)",
+    "modifications": "plop_01 reamostrado para 44,1 kHz e somado a -12 dB aos cristais do Kenney nas três variantes de coin_pearl (tools/mix_pickup_audio.py); splash_01/02, plop_01 e gong_01/02 misturados nos sons dos poderes (tools/mix_power_audio.py)",
     "source_url": "https://opengameart.org/content/100-cc0-sfx",
     "license_file": "res://licenses/texts/CC0-1.0.txt"
   },
@@ -498,5 +500,58 @@
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "notice_file": "res://licenses/notices/hyptosis_cyberpunk_portraits_NOTICE.txt",
     "files_count": 15
+  },
+  {
+    "id": "junkala_512_sfx",
+    "name": "512 Sound Effects (8-bit style)",
+    "author": "Juhani Junkala (SubspaceAudio)",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-11-02",
+    "verified_at": "2026-11-02",
+    "modifications": "sfx_wpn_missilelaunch, sfx_wpn_cannon*, sfx_exp_long*, sfx_exp_short_hard*, sfx_exp_shortest_hard* e sfx_movement_portal5 recortados, reamostrados, filtrados e misturados nos sons dos poderes (tools/mix_power_audio.py)",
+    "source_url": "https://opengameart.org/content/512-sound-effects-8-bit-style",
+    "license_file": "res://licenses/texts/CC0-1.0.txt"
+  },
+  {
+    "id": "rubberduck_100_cc0_sfx_2",
+    "name": "100 CC0 SFX #2",
+    "author": "rubberduck",
+    "license_id": "CC0-1.0",
+    "category": "audio",
+    "downloaded_at": "2026-11-02",
+    "verified_at": "2026-11-02",
+    "modifications": "sfx100v2_air_01/03, sfx100v2_thunder_01 e sfx100v2_loop_water_02/03 reamostrados para 44,1 kHz e misturados nos sons dos poderes da Tempest e do Trident (tools/mix_power_audio.py)",
+    "source_url": "https://opengameart.org/content/100-cc0-sfx-2",
+    "license_file": "res://licenses/texts/CC0-1.0.txt"
+  },
+  {
+    "id": "atlantis_power_sfx",
+    "name": "Atlantis Ascension — sons dos poderes das naves (mistura e síntese)",
+    "author": "Clayton K. N. Passos",
+    "license_id": "MIT",
+    "category": "audio",
+    "version": "tools/mix_power_audio.py",
+    "downloaded_at": "2026-11-02",
+    "verified_at": "2026-11-02",
+    "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada",
+    "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
+    "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
+    "files_count": 40
+  },
+  {
+    "id": "flow_tide_rising_music",
+    "name": "Tema do menu",
+    "author": "Clayton K. N. Passos com Google Flow Music",
+    "license_id": "LicenseRef-Google-Terms-of-Service",
+    "category": "audio",
+    "version": "Atlantis Ascension - Main Theme (Alt Take), 2026-11-01",
+    "downloaded_at": "2026-11-02",
+    "verified_at": "2026-11-02",
+    "modifications": "tools/prepare_menu_music.py: corte do silêncio final, laço sem emenda (últimos 4 s misturados sobre os primeiros 4 s, igual potência), -16 dB RMS com pico em -1 dBFS, Ogg Vorbis 48 kHz estéreo",
+    "source_url": "https://flowmusic.google",
+    "license_file": "res://licenses/texts/LicenseRef-Google-Terms-of-Service.txt",
+    "notice_file": "res://licenses/notices/flow_tide_rising_music_NOTICE.txt",
+    "files_count": 1
   }
 ]

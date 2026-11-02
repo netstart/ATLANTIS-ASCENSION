@@ -16,6 +16,9 @@ const HOME_Y := 380.0
 const FAR_D := 26.0
 ## Folga do descarte de balas distantes em _view (bem acima do erro de arredondamento das distâncias).
 const CULL_SLACK := 1.0
+## PODER: perigo que dispara o Poder I e balas perto que pedem o Poder III.
+const POWER_DANGER := 30.0
+const POWER_CROWD := 40
 
 var _dirs: Array[Vector2] = []
 
@@ -35,6 +38,7 @@ func decide_wing(sim: Sim) -> SimInput:
 	var input := decide(sim)
 	sim.player = lead
 	input.special = false
+	input.power = false
 	input.tide = false
 	input.choice = -1
 	return input
@@ -82,6 +86,7 @@ func decide(sim: Sim) -> SimInput:
 	input.bomb = danger_now > 60.0 and sim.player.bombs > 0 and sim.player.vulnerable()
 	input.special = sim.player.special_charge >= 1.0 and near.size() > 25
 	input.tide = sim.scoring.pressure >= Scoring.PRESSURE_MAX and (near.size() > 15 or sim.boss != null)
+	input.power = want_power(sim, danger_now, near.size())
 	if sim.boss != null and sim.boss.state == SimBoss.State.DUEL:
 		input.taps = 1 if sim.frame % 3 == 0 else 0
 	return input
@@ -163,6 +168,18 @@ func _danger(c: Vector2, view: Dictionary) -> float:
 	if bool(view["boss_on"]) and c.distance_to(view["boss_pos"]) < float(view["boss_reach"]):
 		cost += 60.0
 	return cost
+
+
+## PODER: com chefe na tela ou mais de POWER_CROWD balas perto, espera o Poder III; fora disso gasta o que
+## tiver (Poder I ou II) quando o perigo chega perto.
+func want_power(sim: Sim, danger_now: float, near_count: int) -> bool:
+	var seg := sim.powers.segments(sim)
+	if seg < 1 or sim.powers.active(sim) or not sim.player.alive:
+		return false
+	var boss_on := sim.boss != null and sim.boss.fighting()
+	if boss_on or near_count > POWER_CROWD:
+		return seg >= 3
+	return danger_now > POWER_DANGER
 
 
 func _target_x(sim: Sim) -> float:
