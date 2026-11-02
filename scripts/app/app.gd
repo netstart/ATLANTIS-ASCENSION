@@ -124,8 +124,8 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	_backdrop.ruins = 1.0
 	if game == null:
 		AudioManager.play_music(MENU_MUSIC)
-	(_screens[screen_name] as Screen).on_show(self)
-	# Depois do on_show: a cascata de entrada respeita o que a tela acabou de esconder ou animar.
+	(_screens[screen_name] as Screen).present(self)
+	# Depois do present (on_show): a cascata de entrada respeita o que a tela acabou de esconder ou animar.
 	if changed:
 		UiFx.enter(_screens[screen_name] as CanvasItem)
 	if FocusNav.pad:

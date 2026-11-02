@@ -333,3 +333,16 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   calculando as projeções das balas uma vez por passo e descartando só as que provadamente não pesam (`BotPilot`):
   hash igual nas 80 partidas (40 missões x sementes 7 e 11) e no determinismo (`fc77bf6d...`). Caminho crítico
   restante: a campanha da economia (34 missões em série, ~75 s sozinha). Detalhes em `docs/policies/testes.md`
+- ✅ `1.14.5` Telas montadas uma vez só por abertura. Antes, o `_ready` de `Screen` chamava `refresh_texts()` e o App
+  chamava `on_show()` logo depois, que chamava de novo: as 10 listas (`ListScreen`: hangar, naves, opções, diário,
+  eventos, loja, cidade, prática, temporada, recordes) montavam a coluna inteira duas vezes na primeira abertura, e
+  hub, mapa e resultados refaziam os textos (o resultado ainda montava uma vez com um resultado vazio). Agora a tela
+  declara `refreshes_on_show()` e o `_ready` só calcula o layout (o hangar escolhe a escala da nave por ele); o App
+  abre a tela por `Screen.present()`. Trocar de idioma remonta só a tela aberta; as escondidas ficam marcadas e
+  remontam uma vez ao abrir. O hub guarda o saldo de antes do login do dia na primeira abertura (a recompensa
+  continua subindo na pílula). Medido em todas as resoluções x 11 idiomas: 576 montagens de lista para 288 (uma por
+  abertura); abrir as 16 telas, 237 s para 134 s de CPU (naves 34,6 para 16,3 s; hangar 31,6 para 15,2 s; eventos
+  27,9 para 13,3 s; temporada 23,8 para 11,6 s); fatias de layout da integração ~115 s para ~87 s. Capturas do
+  `tests/screens_runner.tscn` com `--fixed-fps 60` e user:// novo: as 576 iguais pixel a pixel, salvo o número da
+  versão no título. Teste novo `tests/screen_build_tests.gd` (33 verificações): uma montagem por abertura, reabrir com
+  dado novo (nível, saldo, resultado), idioma trocado com a tela escondida e com a tela aberta.

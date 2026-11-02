@@ -205,6 +205,10 @@ func on_show(app: Node) -> void:
 	_start_reveal()
 
 
+func refreshes_on_show() -> bool:
+	return true
+
+
 func refresh_texts() -> void:
 	var cleared := bool(result.get("cleared", false))
 	var accent := UiTheme.MINT if cleared else UiTheme.CORAL

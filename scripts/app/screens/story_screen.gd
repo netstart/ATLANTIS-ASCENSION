@@ -202,6 +202,10 @@ func finish() -> void:
 	navigate.emit(&"map")
 
 
+func refreshes_on_show() -> bool:
+	return true
+
+
 func refresh_texts() -> void:
 	if _skip == null:
 		return

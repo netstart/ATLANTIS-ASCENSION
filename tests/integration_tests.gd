@@ -17,6 +17,7 @@ const LiveryTests := preload("res://tests/livery_tests.gd")
 const GloryTests := preload("res://tests/glory_tests.gd")
 const WeatherViewTests := preload("res://tests/weather_view_tests.gd")
 const FocusNavTests := preload("res://tests/focus_nav_tests.gd")
+const ScreenBuildTests := preload("res://tests/screen_build_tests.gd")
 const TestShard := preload("res://tests/test_shard.gd")
 
 var _count: int = 0
@@ -78,7 +79,8 @@ func _ready() -> void:
 		await LiveryTests.new().run_view(self, _check)
 		await GloryTests.new().run_view(self, _check)
 		await WeatherViewTests.new().run_view(self, _check)
-		await FocusNavTests.new().run(self, _check)})
+		await FocusNavTests.new().run(self, _check)
+		await ScreenBuildTests.new().run(self, _check)})
 	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
 	# Unidades do prefixo ficam fora da divisão: rodam em toda fatia, no lugar de sempre.
 	var shardable: Array[Dictionary] = units.filter(func(u: Dictionary) -> bool: return not u.has("prefix"))

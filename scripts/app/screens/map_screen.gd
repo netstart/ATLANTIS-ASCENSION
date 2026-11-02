@@ -196,6 +196,10 @@ func on_show(app: Node) -> void:
 	refresh_texts()
 
 
+func refreshes_on_show() -> bool:
+	return true
+
+
 func refresh_texts() -> void:
 	_back.tooltip_text = tr("credits.back")
 	_title.text = tr("map.title")

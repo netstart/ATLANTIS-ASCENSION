@@ -2,8 +2,8 @@ class_name ListScreen
 extends Screen
 ## Base das telas em lista (hangar, naves, opções, loja, eventos, diário...): cabeçalho com Voltar,
 ## título e moedas, um traço ciano e uma coluna rolável de cartões de vidro. As filhas montam o
-## conteúdo em `_fill()`, chamado ao mostrar a tela, ao trocar de idioma e depois de cada ação
-## (`refill()`).
+## conteúdo em `_fill()`, chamado uma vez a cada abertura da tela (no on_show, nunca também no _ready),
+## ao trocar de idioma com a tela aberta e depois de cada ação (`refill()`).
 ##
 ## Redesenho 1.6 ("neon abissal", docs/design/ui-style.md): a tela não pinta fundo opaco (o
 ## AbyssBackdrop do App aparece por trás); só um véu escuro em cima e embaixo para o texto do
@@ -20,6 +20,9 @@ const ICON_RES := 64
 const CURRENCIES: Array[String] = ["credits", "orichalcum", "pearls"]
 
 static var _icons: Dictionary = {}
+
+## Quantas vezes a lista foi montada (`refill()`): os testes conferem uma montagem por abertura.
+var fills: int = 0
 
 var _shade_top: TextureRect
 var _shade_bottom: TextureRect
@@ -104,6 +107,10 @@ func on_show(_app: Node) -> void:
 	refresh_texts()
 
 
+func refreshes_on_show() -> bool:
+	return true
+
+
 func refresh_texts() -> void:
 	if _back == null:
 		return
@@ -119,6 +126,7 @@ func refill() -> void:
 	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	if focused != null and _list.is_ancestor_of(focused):
 		keep = FocusNav.all(_list).find(focused)
+	fills += 1
 	for child: Node in _list.get_children():
 		_list.remove_child(child)
 		child.queue_free()

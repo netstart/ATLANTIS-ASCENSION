@@ -212,6 +212,12 @@ func default_focus() -> Control:
 
 func on_show(_app: Node) -> void:
 	_stage.reduce_motion = bool(Settings.get_value("reduce_motion"))
+	if _wallet_shown.is_empty():
+		# Primeira abertura: o saldo de antes do login do dia é o ponto de partida, e a recompensa sobe
+		# na pílula como em qualquer volta ao hub com saldo novo.
+		var wallet := SaveManager.data["wallet"] as Dictionary
+		for key: String in _wallet_labels:
+			_show_balance(key, _wallet_labels[key] as Label, int(wallet[key]))
 	var reward := LiveOps.login(SaveManager.data, App.today())
 	if not reward.is_empty():
 		SaveManager.save_profile()
@@ -249,6 +255,10 @@ func _process(delta: float) -> void:
 	if bool(Settings.get_value("tilt_parallax")) and OS.has_feature("mobile"):
 		var acc := Input.get_accelerometer()
 		_stage.tilt = Vector2(clampf(acc.x / 4.0, -1.0, 1.0), clampf((acc.y + 6.0) / 6.0, -1.0, 1.0))
+
+
+func refreshes_on_show() -> bool:
+	return true
 
 
 func refresh_texts() -> void:
