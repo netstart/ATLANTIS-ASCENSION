@@ -48,9 +48,11 @@ func run(host: Node, check: Callable) -> void:
 	while not sim.finished and sim.frame < 60 * 60 * 10:
 		sim.step(bot.decide(sim))
 	check.call(sim.cleared, "Fluxo: o bot venceu a missão pela cena")
-	var deadline := Time.get_ticks_msec() + 8000
-	while app.current != &"results" and Time.get_ticks_msec() < deadline:
+	# Até 8 s de jogo (contados em quadros de 1/60 s: com --fixed-fps o teste não espera o relógio).
+	var frames := 0
+	while app.current != &"results" and frames < 8 * 60:
 		await host.get_tree().process_frame
+		frames += 1
 	check.call(app.current == &"results", "Fluxo: o fim da missão abre o resultado")
 	var record := SaveManager.mission_record(&"c1m1")
 	check.call(bool(record["cleared"]) and int(record["best_score"]) > 0, "Fluxo: resultado gravado no save")

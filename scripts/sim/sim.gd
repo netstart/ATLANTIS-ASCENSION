@@ -126,6 +126,13 @@ var _finish_timer: int = -1
 var _miniboss_start: int = -1
 var _boss_start: int = -1
 var _columns: Array = []
+## Alvos do chefe para as balas do jogador (ver _collide_player_bullets): partes que podem ser
+## atingidas, na ordem de boss.parts, com posição e raio, e o corpo.
+var _boss_parts: Array[Dictionary] = []
+var _boss_part_pos := PackedVector2Array()
+var _boss_part_radius := PackedFloat64Array()
+var _boss_body_pos := Vector2.ZERO
+var _boss_body_radius: float = 0.0
 var _abyss_points: float = 1.0
 
 
@@ -664,6 +671,10 @@ func _collide_player_bullets() -> void:
 		var c1 := clampi(floori((e.pos.x + e.radius) / width), 0, COLUMNS - 1)
 		for c: int in range(c0, c1 + 1):
 			(_columns[c] as Array).append(e)
+	# Os alvos do chefe só mudam quando alguma bala acerta (dano, parte destruída, troca de etapa): são
+	# montados uma vez e refeitos depois de cada acerto. Entre dois acertos nada muda, então dá o mesmo
+	# resultado de _hit_boss bala por bala (mesmo hash), sem repetir as mesmas consultas a cada bala.
+	var boss_targets := false
 	var i := player_bullets.count - 1
 	while i >= 0:
 		var p: Vector2 = player_bullets.pos[i]
@@ -677,8 +688,12 @@ func _collide_player_bullets() -> void:
 					_kill_enemy(e)
 				break
 		if not hit and boss != null and boss.fighting():
-			hit = _hit_boss(p, r, dmg)
+			if not boss_targets:
+				_gather_boss_targets()
+				boss_targets = true
+			hit = _hit_boss_targets(p, r, dmg)
 		if hit:
+			boss_targets = false
 			emit(&"hit", {"pos": p})
 			var area: float = player_bullets.splash[i]
 			if area > 0.0:
@@ -698,6 +713,34 @@ func splash(at: Vector2, radius: float, dmg: float) -> void:
 	if boss != null and boss.fighting() and at.distance_to(boss.body_pos()) <= radius + boss.body_radius():
 		boss.damage_body(dmg * 0.5, self)
 	emit(&"splash", {"pos": at, "radius": radius})
+
+
+## Fotografia dos alvos de _hit_boss: as mesmas partes (ativas, na mesma ordem), posições e raios.
+func _gather_boss_targets() -> void:
+	_boss_parts.clear()
+	_boss_part_pos.clear()
+	_boss_part_radius.clear()
+	for part: Dictionary in boss.parts:
+		if boss.part_active(part):
+			_boss_parts.append(part)
+			_boss_part_pos.append(boss.part_pos(part))
+			_boss_part_radius.append(float(part.get("radius", 10.0)))
+	_boss_body_pos = boss.body_pos()
+	_boss_body_radius = boss.body_radius()
+
+
+## _hit_boss sobre a fotografia de _gather_boss_targets (válida até o próximo acerto).
+func _hit_boss_targets(p: Vector2, r: float, dmg: float) -> bool:
+	for k: int in range(_boss_parts.size()):
+		var pr: float = _boss_part_radius[k]
+		if p.distance_squared_to(_boss_part_pos[k]) <= (r + pr) * (r + pr):
+			boss.damage_part(_boss_parts[k], dmg, self)
+			return true
+	var br := _boss_body_radius
+	if p.distance_squared_to(_boss_body_pos) <= (r + br) * (r + br):
+		boss.damage_body(dmg, self)
+		return true
+	return false
 
 
 func _hit_boss(p: Vector2, r: float, dmg: float) -> bool:

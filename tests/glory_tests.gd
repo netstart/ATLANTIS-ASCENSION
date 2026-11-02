@@ -257,9 +257,11 @@ func _results_view(host: Node, check: Callable) -> void:
 	check.call(seal != null and seal.visible and seal.grade == Grade.SS, "Resultado: selo SS na vitória perfeita")
 	check.call(chest != null and chest.visible, "Resultado: Arca da Maré na vitória")
 	check.call(defeat != null and not defeat.visible, "Resultado: sem 'Quase lá' na vitória")
-	var deadline := Time.get_ticks_msec() + 9000
-	while bool(screen.get("_revealing")) and Time.get_ticks_msec() < deadline:
+	# Até 9 s de jogo, em quadros de 1/60 s (não em milissegundos do relógio).
+	var frames := 0
+	while bool(screen.get("_revealing")) and frames < 9 * 60:
 		await host.get_tree().process_frame
+		frames += 1
 	check.call(not bool(screen.get("_revealing")), "Resultado: a revelação com a arca termina sozinha")
 	var reel := (chest.get("_reel") as Label).text
 	check.call(reel == TideChestPanel.symbol_text(StringName(String((win["chest"]["reel"] as Array)[-1]))),
@@ -293,9 +295,11 @@ func _hud_view(host: Node, check: Callable) -> void:
 	for i: int in range(5):
 		layer.pop("x", i % 4)
 	check.call(layer.live_count() == StyleCallouts.MAX_LIVE, "Estilo: no máximo 3 frases ao mesmo tempo")
-	var deadline := Time.get_ticks_msec() + 3000
-	while layer.live_count() > 0 and Time.get_ticks_msec() < deadline:
+	# Até 3 s de jogo, em quadros de 1/60 s.
+	var frames := 0
+	while layer.live_count() > 0 and frames < 3 * 60:
 		await host.get_tree().process_frame
+		frames += 1
 	check.call(layer.live_count() == 0, "Estilo: as frases somem sozinhas")
 	game.queue_free()
 	await host.get_tree().process_frame

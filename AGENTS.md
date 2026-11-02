@@ -81,7 +81,7 @@ som próprio (áudio), aviso antes do perigo (design), teste automatizado (QA) e
 C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --editor --path C:\src\ATLANTIS-ASCENSION
 # Rodar o jogo (opções: -Editor, -Bot -Seed 7 -QuitAt 90, -Scene res://...)
 powershell -ExecutionPolicy Bypass -File tools\run_game.ps1
-# Todas as checagens (obrigatório antes de commitar)
+# Todas as checagens (obrigatório antes de commitar; paralelo, opções -Jobs N e -TimeoutMinutes M)
 powershell -ExecutionPolicy Bypass -File tools\run_checks.ps1
 # Partida do bot, determinística
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . --fixed-fps 60 -- --bot --seed=7 --quit-at=90

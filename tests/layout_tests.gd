@@ -12,56 +12,82 @@ const GAME := preload("res://scenes/game/Game.tscn")
 
 func run(host: Node, check: Callable) -> void:
 	for c: Dictionary in DeviceProfiles.layout_cases():
-		var view: Vector2 = c["view"]
-		var safe := DeviceProfiles.safe_rect(view, c["insets"])
-		DeviceProfiles.simulate_insets(c["insets"])
-		for lang: String in c["langs"]:
-			Locale.set_language(lang, false)
-			var app := App.new()
-			host.add_child(app)
-			await host.get_tree().process_frame
-			fit(app, view)
-			for screen_name: StringName in SCREENS:
-				app.go(screen_name)
-				await settle(host)
+		await run_case(host, check, c)
+	for c: Dictionary in DeviceProfiles.layout_cases():
+		await run_hud_case(host, check, c)
+	finish()
+
+
+## Um caso de tests/device_profiles.gd: cada idioma do caso num App novo, todas as telas.
+## Unidade das fatias de tests/integration_tests.gd.
+func run_case(host: Node, check: Callable, c: Dictionary) -> void:
+	await _visit_case(host, check, c)
+
+
+## O primeiro App aberto ainda acha o perfil zerado (o hub paga o login do dia, por exemplo); do segundo
+## em diante as telas já mostram o perfil depois dessa primeira visita. Uma fatia que não começa pelo
+## primeiro caso abre antes um App igual ao dele, sem verificações, para cada caso ver o mesmo estado
+## que veria no processo único.
+func warm_up(host: Node, c: Dictionary) -> void:
+	var first := c.duplicate()
+	first["langs"] = [(c["langs"] as Array)[0]]
+	await _visit_case(host, Callable(), first)
+
+
+func _visit_case(host: Node, check: Callable, c: Dictionary) -> void:
+	var view: Vector2 = c["view"]
+	var safe := DeviceProfiles.safe_rect(view, c["insets"])
+	DeviceProfiles.simulate_insets(c["insets"])
+	for lang: String in c["langs"]:
+		Locale.set_language(lang, false)
+		var app := App.new()
+		host.add_child(app)
+		await host.get_tree().process_frame
+		fit(app, view)
+		for screen_name: StringName in SCREENS:
+			app.go(screen_name)
+			await settle(host)
+			if check.is_valid():
 				var tag := "Layout %s %s [%s]" % [screen_name, lang, c["label"]]
 				check_screen(app.screen(screen_name), safe, check, tag)
-			app.queue_free()
-			await host.get_tree().process_frame
-	await _run_hud(host, check)
+		app.queue_free()
+		await host.get_tree().process_frame
+
+
+## Depois dos casos: sem recorte simulado e de volta ao pt_BR.
+static func finish() -> void:
 	DeviceProfiles.clear_insets()
 	Locale.set_language("pt_BR", false)
 
 
-## HUD da partida em cada caso (idiomas mais longos): controles na área segura, campo inteiro e
+## HUD da partida num caso (idiomas mais longos): controles na área segura, campo inteiro e
 ## HUD cobrindo no máximo 6% do campo.
-func _run_hud(host: Node, check: Callable) -> void:
-	for c: Dictionary in DeviceProfiles.layout_cases():
-		var view: Vector2 = c["view"]
-		var safe := DeviceProfiles.safe_rect(view, c["insets"])
-		DeviceProfiles.simulate_insets(c["insets"])
-		for lang: String in Languages.INSET_LANGS:
-			Locale.set_language(lang, false)
-			var game := GAME.instantiate() as Game
-			game.configure(&"c1m1", &"falcon", 7, true)
-			host.add_child(game)
-			await host.get_tree().process_frame
-			game.relayout_for(view)
-			game.hud().size = view
-			await host.get_tree().process_frame
-			var tag := "Layout HUD %s [%s]" % [lang, c["label"]]
-			var layout: Dictionary = game.hud().layout
-			check.call(Playfield.fits(layout, safe), "%s: campo na área segura" % tag)
-			check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
-			check_screen_controls(game.hud().layout_controls(), safe, check, tag)
-			game.sim.offer_blessings()
-			game.hud().show_offer(game.sim)
-			await host.get_tree().process_frame
-			var panel := game.hud().offer_panel()
-			check.call(layout["field"].encloses(panel.get_global_rect()), "%s: bênçãos dentro do campo" % tag)
-			check_screen_controls([panel], safe, check, tag + " bênçãos")
-			game.queue_free()
-			await host.get_tree().process_frame
+func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
+	var view: Vector2 = c["view"]
+	var safe := DeviceProfiles.safe_rect(view, c["insets"])
+	DeviceProfiles.simulate_insets(c["insets"])
+	for lang: String in Languages.INSET_LANGS:
+		Locale.set_language(lang, false)
+		var game := GAME.instantiate() as Game
+		game.configure(&"c1m1", &"falcon", 7, true)
+		host.add_child(game)
+		await host.get_tree().process_frame
+		game.relayout_for(view)
+		game.hud().size = view
+		await host.get_tree().process_frame
+		var tag := "Layout HUD %s [%s]" % [lang, c["label"]]
+		var layout: Dictionary = game.hud().layout
+		check.call(Playfield.fits(layout, safe), "%s: campo na área segura" % tag)
+		check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
+		check_screen_controls(game.hud().layout_controls(), safe, check, tag)
+		game.sim.offer_blessings()
+		game.hud().show_offer(game.sim)
+		await host.get_tree().process_frame
+		var panel := game.hud().offer_panel()
+		check.call(layout["field"].encloses(panel.get_global_rect()), "%s: bênçãos dentro do campo" % tag)
+		check_screen_controls([panel], safe, check, tag + " bênçãos")
+		game.queue_free()
+		await host.get_tree().process_frame
 
 
 ## O teste roda numa janela pequena (headless): a raiz das telas recebe o tamanho lógico do aparelho.

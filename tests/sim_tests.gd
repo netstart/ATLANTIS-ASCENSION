@@ -6,13 +6,23 @@ extends RefCounted
 const MAX_FRAMES := 60 * 60 * 10
 
 
+var _tables: Dictionary = {}
+
+
+## Tudo num processo só (sem fatias): as regras rápidas e depois cada missão inteira.
 func run_unit(check: Callable) -> void:
+	run_basics(check)
+	for unit: Dictionary in mission_units():
+		(unit["run"] as Callable).call(check)
+
+
+## Regras rápidas da simulação (sem as missões inteiras pelo bot).
+func run_basics(check: Callable) -> void:
 	_pool(check)
 	_paths(check)
 	_scoring(check)
 	_orbs(check)
 	_data(check)
-	_mission(check)
 
 
 func _pool(check: Callable) -> void:
@@ -107,26 +117,53 @@ func _data(check: Callable) -> void:
 					"Dados: chefe %s existe" % e.get("id"))
 
 
-## Missão inteira pelo bot: termina, vence, respeita os tetos de balas e é determinística.
-func _mission(check: Callable) -> void:
-	var tables := Sim.load_tables()
+## Missão inteira pelo bot, uma unidade por missão (tests/test_shard.gd divide as unidades entre
+## processos): termina, vence, respeita os tetos de balas e o ritmo. A c1m1 também confere o
+## determinismo: duas vezes com a mesma semente (mesmo hash) e uma com outra semente.
+## Peso de cada unidade: a duração do roteiro (length_s), que acompanha o custo da partida.
+func mission_units() -> Array[Dictionary]:
+	var units: Array[Dictionary] = []
+	for id: StringName in mission_ids():
+		var length := float(Sim.load_mission(id).get("length_s", 180.0))
+		if id == &"c1m1":
+			units.append({"name": "Missão c1m1 e determinismo", "weight": length * 3.0,
+					"run": _mission_c1m1})
+		else:
+			units.append({"name": "Missão %s" % id, "weight": length, "run": _mission_one.bind(id)})
+	return units
+
+
+func _mission_c1m1(check: Callable) -> void:
 	var mission := Sim.load_mission(&"c1m1")
-	var first := run_bot(mission, tables, 7)
-	var second := run_bot(mission, tables, 7)
-	var other := run_bot(mission, tables, 11)
+	var first := run_bot(mission, _tables_once(), 7)
+	var second := run_bot(mission, _tables_once(), 7)
+	var other := run_bot(mission, _tables_once(), 11)
 	check.call(first["hash"] == second["hash"], "Determinismo: mesma semente, mesmo estado")
 	check.call(bool(other["finished"]), "Missão: o bot termina a c1m1 com outra semente")
-	for id: StringName in mission_ids():
-		var run := first if id == &"c1m1" else run_bot(Sim.load_mission(id), tables, 7)
-		var r: Dictionary = run["result"]
-		if "--verbose" in OS.get_cmdline_user_args():
-			print("Missão %s semente 7: " % id, r, " pico de balas ", run["peak"])
-		check.call(bool(run["finished"]), "Missão: o bot termina a %s (%d passos)" % [id, run["frames"]])
-		check.call(bool(r.get("cleared", false)), "Missão: o bot vence a %s (casco %s)" % [id, r.get("hull")])
-		check.call(int(run["peak"]) <= 300, "Densidade %s: no máximo 300 balas vivas (%d)" % [id, run["peak"]])
-		var seconds := float(r.get("seconds", 0.0))
-		check.call(seconds >= 120.0 and seconds <= 330.0, "Ritmo %s: de 2 a 5,5 min (%.0f s)" % [id, seconds])
-		check.call(int(r.get("kills", 0)) >= 50, "Missão %s: o bot derruba a maioria (%d)" % [id, r.get("kills")])
+	_mission_checks(check, &"c1m1", first)
+
+
+func _mission_one(check: Callable, id: StringName) -> void:
+	_mission_checks(check, id, run_bot(Sim.load_mission(id), _tables_once(), 7))
+
+
+func _mission_checks(check: Callable, id: StringName, run: Dictionary) -> void:
+	var r: Dictionary = run["result"]
+	if "--verbose" in OS.get_cmdline_user_args():
+		print("Missão %s semente 7: " % id, r, " pico de balas ", run["peak"])
+	check.call(bool(run["finished"]), "Missão: o bot termina a %s (%d passos)" % [id, run["frames"]])
+	check.call(bool(r.get("cleared", false)), "Missão: o bot vence a %s (casco %s)" % [id, r.get("hull")])
+	check.call(int(run["peak"]) <= 300, "Densidade %s: no máximo 300 balas vivas (%d)" % [id, run["peak"]])
+	var seconds := float(r.get("seconds", 0.0))
+	check.call(seconds >= 120.0 and seconds <= 330.0, "Ritmo %s: de 2 a 5,5 min (%.0f s)" % [id, seconds])
+	check.call(int(r.get("kills", 0)) >= 50, "Missão %s: o bot derruba a maioria (%d)" % [id, r.get("kills")])
+
+
+## As tabelas são só leitura na Sim: uma carga por processo serve a todas as missões.
+func _tables_once() -> Dictionary:
+	if _tables.is_empty():
+		_tables = Sim.load_tables()
+	return _tables
 
 
 ## Ids das missões em data/stages/, em ordem.

@@ -137,6 +137,7 @@ testes rodam no Godot do PC (nunca no emulador).
 | Créditos | `tests/credits_screen_tests.gd` | todo nome do índice de licenças está na tela e no `CREDITS.md` |
 | Versão | `tests/version_tests.gd` | `project.godot` e todos os presets com a mesma versão |
 | Layout | `tests/layout_tests.gd` | todas as telas em `DeviceProfiles.layout_cases()` |
+| Fatias | `tests/test_shard.gd` (regras em `tests/run_tests.gd`) | toda unidade em exatamente uma fatia, divisão determinística, argumento malformado recusado |
 | Parallax | `tests/parallax_tests.gd` | camadas determinísticas, ordem de profundidade, reduzir movimento |
 | Loja e anúncios | `tests/shop_tests.gd` | recompensas, relógio voltado, provedor simulado, nada de anúncio na missão |
 
@@ -153,3 +154,30 @@ powershell -ExecutionPolicy Bypass -File tools\run_checks.ps1
 O script importa o projeto, roda `gdlint`, os testes de regras, i18n, licenças, integração, determinismo (1x, 2x, 3x,
 Baixa) e o estresse de 1.000 projéteis. Termina com `TUDO OK` ou `FALHOU`. O executável do Godot vem de `$env:GODOT`
 ou de `C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe`.
+
+### Paralelo e em fatias (1.14.4)
+
+A importação roda primeiro e sozinha; depois lint, regras, textos e licenças, integração e as 4 partidas do
+determinismo rodam **ao mesmo tempo**, até `-Jobs` processos (padrão: núcleos lógicos da máquina). Numa máquina de 6
+núcleos o `run_checks.ps1` caiu de ~12 min para ~2,5 min, com as **mesmas verificações e os mesmos critérios**.
+
+- **Fatias:** `tests/run_tests.gd` e `tests/integration_tests.tscn` aceitam `-- --shard=I/N` (`tests/test_shard.gd`).
+  A suíte é uma lista de unidades (cada missão inteira do bot, cada caso de layout, cada HUD, a campanha da economia,
+  o Beta...); a divisão é determinística (maior peso primeiro, sempre para a fatia mais leve) e cada unidade cai em
+  **exatamente uma** fatia. Cada fatia termina com `fatia <suíte> I/N: k de T unidades`; o `run_checks.ps1` soma as
+  verificações e confere que as fatias somam as T unidades (fatia que caiu no meio reprova). Sem `--shard`, a suíte
+  roda inteira num processo só, como antes. Suíte nova entra como unidade com peso (custo estimado em segundos).
+- **Estado igual ao do processo único:** o prefixo barato da integração que mexe em estado global (opções, save,
+  vibração, relógio) roda em toda fatia, na mesma ordem; só a fatia 0 conta essas verificações (nas outras, uma falha
+  ainda reprova). Uma fatia de layout que não começa pelo primeiro caso abre antes um App igual ao dele, sem
+  verificações, para ver o mesmo perfil (o primeiro App paga o login do dia).
+- **Sem esperar o relógio:** a integração roda com `--fixed-fps 60`. Cada quadro avança 1/60 s de jogo na hora (antes,
+  o limite de 60 FPS das opções fazia cada `await process_frame` custar 16,7 ms reais). Esperas em teste contam
+  **quadros** (`segundos * 60`), nunca milissegundos do relógio: o tempo de jogo esperado é o mesmo em qualquer
+  máquina, com ou sem carga.
+- **user:// isolado:** cada processo do Godot recebe uma pasta própria e temporária (`APPDATA` e `XDG_DATA_HOME`):
+  processos simultâneos nunca gravam o mesmo save, `settings.cfg`, replay ou log, e o perfil do jogador nunca é
+  tocado. A pasta é apagada no fim.
+- **Achar pontos quentes:** `-- --timing` imprime o tempo e as verificações de cada unidade
+  (`godot --headless --path . --fixed-fps 60 res://tests/integration_tests.tscn -- --shard=1/6 --timing`).
+- **Travou?** `-TimeoutMinutes` (padrão 15) mata o processo e os filhos e reprova.

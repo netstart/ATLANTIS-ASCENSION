@@ -323,3 +323,13 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   90 ms). `AudioManager` alterna variantes `id_N` sem repetir a anterior, com gerador próprio (fora da simulação
   determinística); limite e recarga contam pelo id. `kenney_medal`, `kenney_pearl` e `kenney_hit` seguem nos outros
   usos (resultado, Arca da Maré, selo, diário, glifo). Testes em `tests/integration_tests.gd`. Falta ouvir no aparelho
+- ✅ `1.14.4` `tools/run_checks.ps1` ~5x mais rápido (727 s para ~140 s num Ryzen 5 4650U de 6 núcleos), com as mesmas
+  verificações (integração 82.069, regras 1.785 + 26 novas das fatias) e os mesmos critérios. Medido antes: a
+  integração esperava o relógio (o limite de 60 FPS fazia cada quadro custar 16,7 ms; layout, 345 s) e as regras eram
+  41 partidas inteiras do bot em série (128 s). Agora: integração com `--fixed-fps 60` e esperas em quadros; regras e
+  integração em fatias por processo (`-- --shard=I/N`, `tests/test_shard.gd`), conferidas pelo script (as fatias
+  somam todas as unidades); etapas 2 a 6 em paralelo, cada Godot com user:// próprio e temporário. Otimizações reais
+  e exatas no jogo: alvos do chefe para as balas do jogador montados uma vez entre acertos (`Sim`), e o piloto do bot
+  calculando as projeções das balas uma vez por passo e descartando só as que provadamente não pesam (`BotPilot`):
+  hash igual nas 80 partidas (40 missões x sementes 7 e 11) e no determinismo (`fc77bf6d...`). Caminho crítico
+  restante: a campanha da economia (34 missões em série, ~75 s sozinha). Detalhes em `docs/policies/testes.md`

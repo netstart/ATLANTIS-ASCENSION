@@ -5,6 +5,7 @@ extends SceneTree
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const PixelScalerScript := preload("res://scripts/autoload/pixel_scaler.gd")
 const SimTests := preload("res://tests/sim_tests.gd")
+const TestShard := preload("res://tests/test_shard.gd")
 const ParallaxTests := preload("res://tests/parallax_tests.gd")
 const VfxTests := preload("res://tests/vfx_tests.gd")
 const WeatherTests := preload("res://tests/weather_tests.gd")
@@ -15,6 +16,30 @@ var _failures: int = 0
 
 
 func _initialize() -> void:
+	var shard := TestShard.parse(OS.get_cmdline_user_args())
+	if shard.y == 0:
+		printerr("FALHOU: argumento --shard malformado (use --shard=I/N, com 0 <= I < N)")
+		quit(1)
+		return
+	var sim := SimTests.new()
+	# Unidades (tests/test_shard.gd): as regras rápidas numa só; cada missão inteira pelo bot numa
+	# unidade própria, porque são elas que custam (de 1 a 10 s cada).
+	var units: Array[Dictionary] = [{"name": "Regras rápidas", "weight": 2.0, "run": _rules.bind(sim)}]
+	units.append_array(sim.mission_units())
+	var mine := TestShard.mine(units, shard)
+	for unit: Dictionary in mine:
+		var start := Time.get_ticks_msec()
+		var before := _count
+		(unit["run"] as Callable).call(_check)
+		if TestShard.timing_enabled():
+			print("tempo %6d ms  %5d verificações  %s" % [Time.get_ticks_msec() - start, _count - before, unit["name"]])
+	print(TestShard.summary("regras", shard, mine.size(), units.size()))
+	print("%d verificações, %d falhas" % [_count, _failures])
+	quit(1 if _failures > 0 else 0)
+
+
+## As regras rápidas usam o _check deste runner direto; o parâmetro só segue a forma das unidades.
+func _rules(_unit_check: Callable, sim: SimTests) -> void:
 	_test_scaler()
 	_test_playfield()
 	_test_spatial_hash()
@@ -23,12 +48,11 @@ func _initialize() -> void:
 	_test_gfx_quality()
 	_test_languages()
 	_test_version()
-	SimTests.new().run_unit(_check)
+	_test_shard()
+	sim.run_basics(_check)
 	ParallaxTests.new().run_unit(_check)
 	VfxTests.new().run_unit(_check)
 	WeatherTests.new().run_unit(_check)
-	print("%d verificações, %d falhas" % [_count, _failures])
-	quit(1 if _failures > 0 else 0)
 
 
 func _check(condition: bool, label: String) -> void:
@@ -171,3 +195,34 @@ func _test_version() -> void:
 						"Versão: %s export_path leva %s" % [section, version])
 	for platform: String in ["Android", "Windows Desktop", "Linux"]:
 		_check(platforms.has(platform), "Versão: preset %s existe" % platform)
+
+
+## Fatias (tests/test_shard.gd): toda unidade em exatamente uma fatia, a divisão não muda de um
+## processo para outro e um argumento malformado é recusado (nunca vira "rodar nada").
+func _test_shard() -> void:
+	var weights := PackedFloat32Array([90.0, 5.0, 20.0, 20.0, 1.0, 7.5, 7.5, 33.0])
+	for count: int in [1, 2, 3, 5, 8, 12]:
+		var owners := TestShard.assign(weights, count)
+		var seen := {}
+		var loads := PackedFloat32Array()
+		loads.resize(count)
+		for i: int in range(owners.size()):
+			seen[i] = owners[i] >= 0 and owners[i] < count
+			loads[owners[i]] += weights[i]
+		_check(owners.size() == weights.size() and not seen.values().has(false),
+				"Fatias: cada unidade em uma fatia válida de %d" % count)
+		_check(owners == TestShard.assign(weights, count), "Fatias: divisão em %d é determinística" % count)
+		var units: Array[Dictionary] = []
+		for w: float in weights:
+			units.append({"weight": w})
+		var total := 0
+		for s: int in range(count):
+			total += TestShard.mine(units, Vector2i(s, count)).size()
+		_check(total == weights.size(), "Fatias: as %d fatias somam todas as unidades (%d)" % [count, total])
+		if count == 2:
+			_check(loads == PackedFloat32Array([91.0, 93.0]),
+					"Fatias: maior peso primeiro, sempre na fatia mais leve (%s)" % loads)
+	_check(TestShard.parse(PackedStringArray()) == Vector2i(0, 1), "Fatias: sem --shard roda tudo")
+	_check(TestShard.parse(PackedStringArray(["--shard=2/4"])) == Vector2i(2, 4), "Fatias: lê --shard=2/4")
+	for bad: String in ["--shard=4/4", "--shard=-1/2", "--shard=1", "--shard=a/b", "--shard=0/0"]:
+		_check(TestShard.parse(PackedStringArray([bad])).y == 0, "Fatias: recusa %s" % bad)

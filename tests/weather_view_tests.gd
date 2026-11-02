@@ -43,9 +43,11 @@ func run_view(host: Node, check: Callable) -> void:
 	view.flash_now()
 	check.call(heard.size() == 1, "Clima: relâmpago manda o trovão")
 	w.start(game.sim, {"to": "clouds", "warn": 0.0, "ramp": 0.1})
-	var deadline := Time.get_ticks_msec() + 3000
-	while not view.rainbow_visible() and Time.get_ticks_msec() < deadline:
+	# Até 3 s de jogo, em quadros de 1/60 s (não em milissegundos do relógio).
+	var frames := 0
+	while not view.rainbow_visible() and frames < 3 * 60:
 		await host.get_tree().process_frame
+		frames += 1
 	check.call(view.rainbow_visible(), "Clima: arco-íris quando a tempestade passa")
 	await _audio_view(host, check, game)
 	game.queue_free()
@@ -58,7 +60,9 @@ func _audio_view(host: Node, check: Callable, game: Game) -> void:
 	w.state = &"storm"
 	w.previous = &"storm"
 	w.blend = 1.0
-	var deadline := Time.get_ticks_msec() + 4000
-	while AudioManager.ambience_level(WeatherAudio.STORM) < 0.3 and Time.get_ticks_msec() < deadline:
+	# Até 4 s de jogo, em quadros de 1/60 s.
+	var frames := 0
+	while AudioManager.ambience_level(WeatherAudio.STORM) < 0.3 and frames < 4 * 60:
 		await host.get_tree().process_frame
+		frames += 1
 	check.call(AudioManager.ambience_level(WeatherAudio.STORM) >= 0.3, "Som: a chuva forte sobe na tempestade")
