@@ -45,6 +45,7 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | 8-Bit Sound Effect Pack Vol. 001 | Deva (@Shades) | CC0-1.0 |  | sim | sim | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-sound-effect-pack-vol-001 |
 | 10 8bit Coin Sounds | Luke.RUSTLTD | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/10-8bit-coin-sounds |
 | 100 CC0 SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/100-cc0-sfx |
+| Cyberpunk Portraits | Hyptosis | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/cyberpunk-portraits |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

@@ -259,7 +259,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
-    "files_count": 61
+    "files_count": 46
   },
   {
     "id": "exo2_font",
@@ -484,5 +484,19 @@
     "modifications": "plop_01 reamostrado para 44,1 kHz e somado a -12 dB aos cristais do Kenney nas três variantes de coin_pearl (tools/mix_pickup_audio.py)",
     "source_url": "https://opengameart.org/content/100-cc0-sfx",
     "license_file": "res://licenses/texts/CC0-1.0.txt"
+  },
+  {
+    "id": "hyptosis_cyberpunk_portraits",
+    "name": "Cyberpunk Portraits",
+    "author": "Hyptosis",
+    "license_id": "CC0-1.0",
+    "category": "art",
+    "downloaded_at": "2026-11-02",
+    "verified_at": "2026-11-02",
+    "modifications": "Retratos dos 5 personagens de diálogo a partir de rostos de Cyber_Faces_001.png: recolor por máscara de matiz e luminância, figurino desenhado por código (faixa, óculos, quepe, dragona, glifo, lente), expressões por deformação local, luz e fundo (tools/gen_portraits.py)",
+    "source_url": "https://opengameart.org/content/cyberpunk-portraits",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "notice_file": "res://licenses/notices/hyptosis_cyberpunk_portraits_NOTICE.txt",
+    "files_count": 15
   }
 ]

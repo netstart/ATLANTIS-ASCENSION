@@ -2,14 +2,14 @@ class_name StoreBanner
 extends PanelContainer
 ## Cartão-destaque das telas de comando (1.15: Loja; peças reaproveitadas pelos banners de modo dos
 ## Eventos): fundo em degradê na cor do destaque, raios bem sutis atrás do retrato, a faixa do título em
-## chevron, o retrato pixel art de um personagem (Portraits) ampliado em escala inteira de pixel físico
-## com filtro nearest à esquerda, o texto da oferta à direita (`body`) e as ações em largura inteira
+## chevron, o retrato ilustrado de um personagem (Portraits) em escala inteira de pixel físico
+## à esquerda, o texto da oferta à direita (`body`) e as ações em largura inteira
 ## (`actions`). Nada pisca nem gira: o destaque é a cor e o tamanho.
 
 ## Fração máxima da largura interna que o retrato ocupa, e o teto em pontos lógicos.
 const PORTRAIT_SHARE := 0.42
 const PORTRAIT_MAX := 128.0
-const PORTRAIT_SOURCE := 64
+const PORTRAIT_SOURCE := Portraits.SOURCE
 ## Largura interna a partir da qual as ações vão para o lado do retrato.
 const WIDE := 400.0
 
@@ -83,7 +83,7 @@ func portrait() -> TextureRect:
 	return _portrait
 
 
-## Lado do retrato: o maior múltiplo de 64 pixels FÍSICOS que cabe na fatia da largura (nítido em
+## Lado do retrato: o maior múltiplo de 96 pixels FÍSICOS que cabe na fatia da largura (nítido em
 ## qualquer escala do PixelScaler, também nas que não são inteiras em pontos lógicos).
 ## Largo (desktop): as ações sobem para a coluna do texto, ao lado do retrato, e o cartão fica baixo.
 func _fit() -> void:
@@ -108,10 +108,11 @@ static func physical_scale(node: Node) -> float:
 	return float(root.size.x) / float(root.content_scale_size.x) if root.content_scale_size.x > 0 else 1.0
 
 
-## Maior lado em pontos lógicos, até `target`, que mostra o retrato de 64 px em escala inteira física.
+## Maior lado em pontos lógicos, até `target`, que mostra o retrato de 96 px em escala inteira física.
+## Quando nem a escala 1 cabe, o retrato reduz para `target` (filtro linear com mipmaps, sem serrilhar).
 static func pixel_side(target: float, scale: float) -> float:
-	var n := maxi(1, floori(target * scale / float(PORTRAIT_SOURCE)))
-	return float(PORTRAIT_SOURCE * n) / scale
+	var n := floori(target * scale / float(PORTRAIT_SOURCE))
+	return float(PORTRAIT_SOURCE * n) / scale if n >= 1 else target
 
 
 ## Fundo dos destaques: chanfro grande, degradê de cima (cor do destaque) para baixo (abismo), brilho

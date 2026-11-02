@@ -19,6 +19,7 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Ocean Creatures** — michael-jay-rov (CC-BY-4.0) — https://michael-jay-rov.itch.io/ocean-creatures
 - **Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
 - **Animated Explosions** — Luis Zuno (ansimuz) (CC0-1.0) — https://opengameart.org/content/animated-explosions
+- **Cyberpunk Portraits** — Hyptosis (CC0-1.0) — https://opengameart.org/content/cyberpunk-portraits
 
 ## Música
 

@@ -19,7 +19,7 @@ const TYPE_MAX := 3.2
 ## O cenário do capítulo fica translúcido: a água compartilhada do fundo respira por baixo.
 const BACKDROP_ALPHA := 0.72
 const CROSSFADE := 0.6
-const PORTRAIT := 72.0
+const PORTRAIT := 96.0
 ## Altura da linha do nome: a moldura do retrato desce até o fim dela, dentro da caixa.
 const HEAD_HEIGHT := 28.0
 const BARS_TIME := 0.55
@@ -217,6 +217,7 @@ func refresh_texts() -> void:
 	var who := String(p.get("speaker", ""))
 	_speaker.text = tr("speaker." + who)
 	_portrait.texture = Portraits.texture(who, String(p.get("mood", "calm")))
+	Portraits.apply_fx(_portrait, who)
 	_frame.visible = _portrait.texture != null
 	_plate_gap.custom_minimum_size = Vector2(PORTRAIT + 18.0, 0) if _frame.visible else Vector2.ZERO
 	_style_plate(_frame.visible)
@@ -242,6 +243,8 @@ func refresh_texts() -> void:
 		if who != _speaker_id:
 			_speaker_id = who
 			_fade_in_speaker()
+		# Cada fala nova chega por transmissão: o retrato sintoniza (Portraits.tune_in).
+		Portraits.tune_in(_portrait)
 		_type_text()
 	else:
 		_stop_typing()

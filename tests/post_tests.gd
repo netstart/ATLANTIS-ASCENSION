@@ -195,7 +195,41 @@ func _portraits(check: Callable) -> void:
 		check.call(mood in Portraits.MOODS, "Retrato: expressão %s conhecida" % mood)
 	check.call(Portraits.texture("narrator") == null, "Retrato: o narrador não tem rosto")
 	var tex := Portraits.texture("mare", "alert")
-	check.call(tex != null and tex.get_size() == Vector2(64, 64), "Retrato: 64x64")
+	var side := float(Portraits.SOURCE)
+	check.call(tex != null and tex.get_size() == Vector2(side, side),
+			"Retrato: %dx%d" % [Portraits.SOURCE, Portraits.SOURCE])
+	# Transmissão: shader carrega, modo por voz, linhas pela altura, sem efeito sem retrato.
+	check.call(Portraits.FX_SHADER != null and Portraits.FX_SHADER.get_mode() == Shader.MODE_CANVAS_ITEM,
+			"Retrato: shader de transmissão carrega (canvas_item)")
+	check.call(Portraits.fx_mode("mare") == "radio" and Portraits.fx_mode("farol") == "radio"
+			and Portraits.fx_mode("duarte") == "radio" and Portraits.fx_mode("thalassa") == "ethereal"
+			and Portraits.fx_mode("protocol") == "glitch", "Retrato: rádio, etéreo (Thalassa) e glitch (Protocolo)")
+	var rect := Portraits.make_rect(32.0)
+	check.call(rect.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS,
+			"Retrato: filtro linear com mipmaps (arte ilustrada reduzida sem serrilhar)")
+	rect.texture = Portraits.texture("protocol", "alert")
+	Portraits.apply_fx(rect, "protocol")
+	var mat := rect.material as ShaderMaterial
+	check.call(mat != null and int(mat.get_shader_parameter("mode")) == 2
+			and is_equal_approx(float(mat.get_shader_parameter("lines")), 8.0), "Retrato: HUD com glitch e 8 linhas")
+	Portraits.apply_fx(rect, "thalassa")
+	check.call(rect.material == mat and int(mat.get_shader_parameter("mode")) == 1,
+			"Retrato: troca de voz reusa o material")
+	Portraits.tune_in(rect)  # fora da árvore: aparece direto, sem animação pendurada
+	check.call(is_zero_approx(float(mat.get_shader_parameter("tune"))), "Retrato: sintonia fora da árvore é imediata")
+	var settings := (Engine.get_main_loop() as SceneTree).root.get_node_or_null(^"Settings")
+	if settings != null:
+		var before: Variant = settings.call("get_value", "reduce_motion")
+		settings.call("set_value", "reduce_motion", true)
+		Portraits.apply_fx(rect, "protocol")
+		check.call(bool(mat.get_shader_parameter("still")), "Retrato: reduzir movimento congela a transmissão")
+		settings.call("set_value", "reduce_motion", before)
+		Portraits.apply_fx(rect, "protocol")
+		check.call(bool(mat.get_shader_parameter("still")) == Portraits.fx_still(), "Retrato: efeito volta com a opção")
+	rect.texture = null
+	Portraits.apply_fx(rect, "mare")
+	check.call(rect.material == null, "Retrato: sem retrato (narrador), sem efeito")
+	rect.free()
 
 
 ## Abismo Infinito: roteiro por semente, módulos só no modo, profundidade acelera e paga, o bot desce.

@@ -261,7 +261,7 @@ func _draw() -> void:
 		draw_rect(Rect2(b.position, Vector2(b.size.x, 1.0)), Color(UiTheme.CYAN, 0.3))
 
 
-## Bloco da piloto: retrato 32x32 (64 px da arte em escala inteira na tela física) com moldura ciano,
+## Bloco da piloto: retrato 32x32 (arte de 96 px reduzida com mipmaps) com moldura ciano,
 ## o nível num selo dourado no canto de baixo à esquerda e a barrinha de experiência embaixo.
 class PilotBadge:
 	extends Control
@@ -275,7 +275,7 @@ class PilotBadge:
 	func _ready() -> void:
 		name = "Pilot"
 		mouse_filter = Control.MOUSE_FILTER_PASS
-		texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		_texture = Portraits.texture("mare", "smile")
 
 	func set_pilot(pilot: Dictionary) -> void:

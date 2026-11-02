@@ -278,92 +278,92 @@
  {
   "file": "assets/art/generated/portraits/duarte_alert.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "3c1a42dbf904e57773d24732500c2368cb5bfd8af21cb1b4b4dd786917fbeeba"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "36a28306187631ed33b7d0b68bd31d2d23c3d2a99507f03376b2a184da994877"
  },
  {
   "file": "assets/art/generated/portraits/duarte_calm.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "9750a91837f9324bfe2df2918198cb33e0262a20e3a8e5c2fb31ef99035a0dff"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "5d4b2f3dc608a577c1c1c388f9d11f6de240975aae7161764cf8953007708927"
  },
  {
   "file": "assets/art/generated/portraits/duarte_smile.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "0e9db0624b5f4ecef05434deeb4b102ba3f7911b429d747d7f8c504a7b3eb372"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "14acf7bde00864fe5f1818c6960998c41168ac1d33c260dfbeed77e64b4f2cdb"
  },
  {
   "file": "assets/art/generated/portraits/farol_alert.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "35ad25e4c04c674dcd3509d1786a2f5517752af865ea0b3bddd6f2d551b54538"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "69f1bb6ae93625562c8f952734cd117b33c2edd25d3fcca6ab42f03701e582b6"
  },
  {
   "file": "assets/art/generated/portraits/farol_calm.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "aec30a4157bbe4c1380734fc5367e13323aa232ca908f4ee36a12bec53703886"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "ada6bc63e2559fd16fc4439748e51dd4de89a4076df6696082969d74ad28660c"
  },
  {
   "file": "assets/art/generated/portraits/farol_smile.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "81c759a7a254054daa728c26e00853f754a9daa50655b420b35b4fd66c429537"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "19b24379ba488b7c0d8b48f8641ee9975dc5534d521835d77bb06dd1c86f87fe"
  },
  {
   "file": "assets/art/generated/portraits/mare_alert.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "6668bb6efbb4ab162c5545d7c78aa9b0b82a67099f7c7a647bcb278b3d423362"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "0921c709aac9f39298bae9ef8a40f08b92ed80f616f322070121c1a41ff17dc8"
  },
  {
   "file": "assets/art/generated/portraits/mare_calm.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "b4803590a0e75922f488ed1cd236193d8abffc9665ac77afdecdf3a0ecf44da5"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "a3b0afdfcc125e6422376ae2d63f36163cf158fbf142a50c58906359f70bb04f"
  },
  {
   "file": "assets/art/generated/portraits/mare_smile.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "89c54e28ee9b24499d4ef04d985f83ce9d5d32e08aeacf0441e2b6c79523cbfd"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "53e7949739cff0301192738bfb48e259140a3601bef9d1b33572da1de102e39a"
  },
  {
   "file": "assets/art/generated/portraits/protocol_alert.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "f5d426198b81059da51b9184a8a3e5b81c63fb966146eed37820cb02a42c05e8"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "e90da11c05b3e22a64049ad94ad4c137f07c157703393abab8175395ae4bc845"
  },
  {
   "file": "assets/art/generated/portraits/protocol_calm.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "d9d52bf61769122e2c4f3b78915019583bc7a01fbeb957840878b7565a887253"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "be8e8c00206ec39965aeac82b1f9b7e58c6010e512977d6f24faef4313981d21"
  },
  {
   "file": "assets/art/generated/portraits/protocol_smile.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "84431ea9af0f8e4954faddcd8103b78f9e9b7385339588d55c1dad4402c194fe"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "5b571cb9a223404234f42b4b4f354f219feeedf4727538affbd4b8027dd4a3c0"
  },
  {
   "file": "assets/art/generated/portraits/thalassa_alert.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "056bf06c86f1bbd3ee52a5304bed23abec1b6c77b9186d71f9fe595ef69e59dd"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "676ccc69b849eaa3dfd257b9cc0fac05c0e8655ab05746d247e7df0b95e9d064"
  },
  {
   "file": "assets/art/generated/portraits/thalassa_calm.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "eb09c2d8252f811b188e8fcdf23a9cc803f84b406e73d2338064fbbbbbe0bc84"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "8540c19f8ec2b7479e31a6fcbd86f4aa28c9f51e68dbc376f1847d41d77d7f93"
  },
  {
   "file": "assets/art/generated/portraits/thalassa_smile.png",
   "source": "tools/gen_portraits.py",
-  "license_id": "atlantis_generated",
-  "sha256": "bffa9712723d6efb3bccf4ed9ec2bebb304bf45a86dd41c52dc8eabe23e40f60"
+  "license_id": "hyptosis_cyberpunk_portraits",
+  "sha256": "429ffbd29c853127800b0bfbd111771610da04dd4f1633642805d7be27d2f505"
  },
  {
   "file": "assets/art/kenney/icons/arrowLeft.png",

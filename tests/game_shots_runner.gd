@@ -1,8 +1,9 @@
 extends Node
 ## Capturas da partida para revisão visual (não é teste de aprovação). Sem --headless:
 ##   godot --path . res://tests/game_shots_runner.tscn -- --shots=<pasta> [--at=12,50,100] [--res=305x678]
-##     [--mission=c1m1] [--speed=3] [--zoom=4]
+##     [--mission=c1m1] [--speed=3] [--zoom=4] [--radio=thalassa_hello]
 ## O bot joga em velocidade acelerada; em cada segundo de jogo pedido grava <pasta>/game_<s>_<res>.png.
+## --radio abre essa fala de data/dialogue.json no rádio meio segundo antes de cada captura (retrato com efeito).
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const GAME := preload("res://scenes/game/Game.tscn")
@@ -10,6 +11,8 @@ const GAME := preload("res://scenes/game/Game.tscn")
 var _shots: Array[float] = []
 var _out: String = ""
 var _label: String = ""
+var _radio: String = ""
+var _radio_at: float = -1.0
 var _game: Game
 
 
@@ -30,6 +33,8 @@ func _ready() -> void:
 			res = arg.trim_prefix("--res=")
 		elif arg.begins_with("--zoom="):
 			zoom = int(arg.trim_prefix("--zoom="))
+		elif arg.begins_with("--radio="):
+			_radio = arg.trim_prefix("--radio=")
 		elif arg.begins_with("--mission="):
 			mission = StringName(arg.trim_prefix("--mission="))
 	if _shots.is_empty():
@@ -52,6 +57,9 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _game == null or _shots.is_empty():
 		return
+	if not _radio.is_empty() and _radio_at != _shots[0] and _game.sim.frame >= int((_shots[0] - 0.5) * 60.0):
+		_radio_at = _shots[0]
+		_game.hud().show_radio(_radio)
 	if _game.sim.frame >= int(_shots[0] * 60.0) or _game.sim.finished:
 		var at := _shots.pop_front() as float
 		GameClock.paused = true

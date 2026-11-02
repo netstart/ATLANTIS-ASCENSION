@@ -40,7 +40,8 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ⬜ Ratificar CC-BY-3.0 e OGA-BY-3.0 na lista de licenças.
 - ✅ Licenças de Void Fleet Pack 1, Fleet Pack 3 e Pickups Pack: CC0 e "No generative AI was used" nas páginas
   (snapshots em `docs/licenses/`, 30/10/2026).
-- ✅ Retratos: criados pelo projeto (`tools/gen_portraits.py`, MIT), sem o pack SakPix.
+- ✅ Retratos: derivados do *Cyberpunk Portraits* (Hyptosis, CC0) por `tools/gen_portraits.py` (1.15.1), sem o pack
+  SakPix.
 - ⬜ Pacote Android definitivo.
 - ⬜ Preço na Steam (alvo US$ 9,99) e da compra "Apoiar" (alvo US$ 3,99).
 - ⬜ Backend para os sistemas sociais do pós-lançamento.
@@ -377,3 +378,15 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   capturas em `tests/hangar_shots_runner.tscn`. Rebase sobre a 1.14.5: telas novas abrem por `Screen.present()` e
   montam uma vez por abertura; os testes novos entram nas fatias da integração (Oficina com um caso de resolução por
   unidade, ~2 min em série). Falta conferir no aparelho
+- ✅ `1.15.1` Retratos novos com transmissão: os 5 personagens (Maré, Farol, Duarte, Thalassa, Protocolo) agora são
+  arte ilustrada 96x96 derivada do *Cyberpunk Portraits* (Hyptosis, CC0; registro `hyptosis_cyberpunk_portraits`),
+  refeita por `tools/gen_portraits.py` (numpy): recolor por matiz e luminância, figurino desenhado por código (faixa
+  coral, óculos com reflexo ciano, quepe de almirante, dragona, glifo atlante, lente vermelha com malha hexagonal),
+  expressões por deformação local de boca, sobrancelhas e bochechas mais luz por humor, fundo na cor da fala com
+  halo e vinheta (`--preview DIR` grava a folha 5x3). Filtro linear com mipmaps (96 para 32 px sem serrilhar);
+  retrato da história sobe de 72 para 96 pt. Shader `shaders/portrait_fx.gdshader` (MIT, próprio): rádio
+  (varredura que rola, cintilação, grão, zumbido, borda ciano), etéreo para Thalassa (ondulação de água, cáusticas,
+  brilho pulsante, aura violeta) e glitch para o Protocolo (separação RGB, rajadas de fatias, lente pulsante); cada
+  fala nova faz a sintonia de 0,35 s (`Portraits.tune_in`: aberração, faixas, pixels entrando com chiado). Reduzir
+  movimento ou flashes congela o efeito. Testes em `tests/post_tests.gd` (tamanho, shader, modo por voz, linhas por
+  altura, acessibilidade, narrador sem efeito). Falta conferir no aparelho

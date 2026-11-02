@@ -25,7 +25,7 @@ func run(check: Callable) -> void:
 	for scale: float in [1.0, 2.0, 3.0, 4.0, 5.0]:
 		var side := StoreBanner.pixel_side(100.0, scale)
 		var physical := side * scale
-		crisp = crisp and side <= 100.0 + 0.01 and is_equal_approx(fmod(physical, 64.0), 0.0)
+		crisp = crisp and side <= 100.0 + 0.01 and is_equal_approx(fmod(physical, float(StoreBanner.PORTRAIT_SOURCE)), 0.0)
 	check.call(crisp, "Destaque: retrato em múltiplo inteiro de pixel físico em toda escala")
 
 

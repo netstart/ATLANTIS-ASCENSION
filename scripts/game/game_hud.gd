@@ -794,6 +794,7 @@ func show_radio(dialogue_id: String) -> void:
 	var speaker := String(row.get("speaker", ""))
 	var color := Color(String(row.get("color", "#dff6ff")))
 	_portrait.texture = Portraits.texture(speaker, String(row.get("mood", "calm")))
+	Portraits.transmit(_portrait, speaker)
 	_radio_name.text = tr("speaker." + speaker)
 	var text := tr(String(row.get("text_key", "")))
 	# Sem retrato (narrador), o nome volta para dentro do texto.

@@ -112,9 +112,10 @@ C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --s
 # Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas (nave no nível 10)
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/scroll_bench.tscn -- --strict
 C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_bench.tscn -- --strict
-# Arte gerada pelo projeto (balas, coletáveis, efeitos, ícone) e retratos dos personagens
+# Arte gerada pelo projeto (balas, coletáveis, efeitos, ícone)
 python -I tools\gen_sprites.py
-python -I tools\gen_portraits.py
+# Retratos dos personagens, a partir do Cyberpunk Portraits (CC0) baixado (precisa de numpy; --preview DIR grava a folha)
+python tools\gen_portraits.py
 # Evolução visual da nave por nível do hangar (peças de 48x48 alinhadas à nave; --preview DIR grava os 10 níveis)
 python -I tools\gen_livery.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)

@@ -1,0 +1,10 @@
+Cyberpunk Portraits
+https://opengameart.org/content/cyberpunk-portraits
+
+Author: Hyptosis (https://opengameart.org/users/hyptosis)
+License: CC0 1.0 Universal (public domain dedication). The page says the art can be used for anything.
+
+Used in Atlantis Ascension: the five dialogue portraits (assets/art/generated/portraits/*.png) start from
+faces of Cyber_Faces_001.png and are rebuilt by tools/gen_portraits.py (recolor, costume pieces drawn by code,
+expressions by local warping, lighting and background). Credited in the game's credits screen even though CC0
+does not require it.

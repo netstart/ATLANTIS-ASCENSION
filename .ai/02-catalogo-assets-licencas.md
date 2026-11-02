@@ -107,12 +107,13 @@ gravitacional do núcleo. Tiles das ruínas atlantes: desenhar 1 tileset de 32x3
 | Game Icons (e Expansion) | Kenney | https://kenney.nl/assets/game-icons | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/game-icons.zip` | Ícones de menu, abas, opções |
 | Input Prompts (e Pixel) | Kenney | https://kenney.nl/assets/input-prompts | CC0-1.0 | ✅ baixado 30/10 (License.txt CC0) | `kenney/input-prompts.zip` | Teclado, controle e Steam Deck |
 | Cursor Pack | Kenney | https://kenney.nl/assets/cursor-pack | CC0-1.0 | ✅ catálogo | `kenney/cursor-pack.zip` | Cursor no desktop |
+| Cyberpunk Portraits | Hyptosis | https://opengameart.org/content/cyberpunk-portraits | CC0-1.0 | ✅ baixado 02/11 (página: CC0, "use them for anything") | `opengameart/hyptosis-cyberpunk-portraits/cyberpunk-portraits.zip` | Base dos 5 retratos de diálogo (1.15.1), refeitos por `tools/gen_portraits.py` |
 
 **Criar:** cartões do hub (moldura de cerâmica com filete dourado), banners de evento, ícones das 7 armas e das 12
-aeronaves (renderizados a partir dos próprios sprites), retratos dos 3 personagens falantes (64x64, 3 expressões).
-Alternativa para retratos: *Galaxy Legacy: Sci-Fi Pixel Portrait Pack* (SakPix,
-https://sakpix.itch.io/galaxy-legacy-sci-fi-pixel-portrait-pack-free-may-the-4th-edition), licença custom com uso
-comercial: 🔶, só com decisão registrada.
+aeronaves (renderizados a partir dos próprios sprites). Retratos (1.15.1): os 5 personagens falantes em 96x96 e 3
+expressões, derivados do *Cyberpunk Portraits* (Hyptosis, CC0) por `tools/gen_portraits.py` (recolor, figurino por
+código, expressão por deformação local, luz e fundo na cor da fala); substituem a pixel art 64x64 da 1.2.0. O
+*Galaxy Legacy* (SakPix, licença custom) segue fora.
 
 ## 7. Fontes
 
