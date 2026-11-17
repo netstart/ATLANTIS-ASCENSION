@@ -51,6 +51,57 @@
     "snapshot_file": "docs/licenses/androidx_2026-10-30.pdf"
   },
   {
+    "id": "poing_admob_plugin",
+    "name": "Poing Studios AdMob Plugin for Godot",
+    "category": "plugin",
+    "author": "Poing Studios",
+    "version": "5.1.0 (android-template-v4.7.2)",
+    "source_url": "https://github.com/poingstudios/godot-admob-plugin",
+    "license_id": "MIT",
+    "license_url": "https://raw.githubusercontent.com/poingstudios/godot-admob-plugin/v5.1.0/LICENSE",
+    "license_file": "licenses/texts/MIT-PoingAdMob.txt",
+    "snapshot_url": "https://github.com/poingstudios/godot-admob-plugin",
+    "attribution_required": true,
+    "commercial_use": true,
+    "modifications": "sem C#, skills do editor e adaptadores de mediação (cópia do addons/admob do hyakki); ios, docs, assets e mock fora dos pacotes",
+    "files": [
+      "addons/admob/**"
+    ],
+    "sha256": {
+      "license_file": "9154d410d6795817a45e1a5f2caa9236111e313152c0b51ea39f48aaf7034834",
+      "snapshot_file": "23754f13bd01798dd0fc4b4885eef1decdea64115aec9f94716b2b46a9e410c4"
+    },
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-16",
+    "verified_by": "Claude (anúncio recompensado 1.17.0, a partir do registro do hyakki de 2026-10-21); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/poing_admob_plugin_2026-10-21.pdf"
+  },
+  {
+    "id": "google_mobile_ads_sdk",
+    "name": "Google Mobile Ads SDK and UMP SDK",
+    "category": "android",
+    "author": "Google LLC",
+    "version": "ads-mobile-sdk 1.4.0 (via Poing AdMob 5.1.0)",
+    "source_url": "https://developers.google.com/admob/android/quick-start",
+    "license_id": "LicenseRef-Google-Mobile-Ads-SDK",
+    "license_source": "licenses/sources/LicenseRef-Google-Mobile-Ads-SDK.txt",
+    "license_file": "licenses/texts/LicenseRef-Google-Mobile-Ads-SDK.txt",
+    "snapshot_url": "https://developers.google.com/admob/terms",
+    "attribution_required": false,
+    "commercial_use": true,
+    "modifications": "",
+    "decision": "Em 2026-11-16 o mantenedor (Clayton K. N. Passos) decidiu ligar o anúncio recompensado opcional no Android grátis (só recompensado, nada de intersticial nem banner, nunca na Steam nem para quem apoiou). O SDK do Google não é aberto, mas é o SDK obrigatório da loja para anúncios: é distribuído pelo Google Maven para ser incluído no APK/AAB, sob os Termos do AdMob, que permitem o uso em apps comerciais. Mesma decisão do projeto hyakki (mesmo mantenedor).",
+    "files": [],
+    "sha256": {
+      "license_file": "350cc8257b4aace95de0e10eaa24f17f37271f3da25885a102313dc671c58911",
+      "snapshot_file": "9dde486a0daccbb65f4c67a8c7d8f883a12ddfc4b4318ed10f1df6008891dd48"
+    },
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-16",
+    "verified_by": "Claude (anúncio recompensado 1.17.0, a partir do registro do hyakki de 2026-10-21); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/google_mobile_ads_sdk_2026-10-21.pdf"
+  },
+  {
     "id": "hyakki_code",
     "name": "Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas)",
     "category": "code",

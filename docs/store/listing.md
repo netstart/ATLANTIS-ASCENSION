@@ -5,10 +5,11 @@ longa 4.000 caracteres (`tools/check_store_texts.py` confere os limites e roda e
 Respostas dos formulários do Play Console (classificação, segurança de dados, público-alvo etc.) estão em
 [play-console.md](play-console.md). Revisão por falantes nativos antes do envio ainda é recomendada.
 
-> A versão atual da Play **não tem anúncios nem compras no app** (sem os plugins do AdMob e do Play Billing o
-> build de release esconde a loja paga; ver `Store.purchases_enabled`). Se ligar anúncios ou compras, atualize
-> este texto, a [política de privacidade](privacy-policy.md) e as declarações de [play-console.md](play-console.md)
-> **antes** de enviar o build.
+> Desde a 1.18 a versão da Play **contém anúncios recompensados opcionais** (Google AdMob: só quando o jogador
+> pede, nunca durante a missão, sem venda de poder) e **não tem compras no app** (sem o plugin do Play Billing o
+> build de release esconde a loja paga; ver `Store.purchases_enabled`). Se ligar compras, atualize este texto, a
+> [política de privacidade](privacy-policy.md) e as declarações de [play-console.md](play-console.md) **antes** de
+> enviar o build.
 
 ## Português (Brasil) — idioma padrão da ficha
 
@@ -31,7 +32,8 @@ Atlantis Ascension é um shoot'em up vertical em pixel art, feito para ser jogad
 • 12 aeronaves, 12 asas de apoio, oficina e a Cidade de Thalassa para reerguer com quem você resgata.
 • Abismo Infinito: 60 profundidades remixadas, módulos e sinergias, cada vez mais fundo.
 • Desafio Diário igual para todos, Sobrevivência, Boss Rush, Arcade, Prática e o Fantasma do seu recorde.
-• Jogue offline. Sem energia, sem espera, sem anúncios e sem venda de poder.
+• Jogue offline. Sem energia, sem espera e sem venda de poder.
+• Anúncios só se você quiser: um vídeo opcional para reviver ou dobrar recompensas, nunca durante a missão.
 • Acessível: modos de daltonismo, texto maior, menos clarões, dificuldade Brisa.
 • 11 idiomas.
 
@@ -59,7 +61,8 @@ Atlantis Ascension is a vertical pixel-art shoot 'em up built for one thumb:
 • 12 ships, 12 support wings, a workshop and the City of Thalassa rebuilt by those you rescue.
 • Endless Abyss: 60 remixed depths, modules and synergies, ever deeper.
 • A Daily Challenge shared by everyone, Survival, Boss Rush, Arcade, Practice and a Ghost of your best run.
-• Play offline. No energy, no waiting, no ads and no pay-to-win.
+• Play offline. No energy, no waiting and no pay-to-win.
+• Ads only if you want them: an optional video to revive or double rewards, never during a mission.
 • Accessible: colorblind modes, larger text, fewer flashes, Breeze difficulty.
 • 11 languages.
 

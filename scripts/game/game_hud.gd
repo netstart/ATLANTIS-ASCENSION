@@ -446,7 +446,7 @@ func _build_pause_panel() -> void:
 
 func show_revive() -> void:
 	_revive_text.text = tr("hud.revive_title")
-	_revive_yes.text = tr("hud.revive_ad") if Store.ads_allowed(SaveManager.data) else tr("hud.revive_free")
+	_revive_yes.text = tr("hud.revive_ad") if Ads.can_show(SaveManager.data) else tr("hud.revive_free")
 	_revive_no.text = tr("hud.give_up")
 	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
 	var width := field.size.x - 32.0

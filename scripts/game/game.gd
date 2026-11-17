@@ -659,8 +659,11 @@ func _on_revive_choice(accept: bool) -> void:
 	_hud.hide_revive()
 	if not accept:
 		return
+	# Anúncio que não abre (falha técnica) ou que não carregou devolve granted: o reviver só se perde se o
+	# jogador fechar o anúncio antes do fim (Ads.rewarded_granted).
 	Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
 		if granted:
+			_done = -1.0
 			sim.revive()
 			AudioManager.play("kenney_weapon_up")
 			_hud.show_banner(tr("hud.revived")))

@@ -8,8 +8,8 @@ O laço: os últimos FADE segundos da faixa são misturados por igual potência 
 faixa é cortada ali. Tocada em laço, a última amostra continua exatamente na primeira (o começo já contém a cauda),
 sem clique e sem silêncio. Depois normaliza para -16 LUFS aproximado (RMS) com pico máximo em -1 dBFS.
 
-Entrada:  c:\\src\\downloads\\assets\\flow-music\\menu\\main_theme_alt.wav
-Saída:    c:\\src\\downloads\\assets\\flow-music\\menu\\flow_tide_rising.ogg (Vorbis q6, 48 kHz estéreo)
+Entrada:  D:\\src\\assets-downloaded\\flow-music\\menu\\main_theme_alt.wav
+Saída:    D:\\src\\assets-downloaded\\flow-music\\menu\\flow_tide_rising.ogg (Vorbis q6, 48 kHz estéreo)
 
 Requer numpy e soundfile: python tools/prepare_menu_music.py [--src DIR]
 """
@@ -27,7 +27,7 @@ PEAK_DB = -1.0
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--src", default=r"c:\src\downloads\assets\flow-music\menu")
+    ap.add_argument("--src", default=r"D:\src\assets-downloaded\flow-music\menu")
     args = ap.parse_args()
     src = pathlib.Path(args.src)
     x, sr = sf.read(src / "main_theme_alt.wav", always_2d=True)

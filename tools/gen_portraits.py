@@ -1,7 +1,7 @@
 """Retratos dos personagens (plano mestre 3.2): 96x96 com 3 expressões, derivados do "Cyberpunk Portraits" (CC0).
 
 Fonte: "Cyberpunk Portraits" de Hyptosis (OpenGameArt, CC0), três folhas 4x2 de rostos ilustrados 96x96,
-baixadas em c:\\src\\downloads\\assets\\opengameart\\hyptosis-cyberpunk-portraits\\extracted (fora do repositório;
+baixadas em D:\\src\\assets-downloaded\\opengameart\\hyptosis-cyberpunk-portraits\\extracted (fora do repositório;
 $ATLANTIS_DOWNLOADS troca a raiz). Cada personagem do jogo nasce de um rosto do pacote, refeito por código:
 
 - mare (Iara "Maré" Vasconcelos), folha 1, linha 2, coluna 3: cabelo vermelho vira preto azulado com brilho,
@@ -43,7 +43,7 @@ import numpy as np
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "art" / "generated" / "portraits"
-DOWNLOADS = pathlib.Path(os.environ.get("ATLANTIS_DOWNLOADS", "C:/src/downloads/assets"))
+DOWNLOADS = pathlib.Path(os.environ.get("ATLANTIS_DOWNLOADS", "D:/src/assets-downloaded"))
 PACK = DOWNLOADS / "opengameart" / "hyptosis-cyberpunk-portraits" / "extracted"
 SOURCE = "tools/gen_portraits.py"
 LICENSE_ID = "hyptosis_cyberpunk_portraits"

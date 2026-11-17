@@ -4,7 +4,7 @@ Os sons antigos (pepSound do Kenney Digital Audio e um sino metálico no acerto)
 embolavam na rajada. Cada som novo junta duas camadas: um corpo que diz o que é e um transiente que dá o
 "tchim" ou o "toc", recortados curtos para não se sobreporem na chuva de coletas e acertos.
 
-Entrada (fora do repositório, em c:\\src\\downloads\\assets):
+Entrada (fora do repositório, em D:\\src\\assets-downloaded):
   opengameart/8-bit-sound-effect-pack-vol-001/Coin 3.wav     Deva (@Shades), CC0: moeda 8-bit de dois tons
   opengameart/10-8bit-coin-sounds/coin1.wav                   Luke.RUSTLTD, CC0: moeda 8-bit curta
   opengameart/100-cc0-sfx/plop_01.ogg                         rubberduck, CC0 (48 kHz): bolha
@@ -92,7 +92,7 @@ def write(path: pathlib.Path, x: np.ndarray) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--src", default=r"c:\src\downloads\assets")
+    parser.add_argument("--src", default=r"D:\src\assets-downloaded")
     src = pathlib.Path(parser.parse_args().src)
     oga = src / "opengameart"
     kenney = src / "kenney"

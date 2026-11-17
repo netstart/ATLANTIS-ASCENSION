@@ -6,7 +6,7 @@ nome do mantenedor, então ficam com ele. Ordem sugerida:
 ## 1. Ferramentas
 
 1. ✅ Android SDK instalado (`tools\setup_android_sdk.ps1`, licenças do Google aceitas pelo mantenedor).
-2. ✅ Chave de upload criada fora do repositório: `C:\src\tools\keys\atlantis-upload.keystore` (RSA 4096,
+2. ✅ Chave de upload criada fora do repositório: `D:\src\keys\atlantis-upload.keystore` (RSA 4096,
    alias `atlantis-upload`) e `atlantis-upload.env` com as variáveis `GODOT_ANDROID_KEYSTORE_RELEASE_*`. **Faça
    backup dos dois arquivos** (cofre de senhas ou mídia offline). Na Play, ative a Assinatura de apps pelo Google
    Play e envie esta chave como chave de upload: se ela se perder, a Play permite trocar a chave de upload.
@@ -20,11 +20,12 @@ Roteiro completo, tela a tela, com todas as respostas do Play Console: [play-con
 
 Já pronto no repositório:
 
-- ✅ AAB assinado com a chave de upload (preset "Android Play"): targetSdk 36, 64 bits alinhado em 16 KB, só a
-  permissão `VIBRATE`, backup automático do save ligado.
-- ✅ Build de release sem plugins de pagamento/anúncio não finge cobrança: a loja paga some e as recompensas de
-  "anúncio" saem direto (`Store.simulated`/`Store.purchases_enabled`). Ficha, política e declarações dizem
-  "sem anúncios, sem compras".
+- ✅ AAB assinado com a chave de upload (preset "Android Play"): targetSdk 36, 64 bits alinhado em 16 KB,
+  permissões `VIBRATE` (do jogo) e `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (do SDK de anúncios), backup
+  automático do save ligado. `python -I tools/check_release_ads.py` confere o AdMob real no AAB.
+- ✅ Anúncio recompensado real (1.18.0, IDs do AdMob do mantenedor). Build de release sem plugin de pagamento não
+  finge cobrança: a loja paga some (`Store.simulated`/`Store.purchases_enabled`). Ficha, política e declarações
+  dizem "contém anúncios (recompensados, opcionais), sem compras".
 - ✅ Arte da ficha: `toolsuild_store_art.ps1` (8 capturas 1080x1920 e a imagem de destaque 1024x500 em cada
   um dos 11 idiomas, ícone 512).
 - ✅ Textos da ficha em [listing.md](listing.md) (pt-BR e en completos; título e descrição curta nos 11 idiomas),
@@ -39,9 +40,12 @@ Só o mantenedor pode fazer:
 3. Preencher as declarações com as respostas de [play-console.md](play-console.md) e enviar o AAB no teste interno.
 4. **Teste fechado com 12 testadores por 14 dias seguidos** (exigência da Play para contas pessoais novas) e pedir
    acesso à produção.
-5. Fase 4 (opcional, depois): AdMob com UMP e Play Billing (`supporter`, `season_gold`, pinturas avulsas); com
-   `GodotGooglePlayBilling` e `AdMob` presentes a loja passa a cobrar de verdade (ver `scripts/core/store.gd` e
-   `scripts/core/ads.gd`). Antes, atualizar política, ficha e declarações (fim de [play-console.md](play-console.md)).
+5. Anúncio recompensado (IDs reais ligados na 1.18.0): configurar a mensagem de consentimento GDPR/LGPD no AdMob,
+   publicar a política nova em `netstart.github.io/atlantis/` e declarar "contém anúncios", ID de publicidade e
+   Segurança dos dados (seção "Ligar o anúncio recompensado" de [play-console.md](play-console.md)).
+6. Fase 4 (opcional, depois): Play Billing (`supporter`, `season_gold`, pinturas avulsas); com
+   `GodotGooglePlayBilling` presente a loja passa a cobrar de verdade (ver `scripts/core/store.gd`). Antes,
+   atualizar política, ficha e declarações (fim de [play-console.md](play-console.md)).
 
 ## 3. Steam
 

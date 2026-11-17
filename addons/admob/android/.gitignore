@@ -1,0 +1,2 @@
+# O bin/ (binários Android do plugin Poing AdMob, licença MIT em licenses/) é versionado:
+# o build de release no CI exporta a partir do checkout e precisa do plugin.

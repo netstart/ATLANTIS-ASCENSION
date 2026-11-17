@@ -8,17 +8,22 @@
 
 config_version=5
 
+[admob]
+
+general/android/app_id="ca-app-pub-6552169828297838~1447443371"
+general/android/enable_r8_optimization=true
+
 [application]
 
 config/name="Atlantis Ascension"
 config/description="Atlantis Ascension — The ocean remembers. The sky belongs to whoever survives."
-config/version="1.16.0"
+config/version="1.18.1"
 run/main_scene="res://scenes/app/App.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://assets/art/generated/icon/icon_512.png"
 boot_splash/bg_color=Color(0.043137256, 0.11764706, 0.24705882, 1)
 boot_splash/show_image=false
+config/icon="res://assets/art/generated/icon/icon_512.png"
 
 [autoload]
 
@@ -44,6 +49,10 @@ window/size/window_width_override=610
 window/size/window_height_override=1356
 window/stretch/mode="canvas_items"
 window/handheld/orientation=5
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/admob/plugin.cfg")
 
 [input_devices]
 

@@ -5,15 +5,15 @@
 # Rode você mesmo: o sdkmanager mostra as licenças do Android SDK e pede que VOCÊ as aceite.
 #   powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1
 #
-# Parâmetros opcionais: -SdkRoot C:\src\tools\android-sdk  -JdkRoot C:\src\tools\jdk\jdk-17.0.20.1+1
+# Parâmetros opcionais: -SdkRoot D:\Programs\android-sdk  -JdkRoot D:\Programs\jdk\jdk-17.0.21+9
 
 param(
-    [string]$SdkRoot = 'C:\src\tools\android-sdk',
-    [string]$JdkRoot = $(Get-ChildItem 'C:\src\tools\jdk' -Directory -Filter 'jdk-17*' | Select-Object -First 1 -ExpandProperty FullName)
+    [string]$SdkRoot = 'D:\Programs\android-sdk',
+    [string]$JdkRoot = $(if (Test-Path 'D:\Programs\jdk') { Get-ChildItem 'D:\Programs\jdk' -Directory -Filter 'jdk-17*' | Select-Object -First 1 -ExpandProperty FullName })
 )
 
 $ErrorActionPreference = 'Stop'
-if (-not $JdkRoot -or -not (Test-Path (Join-Path $JdkRoot 'bin\java.exe'))) { throw "JDK 17 não encontrado em C:\src\tools\jdk" }
+if (-not $JdkRoot -or -not (Test-Path (Join-Path $JdkRoot 'bin\java.exe'))) { throw "JDK 17 não encontrado em D:\Programs\jdk" }
 $env:JAVA_HOME = $JdkRoot
 $env:Path = "$JdkRoot\bin;$env:Path"
 
@@ -23,7 +23,7 @@ if (-not (Test-Path (Join-Path $latest 'bin\sdkmanager.bat'))) {
     $page = (Invoke-WebRequest -UseBasicParsing 'https://developer.android.com/studio').Content
     $zip = [regex]::Match($page, 'commandlinetools-win-\d+_latest\.zip').Value
     if (-not $zip) { throw 'Não achei o link das command-line tools em developer.android.com/studio' }
-    $download = Join-Path 'C:\src\downloads\tools' $zip
+    $download = Join-Path 'D:\Programs\downloads' $zip
     New-Item -ItemType Directory -Force (Split-Path $download) | Out-Null
     Write-Host "Baixando $zip"
     Invoke-WebRequest -UseBasicParsing "https://dl.google.com/android/repository/$zip" -OutFile $download

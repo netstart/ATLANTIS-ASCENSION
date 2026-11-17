@@ -316,6 +316,7 @@ static func apply_result(profile: Dictionary, mode: StringName, result: Dictiona
 			daily["date"] = date
 			daily["best_score"] = 0
 			daily["attempted"] = false
+			daily["pearls_doubled"] = false
 		if not bool(daily["attempted"]):
 			daily["attempted"] = true
 			daily["best_score"] = score
@@ -330,6 +331,26 @@ static func apply_result(profile: Dictionary, mode: StringName, result: Dictiona
 		out["orichalcum_gain"] = ori
 	out["credits"] = credits
 	return out
+
+
+## Dobrar as Pérolas do Diário (recompensado opcional): só no resultado do Diário que pagou as Pérolas
+## (a 1ª tentativa do dia) e 1 vez por dia.
+static func daily_pearls_doublable(profile: Dictionary, result: Dictionary) -> bool:
+	var daily: Dictionary = profile["daily"]
+	return (String(result.get("mode", "")) == "daily" and int(result.get("pearls_gain", 0)) > 0
+			and String(result.get("daily", "")) == String(daily.get("date", ""))
+			and not bool(daily.get("pearls_doubled", false)))
+
+
+## Paga as Pérolas do Diário de novo e marca o dia. Devolve se dobrou.
+static func double_daily_pearls(profile: Dictionary, result: Dictionary) -> bool:
+	if not daily_pearls_doublable(profile, result):
+		return false
+	var gain := int(result["pearls_gain"])
+	profile["daily"]["pearls_doubled"] = true
+	profile["wallet"]["pearls"] = int(profile["wallet"]["pearls"]) + gain
+	result["pearls_gain"] = gain * 2
+	return true
 
 
 static func _load(id: StringName) -> Dictionary:

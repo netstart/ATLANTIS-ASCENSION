@@ -153,7 +153,7 @@ powershell -ExecutionPolicy Bypass -File tools\run_checks.ps1
 
 O script importa o projeto, roda `gdlint`, os testes de regras, i18n, licenças, integração, determinismo (1x, 2x, 3x,
 Baixa) e o estresse de 1.000 projéteis. Termina com `TUDO OK` ou `FALHOU`. O executável do Godot vem de `$env:GODOT`
-ou de `C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe`.
+ou de `D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe`.
 
 ### Paralelo e em fatias (1.14.4)
 

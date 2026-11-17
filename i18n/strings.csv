@@ -535,6 +535,7 @@ options.handedness,Mão dos botões,Button side,Lado de botones,Tastenseite,Côt
 options.language,Idioma,Language,Idioma,Sprache,Langue,Язык,Bahasa,言語,언어,語言,语言
 options.logbook,Diário de bordo,Logbook,Bitácora,Logbuch,Carnet de bord,Бортовой журнал,Jurnal,航海日誌,항해 일지,航海日誌,航海日志
 options.music_volume,Música,Music,Música,Musik,Musique,Музыка,Musik,音楽,음악,音樂,音乐
+options.privacy_ads,Privacidade e anúncios,Privacy and ads,Privacidad y anuncios,Datenschutz und Werbung,Confidentialité et pubs,Конфиденциальность и реклама,Privasi dan iklan,プライバシーと広告,개인정보 및 광고,隱私與廣告,隐私与广告
 options.reduce_flashes,Menos clarões,Fewer flashes,Menos destellos,Weniger Blitze,Moins de flashs,Меньше вспышек,Kurangi kilat,フラッシュ軽減,번쩍임 줄이기,減少閃光,减少闪光
 options.reduce_motion,Menos movimento,Reduce motion,Menos movimiento,Weniger Bewegung,Moins d'animation,Меньше движения,Kurangi gerak,動きを抑える,움직임 줄이기,減少動態,减少动态
 options.screen_shake,Tremor da tela,Screen shake,Temblor,Wackeln,Tremblement,Тряска,Getar layar,画面揺れ,화면 흔들림,畫面震動,画面震动
@@ -639,6 +640,8 @@ results.credits,Créditos: +%s,Credits: +%s,Créditos: +%s,Credits: +%s,Crédits
 results.depth,Profundidade alcançada: %d,Depth reached: %d,Profundidad alcanzada: %d,Erreichte Tiefe: %d,Profondeur atteinte : %d,Достигнутая глубина: %d,Kedalaman dicapai: %d,到達深度：%d,도달 깊이: %d,到達深度：%d,到达深度：%d
 results.double_ad,Dobrar créditos · ver anúncio,Double credits · watch an ad,Duplicar créditos · ver anuncio,Credits verdoppeln · Werbung,Doubler les crédits · pub,Удвоить кредиты · реклама,Gandakan kredit · tonton iklan,クレジット2倍・広告,크레딧 2배 · 광고,點數加倍・看廣告,点数加倍・看广告
 results.double_free,Dobrar créditos,Double credits,Duplicar créditos,Credits verdoppeln,Doubler les crédits,Удвоить кредиты,Gandakan kredit,クレジット2倍,크레딧 2배,點數加倍,点数加倍
+results.double_pearls_ad,Dobrar Pérolas · ver anúncio,Double Pearls · watch an ad,Duplicar Perlas · ver anuncio,Perlen verdoppeln · Werbung,Doubler les Perles · pub,Удвоить жемчуг · реклама,Gandakan Mutiara · tonton iklan,真珠2倍・広告,진주 2배 · 광고,珍珠加倍・看廣告,珍珠加倍・看广告
+results.double_pearls_free,Dobrar Pérolas,Double Pearls,Duplicar Perlas,Perlen verdoppeln,Doubler les Perles,Удвоить жемчуг,Gandakan Mutiara,真珠2倍,진주 2배,珍珠加倍,珍珠加倍
 results.failed,Missão falhou,Mission failed,Misión fallida,Mission gescheitert,Mission échouée,Миссия провалена,Misi gagal,ミッション失敗,임무 실패,任務失敗,任务失败
 results.fragments,+%d fragmentos de %s,+%d %s fragments,+%d fragmentos de %s,+%d Fragmente: %s,+%d fragments de %s,+%d фрагментов: %s,+%d fragmen %s,欠片 +%d（%s）,조각 +%d (%s),碎片 +%d（%s）,碎片 +%d（%s）
 results.grade,Nota da missão,Mission grade,Nota de la misión,Missionsnote,Note de mission,Оценка миссии,Nilai misi,ミッション評価,임무 등급,任務評價,任务评价

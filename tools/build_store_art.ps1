@@ -9,7 +9,7 @@
 #       (opcional) -Godot "C:\...\Godot_v4.7.2-stable_win64_console.exe" -Langs pt_BR,en
 
 param(
-    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe' }),
+    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe' }),
     [string[]]$Langs = @('pt_BR', 'en', 'es', 'de', 'fr', 'ru', 'id', 'ja', 'ko', 'zh_TW', 'zh_CN')
 )
 

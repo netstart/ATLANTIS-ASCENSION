@@ -8,6 +8,8 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 |---|---|---|---|---|---|---|---|
 | Godot Engine | Juan Linietsky, Ariel Manzur and Godot Engine contributors | MIT | 4.7.2-stable | sim | sim | `licenses/texts/MIT-Godot.txt` | https://godotengine.org/license |
 | Android Jetpack (AndroidX) and Kotlin stdlib | The Android Open Source Project; JetBrains s.r.o. | Apache-2.0 | as bundled by the Godot 4.7.2 Android export template | sim | sim | `licenses/texts/Apache-2.0.txt` | https://developer.android.com/jetpack/androidx |
+| Poing Studios AdMob Plugin for Godot | Poing Studios | MIT | 5.1.0 (android-template-v4.7.2) | sim | sim | `licenses/texts/MIT-PoingAdMob.txt` | https://github.com/poingstudios/godot-admob-plugin |
+| Google Mobile Ads SDK and UMP SDK | Google LLC | LicenseRef-Google-Mobile-Ads-SDK | ads-mobile-sdk 1.4.0 (via Poing AdMob 5.1.0) | sim | não | `licenses/texts/LicenseRef-Google-Mobile-Ads-SDK.txt` | https://developers.google.com/admob/android/quick-start |
 | Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas) | Clayton K. N. Passos | MIT | main em 2026-10-30 | sim | sim | `licenses/texts/MIT-Hyakki.txt` | https://github.com/netstart/hyakki |
 | Fusion Pixel Font (12px proportional) | TakWolf | OFL-1.1 | 2026.10.16 | sim | sim | `licenses/texts/OFL-1.1.txt` | https://github.com/TakWolf/fusion-pixel-font |
 | Ark Pixel Font (Fusion Pixel upstream) | TakWolf | OFL-1.1 | included in Fusion Pixel 2026.10.16 | sim | sim | `licenses/texts/OFL-1.1.txt` | https://github.com/TakWolf/ark-pixel-font |

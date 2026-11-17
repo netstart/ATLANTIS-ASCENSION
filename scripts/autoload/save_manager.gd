@@ -44,10 +44,9 @@ static func default_profile() -> Dictionary:
 		"achievements": {},
 		"stats": {"missions_played": 0, "missions_cleared": 0, "deaths": 0, "kills": 0, "grazes": 0,
 				"bombs_used": 0, "tide_used": 0, "time_played": 0.0, "bosses_defeated": {}},
-		"daily": {"date": "", "best_score": 0, "attempted": false},
+		"daily": {"date": "", "best_score": 0, "attempted": false, "pearls_doubled": false},
 		"login": {"streak": 0, "last_date": "", "shields_left": 1},
 		"purchases": {"supporter": false, "pending": false},
-		"consent": {"asked": false, "personalized": false},
 		"tutorial_done": false,
 		"launches": 0,
 		# Avisos dos menus (Notices): aeronaves que o jogador já viu na coleção (as outras abertas acendem "!").
@@ -79,6 +78,8 @@ func load_profile() -> void:
 ## v1 -> v2: lista de missões secretas abertas e "Créditos" do hangar por nave (níveis já existiam).
 static func migrate(old: Dictionary) -> Dictionary:
 	_fill_missing(old, default_profile())
+	# "consent" (1.17-1.18.0) nunca foi lido: a escolha de consentimento é guardada pelo próprio UMP do Google.
+	old.erase("consent")
 	for ship: Variant in (old["unlocked"]["ships"] as Array):
 		if not (old["hangar"]["ship_levels"] as Dictionary).has(String(ship)):
 			old["hangar"]["ship_levels"][String(ship)] = 1

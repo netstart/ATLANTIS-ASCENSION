@@ -1,6 +1,6 @@
 """Prepara o áudio do clima (1.13 "Céu e Mar Vivos") a partir dos arquivos CC0 baixados.
 
-Entrada (fora do repositório, em c:\\src\\downloads\\assets\\opengameart):
+Entrada (fora do repositório, em D:\\src\\assets-downloaded\\opengameart):
   rain-and-thunders/Dark_Rainy_Night(ambience).ogg   kindland, CC0: chuva forte com trovões
   underwater-ambient-pad/Underwater-Ambient-Pad-isaiah658_0.ogg   isaiah658, CC0
   30-cc0-sfx-loops/x/{rain,noise_01,water_flowing}.ogg   rubberduck, CC0
@@ -106,7 +106,7 @@ def write(path: pathlib.Path, x: np.ndarray) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--src", default=r"c:\src\downloads\assets\opengameart")
+    parser.add_argument("--src", default=r"D:\src\assets-downloaded\opengameart")
     src = pathlib.Path(parser.parse_args().src)
     out = src / "weather-cuts"
     out.mkdir(parents=True, exist_ok=True)

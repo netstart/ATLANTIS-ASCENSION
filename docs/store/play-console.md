@@ -1,7 +1,7 @@
 # Google Play Console — roteiro de publicação e respostas
 
 Tudo o que o Play Console pede para publicar o Atlantis Ascension, na ordem das telas, com a resposta certa para a
-versão atual (**grátis, offline, sem anúncios, sem compras no app**). O que só o titular da conta pode fazer
+versão atual (**grátis, jogável offline, com anúncios recompensados opcionais do AdMob, sem compras no app**). O que só o titular da conta pode fazer
 (pagar, aceitar termos, verificar identidade, enviar arquivos) está marcado com 👤.
 
 ## 0. Arquivos prontos
@@ -15,13 +15,18 @@ versão atual (**grátis, offline, sem anúncios, sem compras no app**). O que s
 | Textos da ficha e "Novidades" | [listing.md](listing.md) | limites conferidos por `tools/check_store_texts.py` |
 | Política de privacidade (HTML) | `docs/privacy/index.html` | `python -I tools/build_privacy_page.py` (fonte: [privacy-policy.md](privacy-policy.md)) |
 
-Dados técnicos do AAB (versão 1.6.1): pacote `io.github.netstart.atlantisascension`, versionCode 14, minSdk 24
+Dados técnicos do AAB (versão 1.18.0): pacote `io.github.netstart.atlantisascension`, versionCode 34, minSdk 24
 (Android 7.0), targetSdk 36 (Android 16, acima do mínimo exigido pela Play), arm64-v8a + armeabi-v7a + x86_64,
 bibliotecas de 64 bits alinhadas em 16 KB (exigência da Play para targetSdk 35+), OpenGL ES 3.0 obrigatório,
-única permissão: `VIBRATE`, `debuggable` desligado, backup automático do Android ligado (o progresso volta ao
-trocar de aparelho).
+`debuggable` desligado, backup automático do Android ligado (o progresso volta ao trocar de aparelho). AdMob:
+meta-data `com.google.android.gms.ads.APPLICATION_ID` = `ca-app-pub-6552169828297838~1447443371` e plugin
+`PoingGodotAdMob` no pacote (`python -I tools/check_release_ads.py` confere; `tools/build_release.ps1` o roda).
+Permissões do manifesto final: `VIBRATE` (do jogo); `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (as duas,
+`android.` e `com.google.android.gms.`) e `READ_BASIC_PHONE_STATE` (SDK de anúncios); `WAKE_LOCK` e
+`FOREGROUND_SERVICE` (WorkManager, dependência do SDK); `<pacote>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
+(AndroidX, interna). Nenhuma é "perigosa" (nenhum diálogo de permissão para o jogador).
 
-Certificado da **chave de upload** (`C:\src\tools\keys\atlantis-upload.keystore`, alias `atlantis-upload`):
+Certificado da **chave de upload** (`D:\src\keys\atlantis-upload.keystore`, alias `atlantis-upload`):
 
 - SHA-1: `79:EB:03:DD:FB:6F:FC:15:55:65:9D:F4:CE:91:71:ED:1A:71:40:24`
 - SHA-256: `AE:81:89:73:F5:DE:7C:93:D6:F7:C9:AE:67:74:9D:A0:EC:81:6F:43:C3:D1:AC:83:C5:24:6B:88:90:F6:B0:3E`
@@ -56,10 +61,10 @@ Android de `export_presets.cfg` **antes** do primeiro envio.
 
 URL pública em HTML. Opções, da melhor para a mais simples:
 
-1. GitHub Pages: no repositório, Settings → Pages → Deploy from a branch → `main` / `/docs`. URL:
-   `https://netstart.github.io/ATLANTIS-ASCENSION/privacy/`
-2. Sem Pages: `https://github.com/netstart/ATLANTIS-ASCENSION/blob/main/docs/store/privacy-policy.md`
-   (o repositório é público).
+URL usada: `https://netstart.github.io/atlantis/privacy-policy.html` (publicada pelo site
+`D:\src\netstart.github.io\atlantis\`, que tem a fonte `privacy-policy.md` ao lado). Ao mudar a política aqui,
+gere com `python -I tools/build_privacy_page.py` e copie `docs/privacy/index.html` e `docs/store/privacy-policy.md`
+para `netstart.github.io/atlantis/` (como `privacy-policy.html` e `privacy-policy.md`), depois commit e `git push` lá.
 
 ### Acesso ao app
 
@@ -67,8 +72,10 @@ URL pública em HTML. Opções, da melhor para a mais simples:
 
 ### Anúncios
 
-"Não, meu app não contém anúncios." (sem o plugin do AdMob, o build de release não mostra anúncio nenhum: a
-recompensa de "reviver" e "dobrar" sai direto.)
+**"Sim, meu app contém anúncios."** (desde a 1.18: só anúncios recompensados opcionais do AdMob, pedidos pelo
+jogador em reviver, dobrar créditos, dobrar as Pérolas do Diário e baú em dobro; sem intersticial, sem banner, sem
+anúncio de abertura e nenhum anúncio durante a missão). Com "Sim", a Play mostra o selo "Contém anúncios" na
+ficha. Declarar errado é violação de política.
 
 ### Classificação do conteúdo (questionário IARC)
 
@@ -99,17 +106,41 @@ confirmar; se vier diferente, revise só a pergunta de violência.
 
 ### Segurança dos dados
 
+Base: "coletar" é enviar dados para fora do aparelho, inclusive por SDKs de terceiros. O save, as opções e os
+replays ficam só no aparelho (o Backup automático do Android é do sistema e não conta). O AAB traz o **SDK do
+Google Mobile Ads** (plugin Poing AdMob) e o **UMP**; o SDK é iniciado na abertura e pré-carrega o recompensado,
+então declare os tipos que o Google documenta para o SDK
+([guia do Google](https://developers.google.com/admob/android/privacy/play-data-disclosure)):
+
 | Pergunta | Resposta |
 |---|---|
-| O app coleta ou compartilha algum dos tipos de dados exigidos? | **Não** |
-| (Com "Não", o formulário termina) | "Nenhum dado coletado" e "Nenhum dado compartilhado" aparecem na ficha |
+| O app coleta ou compartilha algum dos tipos de dados exigidos? | **Sim** |
+| Todos os dados coletados são criptografados em trânsito? | **Sim** (o SDK usa TLS) |
+| Você oferece uma forma de pedir a exclusão dos dados? | **Não** (não há conta nem servidor nosso; o ID de publicidade se redefine ou apaga nas configurações do Android e o consentimento se revê em Opções › Privacidade e anúncios) |
 
-Fundamento: sem permissão de internet, sem SDK de terceiros (só o Godot e as AndroidX do modelo de build), save
-apenas local. O Backup automático do Android é do próprio sistema e não conta como coleta do app.
+Tipos de dados, todos com **Coletado: Sim**, **Compartilhado: Sim**, **Processado de forma temporária: Não** e
+**Obrigatório** (o jogador não desliga a coleta do SDK dentro do app):
+
+| Categoria › tipo | Finalidades |
+|---|---|
+| Local › **Local aproximado** (pelo IP) | Publicidade ou marketing; Análise; Prevenção de fraudes, segurança e conformidade |
+| Atividade no app › **Interações no app** (aberturas, toques, vídeos vistos) | Publicidade ou marketing; Análise; Prevenção de fraudes, segurança e conformidade |
+| Informações e desempenho do app › **Diagnóstico** (tempo de carga, falhas do SDK) | Análise; Prevenção de fraudes, segurança e conformidade |
+| IDs do dispositivo ou outros IDs › **IDs do dispositivo ou outros IDs** (ID de publicidade, ID do conjunto de apps) | Publicidade ou marketing; Análise; Prevenção de fraudes, segurança e conformidade |
+
+Não marque: informações pessoais, financeiras, saúde, mensagens, fotos, áudio, arquivos, agenda, contatos,
+histórico de navegação, local exato, registros de falhas (o jogo não tem Crashlytics). Depois de salvar, confira
+na prévia "Os dados são criptografados em trânsito" e os quatro tipos acima.
 
 ### ID de publicidade
 
-"Seu app usa o ID de publicidade?" → **Não** (o manifesto não tem `com.google.android.gms.permission.AD_ID`).
+O manifesto final (fundido pelo Gradle) tem `com.google.android.gms.permission.AD_ID`, trazida pelo SDK. Responda:
+
+- "Seu app usa o ID de publicidade?" → **Sim**.
+- Finalidades: **Publicidade ou marketing**, **Análise**, **Prevenção de fraudes, segurança e conformidade** (as
+  mesmas da Segurança dos dados).
+
+Responder "Não" com a permissão no manifesto faz a Play bloquear o envio.
 
 ### Outras declarações
 
@@ -119,7 +150,7 @@ apenas local. O Backup automático do Android é do próprio sistema e não cont
 | Recursos financeiros | Meu app não oferece recursos financeiros |
 | Saúde | Meu app não tem recursos de saúde |
 | App de notícias | Não |
-| Permissões sensíveis (fotos/vídeos, localização, SMS, chamadas, serviço em primeiro plano, intent em tela cheia, alarme exato) | nenhuma é usada; a Play não pergunta |
+| Permissões sensíveis (fotos/vídeos, localização, SMS, chamadas, serviço em primeiro plano, intent em tela cheia, alarme exato) | nenhuma é usada pelo jogo. Se a Play pedir declaração de serviço em primeiro plano, responda que o app não usa: o `FOREGROUND_SERVICE` genérico vem da WorkManager (dependência do SDK de anúncios), sem nenhum `FOREGROUND_SERVICE_<tipo>` |
 
 ## 4. Ficha da loja principal
 
@@ -141,7 +172,7 @@ site opcional (`https://github.com/netstart/ATLANTIS-ASCENSION`).
 1. Testes → Teste interno → Criar versão.
 2. "Assinatura de apps pelo Google Play": aceitar o padrão (a Google gera e guarda a chave de assinatura; o
    `atlantis-upload.keystore` vira a chave de upload).
-3. Enviar `build/atlantis-ascension-release.aab`; nome da versão `1.6.1 (14)`; notas: "Novidades" de
+3. Enviar `build/atlantis-ascension-release.aab`; nome da versão `1.18.1 (35)` (a 1.18.0 (34) foi aprovada no teste fechado em 16/11/2026); notas: "Novidades" de
    [listing.md](listing.md).
 4. Revisar avisos. Esperados e inofensivos: "Este App Bundle contém código nativo e você não enviou símbolos de
    depuração" (os modelos oficiais do Godot não trazem os símbolos).
@@ -162,13 +193,34 @@ site opcional (`https://github.com/netstart/ATLANTIS-ASCENSION`).
 3. A cada nova versão: subir a versão (SemVer + versionCode, `docs/policies/versionamento.md`), rodar
    `tools\build_release.ps1` e `tools\build_store_art.ps1` se a interface mudou.
 
-## Quando ligar anúncios ou compras (Fase 4)
+## Quando ligar compras (Fase 4)
 
-Antes de enviar um build com os plugins `AdMob` ou `GodotGooglePlayBilling`:
+Os anúncios já estão ligados (seção seguinte). Antes de enviar um build com o plugin `GodotGooglePlayBilling`:
 
-1. Atualizar [privacy-policy.md](privacy-policy.md) (e gerar a página) e as respostas acima: Anúncios = Sim; ID de
-   publicidade = Sim (finalidade: publicidade); Segurança dos dados = coleta de ID do dispositivo, dados de uso e
-   diagnóstico pelo SDK do Google, compartilhados para publicidade, criptografados em trânsito; IARC: compras
-   digitais = Sim; ficha: "Contém anúncios" e "Compras no app".
+1. Atualizar [privacy-policy.md](privacy-policy.md) (e gerar a página) e as respostas acima: IARC: compras
+   digitais = Sim; ficha: "Compras no app".
 2. Criar no Play Console os produtos `supporter` (compra única), `season_gold` e as pinturas avulsas.
-3. Publicar o `app-ads.txt` ([modelo](app-ads.txt)) na raiz do site informado na ficha.
+
+## Ligar o anúncio recompensado (AdMob)
+
+O código já está pronto (1.17): plugin Poing AdMob 5.1.0 em `addons/admob`, consentimento UMP na abertura,
+"Privacidade e anúncios" nas Opções, conteúdo de anúncio limitado a "PG" e quatro pontos recompensados pedidos
+pelo jogador (reviver, dobrar créditos, dobrar as Pérolas do Diário, baú em dobro). Sem intersticial e sem banner.
+O APK de debug usa o app e o bloco de **teste** do Google. Release sem IDs reais ficaria no modo "off" (sem
+anúncio, sem SDK). **Situação na 1.18.0:** passos 1, 2, 3 e 5 feitos (app
+`ca-app-pub-6552169828297838~1447443371`, bloco recompensado `ca-app-pub-6552169828297838/1146567180`, editor
+`pub-6552169828297838` já no `app-ads.txt` de `netstart.github.io`); no passo 6 a política, a ficha e as
+respostas deste documento já estão atualizadas. Faltam 👤: o passo 4 no AdMob, publicar a política nova no site,
+preencher as declarações no Play Console e enviar o AAB 1.18.0. Passos, nesta ordem:
+
+1. No [AdMob](https://admob.google.com), criar o app Android (pacote `io.github.netstart.atlantisascension`,
+   depois de publicado na Play ou como "ainda não publicado") e um bloco **Recompensado**.
+2. Em `scripts/core/admob_provider.gd`, preencher `RELEASE_UNITS` com o ID do bloco
+   (`{"rewarded": "ca-app-pub-XXXXXXXXXXXXXXXX/NNNNNNNNNN"}`).
+3. No `project.godot` (Projeto › Configurações › AdMob), pôr em `admob/general/android/app_id` o ID real do app (hoje a linha não aparece: vale o padrão do plugin, o app de teste do Google)
+   (`ca-app-pub-XXXXXXXXXXXXXXXX~NNNNNNNNNN`). Com os dois IDs reais, `AdMobProvider.has_release_ids()` liga o
+   release sozinho (o teste "este jogo ainda não tem IDs reais" de `tests/beta_tests.gd` passa a falhar: inverta-o).
+4. No AdMob, configurar a mensagem de consentimento (Privacidade e mensagens → GDPR/LGPD) para o app.
+5. Publicar o `app-ads.txt` ([modelo](app-ads.txt)) com o ID de publisher real.
+6. **Só então** atualizar a política de privacidade, a ficha ("Contém anúncios") e as declarações (Anúncios = Sim,
+   ID de publicidade, Segurança dos dados), como no passo 1 da seção anterior, e enviar um AAB novo.

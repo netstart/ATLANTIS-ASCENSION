@@ -17,7 +17,7 @@ queda de tom, risers, sinos de cristal e de metal por parciais, metais (brass) e
 enxame, estalos elétricos, bolhas (Minnaert), reverberação por convolução com ruído decaindo e limitador.
 O ruído usa sementes fixas: rodar de novo gera arquivos iguais amostra a amostra.
 
-Entrada (fora do repositório, em c:\\src\\downloads\\assets):
+Entrada (fora do repositório, em D:\\src\\assets-downloaded):
   kenney/sci-fi-sounds/Audio/forceField_00{1,2,3}.ogg             Kenney Sci-fi Sounds, CC0: campo de força
   kenney/sci-fi-sounds/Audio/laserLarge_00{0,2}.ogg               Kenney Sci-fi Sounds, CC0: raio grosso
   kenney/sci-fi-sounds/Audio/laserSmall_002.ogg                   Kenney Sci-fi Sounds, CC0: raio fino
@@ -1128,7 +1128,7 @@ SOUNDS = {
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--src", default=r"c:\src\downloads\assets")
+    parser.add_argument("--src", default=r"D:\src\assets-downloaded")
     parser.add_argument("--only", default="", help="lista separada por vírgula, ex.: falcon_1,nova_3")
     args = parser.parse_args()
     src = pathlib.Path(args.src)

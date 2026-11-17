@@ -54,6 +54,9 @@ var _chest: TideChestPanel
 var _credits_pill: PanelContainer
 var _rewards: VBoxContainer
 var _double: Button
+var _double_pearls: Button
+## Recompensas ("credits", "pearls") cujo anúncio o jogador fechou antes do fim nesta tela.
+var _declined: Dictionary = {}
 var _retry: Button
 var _continue: Button
 var _revealing: bool = false
@@ -171,6 +174,11 @@ func _build() -> void:
 	_double.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
 	_double.pressed.connect(_on_double)
 	_box.add_child(_double)
+	_double_pearls = Button.new()
+	_double_pearls.name = "DoublePearls"
+	_double_pearls.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
+	_double_pearls.pressed.connect(_on_double_pearls)
+	_box.add_child(_double_pearls)
 	_chest = TideChestPanel.new()
 	_box.add_child(_chest)
 	_rewards = VBoxContainer.new()
@@ -200,6 +208,10 @@ func default_focus() -> Control:
 
 func on_show(app: Node) -> void:
 	result = app.get("last_result") if app != null else {}
+	_declined.clear()
+	# O anúncio que carrega (ou é usado) com a tela aberta troca só o texto dos botões de dobrar: refazer a
+	# tela inteira recriaria as linhas de recompensa apagadas no meio da revelação.
+	Ads.on_ready_changed(_refresh_ad_buttons)
 	refresh_texts()
 	_play_jingle()
 	_start_reveal()
@@ -246,7 +258,8 @@ func refresh_texts() -> void:
 			_stat_values[i].text = Locale.format_number(_stat(i))
 	_credits.text = tr("results.credits") % Locale.format_number(int(result.get("credits", 0)))
 	_double.visible = int(result.get("credits", 0)) > 0 and not bool(result.get("doubled", false))
-	_double.text = tr("results.double_ad") if Store.ads_allowed(SaveManager.data) else tr("results.double_free")
+	_double_pearls.visible = Modes.daily_pearls_doublable(SaveManager.data, result)
+	_refresh_ad_buttons()
 	_fill_rewards()
 	_retry.text = tr("results.retry")
 	_continue.text = tr("results.continue")
@@ -305,9 +318,26 @@ static func reward_items(r: Dictionary) -> Array[Array]:
 	return items
 
 
+## "Ver anúncio" ou "grátis" nos botões de dobrar. A recompensa cujo anúncio o jogador fechou antes do fim
+## segue pedindo anúncio (Ads.show_rewarded com `allow_free` falso), mesmo sem outro carregado ainda.
+func _refresh_ad_buttons() -> void:
+	var ad := Ads.can_show(SaveManager.data)
+	_double.text = tr("results.double_ad") if ad or _declined.has("credits") else tr("results.double_free")
+	_double_pearls.text = tr("results.double_pearls_ad") if ad or _declined.has("pearls") \
+			else tr("results.double_pearls_free")
+
+
+## Anúncio fechado antes do fim (só o AdMob nega): a recompensa fica presa ao anúncio nesta tela.
+func _note_declined(key: String, granted: bool) -> void:
+	if not granted:
+		_declined[key] = true
+		_refresh_ad_buttons()
+
+
 ## Dobrar créditos: anúncio recompensado opcional (ou grátis na Steam e para quem apoiou), 1 vez.
 func _on_double() -> void:
 	Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
+		_note_declined("credits", granted)
 		if granted and not bool(result.get("doubled", false)):
 			result["doubled"] = true
 			SaveManager.add_currency("credits", int(result.get("credits", 0)))
@@ -316,7 +346,18 @@ func _on_double() -> void:
 			refresh_texts()
 			if is_inside_tree():
 				_stamp(_credits_pill, 1.25)
-				AudioManager.play_ui("kenney_weapon_up"))
+				AudioManager.play_ui("kenney_weapon_up"), not _declined.has("credits"))
+
+
+## Dobrar as Pérolas do Diário: o mesmo anúncio opcional, 1 vez por dia (Modes.double_daily_pearls).
+func _on_double_pearls() -> void:
+	Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
+		_note_declined("pearls", granted)
+		if granted and Modes.double_daily_pearls(SaveManager.data, result):
+			SaveManager.save_profile()
+			refresh_texts()
+			if is_inside_tree():
+				AudioManager.play_ui("kenney_weapon_up"), not _declined.has("pearls"))
 
 
 static func _t(key: String) -> String:
@@ -463,7 +504,7 @@ func _kill_reveal() -> void:
 
 
 func _reveal_nodes() -> Array[CanvasItem]:
-	var nodes: Array[CanvasItem] = [_subtitle, _title, _score, _record, _rule, _credits_pill, _double,
+	var nodes: Array[CanvasItem] = [_subtitle, _title, _score, _record, _rule, _credits_pill, _double, _double_pearls,
 			_retry, _continue, _grade, _defeat, _chest]
 	for icon: Control in _star_icons:
 		nodes.append(icon)
@@ -545,8 +586,9 @@ func _step_rewards() -> void:
 	var items: Array[CanvasItem] = []
 	if _credits_pill.visible:
 		items.append(_credits_pill)
-	if _double.visible:
-		items.append(_double)
+	for button: Button in [_double, _double_pearls]:
+		if button.visible:
+			items.append(button)
 	for row: Node in _rewards.get_children():
 		items.append(row as CanvasItem)
 	for k: int in range(items.size()):

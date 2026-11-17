@@ -2,7 +2,7 @@
 
 Uso:  python -I tools/sync_assets.py
 Lê todo tools/*_assets.json. Cada manifesto diz a pasta do pacote baixado (pack_root, dentro de
-c:\\src\\downloads\\assets\\ por padrão, ou em $ATLANTIS_DOWNLOADS), o id da licença no registro e o
+D:\\src\\assets-downloaded\\ por padrão, ou em $ATLANTIS_DOWNLOADS), o id da licença no registro e o
 que copiar (pastas e arquivos). Escreve assets/asset_index.json com origem e hash de tudo, usado
 por tools/check_licenses.py para conferir que todo arquivo tem licença registrada.
 
@@ -17,7 +17,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "assets"
-DOWNLOADS = pathlib.Path(os.environ.get("ATLANTIS_DOWNLOADS", "C:/src/downloads/assets"))
+DOWNLOADS = pathlib.Path(os.environ.get("ATLANTIS_DOWNLOADS", "D:/src/assets-downloaded"))
 SKIP_SUFFIXES = {".gif"}
 ## Textos copiados com fim de linha LF (o .gitattributes do repositório também força LF; assim o
 ## hash em asset_index.json vale para o arquivo do checkout em qualquer sistema).

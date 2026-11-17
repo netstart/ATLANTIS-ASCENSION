@@ -86,6 +86,8 @@ func _ready() -> void:
 			_shell.refresh())
 	Settings.changed.connect(_on_setting_changed)
 	Locale.language_changed.connect(_on_language_changed)
+	# Consentimento (UMP) e SDK do AdMob antes do primeiro pedido de anúncio; não espera nem trava a abertura.
+	Ads.start(self)
 	var args := OS.get_cmdline_user_args()
 	var mission := ""
 	var seed := 7

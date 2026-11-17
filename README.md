@@ -24,20 +24,20 @@ anúncios simulados; daltonismo e escala de texto; 11 idiomas. O export Android 
 ## Rodar no PC
 
 ```powershell
-C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --path C:\src\ATLANTIS-ASCENSION
+D:\Programs\godot\Godot_v4.7.2-stable_win64.exe --path D:\src\ATLANTIS-ASCENSION
 ```
 
 ## Capturas para revisão visual
 
 ```powershell
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots --res=305x678,960x540
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots --res=305x678,960x540
 ```
 
 ## Jogar direto uma missão (você ou o bot)
 
 ```powershell
-C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --path . -- --mission=c1m1
-C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --path . -- --bot --seed=7
+D:\Programs\godot\Godot_v4.7.2-stable_win64.exe --path . -- --mission=c1m1
+D:\Programs\godot\Godot_v4.7.2-stable_win64.exe --path . -- --bot --seed=7
 ```
 
 Controles no PC: arrastar com o mouse ou WASD/setas, Shift para modo preciso, K especial, L bomba, Esc pausa.

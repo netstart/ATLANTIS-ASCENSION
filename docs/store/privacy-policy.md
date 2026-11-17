@@ -1,33 +1,51 @@
 # Política de privacidade — Atlantis Ascension
 
-*Versão 1.1 · 31/10/2026 · English version below.*
+*Versão 1.2 · 16/11/2026 · English version below.*
 
 ## Português (Brasil)
 
 **Quem somos.** Atlantis Ascension é um jogo independente publicado por Clayton K. N. Passos ("nós"). Contato:
 pelo e-mail informado na página do jogo na Google Play ou na Steam.
 
-**Resumo.** O jogo funciona totalmente offline. Ele não pede permissão de internet no Android, não tem conta,
-não tem servidor e não coleta, não envia e não compartilha dados pessoais.
+**Resumo.** O jogo funciona offline, sem conta e sem servidor nosso. Nós não recebemos nenhum dado seu. A versão
+gratuita do Android tem **anúncios recompensados opcionais** do Google AdMob: só aparecem quando você toca num
+botão "ver anúncio" (reviver, dobrar créditos, dobrar as Pérolas do Diário, abrir o baú em dobro), **nunca durante
+a missão**, e não vendem poder. Só esses anúncios usam a internet e só eles envolvem dados, coletados pelo Google
+como explicado abaixo. A versão Steam não tem anúncios.
 
 **O que o jogo guarda no seu aparelho.** Progresso (missões, estrelas, moedas do jogo, aeronaves, conquistas),
-opções (idioma, volume, acessibilidade) e replays dos seus recordes. Tudo fica **só no seu aparelho**
-(`user://save.json`, `user://settings.cfg`, `user://replays/`). Nós não recebemos esses dados.
+opções (idioma, volume, acessibilidade), a sua escolha de consentimento e replays dos seus recordes. Tudo fica
+**só no seu aparelho** (`user://save.json`, `user://settings.cfg`, `user://replays/`). Nós não recebemos esses
+dados.
 
-**O que o jogo NÃO coleta.** Nome, e-mail, contatos, localização, fotos, microfone, câmera, identificador de
-publicidade ou dados de uso. A única
-permissão pedida no Android é a vibração (para o retorno tátil, que pode ser desligado nas opções).
+**Anúncios (Google AdMob, só Android).** Para pedir e mostrar um anúncio, o SDK do Google Mobile Ads, que vem no
+jogo, envia ao Google o **ID de publicidade** do Android, o endereço IP (do qual se deduz a localização
+aproximada), informações do aparelho e do sistema (modelo, idioma, versão do Android), dados de interação com o
+anúncio e dados de diagnóstico e desempenho (falhas, tempo de carregamento). O Google usa esses dados para
+mostrar e medir anúncios, evitar fraude e, se você permitir, personalizar anúncios. Os dados vão criptografados.
+Nós não vemos nem guardamos esses dados; recebemos do Google só relatórios agregados de receita. Detalhes em
+[Como o Google usa dados de sites e apps parceiros](https://policies.google.com/technologies/partner-sites) e na
+[Política de Privacidade do Google](https://policies.google.com/privacy).
 
-**Anúncios e compras.** A versão atual **não tem anúncios nem compras no app**. Se uma versão futura do Android
-trouxer anúncios recompensados opcionais (Google AdMob) ou compras pela Google Play, esta política será
-atualizada **antes** dessa versão ser publicada, dizendo quais dados o SDK do Google coleta, e o jogo pedirá o
-seu consentimento na primeira abertura. A versão Steam não tem anúncios.
+**Consentimento e controle.** Na primeira abertura, onde a lei exige (como no Espaço Econômico Europeu, no Reino
+Unido e na Suíça), o jogo mostra o formulário de consentimento do Google; você pode mudar a escolha em **Opções ›
+Privacidade e anúncios**. Em qualquer lugar você pode redefinir ou apagar o ID de publicidade nas configurações do
+Android (Google › Anúncios). Os anúncios são limitados a conteúdo para todos os públicos (classificação "PG").
+Se você não quiser ver anúncios, não toque nos botões de anúncio: nada no jogo exige um anúncio.
 
-**Crianças.** O jogo não é direcionado a menores de 13 anos e não coleta dados pessoais de ninguém.
+**O que o jogo NÃO coleta.** Nome, e-mail, contatos, localização precisa, fotos, microfone ou câmera. Além da
+internet e do ID de publicidade usados pelos anúncios, a única permissão pedida no Android é a vibração (para o
+retorno tátil, que pode ser desligado nas opções).
 
-**Seus direitos (LGPD/GDPR).** Como não coletamos dados pessoais, não há o que acessar, corrigir ou apagar do
-nosso lado. Para apagar tudo o que o jogo guardou, desinstale o jogo ou limpe os dados do app nas configurações
-do Android. Dúvidas: fale conosco pelo contato da página da loja.
+**Compras.** A versão atual não tem compras no app. Se uma versão futura trouxer compras pela Google Play, esta
+política será atualizada antes dessa versão ser publicada.
+
+**Crianças.** O jogo não é direcionado a menores de 13 anos.
+
+**Seus direitos (LGPD/GDPR).** Nós não temos dados pessoais seus para acessar, corrigir ou apagar. Para os dados
+dos anúncios, use as opções acima ou os controles do Google em
+[Minha Central de Anúncios](https://myadcenter.google.com). Para apagar tudo o que o jogo guardou, desinstale o
+jogo ou limpe os dados do app nas configurações do Android. Dúvidas: fale conosco pelo contato da página da loja.
 
 **Mudanças.** Mudanças nesta política são publicadas neste endereço, com nova data e versão, e avisadas na
 página do jogo.
@@ -37,25 +55,42 @@ página do jogo.
 **Who we are.** Atlantis Ascension is an independent game published by Clayton K. N. Passos ("we"). Contact: the
 e-mail shown on the game's Google Play or Steam page.
 
-**Summary.** The game works fully offline. It does not request internet permission on Android, has no account
-and no server, and does not collect, send or share personal data.
+**Summary.** The game works offline, with no account and no server of ours. We receive none of your data. The
+free Android version has **optional rewarded ads** from Google AdMob: they only appear when you tap a "watch an
+ad" button (revive, double credits, double the Daily Pearls, open the chest doubled), **never during a mission**,
+and they never sell power. Only these ads use the internet and only they involve data, collected by Google as
+explained below. The Steam version has no ads.
 
-**What the game stores on your device.** Progress, options and replays of your records stay **only on your
-device**. We receive none of this data.
+**What the game stores on your device.** Progress, options, your consent choice and replays of your records stay
+**only on your device**. We receive none of this data.
 
-**What the game does NOT collect.** Name, e-mail, contacts, location, photos, microphone, camera, advertising ID
-or usage data. The only Android permission requested is
+**Ads (Google AdMob, Android only).** To request and show an ad, the Google Mobile Ads SDK included in the game
+sends Google the Android **advertising ID**, your IP address (from which an approximate location can be
+inferred), device and system information (model, language, Android version), ad interaction data and
+diagnostics and performance data (crashes, load times). Google uses this data to show and measure ads, prevent
+fraud and, if you allow it, personalize ads. The data is encrypted in transit. We do not see or store this data;
+we only receive aggregated revenue reports from Google. Details in
+[How Google uses information from sites or apps that use its services](https://policies.google.com/technologies/partner-sites)
+and the [Google Privacy Policy](https://policies.google.com/privacy).
+
+**Consent and control.** On first launch, where the law requires it (such as in the European Economic Area, the
+United Kingdom and Switzerland), the game shows Google's consent form; you can change your choice in **Options ›
+Privacy and ads**. Anywhere, you can reset or delete your advertising ID in Android settings (Google › Ads). Ads
+are limited to content suitable for general audiences ("PG" rating). If you do not want ads, do not tap the ad
+buttons: nothing in the game requires an ad.
+
+**What the game does NOT collect.** Name, e-mail, contacts, precise location, photos, microphone or camera.
+Besides the internet access and advertising ID used by the ads, the only Android permission requested is
 vibration (for haptic feedback, which can be turned off in the options).
 
-**Ads and purchases.** The current version **has no ads and no in-app purchases**. If a future Android version
-adds optional rewarded ads (Google AdMob) or Google Play purchases, this policy will be updated **before** that
-version is released, stating what data Google's SDK collects, and the game will ask for your consent on first
-launch. The Steam version has no ads.
+**Purchases.** The current version has no in-app purchases. If a future version adds Google Play purchases, this
+policy will be updated before that version is released.
 
-**Children.** The game is not directed at children under 13 and collects no personal data from anyone.
+**Children.** The game is not directed at children under 13.
 
-**Your rights (GDPR/LGPD).** We hold no personal data. To erase everything the game stored, uninstall it or clear
-the app's data in Android settings. Questions: use the contact on the store page.
+**Your rights (GDPR/LGPD).** We hold no personal data about you to access, correct or erase. For ad data, use the
+options above or Google's controls at [My Ad Center](https://myadcenter.google.com). To erase everything the game
+stored, uninstall it or clear the app's data in Android settings. Questions: use the contact on the store page.
 
 **Changes.** Changes to this policy are published at this address with a new date and version, and announced on
 the game's page.

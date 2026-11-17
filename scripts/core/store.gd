@@ -1,10 +1,11 @@
 class_name Store
 extends RefCounted
 ## Loja (plano mestre 17): cosméticos por Pérolas de Maré, compra única "Apoiar" e anúncio recompensado
-## opcional. Nada de poder à venda e nenhuma compra de moeda. Pagamento e anúncio reais ficam para a
-## Fase 4 (Play Billing, AdMob com UMP): aqui são SIMULADOS — `simulated()` diz quando a loja finge a
-## transação (editor, testes e builds de desenvolvimento) e nenhuma cobrança acontece. No build de release
-## sem os plugins (o AAB da Play hoje) não há compra nem anúncio: a loja some e a recompensa sai direto.
+## opcional. Nada de poder à venda e nenhuma compra de moeda. O pagamento real fica para a Fase 4 (Play
+## Billing): aqui é SIMULADO — `simulated()` diz quando a loja finge a transação (editor, testes e builds
+## de desenvolvimento) e nenhuma cobrança acontece. O anúncio é o do `Ads` (AdMob real, simulado ou
+## "off"). No build de release sem Billing e sem IDs do AdMob (o AAB da Play hoje) não há compra nem
+## anúncio: a loja some e a recompensa sai direto.
 ## Steam: premium, sem anúncios; os cosméticos vêm todos inclusos (feature "steam" no preset).
 
 const COSMETICS_PATH := "res://data/cosmetics.json"
@@ -50,18 +51,18 @@ static func is_steam() -> bool:
 	return OS.has_feature("steam")
 
 
-## Anúncios só no Android grátis; nunca na Steam, nunca para quem apoiou e nunca sem o AdMob (fora do
-## modo simulado): sem anúncio de verdade, a recompensa é concedida direto.
+## Anúncios só no Android grátis; nunca na Steam, nunca para quem apoiou e nunca no modo "off" do `Ads`
+## (release sem IDs reais): sem anúncio, a recompensa é concedida direto.
 static func ads_allowed(profile: Dictionary) -> bool:
 	return (not is_steam() and not bool(profile["purchases"].get("supporter", false))
-			and (Engine.has_singleton("AdMob") or simulated()))
+			and Ads.mode() != "off")
 
 
-## Sem plugin de pagamento ou de anúncio, a loja simula (Fase 4 liga os reais) — só em builds de
-## desenvolvimento (editor, testes, APK de debug). Release sem plugin nunca finge uma cobrança.
+## Sem plugin de pagamento a loja simula a compra (Fase 4 liga o Play Billing) — só em builds de
+## desenvolvimento (editor, testes, APK de debug). Release sem plugin nunca finge uma cobrança. O AdMob
+## não conta aqui: o APK de debug com o plugin de anúncio continua simulando a compra.
 static func simulated() -> bool:
-	return (not Engine.has_singleton("GodotGooglePlayBilling") and not Engine.has_singleton("AdMob")
-			and OS.is_debug_build())
+	return not Engine.has_singleton("GodotGooglePlayBilling") and OS.is_debug_build()
 
 
 ## Compras com dinheiro aparecem na tela: pagamento real (plugin) ou simulado (desenvolvimento).

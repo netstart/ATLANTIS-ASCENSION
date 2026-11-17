@@ -101,6 +101,9 @@ func _fill() -> void:
 	var data := card()
 	button(data, tr("options.logbook"), func() -> void: navigate.emit(&"logbook"))
 	button(data, tr("options.credits"), func() -> void: navigate.emit(&"credits"))
+	# Formulário de privacidade do Google (UMP), só onde ele exige a entrada (EEE, Reino Unido...).
+	if Ads.privacy_options_required():
+		button(data, tr("options.privacy_ads"), func() -> void: Ads.show_privacy_options(refill))
 
 
 ## Controle deslizante com o valor em % à direita (atualiza enquanto arrasta).

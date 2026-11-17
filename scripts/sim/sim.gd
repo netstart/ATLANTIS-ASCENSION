@@ -1161,6 +1161,8 @@ func result() -> Dictionary:
 		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
 		"rescued": rescued, "max_capsule_combo": max_capsule_combo, "ending": String(ending), "revives": revives,
 		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met, "captured": captured, "depth": abyss_depth,
+		# Data do Diário jogado (Modes.daily), não a do fim (passar da meia-noite não muda o dia); vazio fora dele.
+		"daily": String(mission.get("daily", "")),
 		"progress": progress(), "boss_left": boss.hp / maxf(1.0, boss.max_hp) if boss != null and boss.is_final
 				else -1.0, "bombs_left": player.bombs, "cause": String(last_cause),
 	}

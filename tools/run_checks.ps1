@@ -30,7 +30,7 @@
 # Origem: tools/run_checks.ps1 do projeto hyakki (mesmo autor, MIT).
 
 param(
-    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe' }),
+    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe' }),
     [int]$Jobs = [Environment]::ProcessorCount,
     [int]$TimeoutMinutes = 15
 )

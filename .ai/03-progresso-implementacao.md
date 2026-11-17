@@ -33,7 +33,10 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   11 idiomas, 21 componentes de licença e 169 arquivos, mesmo hash em 1x/2x/3x/Baixa). Benchmarks: partida com
   1.000 balas p95 2,2 ms (pior 3,2 ms); rolagem 72/72 listas aprovadas.
 - ✅ Pós-lançamento em andamento sem depender de contas: ver a seção no fim.
-- ⬜ Lojas: o mantenedor executa o checklist de lançamento (contas, licenças, teste fechado).
+- 🔄 Google Play (16/11/2026): AdMob (app, bloco recompensado, mensagem GDPR), declarações, ficha pt-BR e teste
+  fechado Alpha 1.18.0 (34) aprovado no mesmo dia; 1.18.1 (35), com as correções da revisão do AdMob, enviada
+  para revisão. Faltam: 12 testadores por 14 dias, produção e vincular o app à loja no AdMob.
+- ⬜ Steam: checklist de lançamento (conta, Steamworks).
 
 ## Decisões pendentes do mantenedor
 
@@ -159,7 +162,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   100/115/130%, Brisa, menos clarões, menos movimento, qualidade gráfica
 - ✅ Monetização simulada: Loja (pinturas por Pérolas, Apoiar), baú de 6 h, reviver 1 vez e dobrar créditos com
   anúncio recompensado opcional (`Store`, `Ads`); na Steam (feature `steam` dos presets) sem anúncios e com tudo
-  incluso. ⚠️ AdMob/UMP e Play Billing reais na Fase 4
+  incluso. AdMob/UMP real na 1.17.0 (abaixo). ⚠️ Play Billing real na Fase 4
 - ⚠️ Build Steam com GodotSteam: os presets Windows/Linux já levam a feature `steam`; falta o mantenedor baixar o
   Steamworks SDK (licença da Valve) e o GodotSteam com o App ID da página da loja
 
@@ -411,3 +414,37 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `tests/power_view_tests.gd` (os 36 desenhados do começo ao fim sem erro de script, todo tipo visto, nenhum nó a
   mais, HUD em cada carga) e o HUD de `tests/layout_tests.gd` com a Corrente cheia nas duas mãos, em todas as
   resoluções
+- ✅ `1.17.0` Anúncio recompensado REAL (Google AdMob + consentimento UMP) no Android grátis. Plugin Poing AdMob
+  5.1.0 em `addons/admob` (MIT, licença e crédito registrados, junto do SDK do Google como `LicenseRef-` com
+  decisão), habilitado no `project.godot` com o app de TESTE do Google (`admob/general/android/app_id`).
+  `scripts/core/admob_provider.gd` (portado do hyakki: UMP, inicialização, carga com nova tentativa, recompensa só
+  com a confirmação do Google, opções de privacidade, conteúdo "PG") e `Ads` com três modos: "admob" (Android com o
+  plugin; IDs de teste em debug), "mock" (editor, testes, PC) e "off" (release sem IDs reais: `RELEASE_UNITS` vazio,
+  sem SDK, recompensa direto, como antes). Só recompensado: reviver, dobrar créditos, dobrar as Pérolas do Diário
+  (novo, 1 vez por dia, `Modes.double_daily_pearls`) e baú em dobro; sem intersticial, sem banner, nunca na missão,
+  nunca na Steam nem para quem apoiou. UMP na abertura (`Ads.start` no `App`, sem travar) e "Privacidade e
+  anúncios" nas Opções quando o UMP exige. Anúncio ainda não carregado: o botão mostra o texto sem anúncio e a
+  recompensa sai de presente; o baú em dobro some até carregar; a tela se refaz quando ele carrega.
+  `Store.simulated` passa a depender só do Play Billing (o APK de debug com o AdMob segue simulando a compra).
+  Testes em `tests/beta_tests.gd` (regras do provedor, Diário 1 vez por dia, apoiador). ⚠️ Falta o mantenedor: app
+  e bloco no AdMob, `RELEASE_UNITS` e app_id reais, depois política, ficha e Data Safety (fim de
+  `docs/store/play-console.md`); conferir no aparelho
+- ✅ `1.18.0` Anúncio recompensado LIGADO no release: IDs reais do AdMob do mantenedor (`RELEASE_UNITS` e
+  `admob/general/android/app_id`), teste de `tests/beta_tests.gd` invertido (tem IDs reais e o app_id fica no
+  `project.godot`). Política de privacidade 1.2 (o que o SDK do Google coleta, consentimento UMP, ID de
+  publicidade), ficha (anúncios opcionais, nunca na missão, sem venda de poder) e respostas do Play Console
+  (Anúncios = Sim, Segurança dos dados, ID de publicidade) atualizadas; cópia da política em
+  `netstart.github.io/atlantis/`. `tools/check_release_ads.py` (portado do hyakki, sem Play Billing) confere o AAB
+  em `tools/build_release.ps1`. ⚠️ Falta o mantenedor: mensagem de consentimento no AdMob, publicar o site,
+  declarações no Play Console, conferir no aparelho (cadastrado como dispositivo de teste no AdMob)
+- ✅ `1.18.1` Correções da revisão do anúncio recompensado. Diário: o resultado da partida leva a data do Diário
+  jogado (`Sim.result` lê `mission.daily`; a partida que passa da meia-noite conta no dia em que começou), então
+  o Diário reinicia todo dia, paga as 10 Pérolas, dobra 1 vez por dia e aparece feito em Eventos; save antigo com
+  `daily.date` vazio volta a funcionar sozinho. Anúncio fechado antes do fim não vira "grátis" na mesma tela de
+  resultado (`Ads.show_rewarded(..., allow_free)`); anúncio que falha ao abrir conta como "sem anúncio" (o reviver
+  não se perde); SDK e pedido de anúncio só com consentimento UMP obtido ou dispensado
+  (`AdMobProvider.consent_allows_ads`); rede de segurança se o callback do anúncio não vier (5 s depois de o app
+  voltar à frente, sem recompensa); anúncio carregado troca só o texto dos botões de dobrar (as linhas de
+  recompensa não somem na revelação); chave `consent` sem uso tirada do save; `tools/build_release.ps1` falha
+  cedo sem o JDK 17. Testes em `tests/beta_tests.gd` (Diário pelo `App.record_result`, consentimento, desfechos do
+  anúncio, save) e `tests/glory_tests.gd` (botões de dobrar)

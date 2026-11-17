@@ -157,7 +157,9 @@ func _fill_chest(profile: Dictionary, now: int) -> void:
 		AudioManager.play_ui("kenney_ui_confirm")
 		SaveManager.save_profile(), true, "Chest", true)
 	open.custom_minimum_size.y = 44.0
-	if Store.ads_allowed(profile):
+	# Baú em dobro só com o anúncio carregado (sem ele o botão some; a tela volta quando ele carrega).
+	Ads.on_ready_changed(refill)
+	if Ads.can_show(profile):
 		button(banner.actions, tr("shop.chest_double"), func() -> void:
 			Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
 				if granted:

@@ -1067,9 +1067,17 @@ Metas de retenção (D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 6%) e as referências de me
 
 **Google Play (grátis):**
 
-- **Anúncio recompensado opcional** em três lugares: reviver 1 vez por missão, dobrar créditos no resultado,
-  recompensas da Loja a cada 6 h.
-- **Nenhum anúncio** durante a missão, na abertura ou entre telas. Nenhum intersticial.
+- **Anúncio recompensado opcional** em quatro lugares, sempre pedido pelo jogador: reviver 1 vez por missão,
+  dobrar créditos no resultado, dobrar as Pérolas do desafio diário (1 vez por dia, no resultado do Diário) e o
+  baú da Loja em dobro a cada 6 h.
+- **Nenhum anúncio** durante a missão, na abertura ou entre telas. Nenhum intersticial, nenhum banner.
+- **Implementação (1.17):** Google AdMob + consentimento UMP pelo plugin Poing AdMob 5.1.0 (`addons/admob`, MIT),
+  em `scripts/core/admob_provider.gd` e `scripts/core/ads.gd`. UMP na abertura, sem travar; "Privacidade e
+  anúncios" nas Opções quando o UMP exige; conteúdo de anúncio limitado a "PG" (classificação PEGI 7 / ESRB E10+).
+  Debug usa os IDs de teste do Google; release sem IDs reais (`RELEASE_UNITS` vazio hoje) fica no modo "off":
+  nenhum SDK iniciado e a recompensa sai direto. Anúncio ainda não carregado: o botão mostra o texto sem anúncio
+  e a recompensa sai de presente (o baú em dobro, só com anúncio, some até carregar). Nunca na Steam, nunca para
+  quem apoiou.
 - **Cosméticos:** pinturas de aeronave, rastros de motor, cores de tiro do jogador (dentro dos limites de leitura),
   temas do hub, molduras de perfil. Compra direta ou com Pérolas ganhas jogando.
 - **Compra única "Apoiar a Halcyon"** (~US$ 3,99): recompensas da Loja sem anúncio, reviver sem anúncio, tema

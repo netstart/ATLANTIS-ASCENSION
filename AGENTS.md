@@ -2,6 +2,7 @@
 
 > `CLAUDE.md` é um link simbólico para este arquivo. Edite só o `AGENTS.md`.
 
+Toda sessão deve executar com `/ponytail ultra`.
 
 A sessão principal planeja e revisa. A escrita de código fica com o executor.
 
@@ -63,13 +64,26 @@ som próprio (áudio), aviso antes do perigo (design), teste automatizado (QA) e
 | [.ai/07-pesquisa-diversao-e-surpresa.md](.ai/07-pesquisa-diversao-e-surpresa.md) | O que torna o jogo divertido, viciante e surpreendente: Ecos de Estilo, nota, Arca da Maré, "Quase lá" |
 | [docs/store/play-console.md](docs/store/play-console.md) | Publicação na Google Play: arquivos, respostas do Play Console e passos do mantenedor |
 
+## Site e políticas publicadas (obrigatório a cada nova versão)
+
+Sempre que houver uma nova versão (commit com SemVer, ver [docs/policies/versionamento.md](docs/policies/versionamento.md)):
+
+1. Verifique se a política de privacidade e os demais arquivos publicados em `D:\src\netstart.github.io` precisam de atualização: ao menos `atlantis/privacy-policy.md` (fonte) e `atlantis/privacy-policy.html` (gerada com `python -I tools/build_privacy_page.py` daqui), o `README.md` do site e a página do jogo no catálogo, se houver.
+2. Se precisar, atualize esses arquivos, mantendo `.md` e `.html` com o mesmo conteúdo e a mesma data. Não apague nem renomeie `privacy-policy.html` nem `app-ads.txt` da raiz (são do Hyakki).
+3. Faça commit no repositório do site com o hook de pre-commit ativo (não use `--no-verify`) e depois `git push origin main`. Se o push falhar por autenticação, informe o erro e o comando para o mantenedor rodar.
+4. Se nada precisar mudar no site, diga isso na resposta da versão.
+
 ## Fatos do projeto
 
-- **Engine:** Godot 4.7.2 stable, em `C:\src\tools\godot\` (ou caminho em `$env:GODOT`). JDK 17 em `C:\src\tools\jdk\`.
+- **Engine:** Godot 4.7.2 stable, em `D:\Programs\godot\` (ou caminho em `$env:GODOT`). Android SDK em
+  `D:\Programs\android-sdk\`. JDK 17 (Temurin) em `D:\Programs\jdk\jdk-17.0.21+9\`, só para o
+  Gradle do Android (o Gradle 8.11.1 do Godot não roda em Java acima do 23; o JDK 27 do sistema não serve).
 - **Orientação:** retrato no Android (`sensor_portrait`); paisagem no desktop com área de jogo 9:16 central.
 - **Área de jogo:** campo fixo de 270x450 unidades, igual em todos os aparelhos (sobras viram HUD, moldura e zona do polegar).
 - **Simulação:** passo fixo de 1/60 s, determinística por semente.
-- **Assets baixados:** `c:\src\downloads\assets\<fonte>\` (fora do repositório). Só o usado entra em `assets/`.
+- **Catálogo de assets livres:** `D:\src\awsome-free-assets-to-games` (catálogos em Markdown na pasta `assets\`).
+- **Assets baixados:** `D:\src\assets-downloaded\<fonte>\` (fora do repositório). Só o usado entra em `assets/`.
+- **Arte própria do mantenedor:** `D:\src\assets-meus` (hoje só a arte do Hyakki; veja o `readme.md` de lá).
 - **Idiomas:** pt-BR, en, es, de, fr, ru, id, ja, ko, zh-TW, zh-CN.
 - **Lojas:** Google Play (grátis, anúncio recompensado opcional, cosméticos) e Steam (premium, sem anúncios).
 - **Pacote Android:** `io.github.netstart.atlantisascension` (provisório até o Play Console).
@@ -78,18 +92,18 @@ som próprio (áudio), aviso antes do perigo (design), teste automatizado (QA) e
 
 ```powershell
 # Abrir no editor
-C:\src\tools\godot\Godot_v4.7.2-stable_win64.exe --editor --path C:\src\ATLANTIS-ASCENSION
+D:\Programs\godot\Godot_v4.7.2-stable_win64.exe --editor --path D:\src\ATLANTIS-ASCENSION
 # Rodar o jogo (opções: -Editor, -Bot -Seed 7 -QuitAt 90, -Scene res://...)
 powershell -ExecutionPolicy Bypass -File tools\run_game.ps1
 # Todas as checagens (obrigatório antes de commitar; paralelo, opções -Jobs N e -TimeoutMinutes M)
 powershell -ExecutionPolicy Bypass -File tools\run_checks.ps1
 # Partida do bot, determinística
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . --fixed-fps 60 -- --bot --seed=7 --quit-at=90
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . --fixed-fps 60 -- --bot --seed=7 --quit-at=90
 # Licenças: baixar textos e snapshots, gerar índice e créditos, conferir
 python -I tools\fetch_licenses.py
 python -I tools\build_license_index.py
 python -I tools\check_licenses.py
-# Assets: copiar de c:\src\downloads\assets só o que os manifestos tools\*_assets.json pedem
+# Assets: copiar de D:\src\assets-downloaded só o que os manifestos tools\*_assets.json pedem
 python -I tools\sync_assets.py
 # Áudio do clima: recorta trovões e normaliza os laços baixados (precisa de numpy e soundfile; rode antes do sync)
 python tools\cut_weather_audio.py
@@ -107,15 +121,15 @@ python -I tools\gen_missions.py
 # Textos (fonte: tools\i18n\*.py)
 python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
 # Galeria do clima (cada estado de data/weather.json no auge, com relâmpago na tempestade)
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
 # Balanceamento: quanto o bot leva em cada luta de chefe e em cada fase (todas ou -- --only=c1m1,c9m3)
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/boss_timing.gd
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --headless --path . --script res://tests/boss_timing.gd
 # Benchmarks (com janela, sem VSync): rolagem em todas as resoluções e partida com 1.000 balas (nave no nível 10)
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/scroll_bench.tscn -- --strict
-C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_bench.tscn -- --strict
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/scroll_bench.tscn -- --strict
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_bench.tscn -- --strict
 # Arte gerada pelo projeto (balas, coletáveis, efeitos, ícone)
 python -I tools\gen_sprites.py
 # Retratos dos personagens, a partir do Cyberpunk Portraits (CC0) baixado (precisa de numpy; --preview DIR grava a folha)

@@ -69,4 +69,15 @@ STRINGS = {
     "events.best": ["Recorde %s", "Best %s", "Récord %s", "Rekord %s", "Record %s", "Рекорд %s", "Rekor %s",
                     "ベスト %s", "최고 %s", "最佳 %s", "最佳 %s"],
     "events.play": ["Jogar", "Play", "Jugar", "Spielen", "Jouer", "Играть", "Main", "プレイ", "플레이", "開始", "开始"],
+    # 1.17: anúncio recompensado real (AdMob + UMP); dobrar as Pérolas do Diário e privacidade nas Opções.
+    "results.double_pearls_ad": ["Dobrar Pérolas · ver anúncio", "Double Pearls · watch an ad",
+                                 "Duplicar Perlas · ver anuncio", "Perlen verdoppeln · Werbung", "Doubler les Perles · pub",
+                                 "Удвоить жемчуг · реклама", "Gandakan Mutiara · tonton iklan", "真珠2倍・広告",
+                                 "진주 2배 · 광고", "珍珠加倍・看廣告", "珍珠加倍・看广告"],
+    "results.double_pearls_free": ["Dobrar Pérolas", "Double Pearls", "Duplicar Perlas", "Perlen verdoppeln",
+                                   "Doubler les Perles", "Удвоить жемчуг", "Gandakan Mutiara", "真珠2倍", "진주 2배",
+                                   "珍珠加倍", "珍珠加倍"],
+    "options.privacy_ads": ["Privacidade e anúncios", "Privacy and ads", "Privacidad y anuncios", "Datenschutz und Werbung",
+                            "Confidentialité et pubs", "Конфиденциальность и реклама", "Privasi dan iklan",
+                            "プライバシーと広告", "개인정보 및 광고", "隱私與廣告", "隐私与广告"],
 }

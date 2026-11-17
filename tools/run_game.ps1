@@ -5,11 +5,11 @@
 #       -Bot -Seed 7         partida do bot, determinística (passo fixo de 60 fps)
 #       -QuitAt 90           fecha sozinho após N segundos (com -Bot)
 #       -Scene res://...     roda outra cena em vez da principal
-#       -Godot "C:\...\Godot_v4.7.2-stable_win64_console.exe"   (padrão: $env:GODOT ou C:\src\tools\godot)
+#       -Godot "C:\...\Godot_v4.7.2-stable_win64_console.exe"   (padrão: $env:GODOT ou D:\Programs\godot)
 #       Argumentos extras vão para o jogo depois de "--" (ex.: tools\run_game.ps1 --shots=shots).
 
 param(
-    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe' }),
+    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe' }),
     [switch]$Editor,
     [switch]$Bot,
     [int]$Seed = 7,

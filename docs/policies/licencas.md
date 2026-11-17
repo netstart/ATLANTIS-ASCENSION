@@ -66,22 +66,22 @@ Quando o mantenedor decide usar um asset gerado por IA, a entrada em `licenses/r
 - `license_id` `LicenseRef-<termos>` com o resumo local dos termos em `licenses/texts/` (campo `license_source`),
   o aviso de autoria em `licenses/notices/` e o snapshot datado dos termos em `docs/licenses/`.
 - O script que prepara o arquivo (corte, laço, normalização) fica em `tools/`, e o original gerado fica em
-  `c:\src\downloads\assets\<ferramenta>\`, como qualquer download.
+  `D:\src\assets-downloaded\<ferramenta>\`, como qualquer download.
 
 Primeiro caso: o tema do menu (`flow_tide_rising_music`), gerado pelo mantenedor no Google Flow Music em
 2026-11-01.
 
 ## Onde ficam os downloads
 
-- Pacotes originais baixados ficam **fora do repositório** em `c:\src\downloads\assets\<fonte>\<pack>.zip`
-  (ex.: `c:\src\downloads\assets\foozle\void-main-ship.zip`), com a página de origem salva ao lado em PDF.
+- Pacotes originais baixados ficam **fora do repositório** em `D:\src\assets-downloaded\<fonte>\<pack>.zip`
+  (ex.: `D:\src\assets-downloaded\foozle\void-main-ship.zip`), com a página de origem salva ao lado em PDF.
 - Só os arquivos realmente usados são copiados para `assets/` por `tools/sync_assets.py`, guiado por
   `tools/asset_manifest.json`. Cada cópia grava o SHA-256 em `assets/asset_index.json`.
 
 ## Processo para adicionar um novo asset ou dependência
 
 1. Verifique a licença na página oficial do upstream e confirme que está na lista permitida.
-2. Salve o pacote em `c:\src\downloads\assets\<fonte>\` e um snapshot PDF da página em `docs/licenses/<id>_<data>.pdf`.
+2. Salve o pacote em `D:\src\assets-downloaded\<fonte>\` e um snapshot PDF da página em `docs/licenses/<id>_<data>.pdf`.
 3. Adicione a entrada em `licenses/registry.json` (campos: `id`, `name`, `category`, `author`, `version`,
    `license_id`, `commercial_use: true`, `attribution_required`, `source_url`, `license_file`, `notice_file`,
    `snapshot_file`, `files`, `sha256`, `downloaded_at`, `verified_at`, `verified_by`).

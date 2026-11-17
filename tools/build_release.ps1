@@ -2,7 +2,7 @@
 #   - Android: APK de debug (teste em aparelho) e AAB de release para a Play (assinado com a chave de upload)
 #   - Windows: pasta + zip; Linux: pasta + tar.gz (com a versão do project.godot no nome)
 #
-# A chave de upload NUNCA entra no repositório: o arquivo -KeyEnv (padrão C:\src\tools\keys\atlantis-upload.env)
+# A chave de upload NUNCA entra no repositório: o arquivo -KeyEnv (padrão D:\src\keys\atlantis-upload.env)
 # traz GODOT_ANDROID_KEYSTORE_RELEASE_PATH, _USER e _PASSWORD, que o Godot lê do ambiente na hora do export.
 # Sem esse arquivo, o AAB é pulado e o resto sai normalmente.
 #
@@ -10,9 +10,9 @@
 #       (opcional) -Godot "C:\...\Godot_v4.7.2-stable_win64_console.exe" -KeyEnv "C:\...\minha-chave.env"
 
 param(
-    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'C:\src\tools\godot\Godot_v4.7.2-stable_win64_console.exe' }),
-    [string]$KeyEnv = 'C:\src\tools\keys\atlantis-upload.env',
-    [string]$Java = 'C:\src\tools\jdk\jdk-17.0.20.1+1'
+    [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe' }),
+    [string]$KeyEnv = 'D:\src\keys\atlantis-upload.env',
+    [string]$Java = $(if (Test-Path 'D:\Programs\jdk') { Get-ChildItem 'D:\Programs\jdk' -Directory -Filter 'jdk-17*' | Select-Object -First 1 -ExpandProperty FullName })
 )
 
 $ErrorActionPreference = 'Stop'
@@ -20,10 +20,19 @@ $ErrorActionPreference = 'Stop'
 $project = Split-Path -Parent $PSScriptRoot
 $build = Join-Path $project 'build'
 $version = (Select-String -Path (Join-Path $project 'project.godot') -Pattern 'config/version="([^"]+)"').Matches[0].Groups[1].Value
+# O Gradle 8.11.1 do Godot só roda até o Java 23 (AGENTS.md): sem o JDK 17 o export do Android falharia
+# depois de apagar o JAVA_HOME. Falha aqui, antes de tocar em build/.
+if (-not $Java -or -not (Test-Path (Join-Path $Java 'bin\java.exe'))) {
+    Write-Host "JDK 17 não encontrado (procurado em D:\Programs\jdk\jdk-17*). Instale o Temurin 17 ou passe -Java C:\...\jdk-17..." -ForegroundColor Red
+    exit 1
+}
 $env:JAVA_HOME = $Java
+# Sem daemon do Gradle: o daemon herdava a saída do Godot e o console do Godot ficava parado depois de gravar
+# o APK/AAB (visto na 1.18.0), esperando um pipe que só fecha quando o daemon morre.
+$env:GRADLE_OPTS = '-Dorg.gradle.daemon=false'
 # Pastas de exportação limpas: arquivos de versões anteriores não podem entrar nos pacotes.
 Remove-Item (Join-Path $build 'windows'), (Join-Path $build 'linux') -Recurse -Force -ErrorAction SilentlyContinue
-Get-ChildItem (Join-Path $build '*') -File -Include *.zip, *.tar.gz -ErrorAction SilentlyContinue | Remove-Item -Force
+Get-ChildItem (Join-Path $build '*') -File -Include *.zip, *.tar.gz, *.apk, *.aab -ErrorAction SilentlyContinue | Remove-Item -Force
 New-Item -ItemType Directory -Force (Join-Path $build 'windows'), (Join-Path $build 'linux') | Out-Null
 $failed = $false
 
@@ -43,6 +52,9 @@ if (Test-Path $KeyEnv) {
         if ($line -match '^\s*([A-Z_]+)=(.*)$') { Set-Item -Path "env:$($Matches[1])" -Value $Matches[2] }
     }
     Export 'Android Play' 'build/atlantis-ascension-release.aab' 'release'
+    # Trava dos anúncios: o AAB precisa sair com o AdMob real (ID do app, plugin, SDK, AD_ID, versão nova).
+    & python -I (Join-Path $PSScriptRoot 'check_release_ads.py') (Join-Path $build 'atlantis-ascension-release.aab')
+    if ($LASTEXITCODE -ne 0) { $failed = $true }
 } else {
     Write-Host "Sem $KeyEnv : AAB de release pulado (ver docs/store/release-checklist.md)" -ForegroundColor Yellow
 }

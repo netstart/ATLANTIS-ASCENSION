@@ -25,6 +25,31 @@
     "license_file": "res://licenses/texts/Apache-2.0.txt"
   },
   {
+    "id": "poing_admob_plugin",
+    "name": "Poing Studios AdMob Plugin for Godot",
+    "author": "Poing Studios",
+    "license_id": "MIT",
+    "category": "plugin",
+    "version": "5.1.0 (android-template-v4.7.2)",
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-16",
+    "modifications": "sem C#, skills do editor e adaptadores de mediação (cópia do addons/admob do hyakki); ios, docs, assets e mock fora dos pacotes",
+    "source_url": "https://github.com/poingstudios/godot-admob-plugin",
+    "license_file": "res://licenses/texts/MIT-PoingAdMob.txt"
+  },
+  {
+    "id": "google_mobile_ads_sdk",
+    "name": "Google Mobile Ads SDK and UMP SDK",
+    "author": "Google LLC",
+    "license_id": "LicenseRef-Google-Mobile-Ads-SDK",
+    "category": "android",
+    "version": "ads-mobile-sdk 1.4.0 (via Poing AdMob 5.1.0)",
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-16",
+    "source_url": "https://developers.google.com/admob/android/quick-start",
+    "license_file": "res://licenses/texts/LicenseRef-Google-Mobile-Ads-SDK.txt"
+  },
+  {
     "id": "hyakki_code",
     "name": "Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas)",
     "author": "Clayton K. N. Passos",

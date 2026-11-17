@@ -247,6 +247,7 @@ func _results_view(host: Node, check: Callable) -> void:
 	win["grade_new"] = true
 	win["chest"] = TideChest.roll("c1m1", 7, 1, Grade.SS)
 	win["credits"] = 80
+	win["season_xp"] = 30
 	app.last_result = win
 	app.go(&"results")
 	await LayoutTests.settle(host)
@@ -267,6 +268,7 @@ func _results_view(host: Node, check: Callable) -> void:
 	check.call(reel == TideChestPanel.symbol_text(StringName(String((win["chest"]["reel"] as Array)[-1]))),
 			"Resultado: o carretel para no prêmio (%s)" % reel)
 	LayoutTests.check_screen(screen, Rect2(Vector2.ZERO, Vector2(360, 640)), check, "Resultado com arca")
+	_ad_buttons(screen, check)
 	var lost := {"mission": "c1m1", "cleared": false, "progress": 0.95, "boss_left": 0.1, "bombs_left": 1,
 			"stars": [false, false, false, false], "seed": 7}
 	app.last_result = lost
@@ -282,6 +284,32 @@ func _results_view(host: Node, check: Callable) -> void:
 	check.call(not (screen.find_child("TideChest", true, false) as Control).visible, "Resultado: derrota sem arca")
 	app.queue_free()
 	await host.get_tree().process_frame
+
+
+## Botões de dobrar: o anúncio que carrega (Ads.on_ready_changed -> _refresh_ad_buttons) só troca o texto,
+## sem recriar as linhas de recompensa já reveladas; e a recompensa cujo anúncio o jogador fechou segue
+## pedindo anúncio nesta tela (sem o atalho "grátis"), até a próxima tela de resultado.
+func _ad_buttons(screen: Screen, check: Callable) -> void:
+	var rewards := screen.get("_rewards") as Control
+	var rows := rewards.get_children()
+	screen.call("_refresh_ad_buttons")
+	var same := not rows.is_empty() and rewards.get_children() == rows
+	for row: Node in rows:
+		same = same and is_equal_approx((row as CanvasItem).modulate.a, 1.0)
+	check.call(same, "Resultado: anúncio carregado troca só o texto dos botões (linhas intactas: %d)" % rows.size())
+	var double := screen.get("_double") as Button
+	var supporter := bool(SaveManager.data["purchases"]["supporter"])
+	SaveManager.data["purchases"]["supporter"] = true
+	screen.call("_refresh_ad_buttons")
+	var free := double.text == TranslationServer.translate("results.double_free")
+	screen.call("_note_declined", "credits", false)
+	check.call(free and double.text == TranslationServer.translate("results.double_ad"),
+			"Resultado: anúncio fechado antes do fim não vira 'grátis' na mesma tela")
+	screen.call("_note_declined", "pearls", true)
+	check.call(not (screen.get("_declined") as Dictionary).has("pearls"), "Resultado: recompensa ganha não marca recusa")
+	screen.on_show(null)
+	check.call((screen.get("_declined") as Dictionary).is_empty(), "Resultado: tela nova esquece a recusa")
+	SaveManager.data["purchases"]["supporter"] = supporter
 
 
 func _hud_view(host: Node, check: Callable) -> void:
