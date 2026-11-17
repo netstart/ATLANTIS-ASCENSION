@@ -1,8 +1,8 @@
 """Trava de release dos anúncios: confere o AAB de release já exportado e reprova se o build cairia no
 modo "off" (sem anúncio, Ads.mode() == "off") em produção.
 
-Portado do hyakki (tools/check_release_ads.py, mesmo autor), sem a parte de Play Billing, que este jogo
-ainda não tem. O jogo só liga os anúncios em release quando (a) os IDs reais do AdMob estão no projeto
+Portado do hyakki (tools/check_release_ads.py, mesmo autor), com a parte de Play Billing (compra do
+Turbo, scripts/core/turbo.gd: sem o plugin no pacote o release não tem como vender o Turbo). O jogo só liga os anúncios em release quando (a) os IDs reais do AdMob estão no projeto
 (AdMobProvider.has_release_ids(): RELEASE_UNITS em scripts/core/admob_provider.gd e
 admob/general/android/app_id no project.godot) e (b) o singleton nativo "PoingGodotAdMob" existe no
 Android (AdMobProvider.startup_provider()). Este script confere no pacote gerado:
@@ -13,6 +13,8 @@ Android (AdMobProvider.startup_provider()). Este script confere no pacote gerado
   o Godot registra o plugin v2 e cria o singleton) e a classe no dex, mais os plugins de
   recompensado e UMP que o jogo usa;
 - Google Mobile Ads SDK (classes no dex e a AdActivity no manifesto) e UMP (classes no dex);
+- Play Billing: permissão com.android.vending.BILLING, meta-data do plugin GodotGooglePlayBilling
+  e as classes do plugin e da Billing Library no dex;
 - permissões INTERNET e com.google.android.gms.permission.AD_ID;
 - RELEASE_UNITS com bloco recompensado real (lido do repositório e, quando o script empacotado
   puder ser lido, também no .gdc do pacote) e o pacote não é depurável;
@@ -50,13 +52,16 @@ REQUIRED_PLUGINS = {
     "PoingGodotAdMobRewardedAd": "com.poingstudios.godot.admob.ads.PoingGodotAdMobRewardedAd",
     "PoingGodotAdMobUserMessagingPlatform": "com.poingstudios.godot.admob.ads.PoingGodotAdMobUserMessagingPlatform",
     "PoingGodotAdMobConsentInformation": "com.poingstudios.godot.admob.ads.PoingGodotAdMobConsentInformation",
+    "GodotGooglePlayBilling": "org.godotengine.plugin.googleplaybilling.GodotGooglePlayBilling",
 }
-REQUIRED_PERMISSIONS = ["android.permission.INTERNET", "com.google.android.gms.permission.AD_ID"]
+REQUIRED_PERMISSIONS = ["android.permission.INTERNET", "com.google.android.gms.permission.AD_ID",
+                        "com.android.vending.BILLING"]
 # Marcadores no dex: (descrição, prefixos aceitos). O R8 renomeia as classes internas, mas mantém os
 # pacotes; os prefixos abaixo foram conferidos nos pacotes de release do hyakki 1.40.6 (mesmo plugin).
 DEX_MARKERS = [
     ("Google Mobile Ads SDK", [b"Lcom/google/android/libraries/ads/mobile/sdk/", b"Lcom/google/android/gms/ads/"]),
     ("UMP (User Messaging Platform)", [b"Lcom/google/android/ump/", b"Lcom/google/android/gms/internal/consent_sdk/"]),
+    ("Play Billing Library", [b"Lcom/android/billingclient/api/"]),
 ]
 AD_ACTIVITIES = ["com.google.android.libraries.ads.mobile.sdk.common.AdActivity",
                  "com.google.android.gms.ads.AdActivity"]
@@ -509,11 +514,11 @@ def main(argv: list[str]) -> int:
             failed = True
         else:
             m = art.manifest
-            print(f"ok: {m.package} {m.version_name} (versionCode {m.version_code}), anúncio recompensado ligado")
+            print(f"ok: {m.package} {m.version_name} (versionCode {m.version_code}), anúncio recompensado e Play Billing ligados")
     if failed:
-        print("Release REPROVADO: este pacote abriria no modo \"sem anúncios\" ou está desatualizado. Não envie.")
+        print("Release REPROVADO: este pacote abriria sem anúncios ou sem a compra do Turbo, ou está desatualizado. Não envie.")
         return 1
-    print("Release aprovado: anúncio recompensado (AdMob + UMP) no pacote.")
+    print("Release aprovado: anúncio recompensado (AdMob + UMP) e Play Billing (Turbo) no pacote.")
     return 0
 
 

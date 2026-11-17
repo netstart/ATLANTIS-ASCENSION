@@ -1,6 +1,6 @@
 # Política de privacidade — Atlantis Ascension
 
-*Versão 1.2 · 16/11/2026 · English version below.*
+*Versão 1.3 · 17/11/2026 · English version below.*
 
 ## Português (Brasil)
 
@@ -10,11 +10,13 @@ pelo e-mail informado na página do jogo na Google Play ou na Steam.
 **Resumo.** O jogo funciona offline, sem conta e sem servidor nosso. Nós não recebemos nenhum dado seu. A versão
 gratuita do Android tem **anúncios recompensados opcionais** do Google AdMob: só aparecem quando você toca num
 botão "ver anúncio" (reviver, dobrar créditos, dobrar as Pérolas do Diário, abrir o baú em dobro), **nunca durante
-a missão**, e não vendem poder. Só esses anúncios usam a internet e só eles envolvem dados, coletados pelo Google
-como explicado abaixo. A versão Steam não tem anúncios.
+a missão**, e não vendem poder. No Android há também uma **compra opcional, o Turbo** (acelera a partida; não
+vende poder), feita pela Google Play. Só os anúncios e essa compra usam a internet, e os dados envolvidos ficam
+com o Google, como explicado abaixo. A versão Steam não tem anúncios nem compras (o Turbo vem incluído).
 
 **O que o jogo guarda no seu aparelho.** Progresso (missões, estrelas, moedas do jogo, aeronaves, conquistas),
-opções (idioma, volume, acessibilidade), a sua escolha de consentimento e replays dos seus recordes. Tudo fica
+opções (idioma, volume, acessibilidade), a sua escolha de consentimento, replays dos seus recordes e, se você
+comprou o Turbo, só o fato de que a compra foi feita e a velocidade escolhida. Tudo fica
 **só no seu aparelho** (`user://save.json`, `user://settings.cfg`, `user://replays/`). Nós não recebemos esses
 dados.
 
@@ -34,11 +36,18 @@ Android (Google › Anúncios). Os anúncios são limitados a conteúdo para tod
 Se você não quiser ver anúncios, não toque nos botões de anúncio: nada no jogo exige um anúncio.
 
 **O que o jogo NÃO coleta.** Nome, e-mail, contatos, localização precisa, fotos, microfone ou câmera. Além da
-internet e do ID de publicidade usados pelos anúncios, a única permissão pedida no Android é a vibração (para o
-retorno tátil, que pode ser desligado nas opções).
+internet e do ID de publicidade usados pelos anúncios e da permissão de cobrança da Google Play
+(`com.android.vending.BILLING`, usada só para a compra do Turbo), a única permissão pedida no Android é a
+vibração (para o retorno tátil, que pode ser desligado nas opções).
 
-**Compras.** A versão atual não tem compras no app. Se uma versão futura trouxer compras pela Google Play, esta
-política será atualizada antes dessa versão ser publicada.
+**Compras (Google Play, só Android).** O Turbo é uma compra única e opcional, processada pela **Google Play** com
+a conta Google do aparelho. O pagamento acontece na tela da Google Play: nós **não recebemos nem guardamos** nome,
+e-mail, cartão ou qualquer dado de pagamento. O jogo só pergunta à Google Play se o Turbo foi comprado (para
+liberá-lo e para restaurá-lo quando você reinstala o jogo ou troca de aparelho) e guarda no aparelho só essa
+resposta. Recebemos do Google apenas relatórios de vendas. Os dados da compra seguem a
+[Política de Privacidade do Google](https://policies.google.com/privacy) e os
+[Termos de Serviço da Google Play](https://play.google.com/about/play-terms/); reembolsos seguem as regras da
+Google Play.
 
 **Crianças.** O jogo não é direcionado a menores de 13 anos.
 
@@ -58,11 +67,14 @@ e-mail shown on the game's Google Play or Steam page.
 **Summary.** The game works offline, with no account and no server of ours. We receive none of your data. The
 free Android version has **optional rewarded ads** from Google AdMob: they only appear when you tap a "watch an
 ad" button (revive, double credits, double the Daily Pearls, open the chest doubled), **never during a mission**,
-and they never sell power. Only these ads use the internet and only they involve data, collected by Google as
-explained below. The Steam version has no ads.
+and they never sell power. On Android there is also one **optional purchase, Turbo** (it speeds up the run and
+does not sell power), made through Google Play. Only the ads and that purchase use the internet, and the data
+involved stays with Google, as explained below. The Steam version has no ads and no purchases (Turbo is
+included).
 
-**What the game stores on your device.** Progress, options, your consent choice and replays of your records stay
-**only on your device**. We receive none of this data.
+**What the game stores on your device.** Progress, options, your consent choice, replays of your records and, if
+you bought Turbo, only the fact that it was purchased and the speed you picked stay **only on your device**. We
+receive none of this data.
 
 **Ads (Google AdMob, Android only).** To request and show an ad, the Google Mobile Ads SDK included in the game
 sends Google the Android **advertising ID**, your IP address (from which an approximate location can be
@@ -80,11 +92,17 @@ are limited to content suitable for general audiences ("PG" rating). If you do n
 buttons: nothing in the game requires an ad.
 
 **What the game does NOT collect.** Name, e-mail, contacts, precise location, photos, microphone or camera.
-Besides the internet access and advertising ID used by the ads, the only Android permission requested is
+Besides the internet access and advertising ID used by the ads and the Google Play billing permission
+(`com.android.vending.BILLING`, used only for the Turbo purchase), the only Android permission requested is
 vibration (for haptic feedback, which can be turned off in the options).
 
-**Purchases.** The current version has no in-app purchases. If a future version adds Google Play purchases, this
-policy will be updated before that version is released.
+**Purchases (Google Play, Android only).** Turbo is a single, optional purchase processed by **Google Play** with
+the Google account on the device. Payment happens on the Google Play screen: we **do not receive or store** your
+name, e-mail, card or any payment data. The game only asks Google Play whether Turbo was purchased (to unlock it
+and to restore it when you reinstall the game or change devices) and stores only that answer on the device. We
+only receive sales reports from Google. Purchase data is handled under the
+[Google Privacy Policy](https://policies.google.com/privacy) and the
+[Google Play Terms of Service](https://play.google.com/about/play-terms/); refunds follow Google Play's rules.
 
 **Children.** The game is not directed at children under 13.
 

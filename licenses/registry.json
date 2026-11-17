@@ -102,6 +102,57 @@
     "snapshot_file": "docs/licenses/google_mobile_ads_sdk_2026-10-21.pdf"
   },
   {
+    "id": "godot_play_billing",
+    "name": "GodotGooglePlayBilling",
+    "category": "plugin",
+    "author": "Godot Engine contributors",
+    "version": "3.3.0",
+    "source_url": "https://github.com/godot-sdk-integrations/godot-google-play-billing",
+    "license_id": "MIT",
+    "license_url": "https://raw.githubusercontent.com/godot-sdk-integrations/godot-google-play-billing/3.3.0/LICENSE",
+    "license_file": "licenses/texts/MIT-GodotGooglePlayBilling.txt",
+    "snapshot_url": "https://github.com/godot-sdk-integrations/godot-google-play-billing",
+    "attribution_required": true,
+    "commercial_use": true,
+    "modifications": "",
+    "files": [
+      "addons/GodotGooglePlayBilling/**"
+    ],
+    "sha256": {
+      "license_file": "2a4af9d86d0855f90c3d41d4df3599d1920b52d6f95ed1d87bd9e247e0d5dbd5",
+      "snapshot_file": "9e97e2a72ac6cb5ea47c551815f23f7bbe63d42a66b0ae3345346cec69f07b7e"
+    },
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-17",
+    "verified_by": "Claude (Turbo, compra única na Google Play; cópia do addons/GodotGooglePlayBilling do hyakki, registro de 2026-10-21); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/godot_play_billing_2026-10-21.pdf"
+  },
+  {
+    "id": "play_billing_library",
+    "name": "Google Play Billing Library",
+    "category": "android",
+    "author": "Google LLC",
+    "version": "billing-ktx 9.1.0 (via GodotGooglePlayBilling 3.3.0)",
+    "source_url": "https://developer.android.com/google/play/billing",
+    "license_id": "LicenseRef-Google-Play-Billing-Library",
+    "license_source": "licenses/sources/LicenseRef-Google-Play-Billing-Library.txt",
+    "license_file": "licenses/texts/LicenseRef-Google-Play-Billing-Library.txt",
+    "snapshot_url": "https://developer.android.com/studio/terms",
+    "attribution_required": false,
+    "commercial_use": true,
+    "modifications": "",
+    "decision": "Em 2026-11-17 o mantenedor (Clayton K. N. Passos) decidiu vender o Turbo (acelera a partida em 1,5x ou 2x; compra única, não consumível) na Google Play. A Play exige a Play Billing Library para compras digitais: ela não é aberta, mas é distribuída pelo Google Maven para ser incluída no APK/AAB, sob o Android SDK License Agreement e as políticas da Google Play, que permitem o uso em apps comerciais. O pagamento é processado pela Google Play; o jogo nunca recebe dados de pagamento. Mesma decisão do projeto hyakki (mesmo mantenedor).",
+    "files": [],
+    "sha256": {
+      "license_file": "30c94aad878799b4acfe2bfe03b76bb192e11d2e317510bf6ab029f4f25cf0d1",
+      "snapshot_file": "1a70f6d1a2949dbf994c6d391e803d0d143bc717885091503084ec5b52fc157c"
+    },
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-17",
+    "verified_by": "Claude (Turbo, compra única na Google Play, a partir do registro do hyakki de 2026-10-21); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/play_billing_library_2026-10-21.pdf"
+  },
+  {
     "id": "hyakki_code",
     "name": "Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas)",
     "category": "code",

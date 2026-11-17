@@ -94,16 +94,28 @@ func _test_scaler() -> void:
 			"Janela: nunca abaixo de x1")
 
 
-## Área de jogo: 270x450 inteira na área segura, alinhada ao pixel, HUD cobrindo no máximo 6%.
+## Área de jogo: 270 x (450 a 640) pela altura da área segura, inteira nela, encostada embaixo (sem faixa
+## reservada), alinhada ao pixel, HUD cobrindo no máximo 6%.
 func _test_playfield() -> void:
 	for c: Dictionary in DeviceProfiles.layout_cases():
 		var view: Vector2 = c["view"]
 		var safe := DeviceProfiles.safe_rect(view, c["insets"])
-		var result := Playfield.layout(view, safe)
+		var height := Playfield.height_for(safe, int(DeviceProfiles.scale_for(c.get("physical", Vector2i(view)))))
+		var result := Playfield.layout(view, safe, height)
 		var field: Rect2 = result["field"]
 		var tag := "Campo [%s]" % c["label"]
-		_check(field.size == Playfield.FIELD, "%s: tamanho %s" % [tag, field.size])
+		_check(height >= Playfield.FIELD.y and height <= Playfield.MAX_HEIGHT and height == floorf(height),
+				"%s: altura %.0f entre %.0f e %.0f" % [tag, height, Playfield.FIELD.y, Playfield.MAX_HEIGHT])
+		_check(height == minf(Playfield.MAX_HEIGHT, floorf(safe.end.y) - ceilf(safe.position.y)) or view.x > view.y,
+				"%s: campo ocupa a altura útil (%.0f)" % [tag, height])
+		_check(field.size.is_equal_approx(Vector2(Playfield.FIELD.x, height) * float(result["scale"])),
+				"%s: tamanho %s" % [tag, field.size])
+		if view.x > view.y:
+			_check(is_equal_approx(field.size.y, floorf(safe.end.y) - ceilf(safe.position.y)),
+					"%s: no PC deitado o campo ampliado ocupa a altura inteira" % tag)
 		_check(Playfield.fits(result, safe), "%s: %s dentro da área segura %s" % [tag, field, safe])
+		if view.y >= view.x:
+			_check(field.end.y == floorf(safe.end.y), "%s: campo vai até a borda de baixo (%.0f)" % [tag, field.end.y])
 		_check(field.position == field.position.floor(), "%s: alinhado ao pixel %s" % [tag, field.position])
 		_check(Playfield.hud_coverage(result) <= 0.06,
 				"%s: HUD cobre %.1f%% do campo" % [tag, Playfield.hud_coverage(result) * 100.0])
@@ -111,14 +123,27 @@ func _test_playfield() -> void:
 		_check(safe.grow(0.01).encloses(hud), "%s: HUD %s na área segura" % [tag, hud])
 		if not bool(result["hud_overlay"]):
 			_check(not hud.intersects(field), "%s: HUD fora do campo" % tag)
-		var thumb: Rect2 = result["thumb"]
-		_check(thumb.size.y == 0.0 or safe.grow(0.01).encloses(thumb), "%s: zona do polegar na área segura" % tag)
-	var tall := Playfield.layout(Vector2(270, 660), Rect2(0, 29.5, 270, 630.5))
-	_check(bool(tall["thumb_separate"]), "Campo: tela 22:9 tem zona do polegar separada")
+	# Mínimo, teto e onde vai a sobra.
+	_check(Playfield.height_for(Rect2(0, 0, 270, 300)) == Playfield.FIELD.y, "Campo: nunca abaixo de 450")
+	_check(Playfield.height_for(Rect2(0, 0, 360, 2000)) == Playfield.MAX_HEIGHT, "Campo: teto de 640")
+	var ref := Playfield.layout(Vector2(305, 678), Rect2(0, 30, 305, 648), Playfield.height_for(Rect2(0, 30, 305, 648)))
+	_check((ref["field"] as Rect2).size.y == 640.0 and bool(ref["hud_overlay"]),
+			"Campo: 305x678 com recorte dá 640 de altura e o HUD sobre o topo do campo")
+	var tall := Playfield.layout(Vector2(360, 806), Rect2(0, 40, 360, 766), Playfield.MAX_HEIGHT)
+	_check(not bool(tall["hud_overlay"]) and (tall["hud"] as Rect2).end.y == (tall["field"] as Rect2).position.y,
+			"Campo: no teto, a sobra de cima recebe o HUD logo acima do campo")
 	var short := Playfield.layout(Vector2(270, 480), Rect2(0, 29.5, 270, 450.5))
 	_check(bool(short["hud_overlay"]), "Campo: tela 9:16 com recorte põe o HUD sobre o campo")
-	var desk := Playfield.layout(Vector2(960, 540), Rect2(0, 0, 960, 540))
-	_check((desk["field"] as Rect2).position == Vector2(345, 45), "Campo: centralizado em 960x540")
+	# PC deitado: maior altura com pixels físicos inteiros; sem nenhuma, 640 ampliado (filtro nítido).
+	_check(Playfield.height_for(Rect2(0, 0, 960, 540), 2) == 540.0, "Campo: 1920x1080 dá 270x540 em 2x")
+	_check(Playfield.height_for(Rect2(0, 0, 1280, 720), 2) == 480.0, "Campo: 2560x1440 dá 270x480 em 3x")
+	_check(Playfield.height_for(Rect2(0, 0, 1280, 800), 1) == Playfield.MAX_HEIGHT, "Campo: Steam Deck dá 640 ampliado")
+	var desk := Playfield.layout(Vector2(960, 540), Rect2(0, 0, 960, 540), 540.0)
+	_check((desk["field"] as Rect2) == Rect2(345, 0, 270, 540) and float(desk["scale"]) == 1.0,
+			"Campo: 270x540 centralizado em 960x540, sem ampliar")
+	var old := Playfield.layout(Vector2(960, 540), Rect2(0, 0, 960, 540))
+	_check((old["field"] as Rect2).is_equal_approx(Rect2(318, 0, 324, 540)),
+			"Campo: o de 450 (replay antigo) ampliado 1,2x até a altura de 960x540")
 
 
 func _test_spatial_hash() -> void:

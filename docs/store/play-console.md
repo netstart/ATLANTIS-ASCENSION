@@ -1,7 +1,8 @@
 # Google Play Console — roteiro de publicação e respostas
 
 Tudo o que o Play Console pede para publicar o Atlantis Ascension, na ordem das telas, com a resposta certa para a
-versão atual (**grátis, jogável offline, com anúncios recompensados opcionais do AdMob, sem compras no app**). O que só o titular da conta pode fazer
+versão atual (**grátis, jogável offline, com anúncios recompensados opcionais do AdMob e uma compra no app: o
+Turbo**, produto `turbo`, compra única de US$ 1,99). O que só o titular da conta pode fazer
 (pagar, aceitar termos, verificar identidade, enviar arquivos) está marcado com 👤.
 
 ## 0. Arquivos prontos
@@ -20,8 +21,10 @@ Dados técnicos do AAB (versão 1.18.0): pacote `io.github.netstart.atlantisasce
 bibliotecas de 64 bits alinhadas em 16 KB (exigência da Play para targetSdk 35+), OpenGL ES 3.0 obrigatório,
 `debuggable` desligado, backup automático do Android ligado (o progresso volta ao trocar de aparelho). AdMob:
 meta-data `com.google.android.gms.ads.APPLICATION_ID` = `ca-app-pub-6552169828297838~1447443371` e plugin
-`PoingGodotAdMob` no pacote (`python -I tools/check_release_ads.py` confere; `tools/build_release.ps1` o roda).
-Permissões do manifesto final: `VIBRATE` (do jogo); `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (as duas,
+`PoingGodotAdMob` no pacote; Play Billing: plugin `GodotGooglePlayBilling` 3.3.0 (Billing Library 9.1.0) e a
+permissão `com.android.vending.BILLING` (`python -I tools/check_release_ads.py` confere os dois;
+`tools/build_release.ps1` o roda). Permissões do manifesto final: `VIBRATE` (do jogo); `com.android.vending.BILLING`
+(Billing Library, compra do Turbo); `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (as duas,
 `android.` e `com.google.android.gms.`) e `READ_BASIC_PHONE_STATE` (SDK de anúncios); `WAKE_LOCK` e
 `FOREGROUND_SERVICE` (WorkManager, dependência do SDK); `<pacote>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
 (AndroidX, interna). Nenhuma é "perigosa" (nenhum diálogo de permissão para o jogador).
@@ -91,7 +94,7 @@ ficha. Declarar errado é violação de política.
 | Apostas / jogos de azar simulados | Não (o baú grátis dá recompensa fixa sem compra; não há loot box paga) |
 | Interação entre usuários, chat, conteúdo gerado | Não |
 | Compartilha localização | Não |
-| Compras digitais | Não |
+| Compras digitais | **Sim** (o Turbo, compra única opcional pela Google Play; não é loot box nem moeda) |
 | Navegador / acesso irrestrito à internet | Não |
 
 Resultado esperado: classificação baixa (ex.: PEGI 7, ESRB E10+, ClassInd 10). A Play mostra o resultado antes de
@@ -128,6 +131,10 @@ Tipos de dados, todos com **Coletado: Sim**, **Compartilhado: Sim**, **Processad
 | Informações e desempenho do app › **Diagnóstico** (tempo de carga, falhas do SDK) | Análise; Prevenção de fraudes, segurança e conformidade |
 | IDs do dispositivo ou outros IDs › **IDs do dispositivo ou outros IDs** (ID de publicidade, ID do conjunto de apps) | Publicidade ou marketing; Análise; Prevenção de fraudes, segurança e conformidade |
 
+A compra do Turbo **não acrescenta tipo de dado**: o pagamento é feito na tela da própria Google Play (o Google
+é quem coleta, sob a política dele), e o jogo só recebe se a compra existe. Por isso **Informações financeiras ›
+Histórico de compras** fica desmarcado, como no guia do Google para apps que só usam o Play Billing.
+
 Não marque: informações pessoais, financeiras, saúde, mensagens, fotos, áudio, arquivos, agenda, contatos,
 histórico de navegação, local exato, registros de falhas (o jogo não tem Crashlytics). Depois de salvar, confira
 na prévia "Os dados são criptografados em trânsito" e os quatro tipos acima.
@@ -147,7 +154,7 @@ Responder "Não" com a permissão no manifesto faz a Play bloquear o envio.
 | Declaração | Resposta |
 |---|---|
 | App governamental | Não |
-| Recursos financeiros | Meu app não oferece recursos financeiros |
+| Recursos financeiros | Meu app não oferece recursos financeiros (a compra do Turbo pela Google Play não conta) |
 | Saúde | Meu app não tem recursos de saúde |
 | App de notícias | Não |
 | Permissões sensíveis (fotos/vídeos, localização, SMS, chamadas, serviço em primeiro plano, intent em tela cheia, alarme exato) | nenhuma é usada pelo jogo. Se a Play pedir declaração de serviço em primeiro plano, responda que o app não usa: o `FOREGROUND_SERVICE` genérico vem da WorkManager (dependência do SDK de anúncios), sem nenhum `FOREGROUND_SERVICE_<tipo>` |
@@ -217,13 +224,32 @@ Secrets do repositório (grave com `powershell -ExecutionPolicy Bypass -File too
 Disparar: `git tag vX.Y.Z && git push origin vX.Y.Z`, ou Actions → Android Play → Run workflow. A Play recusa um
 AAB com `version/code` já enviado: suba o versionCode a cada envio (`docs/policies/versionamento.md`).
 
-## Quando ligar compras (Fase 4)
+## Compras no app: o Turbo
 
-Os anúncios já estão ligados (seção seguinte). Antes de enviar um build com o plugin `GodotGooglePlayBilling`:
+O código está pronto: plugin `GodotGooglePlayBilling` 3.3.0 em `addons/GodotGooglePlayBilling` (ligado no
+`project.godot`), `scripts/core/play_billing_provider.gd` (portado do hyakki) e `scripts/core/turbo.gd`. O Turbo
+acelera a partida em 1,5x ou 2x (botão no HUD); deixa o jogo mais rápido, não mais fácil. Na Steam vem incluído.
+Política de privacidade, ficha e as respostas acima (IARC "Compras digitais" = Sim) já estão atualizadas.
 
-1. Atualizar [privacy-policy.md](privacy-policy.md) (e gerar a página) e as respostas acima: IARC: compras
-   digitais = Sim; ficha: "Compras no app".
-2. Criar no Play Console os produtos `supporter` (compra única), `season_gold` e as pinturas avulsas.
+Fluxo no aparelho: ao abrir, o jogo conecta à Play, busca o preço e consulta as compras (`queryPurchases`): quem
+reinstala ou troca de aparelho recupera o Turbo sozinho (e a Loja tem "Restaurar compras"). Comprar abre a tela da
+Play; compra concluída libera e é confirmada (`acknowledge`, sem isso a Play estorna em 3 dias); compra
+**pendente** (boleto, dinheiro em loja) não libera até a Play concluir; reembolso tira o Turbo na próxima abertura.
+
+Faltam 👤, nesta ordem:
+
+1. Play Console → Monetizar → Produtos → **Produtos no app** → Criar produto: ID **`turbo`** (não muda nunca),
+   nome "Turbo", descrição "Acelera a partida em 1,5x ou 2x. Mais rápido, não mais fácil.", preço padrão
+   **US$ 1,99** (a Play converte para cada país; revise o preço em reais) e **Ativar**. A Play só deixa criar
+   produtos depois de um AAB com a permissão `BILLING` enviado a alguma faixa (o AAB novo já tem).
+2. Configuração → Teste de licença: pôr os e-mails dos testadores (compram sem cobrança de verdade) e testar no
+   teste interno: comprar, compra pendente ("Cartão de teste, aprovar depois"), cancelar, desinstalar e reinstalar.
+3. Ficha da loja: a Play mostra "Compras no app" sozinha depois de o produto estar ativo; confira.
+
+"Apoiar" (`supporter`) e o passe dourado (`season_gold`) **não** são vendidos: continuam só simulados no
+desenvolvimento e escondidos no release (`Store.purchases_enabled`), mesmo com o plugin no pacote. Para vendê-los
+um dia: criar os produtos aqui, ligá-los pelo `PlayBillingProvider` como o Turbo e atualizar a política e este
+documento antes do envio.
 
 ## Ligar o anúncio recompensado (AdMob)
 
@@ -247,4 +273,4 @@ preencher as declarações no Play Console e enviar o AAB 1.18.0. Passos, nesta 
 4. No AdMob, configurar a mensagem de consentimento (Privacidade e mensagens → GDPR/LGPD) para o app.
 5. Publicar o `app-ads.txt` ([modelo](app-ads.txt)) com o ID de publisher real.
 6. **Só então** atualizar a política de privacidade, a ficha ("Contém anúncios") e as declarações (Anúncios = Sim,
-   ID de publicidade, Segurança dos dados), como no passo 1 da seção anterior, e enviar um AAB novo.
+   ID de publicidade, Segurança dos dados) e enviar um AAB novo.

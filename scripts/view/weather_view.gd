@@ -29,8 +29,9 @@ const RAINBOW_RAYS := 1.8
 ## Balas inimigas a partir das quais a frente começa a sumir, e onde some de vez.
 const DENSE_FROM := 140.0
 const DENSE_TO := 420.0
-## Biruta: canto de baixo do campo (o alto é da barra do chefe e do rádio) e vento mínimo para aparecer.
-const VANE_AT := Vector2(14, 436)
+## Biruta: canto de baixo do campo do lado oposto aos botões (o alto é da barra do chefe e do rádio) e vento
+## mínimo para aparecer. VANE_INSET é a distância do canto até o centro da seta (o chip corre para dentro).
+const VANE_INSET := Vector2(40, 14)
 const VANE_MIN := 5.0
 const MEDIUM_INDEX := {&"air": 0, &"water": 1, &"void": 2}
 
@@ -86,7 +87,7 @@ func setup(p_sim: Sim, p_world: WorldView, p_backdrop: OceanBackdrop) -> void:
 	add_child(_sky)
 	_front = ColorRect.new()
 	_front.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_front.size = Playfield.FIELD
+	_front.size = sim.field
 	_front_mat = ShaderMaterial.new()
 	_front_mat.shader = load("res://shaders/weather_front.gdshader") as Shader
 	_front.material = _front_mat
@@ -104,8 +105,13 @@ func setup(p_sim: Sim, p_world: WorldView, p_backdrop: OceanBackdrop) -> void:
 	_sky_mat.set_shader_parameter("cloud_dark", deep.lerp(mid, 0.55))
 	_sky_mat.set_shader_parameter("cloud_lit", lit.lightened(0.45))
 	_front_mat.set_shader_parameter("cloud_tint", mid.lerp(lit, 0.75).lightened(0.2))
-	_front_mat.set_shader_parameter("size", Playfield.FIELD)
+	_front_mat.set_shader_parameter("size", sim.field)
 	set_layout(view_size, field)
+
+
+## Centro da seta da biruta no campo `field` (com os botões à direita na mão esquerda).
+static func vane_at(field: Vector2, left_handed: bool) -> Vector2:
+	return Vector2(14.0 if left_handed else field.x - VANE_INSET.x, field.y - VANE_INSET.y)
 
 
 ## Ruído contínuo e sem emenda (nuvens, aurora, zigue-zague do raio), gerado uma vez pela própria Godot.
@@ -358,7 +364,7 @@ class _Marks:
 		var slow := w.drag < 0.97
 		if speed < WeatherView.VANE_MIN and not shaking and not slow:
 			return
-		var at := WeatherView.VANE_AT
+		var at := WeatherView.vane_at(view.sim.field, String(Settings.get_value("handedness")) == "left")
 		draw_rect(Rect2(at - Vector2(10, 10), Vector2(20 + (8 if shaking else 0) + (8 if slow else 0), 20)), CHIP)
 		if speed >= WeatherView.VANE_MIN:
 			var length := clampf(speed / 30.0, 0.35, 1.0) * 8.0

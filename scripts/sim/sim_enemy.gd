@@ -63,10 +63,10 @@ func step(sim: Sim) -> void:
 		depth = minf(1.0, depth + (1.0 - DEPTH_START) / DEPTH_FRAMES)
 	if flash > 0:
 		flash -= 1
-	var inside := Rect2(Vector2.ZERO, Playfield.FIELD).has_point(pos)
+	var inside := Rect2(Vector2.ZERO, sim.field).has_point(pos)
 	if inside:
 		entered = true
-	elif entered and not Rect2(Vector2.ZERO, Playfield.FIELD).grow(EXIT_MARGIN).has_point(pos):
+	elif entered and not Rect2(Vector2.ZERO, sim.field).grow(EXIT_MARGIN).has_point(pos):
 		alive = false
 		return
 	elif frames > 60 * 20:

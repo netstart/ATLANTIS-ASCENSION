@@ -79,7 +79,10 @@ Sempre que houver uma nova versão (commit com SemVer, ver [docs/policies/versio
   `D:\Programs\android-sdk\`. JDK 17 (Temurin) em `D:\Programs\jdk\jdk-17.0.21+9\`, só para o
   Gradle do Android (o Gradle 8.11.1 do Godot não roda em Java acima do 23; o JDK 27 do sistema não serve).
 - **Orientação:** retrato no Android (`sensor_portrait`); paisagem no desktop com área de jogo 9:16 central.
-- **Área de jogo:** campo fixo de 270x450 unidades, igual em todos os aparelhos (sobras viram HUD, moldura e zona do polegar).
+- **Área de jogo:** 270 unidades de largura em todos os aparelhos e altura de 450 a 640, decidida pela tela no começo da
+  missão e guardada no replay (replays antigos rodam em 450). O campo vai até a borda de baixo; o HUD fica sobre o topo
+  dele e os botões de ação empilhados na borda esquerda (direita para canhotos). No PC deitado o campo (e o HUD) é
+  ampliado até a altura da janela, centralizado; as laterais viram painéis. Sobras viram moldura.
 - **Simulação:** passo fixo de 1/60 s, determinística por semente.
 - **Catálogo de assets livres:** `D:\src\awsome-free-assets-to-games` (catálogos em Markdown na pasta `assets\`).
 - **Assets baixados:** `D:\src\assets-downloaded\<fonte>\` (fora do repositório). Só o usado entra em `assets/`.
@@ -162,3 +165,8 @@ powershell -ExecutionPolicy Bypass -File tools\setup_android_sdk.ps1
    2. Apague os `*.lock` de `android\build\.gradle`.
    3. Reinicie o comando do começo.
    4. Se travar de novo no mesmo ponto, investigue a causa antes de reiniciar outra vez.
+7. Todo teste, captura ou benchmark que abre janela (runners em `tests/`, `tools/run_game.ps1`) deve **caber na
+   tela do computador do mantenedor**, mantendo a proporção do aparelho simulado, para ele ver o jogo e avaliar
+   visualmente durante o teste. A janela usa a maior escala que cabe na área útil do monitor, centralizada; a
+   resolução simulada (layout, tela lógica e capturas em PNG) continua a do aparelho, sem mudar o resultado do teste.
+   Nunca abra janela maior que o monitor.

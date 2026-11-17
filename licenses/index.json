@@ -50,6 +50,30 @@
     "license_file": "res://licenses/texts/LicenseRef-Google-Mobile-Ads-SDK.txt"
   },
   {
+    "id": "godot_play_billing",
+    "name": "GodotGooglePlayBilling",
+    "author": "Godot Engine contributors",
+    "license_id": "MIT",
+    "category": "plugin",
+    "version": "3.3.0",
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-17",
+    "source_url": "https://github.com/godot-sdk-integrations/godot-google-play-billing",
+    "license_file": "res://licenses/texts/MIT-GodotGooglePlayBilling.txt"
+  },
+  {
+    "id": "play_billing_library",
+    "name": "Google Play Billing Library",
+    "author": "Google LLC",
+    "license_id": "LicenseRef-Google-Play-Billing-Library",
+    "category": "android",
+    "version": "billing-ktx 9.1.0 (via GodotGooglePlayBilling 3.3.0)",
+    "downloaded_at": "2026-10-21",
+    "verified_at": "2026-11-17",
+    "source_url": "https://developer.android.com/google/play/billing",
+    "license_file": "res://licenses/texts/LicenseRef-Google-Play-Billing-Library.txt"
+  },
+  {
     "id": "hyakki_code",
     "name": "Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas)",
     "author": "Clayton K. N. Passos",

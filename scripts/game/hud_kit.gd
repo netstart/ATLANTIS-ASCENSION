@@ -12,6 +12,8 @@ const PIP_GAP := 3.0
 const POWER_GAP := 0.34
 const POWER_SHAKE := 0.32
 const POWER_SHAKE_PX := 3.0
+## `cut` de round_box/style_round que vira disco (botões redondos da pilha lateral e a pausa).
+const DISC := 999
 
 
 static func ignore(node: Control) -> Control:
@@ -54,8 +56,13 @@ static func trimmed_texture(path: String) -> Texture2D:
 ## Botão de vidro "quase redondo": chanfro grande nos quatro cantos (octógono), borda na cor do papel.
 static func round_box(bg: Color, border: Color, width: int, cut: int, glow: float = 0.0) -> StyleBoxFlat:
 	var box := UiTheme.chamfer(bg, border, width, cut)
-	box.corner_radius_top_right = maxi(2, int(cut * 0.5))
-	box.corner_radius_bottom_left = maxi(2, int(cut * 0.5))
+	if cut >= DISC:
+		# Raio maior que o botão: o StyleBoxFlat reduz na proporção e sai um círculo.
+		box.corner_detail = 12
+		box.set_corner_radius_all(DISC)
+	else:
+		box.corner_radius_top_right = maxi(2, int(cut * 0.5))
+		box.corner_radius_bottom_left = maxi(2, int(cut * 0.5))
 	box.set_content_margin_all(0)
 	if glow > 0.0:
 		box.shadow_color = Color(border, glow)
@@ -315,6 +322,23 @@ static func draw_waves(c: Control) -> void:
 		for i: int in range(9):
 			pts.append(Vector2(i * 2.0, cy + (row - 0.5) * 6.0 + sin(i * 0.85) * 1.8))
 		c.draw_polyline(pts, UiTheme.CYAN, 1.6, true)
+
+
+## Disco de vidro (fundo da pausa).
+static func disc_box(bg: Color, border: Color) -> StyleBoxFlat:
+	return round_box(bg, border, 1, DISC)
+
+
+## Turbo: duas setas para cima (avançar, no sentido do voo) na parte de cima do botão; a legenda com a
+## velocidade fica embaixo. Acesa quando acelera.
+static func draw_turbo(c: Control, big: bool, fast: bool) -> void:
+	var o := Vector2(c.size.x * 0.5, c.size.y * (0.36 if big else 0.34))
+	var s := minf(c.size.x, c.size.y) * (0.14 if big else 0.16)
+	var col := UiTheme.WHITE if fast else Color(UiTheme.TEXT_DIM, 0.95)
+	for k: int in range(2):
+		var y := o.y + (float(k) - 0.5) * s * 1.1
+		c.draw_polyline(PackedVector2Array([Vector2(o.x - s, y + s * 0.55), Vector2(o.x, y - s * 0.45),
+				Vector2(o.x + s, y + s * 0.55)]), col if k == 0 else Color(col, 0.7), 2.0, true)
 
 
 static func draw_pause(c: Control) -> void:

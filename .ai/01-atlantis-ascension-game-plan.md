@@ -58,7 +58,7 @@ protocolo nasceu.
 
 Por que vai funcionar:
 
-1. **Leitura acima de tudo.** Campo de jogo fixo de 270x450 em todos os aparelhos, balas com contraste medido,
+1. **Leitura acima de tudo.** Campo de jogo de 270 de largura e 450 a 640 de altura (pela tela, guardado no replay), balas com contraste medido,
    hitbox visível, avisos antes de todo ataque. Dificuldade justa é o que faz o jogador tentar de novo.
 2. **Espetáculo que muda a fase.** O **Ocean Shift** transforma o cenário durante a missão (o mar sobe, ruínas
    emergem, a cidade levita). A **Gravity Breach** curva os projéteis e gira a arena. Nenhum concorrente mobile faz a
@@ -99,7 +99,7 @@ Detalhe completo, números e fontes em [04-pesquisa-mercado-e-retencao.md](04-pe
 
 **Pilares derivados:**
 
-1. **Um polegar joga.** Arrastar move, o tiro é automático, a especial tem botão próprio na zona do polegar.
+1. **Um polegar joga.** Arrastar move, o tiro é automático, a especial tem botão próprio na pilha lateral.
 2. **Ver para desviar.** Projétil legível, aviso antes do perigo, hitbox pequena e visível.
 3. **Poder que se sente.** Cada nível de arma muda o visual e o som do tiro, não só um número.
 4. **A fase muda.** Ocean Shift e Gravity Breach dão a cada missão um "momento" que o jogador lembra e comenta.
@@ -127,8 +127,8 @@ estrelas faltando) → eventos e desafio diário → nova missão "um pouco mais
 | Mover | Arrastar relativo em qualquer ponto (a nave segue o deslocamento do dedo, não a posição) | WASD / setas | Analógico esquerdo / D-pad |
 | Modo preciso | Automático com dois dedos ou botão de opção | Shift segurado | Gatilho esquerdo |
 | Tiro principal | Automático (padrão) ou ao tocar (opção) | Automático ou J | Automático ou A |
-| Especial | Botão na zona do polegar, canto inferior direito (espelhável para canhotos) | K | X |
-| Bomba | Toque duplo na zona do polegar ou botão | L | B |
+| Especial | Botão da pilha lateral, borda esquerda sobre a parte de baixo do campo (espelhável para canhotos) | K | X |
+| Bomba | Toque duplo ou botão da pilha lateral (o de baixo) | L | B |
 | Pausa | Botão no HUD ou tirar o dedo por 0,8 s (opção) | Esc | Start |
 
 Detalhes do arrasto: sensibilidade de 0,8x a 2,0x (padrão 1,25x), zona morta de 1,5 pt, nave nunca sai do campo,
@@ -646,19 +646,24 @@ céu, o céu vira estrelas).
 
 ```
 ┌──────────────────────────────┐
-│ 1.234.560   x8 ▓▓▓  ◆2  ⏸    │  pontuação, multiplicador, bombas, pausa (fora do campo em telas altas)
-│ [casco ■■■] [arma ▲▲▲ Laser] │
+│ 1.234.560    x8   ✈✈✈    ⏸   │  pontuação, multiplicador, casco, pausa (sobre o topo do campo)
 │                              │
-│        campo 270x450         │
+│   campo 270 x 450 a 640      │  altura pela tela, até a borda de baixo
 │                              │
-│ "Maré, a onda vem aí."       │  rádio: 1 linha, rodapé do campo, só nos respiros
-│               (MARÉ)  (ESP)  │  Maré Alta (medidor de Pressão) e especial (anel de recarga)
-│     zona do polegar          │  telas altas: abaixo do campo
+│ (MARÉ)                       │  Maré Alta (medidor de Pressão cheio), acima da pilha
+│ (TURBO) 1,5x                 │  só com a compra; a vaga fica reservada
+│ (ESP)                        │  especial (anel de recarga)
+│ (PODER) II · Asas Cruzadas   │  Corrente em 3 segmentos e o nome do poder ao lado
+│ (BOMBA) Plasma ▰▰▱           │  bombas e a arma com os degraus ao lado
 └──────────────────────────────┘
 ```
 
-Telas curtas (270x480) sobrepõem o HUD ao campo com fundo de 40% de opacidade e o mínimo de informação. Telas altas
-tiram o HUD de cima do campo. O teste de layout garante que nada do HUD cobre mais de 6% do campo.
+O HUD de cima fica sobre o topo do campo (mais transparente); quando a tela passa do teto de 640, a sobra de cima
+recebe o HUD numa faixa própria. O teste de layout garante que nada do HUD cobre mais de 6% do campo. Os botões de
+ação são discos de 40 pontos empilhados na borda esquerda (direita para canhotos), translúcidos e mais apagados
+quando a nave passa por baixo; o dedo que começa num botão não move a nave nem conta toque (toque duplo = bomba).
+A pausa é um disco pequeno na linha do placar, com área de toque de 36 pontos (~44 dp). No PC deitado o campo
+e o HUD são ampliados até a altura da janela, e os botões ficam num bloco 2x2 colado à direita do campo.
 
 ### 7.5 Telas
 
@@ -852,8 +857,16 @@ fala, música). Ver apêndice 18.4.
 - Retrato: `k = max(1, min(round(largura / 300), floor(altura / 480)))`.
 - Paisagem: `k = max(1, floor(altura / 540))`.
 
-O campo de 270x450 fica no topo da área segura (abaixo do HUD em telas altas), centralizado na horizontal. A sobra
-lateral recebe a moldura do capítulo em parallax; a sobra de baixo é a zona do polegar. Detalhes e tabela em
+O campo tem 270 de largura e altura de 450 a 640 (`Playfield.height_for`: a altura útil da área segura, com teto em
+9:21,3, que cobre os celulares 9:19,5 a 9:22 já sem o recorte). A altura é decidida no começo da missão e vai na carga
+da partida (`field_h`), então replay e Fantasma reproduzem igual; replays antigos, sem ela, rodam em 450. Os inimigos
+surgem pelo topo: a altura extra é espaço do jogador (a nave começa à mesma distância do fundo). Em retrato o campo
+encosta embaixo da área segura, centralizado na horizontal. No PC deitado o campo não alarga: é ampliado até a altura
+inteira da janela e centralizado, com a maior altura em que a ampliação dá pixels físicos inteiros (1920x1080 → 270x540
+em 2x; 2560x1440 → 270x480 em 3x); sem nenhuma (Steam Deck 1280x800, janelas livres), 640 com ampliação fracionária
+desenhada num SubViewport com filtro nítido (`shaders/sharp_pixels.gdshader`). O HUD cresce junto (a camada é
+ampliada pelo mesmo fator): placar e pausa no painel à direita do campo e os botões num bloco 2x2 colado nele. A sobra
+lateral mostra o cenário em parallax atrás dos painéis. Detalhes e tabela em
 [testes.md](../docs/policies/testes.md).
 
 ### 10.9 Save
@@ -1082,11 +1095,23 @@ Metas de retenção (D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 6%) e as referências de me
   temas do hub, molduras de perfil. Compra direta ou com Pérolas ganhas jogando.
 - **Compra única "Apoiar a Halcyon"** (~US$ 3,99): recompensas da Loja sem anúncio, reviver sem anúncio, tema
   dourado do hub.
+- **Turbo** (compra única, não consumível, produto `turbo`, US$ 1,99): o botão do HUD alterna a velocidade da
+  partida entre 1x, 1,5x e 2x. Deixa o jogo mais **rápido**, não mais **fácil**: tudo acelera junto (nave, inimigos,
+  balas), sem dano, vida ou recompensa a mais. É a **única** compra com cobrança real: Play Billing pelo plugin
+  oficial GodotGooglePlayBilling 3.3.0 (`addons/GodotGooglePlayBilling`, MIT), `scripts/core/play_billing_provider.gd`
+  (portado do hyakki) e `scripts/core/turbo.gd` (API do HUD: `Turbo.owned`, `Turbo.speed`, `Turbo.cycle`). Ao abrir,
+  consulta as compras (restaura quem reinstalou); compra pendente não libera até a Play concluir; compra concluída é
+  confirmada (acknowledge); reembolso tira e volta a 1x. A Loja mostra o cartão com o preço da Play, o estado e
+  "Restaurar compras". Desenvolvimento sem o plugin simula; release sem o plugin não vende nem finge.
+  `tools/check_release_ads.py` exige o plugin, a permissão `BILLING` e a Billing Library no AAB. Escolha salva em
+  `selected.turbo` (1x nos saves antigos). Na Steam vem incluído.
+- "Apoiar" e o passe dourado continuam só **simulados** (sem produto no Play Console) e escondidos em release, mesmo
+  com o plugin de Billing no pacote (`Store.purchases_enabled`).
 - Nada de energia, gacha pago, moeda vendida ou vantagem de poder.
-- Conformidade: UMP para consentimento, classificação etária, Data Safety, `app-ads.txt`.
+- Conformidade: UMP para consentimento, classificação etária, Data Safety, `app-ads.txt`, IARC "compras digitais".
 
-**Steam (premium, preço-alvo US$ 9,99):** jogo completo, sem anúncios, com os cosméticos da 1.0 desbloqueáveis
-jogando. Pacote de trilha sonora opcional (só faixas criadas pelo projeto).
+**Steam (premium, preço-alvo US$ 9,99):** jogo completo, sem anúncios, com o Turbo incluído e os cosméticos da
+1.0 desbloqueáveis jogando. Pacote de trilha sonora opcional (só faixas criadas pelo projeto).
 
 ---
 

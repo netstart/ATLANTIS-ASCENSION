@@ -43,6 +43,8 @@ var last_move := Vector2.ZERO
 ## Resistência do meio (Weather: água turva, gelo no casco, cinzas): multiplica o movimento pedido no
 ## mesmo passo, sem atraso.
 var resist: float = 1.0
+## Campo da partida (Sim.field): a nave fica dentro dele.
+var field := Playfield.FIELD
 
 
 func setup(p_ship: Dictionary, sensitivity: float) -> void:
@@ -68,9 +70,18 @@ func move(input: SimInput) -> void:
 	if input.precise:
 		axis *= precise_mult
 	pos += (drag + axis) * resist
-	pos.x = clampf(pos.x, MARGIN.x, Playfield.FIELD.x - MARGIN.x)
-	pos.y = clampf(pos.y, MARGIN.y, Playfield.FIELD.y - MARGIN.y)
+	keep_inside()
 	last_move = pos - before
+
+
+## Campo da partida e posição inicial: START no campo de 450, a mesma distância do fundo no campo alto.
+func place(p_field: Vector2) -> void:
+	field = p_field
+	pos = START + Vector2(0.0, field.y - Playfield.FIELD.y)
+
+
+func keep_inside() -> void:
+	pos = pos.clamp(MARGIN, field - MARGIN)
 
 
 func tick() -> void:

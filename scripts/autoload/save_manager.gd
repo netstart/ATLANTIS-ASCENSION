@@ -35,7 +35,7 @@ static func default_profile() -> Dictionary:
 		"wallet": {"credits": 0, "orichalcum": 0, "pearls": 0},
 		"earned": {"credits": 0, "orichalcum": 0, "pearls": 0},
 		"unlocked": {"ships": ["falcon"], "wings": [], "cosmetics": [], "modes": ["campaign"], "missions": []},
-		"selected": {"ship": "falcon", "secondary": "", "wings": [], "difficulty": "normal"},
+		"selected": {"ship": "falcon", "secondary": "", "wings": [], "difficulty": "normal", "turbo": 1.0},
 		"hangar": {"ship_levels": {"falcon": 1}, "modules": {}, "fragments": {}},
 		# Por missão: {"stars": [bool x4], "best_score": int, "cleared": bool, "route": ""}.
 		"missions": {},
@@ -46,7 +46,8 @@ static func default_profile() -> Dictionary:
 				"bombs_used": 0, "tide_used": 0, "time_played": 0.0, "bosses_defeated": {}},
 		"daily": {"date": "", "best_score": 0, "attempted": false, "pearls_doubled": false},
 		"login": {"streak": 0, "last_date": "", "shields_left": 1},
-		"purchases": {"supporter": false, "pending": false},
+		# "turbo": compra única do Turbo (Turbo.owned); "selected.turbo" é a velocidade escolhida.
+		"purchases": {"supporter": false, "pending": false, "turbo": false},
 		"tutorial_done": false,
 		"launches": 0,
 		# Avisos dos menus (Notices): aeronaves que o jogador já viu na coleção (as outras abertas acendem "!").

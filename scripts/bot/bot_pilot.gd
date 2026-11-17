@@ -64,17 +64,17 @@ func decide(sim: Sim) -> SimInput:
 	var reach := 0.0
 	for d: Vector2 in _dirs:
 		var c := me + d
-		c.x = clampf(c.x, SimPlayer.MARGIN.x, Playfield.FIELD.x - SimPlayer.MARGIN.x)
-		c.y = clampf(c.y, SimPlayer.MARGIN.y, Playfield.FIELD.y - SimPlayer.MARGIN.y)
+		c = c.clamp(SimPlayer.MARGIN, sim.field - SimPlayer.MARGIN)
 		spots.append(c)
 		reach = maxf(reach, me.distance_to(c))
 	var view := _view(sim, me, reach, near, near_vel, near_r)
 	var target_x := _target_x(sim)
+	var home_y := HOME_Y + sim.field.y - Playfield.FIELD.y
 	var best := INF
 	var best_dir := Vector2.ZERO
 	for c: Vector2 in spots:
 		var cost := _danger(c, view)
-		cost += absf(c.x - target_x) * 0.02 + absf(c.y - HOME_Y) * 0.012
+		cost += absf(c.x - target_x) * 0.02 + absf(c.y - home_y) * 0.012
 		cost -= _pickup_pull(c, view)
 		if cost < best - 0.0001:
 			best = cost

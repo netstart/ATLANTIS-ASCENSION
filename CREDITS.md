@@ -66,6 +66,8 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Android Jetpack (AndroidX) and Kotlin stdlib** — The Android Open Source Project; JetBrains s.r.o. (Apache-2.0) — https://developer.android.com/jetpack/androidx
 - **Poing Studios AdMob Plugin for Godot** — Poing Studios (MIT) — https://github.com/poingstudios/godot-admob-plugin
 - **Google Mobile Ads SDK and UMP SDK** — Google LLC (LicenseRef-Google-Mobile-Ads-SDK) — https://developers.google.com/admob/android/quick-start
+- **GodotGooglePlayBilling** — Godot Engine contributors (MIT) — https://github.com/godot-sdk-integrations/godot-google-play-billing
+- **Google Play Billing Library** — Google LLC (LicenseRef-Google-Play-Billing-Library) — https://developer.android.com/google/play/billing
 - **Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/hyakki
 
 ## Agradecimentos

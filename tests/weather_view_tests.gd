@@ -22,15 +22,22 @@ func run_view(host: Node, check: Callable) -> void:
 			bullets_index = child.get_index()
 	check.call(slot.get_index() < bullets_index, "Clima: a camada de perto fica abaixo das balas inimigas")
 	var front := slot.get_child(0) as ColorRect
-	check.call(front != null and front.size == Playfield.FIELD, "Clima: a frente cobre o campo inteiro")
+	check.call(front != null and front.size == game.sim.field,"Clima: a frente cobre o campo inteiro")
 	var shader := (front.material as ShaderMaterial).shader.code
 	check.call(shader.contains("const float MAX_ALPHA = 0.35"), "Clima: frente com opacidade ≤ 35%")
-	check.call(Rect2(Vector2.ZERO, Playfield.FIELD).has_point(WeatherView.VANE_AT), "Clima: biruta dentro do campo")
+	for tall: float in [Playfield.FIELD.y, Playfield.MAX_HEIGHT]:
+		var f := Vector2(Playfield.FIELD.x, tall)
+		for left: bool in [false, true]:
+			var at := WeatherView.vane_at(f, left)
+			check.call(Rect2(Vector2.ZERO, f).encloses(Rect2(at - Vector2(10, 10), Vector2(36, 20))),
+					"Clima: biruta dentro do campo de %.0f (canhoto: %s)" % [tall, left])
 	for c: Dictionary in DeviceProfiles.layout_cases():
 		var size: Vector2 = c["view"]
 		game.relayout_for(size)
 		var sky := view.get_child(0) as ColorRect
-		check.call(sky.size == size, "Clima [%s]: céu cobre a tela" % c["label"])
+		# Em paisagem o palco é ampliado (Game.field_scale): o céu, em unidades do campo, cobre a tela ampliado.
+		var covered := sky.size * game.field_scale()
+		check.call(covered.x >= size.x - 1.0 and covered.y >= size.y - 1.0, "Clima [%s]: céu cobre a tela" % c["label"])
 	game.relayout_for(Vector2(360, 640))
 	var w := game.sim.weather
 	w.state = &"storm"

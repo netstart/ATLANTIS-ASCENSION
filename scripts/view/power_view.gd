@@ -41,6 +41,8 @@ const ECLIPSE_HOLE := 46.0
 const HOLE_RES := 64
 const HEAL_COLOR := Color(0.55, 1.0, 0.55)
 const HEAL_GOLD := Color(1.0, 0.86, 0.4)
+## Overdrive com cadência a partir disto é o Mergulho Solar (bocal e fluxo de sol no bico).
+const SOLAR_RATE := 2.0
 
 var reduce_flashes: bool = false
 var fx_level: int = 2
@@ -98,6 +100,19 @@ static func has_active(sim: Sim, type: StringName) -> bool:
 		if e["type"] == type and int(e["wait"]) <= 0:
 			return true
 	return false
+
+
+## Quanto o Mergulho Solar (overdrive que dobra a cadência ou mais) está aceso (0..1), com entrada e saída
+## longas, em passos: o fluxo e o bocal de sol crescem e somem em rampa, nunca ligam secos.
+static func solar_heat(sim: Sim, fade_in: float = 12.0, fade_out: float = 30.0) -> float:
+	var best := 0.0
+	for e: Dictionary in sim.power_fx:
+		if e["type"] == &"overdrive" and int(e["wait"]) <= 0 \
+				and float((e["_spec"] as Dictionary).get("rate", 1.0)) >= SOLAR_RATE:
+			var frames := float(e["frames"])
+			var left := float(e["total"]) - frames
+			best = maxf(best, clampf(frames / fade_in, 0.0, 1.0) * clampf(left / fade_out, 0.0, 1.0))
+	return best
 
 
 ## Há algo para desenhar (efeito vivo ou apagando)?
@@ -230,7 +245,7 @@ func draw_above(ci: CanvasItem, sim: Sim) -> void:
 		match e["type"]:
 			&"slow":
 				var k := _life(e)
-				ci.draw_rect(Rect2(Vector2.ZERO, Playfield.FIELD), Color(SLOW_TINT, SLOW_TINT.a * k))
+				ci.draw_rect(Rect2(Vector2.ZERO, sim.field), Color(SLOW_TINT, SLOW_TINT.a * k))
 			&"eclipse":
 				_draw_eclipse(ci, sim, e)
 	ci.draw_set_transform(Vector2.ZERO)
@@ -398,10 +413,15 @@ func _add(ci: CanvasItem, sim: Sim, e: Dictionary, k: float) -> void:
 			var r := float(e["radius"])
 			var u := r / maxf(1.0, float(e["max"]))
 			var a := (1.0 - u * u) * k
-			ci.draw_texture_rect(_shock, Rect2(at - Vector2(r, r), Vector2(r, r) * 2.0), false, Color(col, 0.95 * a))
+			# Frente de sol (borda morna), anel branco logo atrás e um rastro fraco que fica para trás.
+			ci.draw_texture_rect(_shock, Rect2(at - Vector2(r, r), Vector2(r, r) * 2.0), false,
+					Color(col.lerp(Color(1.0, 0.8, 0.45), 0.4), 0.9 * a))
 			var r2 := r * 0.82
 			ci.draw_texture_rect(_shock, Rect2(at - Vector2(r2, r2), Vector2(r2, r2) * 2.0), false,
 					Color(1, 1, 1, _flash(0.55) * a))
+			var r3 := r * 0.6
+			ci.draw_texture_rect(_shock, Rect2(at - Vector2(r3, r3), Vector2(r3, r3) * 2.0), false,
+					Color(col.lerp(Color(1.0, 0.7, 0.35), 0.5), 0.22 * a * (1.0 - u)))
 			if u < 0.2:
 				_centered(ci, _flare, at, 1.8 * (1.0 - u * 5.0), Color(col, _flash(0.6)))
 		&"salvo":
@@ -493,6 +513,16 @@ func _add(ci: CanvasItem, sim: Sim, e: Dictionary, k: float) -> void:
 			var a := _life(e)
 			var spec: Dictionary = e["_spec"]
 			_centered(ci, _flare, at, 0.95 + 0.12 * sin(time * 12.0), Color(col, _flash(0.22) * a))
+			if float(spec.get("rate", 1.0)) >= SOLAR_RATE:
+				# Mergulho Solar: bocal de sol pulsando no bico (o fluxo que sobe dele é o EnergyStream).
+				var h := solar_heat(sim)
+				var nose := at + Vector2(0, -EnergyStream.NOSE - 2.0)
+				var beat := 0.5 + 0.5 * sin(time * 17.0)
+				_centered(ci, _flare, nose, 0.42 + 0.1 * beat, Color(1.0, 0.86, 0.55, _flash(0.55 + 0.25 * beat) * h))
+				_centered(ci, _glow, nose + Vector2(0, -4), 0.9 + 0.15 * beat, Color(1.0, 0.7, 0.35, _flash(0.3) * h))
+				ci.draw_set_transform(nose, time * 2.2)
+				ci.draw_texture(_sparkle, -_sparkle.get_size() * 0.5, Color(1, 1, 1, _flash(0.5 + 0.4 * beat) * h))
+				ci.draw_set_transform(Vector2.ZERO)
 			if float(spec.get("crit", 0.0)) > 0.0:
 				var tex: Texture2D = _tex["reticle"]
 				ci.draw_set_transform(at + Vector2(0, -34), time * 2.0)
@@ -687,7 +717,7 @@ func _draw_eclipse(ci: CanvasItem, sim: Sim, e: Dictionary) -> void:
 	var total := maxf(1.0, float(e["total"]))
 	var u := frames / total
 	var shade := Color(ECLIPSE_SHADE, ECLIPSE_SHADE.a * clampf(frames / 18.0, 0.0, 1.0))
-	var f := Playfield.FIELD
+	var f := sim.field
 	var p := sim.player.pos
 	var h := ECLIPSE_HOLE
 	ci.draw_rect(Rect2(0, 0, f.x, maxf(0.0, p.y - h)), shade)

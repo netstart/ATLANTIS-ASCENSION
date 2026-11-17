@@ -6,6 +6,7 @@ extends Control
 ## como na HUD), portrait_fx_tune.png (o mesmo no meio da sintonia de 0,35 s) e portrait_fx_still.png (com
 ## "reduzir movimento": só as linhas paradas).
 
+const DeviceWindow := preload("res://tests/device_window.gd")
 const SPEAKERS: Array[String] = ["mare", "farol", "duarte", "thalassa", "protocol"]
 const BIG := 96.0
 const SMALL := 32.0
@@ -31,11 +32,7 @@ func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(out)
 	var cell := BIG + GAP + SMALL + GAP
 	var view := Vector2(GAP + cell * Portraits.MOODS.size(), GAP + (BIG + GAP) * SPEAKERS.size())
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(Vector2i(view) * zoom)
-	get_tree().root.content_scale_size = Vector2i(view)
-	get_tree().root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-	await get_tree().create_timer(0.3).timeout
+	await DeviceWindow.fit(self, Vector2i(view) * zoom, Vector2i(view))
 	var bg := ColorRect.new()
 	bg.color = UiTheme.ABYSS
 	bg.size = view

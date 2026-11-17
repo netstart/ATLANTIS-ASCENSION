@@ -68,18 +68,18 @@ static func step(sim: Sim) -> void:
 
 
 ## Retângulo atual de um prédio (sobe do fundo em COVER_RISE passos e desce no último segundo).
-static func cover_rect(c: Dictionary) -> Rect2:
+static func cover_rect(c: Dictionary, bottom: float = Playfield.FIELD.y) -> Rect2:
 	var age := int(c["age"])
 	var rise := minf(1.0, age / float(COVER_RISE))
 	rise = minf(rise, maxf(0.0, (int(c["life"]) - age) / 60.0))
 	var h := float(c["h"]) * rise
-	return Rect2(float(c["x"]) - float(c["w"]) * 0.5, Playfield.FIELD.y - h, float(c["w"]), h)
+	return Rect2(float(c["x"]) - float(c["w"]) * 0.5, bottom - h, float(c["w"]), h)
 
 
 static func _block(sim: Sim, pool: BulletPool) -> void:
 	var rects: Array[Rect2] = []
 	for c: Dictionary in sim.covers:
-		rects.append(cover_rect(c))
+		rects.append(cover_rect(c, sim.field.y))
 	var i := pool.count - 1
 	while i >= 0:
 		var p: Vector2 = pool.pos[i]

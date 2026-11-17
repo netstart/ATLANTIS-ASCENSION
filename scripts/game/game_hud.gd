@@ -1,8 +1,9 @@
 class_name GameHud
 extends Control
 ## HUD da missão (plano mestre 7.4; guia "Neon abissal" em docs/design/ui-style.md). Posições vêm do
-## Playfield: em telas altas o HUD fica acima do campo e os botões na zona do polegar; em telas curtas
-## o HUD fica sobre o campo (≤ 6%, mais transparente); no desktop vai para o painel lateral.
+## Playfield: em retrato o HUD de cima fica sobre o topo do campo (≤ 6%, mais transparente) ou numa faixa acima
+## dele, e os botões de ação ficam empilhados na borda esquerda (direita na mão esquerda), sobre a parte de baixo
+## do campo, com a arma e o nome do poder ao lado; no desktop vão para o painel lateral.
 ##
 ## Lê a Sim a cada quadro, mas só troca texto, StyleBox e desenho vetorial quando o valor muda (regra
 ## de desempenho de docs/policies/qualidade.md). O que anda a cada quadro é só tamanho de ColorRect,
@@ -11,8 +12,10 @@ extends Control
 
 signal pause_pressed
 signal special_pressed
-## Botão PODER (terceiro da zona do polegar): lança o poder do nível da Corrente.
+## Botão PODER (pilha lateral): lança o poder do nível da Corrente.
 signal power_pressed
+## Botão Turbo (pilha lateral, só com a compra): troca a velocidade da partida.
+signal turbo_pressed
 signal bomb_pressed
 signal tide_pressed
 ## Reviver depois da derrota (true) ou desistir (false).
@@ -25,11 +28,22 @@ signal quit_pressed
 
 const RADIO_SECONDS := 4.0
 const BANNER_SECONDS := 2.4
-## Lado do botão compacto (telas curtas: sobre o campo) e mínimo de toque do HUD.
+## Lado do botão da maré (altura) e mínimo de toque do HUD.
 const BUTTON := 44.0
-## Bomba e especial quando a zona do polegar tem espaço (e no painel lateral do desktop).
+## Botões do painel lateral do desktop (com legenda).
 const BIG_BUTTON := 54.0
-const PAUSE_BUTTON := 38.0
+## Pilha lateral do retrato (de baixo para cima: bomba, PODER, especial e a vaga do Turbo): lado, vão e
+## distância da borda do campo. Alfa sobre o campo e com a nave por baixo dos botões.
+const STACK_BUTTON := 40.0
+const STACK_GAP := 6.0
+const STACK_MARGIN := 4.0
+const STACK_ALPHA := 0.62
+const STACK_ALPHA_SHIP := 0.3
+## Folga em volta da pilha em que a nave já conta como "por baixo".
+const STACK_SHIP_GAP := 10.0
+## Pausa: área de toque (UiTheme.TOUCH_MIN, ~44 dp no celular) e o disco desenhado, menor, na linha do HUD.
+const PAUSE_TOUCH := UiTheme.TOUCH_MIN
+const PAUSE_FACE := 22.0
 const OBJECTIVE_SECONDS := 5.0
 const PORTRAIT := 32.0
 ## Letras por segundo da máquina de escrever do rádio.
@@ -42,8 +56,6 @@ const SCORE_PULSE := 500
 const CHARGE_STEPS := 48
 ## Título do Poder III: segundos na tela (os níveis I e II usam o PowerChip).
 const SUPREME_BANNER_SECONDS := 1.1
-const BOSS_FILL_SECONDS := 1.2
-const BOSS_BAR_H := 6.0
 ## Nave do jogador (Void) recortada para os ícones de casco.
 const SHIP_ICON := "res://assets/art/void/main_ship/base_full.png"
 ## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
@@ -87,6 +99,7 @@ var _pip_level: int = 0
 var _pip_max: int = 0
 var _weapon_right_edge: float = -1.0
 var _pause: Button
+var _pause_face: Panel
 var _special: Button
 var _special_gauge: Control
 var _special_caption: Label
@@ -102,6 +115,13 @@ var _bombs_shown: int = -1
 var _power: PowerButton
 var _power_name: Label
 var _power_hinted := false
+var _turbo: Button
+var _turbo_glyph: Control
+var _turbo_caption: Label
+var _turbo_rate: float = 1.0
+## Pilha lateral (retrato): retângulo dos botões no campo e se a nave está por baixo dela.
+var _stack_zone := Rect2()
+var _ship_under := false
 var _tutorial := false
 var _tide: Button
 var _pressure_track: ColorRect
@@ -131,19 +151,7 @@ var _banner: HudBanner
 var _chip: PowerChip
 var _prompt: Label
 ## Barra do chefe: placa com o nome, trilho, rastro do dano, preenchimento e marcas das etapas.
-var _boss_root: Control
-var _boss_name: Label
-var _boss_track: Panel
-var _boss_ghost: ColorRect
-var _boss_fill: ColorRect
-var _boss_shine: ColorRect
-var _boss_ticks: Array[ColorRect] = []
-var _boss_ref: SimBoss
-var _boss_w: float = 200.0
-var _boss_fill_t: float = 0.0
-var _boss_shown: float = -1.0
-var _boss_ghost_v: float = 0.0
-var _boss_hold: float = 0.0
+var _boss_root: HudBossBar
 var _pause_panel: PanelContainer
 var _pause_box: VBoxContainer
 var _side_shade: Array[ColorRect] = []
@@ -184,7 +192,9 @@ func _ready() -> void:
 	_side_panel.add_theme_stylebox_override("panel", UiTheme.panel_box(UiTheme.CYAN, 0.72))
 	add_child(_side_panel)
 	_build_top()
-	_build_boss_bar()
+	_boss_root = HudBossBar.new()
+	_boss_root.reduced = _reduced
+	add_child(_boss_root)
 	_build_objective()
 	_build_radio()
 	_build_banner()
@@ -253,11 +263,20 @@ func _build_top() -> void:
 
 
 func _build_buttons() -> void:
+	# Pausa: o botão é só a área de toque; o disco desenhado é menor e fica na linha do HUD.
 	_pause = _button(func() -> void: pause_pressed.emit())
 	_pause.name = "Pause"
-	var pause_glyph := _glyph(_pause, func(c: Control) -> void: HudKit.draw_pause(c))
-	pause_glyph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	HudKit.style_round(_pause, UiTheme.CYAN, 0.5, false, 4)
+	for state: String in ["normal", "hover", "pressed", "focus", "disabled"]:
+		_pause.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	_pause_face = HudKit.ignore(Panel.new()) as Panel
+	_pause_face.size = Vector2(PAUSE_FACE, PAUSE_FACE)
+	var face := HudKit.disc_box(Color(UiTheme.DEEP_BLUE, 0.6), Color(UiTheme.CYAN, 0.5))
+	_pause_face.add_theme_stylebox_override("panel", face)
+	_pause.add_child(_pause_face)
+	var bars := _glyph(_pause_face, func(c: Control) -> void: HudKit.draw_pause(c))
+	bars.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_pause.button_down.connect(func() -> void: _pause_face.modulate = Color(1.4, 1.4, 1.4))
+	_pause.button_up.connect(func() -> void: _pause_face.modulate = Color.WHITE)
 	_tide = _button(func() -> void: tide_pressed.emit())
 	_tide.name = "Tide"
 	_tide.custom_minimum_size = Vector2(BUTTON, 38)
@@ -292,12 +311,19 @@ func _build_buttons() -> void:
 	add_child(_power)
 	_power_name = _label(UiTheme.SMALL_SIZE, UiTheme.WHITE, true)
 	_power.setup(_power_name, _reduced)
+	_turbo = _button(func() -> void: turbo_pressed.emit())
+	_turbo.name = "Turbo"
+	_turbo_glyph = _glyph(_turbo, func(c: Control) -> void: HudKit.draw_turbo(c, _btn >= BIG_BUTTON, _turbo_rate > 1.0))
+	_turbo_glyph.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_turbo_caption = HudKit.caption(_turbo)
+	_turbo.visible = false
 	_weapon = _label(UiTheme.FONT_SIZE, UiTheme.TEXT, true)
 	_weapon_pips = HudKit.ignore(Control.new())
 	_weapon_pips.draw.connect(func() -> void: HudKit.draw_pips(_weapon_pips, _pip_level, _pip_max))
 	add_child(_weapon_pips)
 	_style_special()
 	_style_bomb()
+	_style_turbo()
 
 
 func _button(on_press: Callable) -> Button:
@@ -315,33 +341,6 @@ func _glyph(parent: Control, painter: Callable) -> Control:
 	c.draw.connect(painter.bind(c))
 	parent.add_child(c)
 	return c
-
-
-func _build_boss_bar() -> void:
-	_boss_root = HudKit.ignore(Control.new())
-	_boss_root.visible = false
-	add_child(_boss_root)
-	_boss_name = UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.CORAL)
-	_boss_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_boss_name.add_theme_color_override("font_outline_color", UiTheme.ABYSS)
-	_boss_name.add_theme_constant_override("outline_size", 3)
-	_boss_name.clip_text = true
-	_boss_root.add_child(_boss_name)
-	_boss_track = HudKit.ignore(Panel.new()) as Panel
-	var track := UiTheme.chamfer(Color(UiTheme.ABYSS, 0.82), Color(UiTheme.CORAL, 0.55), 1, 4)
-	track.shadow_color = Color(UiTheme.CORAL, 0.2)
-	track.shadow_size = 4
-	_boss_track.add_theme_stylebox_override("panel", track)
-	_boss_root.add_child(_boss_track)
-	_boss_ghost = HudKit.ignore(ColorRect.new()) as ColorRect
-	_boss_ghost.color = Color(UiTheme.WHITE, 0.7)
-	_boss_root.add_child(_boss_ghost)
-	_boss_fill = HudKit.ignore(ColorRect.new()) as ColorRect
-	_boss_fill.color = UiTheme.CORAL
-	_boss_root.add_child(_boss_fill)
-	_boss_shine = HudKit.ignore(ColorRect.new()) as ColorRect
-	_boss_shine.color = Color(1.0, 0.85, 0.88, 0.45)
-	_boss_root.add_child(_boss_shine)
 
 
 func _build_objective() -> void:
@@ -508,6 +507,7 @@ func refresh_texts() -> void:
 	_special_caption.text = tr("hud.special")
 	_bomb_caption.text = tr("hud.bomb")
 	_power.retext()
+	_turbo_caption.text = _turbo_label(_turbo_rate)
 	_tide.text = tr("hud.tide_button")
 	_offer_title.text = tr("hud.blessing_title")
 	(_pause_box.get_node("Title") as Label).text = tr("hud.paused")
@@ -609,14 +609,19 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 		_frame_lines[0].size = Vector2(1, field.size.y)
 		_frame_lines[1].position = Vector2(field.end.x - 1.0, field.position.y)
 		_frame_lines[1].size = Vector2(1, field.size.y)
-	_pause.custom_minimum_size = Vector2(PAUSE_BUTTON, PAUSE_BUTTON)
+	_pause.custom_minimum_size = Vector2(PAUSE_TOUCH, PAUSE_TOUCH)
 	_pause.size = _pause.custom_minimum_size
+	_pause_face.size = Vector2.ONE * (PAUSE_FACE if _portrait_mode else PAUSE_TOUCH - 4.0)
 	if _portrait_mode:
-		_pause.position = Vector2(safe.end.x - PAUSE_BUTTON - 4.0, safe.position.y + 2.0)
-		if not bool(layout["hud_overlay"]) and _pause.position.y + PAUSE_BUTTON > field.position.y:
-			_pause.position.y = safe.position.y
+		# Área de toque no canto de cima à direita; o disco fica centrado na linha do placar.
+		var hud: Rect2 = layout["hud"]
+		_pause.position = Vector2(safe.end.x - PAUSE_TOUCH - 2.0, maxf(safe.position.y, hud.position.y))
+		_pause_face.position = Vector2(PAUSE_TOUCH - PAUSE_FACE - 4.0,
+				floorf(hud.get_center().y - _pause.position.y - PAUSE_FACE * 0.5))
 	else:
-		_pause.position = Vector2(safe.end.x - PAUSE_BUTTON - 8.0, safe.position.y + 8.0)
+		# Desktop: logo à direita do painel do placar, colado no campo (nada perdido no canto da janela).
+		_pause.position = Vector2(field.end.x + 12.0 + _panel_width(field) + 8.0, safe.position.y + 8.0)
+		_pause_face.position = ((_pause.size - _pause_face.size) * 0.5).floor()
 	_place_top()
 	_place_buttons(field)
 	_objective.custom_minimum_size.x = field.size.x - 32.0
@@ -646,7 +651,7 @@ func _place_top() -> void:
 		_side_panel.visible = false
 		_score.add_theme_font_size_override("font_size", UiTheme.scaled(UiTheme.HEADING_SIZE))
 		_score.position = hud.position + Vector2(4, 1)
-		var right := minf(_pause.position.x - 8.0, field.end.x - 4.0)
+		var right := minf(_pause.position.x + _pause_face.position.x - 6.0, field.end.x - 4.0)
 		_lives_box.position = Vector2(right - lives_w, hud.position.y + floorf((hud.size.y - LIFE_ICON) * 0.5))
 		_mult_pill.reset_size()
 		_mult_pill.position = Vector2(_lives_box.position.x - 10.0 - _mult_pill.size.x, hud.position.y + 3.0)
@@ -654,7 +659,7 @@ func _place_top() -> void:
 		_pressure_track.size = Vector2(minf(90.0, hud.size.x * 0.3), 2.0)
 	else:
 		var top := Vector2(field.end.x + 12.0, safe.position.y + 8.0)
-		var width := clampf(_pause.position.x - top.x - 12.0, 120.0, 280.0)
+		var width := _panel_width(field)
 		_side_panel.visible = true
 		_side_panel.position = top
 		_side_panel.size = Vector2(width, 78)
@@ -678,59 +683,98 @@ func _place_top() -> void:
 
 
 func _place_buttons(field: Rect2) -> void:
-	var thumb: Rect2 = layout["thumb"]
-	var sep := bool(layout.get("thumb_separate", false))
-	_btn = BIG_BUTTON if not _portrait_mode or (sep and thumb.size.y >= BIG_BUTTON + 8.0) else BUTTON
-	var buttons_y := field.end.y - _btn - 6.0
-	if sep and _portrait_mode:
-		buttons_y = thumb.position.y + minf(14.0, thumb.size.y - _btn - 4.0)
-	if not _portrait_mode:
-		buttons_y = safe.end.y - _btn - 16.0
-	var right_x := field.end.x - _btn - 6.0 if _portrait_mode else safe.end.x - _btn - 16.0
-	var left_x := field.position.x + 6.0 if _portrait_mode else field.end.x + 16.0
 	var left_handed := String(Settings.get_value("handedness")) == "left" and _portrait_mode
-	for b: Button in [_special, _bomb]:
+	_btn = STACK_BUTTON if _portrait_mode else BIG_BUTTON + 6.0
+	for b: Button in [_special, _bomb, _turbo]:
 		b.custom_minimum_size = Vector2(_btn, _btn)
 		b.size = b.custom_minimum_size
 	_power.set_side(_btn, _btn >= BIG_BUTTON)
-	# Da borda para dentro: especial, bomba e PODER (o polegar alcança os três sem cruzar a nave).
-	if left_handed:
-		_special.position = Vector2(left_x, buttons_y)
-		_bomb.position = Vector2(left_x + _btn + 10.0, buttons_y)
-		_power.position = Vector2(left_x + (_btn + 10.0) * 2.0, buttons_y)
-		_weapon_right_edge = field.end.x - 6.0
+	if _portrait_mode:
+		_place_stack(field, left_handed)
 	else:
-		_special.position = Vector2(right_x, buttons_y)
-		_bomb.position = Vector2(right_x - _btn - 10.0, buttons_y)
-		_power.position = Vector2(right_x - (_btn + 10.0) * 2.0, buttons_y)
-		_weapon_right_edge = -1.0
-	_weapon.position = Vector2(left_x, buttons_y + maxf(4.0, _btn * 0.5 - 13.0))
+		_place_row(field)
 	_place_weapon()
-	# Legenda embaixo do anel só no botão grande; no compacto o glifo ocupa o botão todo.
+	# Legenda embaixo do anel só no botão grande; no compacto o glifo ocupa o botão todo (o Turbo mostra a
+	# velocidade sempre).
 	var big := _btn >= BIG_BUTTON
-	for cap: Label in [_special_caption, _bomb_caption]:
-		cap.visible = big
-		cap.position = Vector2(2, _btn - 15.0)
+	for cap: Label in [_special_caption, _bomb_caption, _turbo_caption]:
+		cap.visible = big or cap == _turbo_caption
+		cap.position = Vector2(2, _btn - (15.0 if big else 14.0))
 		cap.size = Vector2(_btn - 4.0, 13)
-	# Botões dentro do campo (sem zona do polegar): translúcidos para as balas aparecerem.
-	var inside := _portrait_mode and not sep
-	for node: CanvasItem in [_special, _bomb, _power, _weapon, _weapon_pips, _power_name]:
-		node.modulate.a = 0.62 if inside else 1.0
+	_ship_under = false
+	_apply_stack_alpha()
+	_style_special()
+	_style_bomb()
+	_style_turbo()
 	_special_gauge.queue_redraw()
 	_bomb_gauge.queue_redraw()
-	# Nome do poder: embaixo dos botões quando a zona do polegar tem altura, senão em cima; corre do PODER
-	# para dentro (a arma fica na altura do meio dos botões, sem encostar).
-	var name_y := buttons_y - 16.0
-	if sep and _portrait_mode and thumb.end.y - (buttons_y + _btn + 3.0) >= 15.0:
-		name_y = buttons_y + _btn + 3.0
-	_power.place_name(name_y, field.end.x - 6.0 if left_handed else left_x, left_handed)
+	_turbo_glyph.queue_redraw()
+
+
+## Retrato: pilha na borda do campo, de baixo para cima bomba (a de pânico, mais perto do polegar), PODER,
+## especial e a vaga do Turbo (mesmo lugar com ou sem a compra: os outros nunca mudam de posição). A arma fica
+## ao lado da bomba e o nome do poder ao lado do PODER, correndo para dentro do campo; a maré, acima da pilha.
+func _place_stack(field: Rect2, left_handed: bool) -> void:
+	var x := field.end.x - STACK_MARGIN - _btn if left_handed else field.position.x + STACK_MARGIN
+	var bottom := field.end.y - STACK_MARGIN - _btn
+	var order: Array[Button] = [_bomb, _power, _special, _turbo]
+	for i: int in range(order.size()):
+		order[i].position = Vector2(x, bottom - i * (_btn + STACK_GAP))
+	_stack_zone = Rect2(x, _turbo.position.y, _btn, bottom + _btn - _turbo.position.y)
+	var side_w := minf(150.0, field.size.x - STACK_MARGIN * 2.0 - _btn - 12.0)
+	var side_x := x - 6.0 - side_w if left_handed else x + _btn + 6.0
+	_weapon_right_edge = side_x + side_w if left_handed else -1.0
+	_weapon.position = Vector2(side_x, bottom + floorf(_btn * 0.5) - 11.0)
+	_power.place_name(Rect2(side_x, _power.position.y + floorf((_btn - 14.0) * 0.5), side_w, 14.0),
+			HORIZONTAL_ALIGNMENT_RIGHT if left_handed else HORIZONTAL_ALIGNMENT_LEFT)
 	_tide.reset_size()
-	var tide_y := buttons_y - _tide.size.y - (10.0 if not _portrait_mode else 8.0)
-	var below := buttons_y + _btn + 8.0
-	if sep and _portrait_mode and thumb.end.y - below >= _tide.size.y + 2.0:
-		tide_y = below
-	var tide_x := _special.position.x if left_handed else _special.position.x + _special.size.x - _tide.size.x
-	_tide.position = Vector2(tide_x, tide_y)
+	var top := (_turbo if _turbo.visible else _special).position.y
+	var tide_x := x + _btn - _tide.size.x if left_handed else x
+	_tide.position = Vector2(tide_x, top - _tide.size.y - STACK_GAP)
+
+
+## Largura do painel do placar no desktop: o que sobra à direita do campo, sem a pausa, entre 120 e 280.
+func _panel_width(field: Rect2) -> float:
+	return clampf(safe.end.x - field.end.x - 12.0 - PAUSE_TOUCH - 20.0, 120.0, 280.0)
+
+
+## Desktop: bloco 2x2 colado no campo, embaixo à direita (bomba e PODER junto do campo, especial e Turbo ao lado),
+## com a arma e o nome do poder acima dele e a maré à direita da fila de baixo.
+func _place_row(field: Rect2) -> void:
+	var x := field.end.x + 16.0
+	var y := safe.end.y - _btn - 16.0
+	var step := _btn + 10.0
+	_bomb.position = Vector2(x, y)
+	_special.position = Vector2(x + step, y)
+	_power.position = Vector2(x, y - step)
+	_turbo.position = Vector2(x + step, y - step)
+	_stack_zone = Rect2()
+	_weapon_right_edge = -1.0
+	var top := y - step
+	_weapon.position = Vector2(x, top - 46.0)
+	_power.place_name(Rect2(x, top - 18.0, minf(220.0, safe.end.x - x - 8.0), 14.0), HORIZONTAL_ALIGNMENT_LEFT)
+	_tide.reset_size()
+	_tide.position = Vector2(x + step * 2.0, y + floorf((_btn - _tide.size.y) * 0.5))
+
+
+## Alfa da pilha lateral: translúcida sobre o campo e mais ainda com a nave por baixo (no desktop, opaca).
+func _apply_stack_alpha() -> void:
+	var a := 1.0
+	if _portrait_mode:
+		a = STACK_ALPHA_SHIP if _ship_under else STACK_ALPHA
+	for node: CanvasItem in [_special, _bomb, _power, _turbo, _weapon, _weapon_pips, _power_name]:
+		node.modulate.a = a
+
+
+## A nave entrou ou saiu de baixo da pilha (coordenadas do campo): só troca o alfa na mudança.
+func _refresh_stack(sim: Sim) -> void:
+	if _stack_zone.size == Vector2.ZERO:
+		return
+	var field: Rect2 = layout.get("field", Rect2())
+	var under := _stack_zone.grow(STACK_SHIP_GAP).has_point(field.position + sim.player.pos)
+	if under != _ship_under:
+		_ship_under = under
+		_apply_stack_alpha()
 
 
 ## Nome da arma e degraus; na mão esquerda o bloco encosta na borda direita do campo.
@@ -746,29 +790,7 @@ func _place_boss(field: Rect2) -> void:
 	var right := field.end.x - 8.0
 	if _pause.get_rect().grow(4.0).intersects(Rect2(field.position.x, top, field.size.x, 24.0)):
 		right = minf(right, _pause.position.x - 6.0)
-	_boss_root.position = Vector2(field.position.x + 8.0, top)
-	_boss_w = maxf(80.0, right - _boss_root.position.x)
-	_boss_root.size = Vector2(_boss_w, 14.0 + BOSS_BAR_H + 2.0)
-	_boss_name.position = Vector2(1, 0)
-	_boss_name.size = Vector2(_boss_w - 2.0, 13)
-	_boss_track.position = Vector2(0, 14)
-	_boss_track.size = Vector2(_boss_w, BOSS_BAR_H + 2.0)
-	_boss_ghost.position = Vector2(1, 15)
-	_boss_fill.position = Vector2(1, 15)
-	_boss_shine.position = Vector2(1, 15)
-	_boss_ghost.size.y = BOSS_BAR_H
-	_boss_fill.size.y = BOSS_BAR_H
-	_boss_shine.size.y = 1.0
-	_layout_boss_ticks()
-	_boss_shown = -1.0
-
-
-func _layout_boss_ticks() -> void:
-	var inner := _boss_w - 2.0
-	for tick: ColorRect in _boss_ticks:
-		var at := float(tick.get_meta(&"at", 0.5))
-		tick.position = Vector2(1.0 + floorf(inner * at), 12)
-		tick.size = Vector2(1, BOSS_BAR_H + 6.0)
+	_boss_root.place(Vector2(field.position.x + 8.0, top), right)
 
 
 ## Rádio em cima do campo (abaixo da barra do chefe), longe da nave; no desktop, no painel esquerdo.
@@ -778,7 +800,7 @@ func _place_radio() -> void:
 	var top := 30.0 if bool(layout.get("hud_overlay", false)) else 8.0
 	var pos := Vector2(field.position.x + 8.0, field.position.y + top)
 	if _boss_root.visible:
-		pos.y = _boss_root.position.y + _boss_root.size.y + 6.0
+		pos.y = _boss_root.bottom() + 6.0
 	var left_room := field.position.x - safe.position.x - 32.0
 	if not _portrait_mode and left_room >= 150.0:
 		width = minf(300.0, left_room)
@@ -859,7 +881,7 @@ func show_power(title: String, tier: int, tint: Color, icon: Texture2D) -> void:
 	var field: Rect2 = layout.get("field", Rect2(Vector2.ZERO, size))
 	var top := field.position.y + (30.0 if bool(layout.get("hud_overlay", false)) else 8.0)
 	if _boss_root.visible:
-		top = _boss_root.position.y + _boss_root.size.y + 4.0
+		top = _boss_root.bottom() + 4.0
 	_chip.pop(icon, "%s · %s" % [title, numeral], tint, field.get_center().x, top, field.size.x - 24.0, _reduced)
 
 
@@ -880,6 +902,7 @@ func refresh(sim: Sim, delta: float) -> void:
 	_refresh_hull(sim)
 	_refresh_weapon(sim)
 	_refresh_buttons(sim)
+	_refresh_stack(sim)
 	_power.refresh(sim, delta)
 	if _tutorial and not _power_hinted and _power.segments() >= 1:
 		_power_hinted = true
@@ -892,7 +915,8 @@ func refresh(sim: Sim, delta: float) -> void:
 		_hints.pop_front()
 	if _offer_panel.visible and sim.offer.is_empty():
 		hide_offer()
-	_refresh_boss(sim, delta)
+	if _boss_root.refresh(sim, delta):
+		_place_radio()
 	var boss := sim.boss
 	var duel := boss != null and boss.state == SimBoss.State.DUEL
 	_prompt.visible = duel
@@ -1087,9 +1111,9 @@ func _refresh_buttons(sim: Sim) -> void:
 func _style_special() -> void:
 	var inside := _special.modulate.a < 1.0
 	if _special_ready:
-		HudKit.style_round(_special, UiTheme.GOLD, 1.0, true, 14)
+		HudKit.style_round(_special, UiTheme.GOLD, 1.0, true, _cut())
 	else:
-		HudKit.style_round(_special, UiTheme.GOLD, 0.6 if inside else 0.9, false, 14)
+		HudKit.style_round(_special, UiTheme.GOLD, 0.6 if inside else 0.9, false, _cut())
 	_special_caption.add_theme_color_override("font_color", UiTheme.GOLD if _special_ready else UiTheme.TEXT_DIM)
 	_special_glow.visible = _special_ready
 	if _glow_tween != null and _glow_tween.is_valid():
@@ -1103,8 +1127,51 @@ func _style_special() -> void:
 		_special_glow.modulate.a = 1.0
 
 
+## Botões da pilha lateral são discos; os do painel do desktop, chanfrados.
+func _cut() -> int:
+	return HudKit.DISC if _btn < BIG_BUTTON else 14
+
+
+## Turbo: ciano fraco em 1x; aceso (borda cheia) quando acelera.
+func _style_turbo() -> void:
+	var fast := _turbo_rate > 1.0
+	HudKit.style_round(_turbo, UiTheme.CYAN, 1.0 if fast else 0.75, fast, _cut())
+	_turbo_caption.add_theme_color_override("font_color", UiTheme.WHITE if fast else UiTheme.TEXT_DIM)
+
+
+## Botão Turbo: aparece só com a compra ("on") e mostra a velocidade ("1x", "1,5x", "2x").
+func set_turbo(on: bool, rate: float) -> void:
+	_turbo_rate = rate
+	_turbo.visible = on
+	_turbo_caption.text = _turbo_label(rate)
+	_style_turbo()
+	_turbo_glyph.queue_redraw()
+	if layout.has("field"):
+		_place_buttons(layout["field"])
+
+
+## Rótulo da velocidade no idioma (hud.turbo_rates: "1x|1,5x|2x").
+static func _turbo_label(rate: float) -> String:
+	var labels := TranslationServer.translate("hud.turbo_rates").split("|")
+	var index := 2 if rate >= 1.99 else (1 if rate > 1.01 else 0)
+	return labels[index] if labels.size() == 3 else "%sx" % String.num(rate, 1).trim_suffix(".0")
+
+
+## O toque em `at` (tela lógica) começou num botão do HUD? Esse dedo não move a nave nem conta como toque
+## (dois toques rápidos no PODER não viram bomba).
+func touches_button(at: Vector2) -> bool:
+	for b: Control in [_pause, _special, _bomb, _power, _turbo, _tide]:
+		if b.is_visible_in_tree() and b.get_global_rect().has_point(at):
+			return true
+	return false
+
+
+func turbo_button() -> Button:
+	return _turbo
+
+
 func _style_bomb() -> void:
-	HudKit.style_round(_bomb, UiTheme.CYAN, 0.9, false, 14)
+	HudKit.style_round(_bomb, UiTheme.CYAN, 0.9, false, _cut())
 	_bomb_caption.add_theme_color_override("font_color", UiTheme.TEXT if _bombs_shown > 0 else UiTheme.TEXT_DIM)
 
 
@@ -1121,73 +1188,9 @@ func _refresh_radio(delta: float) -> void:
 		_radio_panel.modulate.a = clampf(_radio_left / 0.35, 0.0, 1.0)
 
 
-func _refresh_boss(sim: Sim, delta: float) -> void:
-	var boss := sim.boss
-	var active := boss != null and boss.state != SimBoss.State.DEAD
-	if active and boss != _boss_ref:
-		_boss_appear(boss)
-	elif not active and _boss_root.visible:
-		_boss_root.visible = false
-		_boss_ref = null
-		_place_radio()
-	if not active:
-		return
-	var target := clampf(boss.hp / maxf(1.0, boss.max_hp), 0.0, 1.0)
-	_boss_fill_t = minf(1.0, _boss_fill_t + delta / BOSS_FILL_SECONDS)
-	var shown := minf(target, ease(_boss_fill_t, 0.4)) if _boss_fill_t < 1.0 else target
-	if shown < _boss_shown - 0.0001 and _boss_fill_t >= 1.0:
-		_boss_hold = 0.35
-	if _boss_hold > 0.0:
-		_boss_hold -= delta
-	else:
-		_boss_ghost_v = move_toward(_boss_ghost_v, shown, delta * 0.6)
-	_boss_ghost_v = maxf(_boss_ghost_v, shown)
-	var inner := _boss_w - 2.0
-	if not is_equal_approx(shown, _boss_shown):
-		_boss_shown = shown
-		_boss_fill.size.x = floorf(inner * shown)
-		_boss_shine.size.x = _boss_fill.size.x
-	_boss_ghost.size.x = floorf(inner * _boss_ghost_v)
-	if boss.state == SimBoss.State.DYING:
-		_boss_root.modulate.a = maxf(0.0, _boss_root.modulate.a - delta * 1.5)
-
-
-func _boss_appear(boss: SimBoss) -> void:
-	_boss_ref = boss
-	_boss_name.text = tr(String(boss.def.get("name_key", ""))).to_upper()
-	for tick: ColorRect in _boss_ticks:
-		tick.queue_free()
-	_boss_ticks.clear()
-	# Uma marca em cada limiar de etapa (until_hp entre 0 e 1): o jogador vê quando o chefe muda.
-	for raw: Variant in boss.def.get("phases", []):
-		var at := float((raw as Dictionary).get("until_hp", 0.0))
-		if at <= 0.0 or at >= 1.0:
-			continue
-		var tick := HudKit.ignore(ColorRect.new()) as ColorRect
-		tick.color = Color(UiTheme.WHITE, 0.85)
-		tick.set_meta(&"at", at)
-		_boss_root.add_child(tick)
-		_boss_ticks.append(tick)
-	_layout_boss_ticks()
-	_boss_fill_t = 1.0 if _reduced else 0.0
-	_boss_ghost_v = 0.0
-	_boss_shown = -1.0
-	_boss_fill.size.x = 0.0
-	_boss_root.visible = true
-	_boss_root.modulate.a = 1.0
-	_place_radio()
-	if not _reduced:
-		var y := _boss_root.position.y
-		_boss_root.position.y = y - 8.0
-		_boss_root.modulate.a = 0.0
-		var t := create_tween().set_parallel()
-		t.tween_property(_boss_root, "position:y", y, 0.3).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		t.tween_property(_boss_root, "modulate:a", 1.0, 0.25)
-
-
 ## Controles que precisam caber na área segura (testes de layout).
 func layout_controls() -> Array[Control]:
-	return [_score, _pause, _special, _bomb, _power, _weapon, _tide, _power_name]
+	return [_score, _pause, _special, _bomb, _power, _turbo, _weapon, _tide, _power_name]
 
 
 ## Botão PODER (o Game chama charged/empty; testes leem o nome em name_label).

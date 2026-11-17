@@ -1,9 +1,11 @@
 class_name ShopScreen
 extends ListScreen
-## Loja (plano mestre 17): baú grátis a cada 6 h (em dobro com anúncio opcional), cosméticos por
-## Pérolas e a compra única "Apoiar". Nada de poder à venda, nada de energia, de baú pago aleatório ou de
-## urgência falsa. Pagamento e anúncio são simulados até a Fase 4 (Store.simulated); uma tira discreta
-## avisa isso para ninguém achar que pagou de verdade. Steam: sem anúncio e sem a sub-aba Apoio.
+## Loja (plano mestre 17): baú grátis a cada 6 h (em dobro com anúncio opcional), o Turbo (compra única
+## com dinheiro real na Google Play, scripts/core/turbo.gd), cosméticos por Pérolas e a compra única
+## "Apoiar". Nada de poder à venda, nada de energia, de baú pago aleatório ou de urgência falsa. "Apoiar"
+## e o passe ainda são só simulados (Store.simulated, somem em release); no desenvolvimento uma tira
+## discreta avisa que nada é cobrado. Steam: sem anúncio, sem a sub-aba Apoio e sem o cartão do Turbo
+## (incluído).
 ##
 ## 1.15 (menus de comando): sub-abas em pílula no topo (Baú | Pinturas | Apoio, PillTabs), o baú num
 ## cartão-destaque com o Duarte em pixel art ampliado (StoreBanner), seções em faixa chevron e as
@@ -131,6 +133,8 @@ func _fill() -> void:
 			_fill_support(profile)
 		_:
 			_fill_chest(profile, now)
+			if Turbo.shop_visible(profile):
+				_fill_turbo(profile)
 			_fill_paints(profile, true)
 
 
@@ -463,6 +467,48 @@ func _fill_support(profile: Dictionary) -> void:
 	button(banner.actions, tr("shop.support_buy"), func() -> void:
 		if Store.support(SaveManager.data):
 			SaveManager.save_profile(), Store.simulated(), "Support", true)
+	var honest := text(banner.actions, tr("store.support_note"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
+	honest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+# --- Turbo -------------------------------------------------------------------------------------------
+
+## Turbo (compra única com dinheiro real na Google Play; simulada no desenvolvimento): o que faz, o preço
+## da Play (sem preço ainda, "Comprar Turbo"), o estado (Ativo, abrindo a Play, pendente, erro) e
+## "Restaurar compras" quando a cobrança é real. O cartão se refaz quando a Play responde (Turbo.on_changed).
+func _fill_turbo(profile: Dictionary) -> void:
+	Turbo.on_changed(refill)
+	var banner := StoreBanner.new(UiTheme.CYAN, tr("store.turbo"), "mare", "alert")
+	banner.name = "TurboBanner"
+	_list.add_child(banner)
+	text(banner.body, tr("store.turbo_desc"), UiTheme.WHITE)
+	var speeds := text(banner.body, tr("store.turbo_speeds"), UiTheme.CYAN, UiTheme.SMALL_SIZE)
+	_bold(speeds)
+	if Turbo.owned(profile):
+		var on := badge(tr("store.turbo_owned"), UiTheme.MINT, &"check")
+		on.name = "TurboOwned"
+		on.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		banner.actions.add_child(on)
+		return
+	var status := Turbo.status()
+	var waiting := status == "busy" or status == "pending"
+	if not status.is_empty():
+		var says := {"busy": tr("store.turbo_busy"), "pending": tr("store.turbo_pending"),
+				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
+		var line := text(banner.actions, String(says.get(status, tr("store.turbo_failed"))),
+				UiTheme.GOLD if waiting else SHORT_COLOR, UiTheme.SMALL_SIZE)
+		line.name = "TurboStatus"
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var price := Turbo.price()
+	var label := tr("store.turbo_buy") % price if not price.is_empty() else tr("store.turbo_buy_plain")
+	var buy := button(banner.actions, label, func() -> void:
+		if Turbo.buy(SaveManager.data):
+			AudioManager.play_ui("kenney_ui_confirm")
+			SaveManager.save_profile(), not waiting, "TurboBuy", true)
+	buy.custom_minimum_size.y = 44.0
+	if Turbo.mode() == "play":
+		var restore := button(banner.actions, tr("store.restore"), Turbo.restore, status != "busy", "TurboRestore")
+		restore.add_theme_font_size_override("font_size", UiTheme.SMALL_SIZE)
 	var honest := text(banner.actions, tr("store.support_note"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
 	honest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 

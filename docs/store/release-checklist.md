@@ -24,8 +24,8 @@ Já pronto no repositório:
   permissões `VIBRATE` (do jogo) e `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (do SDK de anúncios), backup
   automático do save ligado. `python -I tools/check_release_ads.py` confere o AdMob real no AAB.
 - ✅ Anúncio recompensado real (1.18.0, IDs do AdMob do mantenedor). Build de release sem plugin de pagamento não
-  finge cobrança: a loja paga some (`Store.simulated`/`Store.purchases_enabled`). Ficha, política e declarações
-  dizem "contém anúncios (recompensados, opcionais), sem compras".
+  finge cobrança: a loja paga some (`Store.simulated`/`Store.purchases_enabled`). Com o Turbo, ficha, política e
+  declarações dizem "contém anúncios (recompensados, opcionais)" e "compras no app" (só o Turbo).
 - ✅ Arte da ficha: `toolsuild_store_art.ps1` (8 capturas 1080x1920 e a imagem de destaque 1024x500 em cada
   um dos 11 idiomas, ícone 512).
 - ✅ Textos da ficha em [listing.md](listing.md) (pt-BR e en completos; título e descrição curta nos 11 idiomas),
@@ -43,9 +43,10 @@ Só o mantenedor pode fazer:
 5. Anúncio recompensado (IDs reais ligados na 1.18.0): configurar a mensagem de consentimento GDPR/LGPD no AdMob,
    publicar a política nova em `netstart.github.io/atlantis/` e declarar "contém anúncios", ID de publicidade e
    Segurança dos dados (seção "Ligar o anúncio recompensado" de [play-console.md](play-console.md)).
-6. Fase 4 (opcional, depois): Play Billing (`supporter`, `season_gold`, pinturas avulsas); com
-   `GodotGooglePlayBilling` presente a loja passa a cobrar de verdade (ver `scripts/core/store.gd`). Antes,
-   atualizar política, ficha e declarações (fim de [play-console.md](play-console.md)).
+6. Turbo (Play Billing real, plugin `GodotGooglePlayBilling` no AAB): criar o produto no app `turbo` (US$ 1,99),
+   pôr testadores de licença e testar compra, pendente e reinstalação (seção "Compras no app: o Turbo" de
+   [play-console.md](play-console.md)). Política, ficha e IARC "compras digitais = Sim" já estão atualizados.
+   `supporter`, `season_gold` e pinturas avulsas continuam só simulados (`Store.purchases_enabled`).
 
 ## 3. Steam
 

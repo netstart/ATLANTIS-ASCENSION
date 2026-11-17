@@ -5,6 +5,7 @@ extends Node
 ## clima no auge (mistura 1) e grava <pasta>/weather_<id>.png; na tempestade, com um relâmpago.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
+const DeviceWindow := preload("res://tests/device_window.gd")
 const GAME := preload("res://scenes/game/Game.tscn")
 ## Missão de cada estado (o cenário dela tem o meio do clima).
 const MISSION_OF := {"clear": "c3m2", "clouds": "c5m1", "rain": "c3m2", "storm": "c3m2", "eye": "c3m2",
@@ -40,10 +41,7 @@ func _ready() -> void:
 	for r: Dictionary in DeviceProfiles.RESOLUTIONS:
 		if r["label"] == res:
 			view = r["view"]
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(Vector2i(view) * 2)
-	await get_tree().create_timer(0.3).timeout
-	get_tree().root.get_node(^"PixelScaler").call("_apply")
+	await DeviceWindow.fit(self, Vector2i(view) * 2)
 	for id: String in _ids:
 		await _shoot(id)
 	SpriteBank.clear()

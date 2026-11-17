@@ -47,6 +47,8 @@ var use_bot: bool = false
 var quit_at: float = -1.0
 var stress: int = 0
 var paused: bool = false
+## Tela lógica que decide a altura do campo no começo (testes simulam cada aparelho); zero = a da viewport.
+var screen := Vector2.ZERO
 
 var _bot: BotPilot
 var _wing_bomb_held: bool = false
@@ -55,6 +57,13 @@ var _backdrop: OceanBackdrop
 var _weather: WeatherView
 var _weather_audio := WeatherAudio.new()
 var _clip: Control
+## Palco: cenário, clima e campo, em unidades do campo. Em paisagem é ampliado até a altura da tela (Playfield):
+## por transformação quando a ampliação dá pixels inteiros; senão desenhado num SubViewport e mostrado com o
+## filtro nítido (shaders/sharp_pixels.gdshader).
+var _stage: Node2D
+var _scale: float = 1.0
+var _sub: SubViewport
+var _sharp: TextureRect
 var _world: WorldView
 var _screen: ScreenFx
 var _layer: CanvasLayer
@@ -68,6 +77,8 @@ var _want_bomb: bool = false
 var _want_tide: bool = false
 var _choice: int = -1
 var _touch_ids: Dictionary = {}
+## Dedos que começaram num botão do HUD: não movem a nave nem contam como toque.
+var _button_touches: Dictionary = {}
 var _last_tap_ms: int = -10000
 var _shake: float = 0.0
 var _hitstop: float = 0.0
@@ -100,13 +111,19 @@ func _ready() -> void:
 			quit_at = float(arg.trim_prefix("--quit-at="))
 		elif arg.begins_with("--stress="):
 			stress = int(arg.trim_prefix("--stress="))
+	# Altura do campo pela tela, decidida uma vez e guardada na carga (vai para o replay e o Fantasma). Replay
+	# reproduz a altura gravado nele (os antigos, sem ela, rodam em 450).
+	loadout = (loadout as Dictionary).duplicate() if typeof(loadout) == TYPE_DICTIONARY \
+			else Sim.default_loadout(StringName(String(loadout)))
+	if playback == null:
+		var view := screen if screen != Vector2.ZERO else get_viewport().get_visible_rect().size
+		loadout["field_h"] = Playfield.height_for(MenuKit.safe_rect(view, MenuKit.safe_margins(self)), _pixel_k())
 	sim.setup(mission_data if not mission_data.is_empty() else Sim.load_mission(mission_id), Sim.load_tables(),
 			loadout, seed_value,
 			float(Settings.get_value("drag_sensitivity")))
 	if use_bot:
 		_bot = BotPilot.new()
-	recording = Replay.new(sim.mission, seed_value, loadout if typeof(loadout) == TYPE_DICTIONARY
-			else Sim.default_loadout(StringName(String(loadout))))
+	recording = Replay.new(sim.mission, seed_value, loadout)
 	recording.loadout["sensitivity"] = float(Settings.get_value("drag_sensitivity"))
 	if ghost != null and playback == null:
 		_ghost_sim = ghost.make_sim()
@@ -114,11 +131,13 @@ func _ready() -> void:
 	_backdrop.detail = GfxQuality.level()
 	_backdrop.kind = StringName(String(sim.mission.get("backdrop", "ocean")))
 	_backdrop.foreground_on_top = true
-	add_child(_backdrop)
+	_stage = Node2D.new()
+	add_child(_stage)
+	_stage.add_child(_backdrop)
 	_clip = Control.new()
 	_clip.clip_contents = true
 	_clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_clip)
+	_stage.add_child(_clip)
 	_world = WorldView.new()
 	_world.reduce_flashes = bool(Settings.get_value("reduce_flashes"))
 	_world.colorblind = String(Settings.get_value("colorblind"))
@@ -133,8 +152,8 @@ func _ready() -> void:
 	_weather.detail = GfxQuality.level()
 	_weather.reduce_flashes = _world.reduce_flashes
 	_weather.reduce_motion = _world.reduce_motion
-	add_child(_weather)
-	move_child(_weather, _clip.get_index())
+	_stage.add_child(_weather)
+	_stage.move_child(_weather, _clip.get_index())
 	_weather.setup(sim, _world, _backdrop)
 	_weather.thunder.connect(_weather_audio.on_thunder)
 	_screen = ScreenFx.new()
@@ -158,6 +177,7 @@ func _ready() -> void:
 	_hud.bomb_pressed.connect(func() -> void: _want_bomb = true)
 	_hud.power_pressed.connect(_on_power_pressed)
 	_hud.tide_pressed.connect(func() -> void: _want_tide = true)
+	_hud.turbo_pressed.connect(_on_turbo_pressed)
 	_hud.revive_chosen.connect(_on_revive_choice)
 	_hud.blessing_chosen.connect(func(index: int) -> void: _choice = index)
 	_hud.setup_mission(sim)
@@ -165,6 +185,10 @@ func _ready() -> void:
 	MenuKit.on_insets_change(self, relayout)
 	relayout.call_deferred()
 	GameClock.reset()
+	# Turbo (compra): mais passos fixos por quadro, a mesma partida passo a passo; o bot dos testes não usa.
+	var turbo := not use_bot and Turbo.owned(SaveManager.data)
+	GameClock.turbo = Turbo.speed(SaveManager.data) if turbo else 1.0
+	_hud.set_turbo(turbo, GameClock.turbo)
 	GameClock.ticked.connect(_on_tick)
 	AudioManager.play_music(String(sim.mission.get("music", "")))
 
@@ -175,6 +199,7 @@ func _exit_tree() -> void:
 	_weather_audio.stop()
 	GameClock.paused = true
 	GameClock.time_scale = 1.0
+	GameClock.turbo = 1.0
 
 
 func relayout() -> void:
@@ -184,17 +209,88 @@ func relayout() -> void:
 ## Layout para uma tela lógica (os testes simulam cada aparelho com isto).
 func relayout_for(view: Vector2) -> void:
 	var safe := MenuKit.safe_rect(view, MenuKit.safe_margins(_hud))
-	var layout := Playfield.layout(view, safe)
+	var layout := Playfield.layout(view, safe, sim.field.y)
 	var field: Rect2 = layout["field"]
-	_backdrop.set_view(view)
-	_backdrop.set_field(field)
-	_weather.set_layout(view, field)
-	_clip.position = field.position
-	_clip.size = field.size
-	_hud.size = view
-	_hud.apply_layout(layout, safe)
-	_callouts.position = field.position
-	_callouts.size = field.size
+	_scale = layout["scale"]
+	# O palco trabalha em unidades do campo; ampliado, cobre a tela inteira com 1 unidade de folga em volta.
+	var stage_view := view
+	var at := field.position
+	if _scale != 1.0:
+		stage_view = (view / _scale).ceil() + Vector2(2, 2)
+		at = ((stage_view - sim.field) * 0.5).floor()
+	_place_stage(stage_view, field.position - at * _scale)
+	var local := Rect2(at, sim.field)
+	_backdrop.set_view(stage_view)
+	_backdrop.set_field(local)
+	_weather.set_layout(stage_view, local)
+	_clip.position = at
+	_clip.size = sim.field
+	# Em paisagem o HUD cresce junto com o campo: a camada é ampliada e o HUD trabalha em unidades do campo.
+	var u := _scale if view.x > view.y else 1.0
+	_layer.scale = Vector2(u, u)
+	var hud_safe := Rect2(safe.position / u, safe.size / u)
+	var hud_layout := layout if u == 1.0 else Playfield.layout(view / u, hud_safe, sim.field.y)
+	_hud.size = view / u
+	_hud.apply_layout(hud_layout, hud_safe)
+	_callouts.position = (hud_layout["field"] as Rect2).position
+	_callouts.size = (hud_layout["field"] as Rect2).size
+
+
+## Escala inteira da tela lógica para a física (PixelScaler).
+func _pixel_k() -> int:
+	return maxi(1, roundi(get_viewport().get_final_transform().x.x))
+
+
+## Palco na tela: `origin` é onde cai o canto dele. Ampliação que dá pixels físicos inteiros (e o retrato, em 1)
+## é só escala no nó; fracionária desenha num SubViewport (`m` pixels por unidade) e amplia com o filtro nítido.
+func _place_stage(stage_view: Vector2, origin: Vector2) -> void:
+	var k := _pixel_k()
+	if is_equal_approx(_scale * k, roundf(_scale * k)):
+		if _stage.get_parent() != self:
+			_stage.reparent(self, false)
+			move_child(_stage, 0)
+		if _sharp != null:
+			_sharp.visible = false
+		_stage.position = origin
+		_stage.scale = Vector2.ONE * _scale
+		return
+	if _sub == null:
+		_sharp = TextureRect.new()
+		_sharp.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_sharp.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_sharp.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		var mat := ShaderMaterial.new()
+		mat.shader = load("res://shaders/sharp_pixels.gdshader") as Shader
+		_sharp.material = mat
+		_sub = SubViewport.new()
+		_sub.size_2d_override_stretch = true
+		_sub.canvas_item_default_texture_filter = get_viewport().canvas_item_default_texture_filter
+		_sub.snap_2d_transforms_to_pixel = get_viewport().snap_2d_transforms_to_pixel
+		_sharp.add_child(_sub)
+		add_child(_sharp)
+		move_child(_sharp, 0)
+		_sharp.texture = _sub.get_texture()
+	if _stage.get_parent() != _sub:
+		_stage.reparent(_sub, false)
+	_stage.position = Vector2.ZERO
+	_stage.scale = Vector2.ONE
+	var m := maxi(1, floori(_scale * k))
+	_sub.size = Vector2i(stage_view * m)
+	_sub.size_2d_override = Vector2i(stage_view)
+	_sharp.position = origin
+	_sharp.size = stage_view * _scale
+	(_sharp.material as ShaderMaterial).set_shader_parameter("tex_size", Vector2(_sub.size))
+	_sharp.visible = true
+
+
+## Ampliação do campo na tela (1 em retrato).
+func field_scale() -> float:
+	return _scale
+
+
+## Ampliação da camada do HUD (a do campo em paisagem, 1 em retrato).
+func hud_scale() -> float:
+	return _layer.scale.x
 
 
 ## Raiz do HUD (testes de layout).
@@ -228,6 +324,17 @@ func _notification(what: int) -> void:
 
 # --- Entrada ---------------------------------------------------------------------------------
 
+## Antes da interface: marca o dedo que começa num botão do HUD (o botão recebe o toque normalmente; o
+## _unhandled_input ignora esse dedo até ele voltar a tocar fora dos botões).
+func _input(event: InputEvent) -> void:
+	if event is InputEventScreenTouch and (event as InputEventScreenTouch).pressed:
+		var touch := event as InputEventScreenTouch
+		if _hud.touches_button(touch.position / _layer.scale.x):
+			_button_touches[touch.index] = true
+		else:
+			_button_touches.erase(touch.index)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("pause"):
 		set_paused(not paused)
@@ -240,6 +347,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
+		if _button_touches.has(touch.index):
+			return
 		if touch.pressed:
 			_touch_ids[touch.index] = true
 			_taps += 1
@@ -252,7 +361,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		else:
 			_touch_ids.erase(touch.index)
 	elif event is InputEventScreenDrag:
-		_drag += (event as InputEventScreenDrag).relative
+		if not _button_touches.has((event as InputEventScreenDrag).index):
+			_drag += (event as InputEventScreenDrag).relative / _scale
 	elif event.is_action_pressed("special"):
 		_want_special = true
 	elif event.is_action_pressed("power"):
@@ -316,7 +426,13 @@ func _on_tick(_dt: float) -> void:
 	sim.step(input, input2)
 
 
-## Botão PODER do HUD (zona do polegar): mesmo caminho da tecla, entra no próximo SimInput.
+## Turbo do HUD: próxima velocidade (1x → 1,5x → 2x), guardada no perfil pelo Turbo e aplicada na hora.
+func _on_turbo_pressed() -> void:
+	GameClock.turbo = Turbo.cycle(SaveManager.data)
+	_hud.set_turbo(true, GameClock.turbo)
+
+
+## Botão PODER do HUD (pilha lateral): mesmo caminho da tecla, entra no próximo SimInput.
 func _on_power_pressed() -> void:
 	_want_power = true
 

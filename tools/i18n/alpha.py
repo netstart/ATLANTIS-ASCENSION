@@ -335,6 +335,11 @@ STRINGS = {
     # --- HUD -------------------------------------------------------------------------------------
     "hud.tide": ["MARÉ ALTA!", "HIGH TIDE!", "¡MAREA ALTA!", "SPRINGFLUT!", "GRANDE MARÉE !", "ВЫСОКИЙ ПРИЛИВ!", "PASANG TINGGI!", "満潮！", "만조!", "滿潮！", "满潮！"],
     "hud.tide_button": ["MARÉ", "TIDE", "MAREA", "FLUT", "MARÉE", "ПРИЛИВ", "PASANG", "満潮", "만조", "滿潮", "满潮"],
+    # Velocidades do botão Turbo da pilha lateral (1x, 1,5x, 2x; vírgula decimal onde o idioma usa).
+    "hud.turbo_rates": [
+        "1x|1,5x|2x", "1x|1.5x|2x", "1x|1,5x|2x", "1x|1,5x|2x", "1x|1,5x|2x", "1x|1,5x|2x", "1x|1,5x|2x",
+        "1x|1.5x|2x", "1x|1.5x|2x", "1x|1.5x|2x", "1x|1.5x|2x",
+    ],
     "hud.current": [
         "CORRENTE!", "CURRENT!", "¡CORRIENTE!", "STRÖMUNG!", "COURANT !", "ТЕЧЕНИЕ!", "ARUS!", "海流！", "해류!", "洋流！", "洋流！",
     ],

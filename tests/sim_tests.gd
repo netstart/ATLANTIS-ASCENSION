@@ -182,6 +182,7 @@ func mission_units() -> Array[Dictionary]:
 		if id == &"c1m1":
 			units.append({"name": "Missão c1m1 e determinismo", "weight": length * 3.0,
 					"run": _mission_c1m1})
+			units.append({"name": "Campo alto (c1m1 em 640) e replay", "weight": length * 2.0, "run": _tall_field})
 		else:
 			units.append({"name": "Missão %s" % id, "weight": length, "run": _mission_one.bind(id)})
 	return units
@@ -213,6 +214,47 @@ func _mission_checks(check: Callable, id: StringName, run: Dictionary) -> void:
 	check.call(int(r.get("kills", 0)) >= 50, "Missão %s: o bot derruba a maioria (%d)" % [id, r.get("kills")])
 
 
+## Campo alto (Playfield.MAX_HEIGHT): a nave começa à mesma distância do fundo, o bot ainda vence, o replay
+## (que guarda field_h na carga) reproduz o mesmo hash, e um replay antigo, sem field_h, roda no campo de 450.
+func _tall_field(check: Callable) -> void:
+	var mission := Sim.load_mission(&"c1m1")
+	var tall := Sim.new()
+	var load := Sim.default_loadout(&"falcon")
+	load["field_h"] = Playfield.MAX_HEIGHT
+	tall.setup(mission, _tables_once(), load, 7)
+	check.call(tall.field == Vector2(270, 640) and tall.player.pos.y == SimPlayer.START.y + 190.0
+			and tall.bounds.end.y == Sim.BOUNDS.end.y + 190.0, "Campo alto: 270x640, nave e limite das balas descem 190")
+	var odd := Sim.new()
+	var big := Sim.default_loadout(&"falcon")
+	big["field_h"] = 9000.0
+	odd.setup(mission, _tables_once(), big, 7)
+	check.call(odd.field.y == Playfield.MAX_HEIGHT, "Campo alto: altura fora da faixa vira o teto")
+	var run := run_bot(mission, _tables_once(), 7, Playfield.MAX_HEIGHT)
+	_mission_checks(check, &"c1m1", run)
+	var rec: Replay = run["replay"]
+	var again := Replay.from_dict(rec.to_dict()).make_sim()
+	_replay(again, rec)
+	check.call(again.field.y == Playfield.MAX_HEIGHT and again.state_hash() == run["hash"],
+			"Replay: guarda a altura do campo e reproduz o mesmo estado")
+	var short := run_bot(mission, _tables_once(), 7)
+	var old := (short["replay"] as Replay).to_dict()
+	(old["loadout"] as Dictionary).erase("field_h")
+	var legacy := Replay.from_dict(old)
+	var legacy_sim := legacy.make_sim()
+	_replay(legacy_sim, legacy)
+	check.call(legacy_sim.field.y == Playfield.FIELD.y and legacy_sim.state_hash() == short["hash"],
+			"Replay antigo (sem field_h): roda no campo de 450 e dá o mesmo estado")
+
+
+static func _replay(sim: Sim, rec: Replay) -> void:
+	rec.rewind()
+	var input := rec.next_input()
+	while input != null:
+		sim.step(input)
+		sim.take_events()
+		input = rec.next_input()
+
+
 ## As tabelas são só leitura na Sim: uma carga por processo serve a todas as missões.
 func _tables_once() -> Dictionary:
 	if _tables.is_empty():
@@ -230,17 +272,24 @@ static func mission_ids() -> Array[StringName]:
 	return ids
 
 
-static func run_bot(mission: Dictionary, tables: Dictionary, seed: int) -> Dictionary:
+## `field_h` 0 = sem altura na carga (campo de 450, como os replays antigos). Devolve também o replay gravado.
+static func run_bot(mission: Dictionary, tables: Dictionary, seed: int, field_h: float = 0.0) -> Dictionary:
 	var sim := Sim.new()
-	sim.setup(mission, tables, &"falcon", seed)
+	var load := Sim.default_loadout(&"falcon")
+	if field_h > 0.0:
+		load["field_h"] = field_h
+	sim.setup(mission, tables, load, seed)
+	var rec := Replay.new(mission, seed, load)
 	var bot := BotPilot.new()
 	var peak := 0
 	while not sim.finished and sim.frame < MAX_FRAMES:
-		sim.step(bot.decide(sim))
+		var input := bot.decide(sim)
+		rec.record(input)
+		sim.step(input)
 		for ev: Dictionary in sim.take_events():
 			if ev["type"] == &"player_hit" and "--verbose" in OS.get_cmdline_user_args():
 				print("dano no passo %d: %s em %s (chefe %s)" % [ev["frame"], ev["cause"], ev["pos"],
 						sim.boss.id if sim.boss != null else "-"])
 		peak = maxi(peak, sim.enemy_bullets.count)
 	return {"finished": sim.finished, "frames": sim.frame, "result": sim.result(), "hash": sim.state_hash(),
-			"peak": peak}
+			"peak": peak, "replay": rec}

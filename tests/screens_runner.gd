@@ -2,11 +2,13 @@ extends Node
 ## Capturas das telas para revisão visual (não é teste de aprovação). Sem --headless:
 ##   godot --path . res://tests/screens_runner.tscn -- --shots=<pasta> [--res=305x678,960x540] [--langs=pt_BR,ja]
 ##   [--screens=hub,map] [--zoom=4] [--showcase]
-## Grava <pasta>/<tela>_<resolução>_<idioma>.png com a janela em 2x da tela lógica (k = 2, ou --zoom).
+## Grava <pasta>/<tela>_<resolução>_<idioma>.png em 2x da tela lógica (k = 2, ou --zoom; a janela
+## mostra o quadro reduzido para caber no monitor, tests/device_window.gd).
 ## Save e opções usam os arquivos dos testes. --showcase troca o perfil novo por um jogador no meio da
 ## campanha (capturas da ficha da loja, tools/build_store_art.ps1).
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
+const DeviceWindow := preload("res://tests/device_window.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"story", &"hangar",
 		&"ships", &"options", &"shop", &"events", &"logbook", &"records", &"season", &"city", &"practice"]
@@ -45,14 +47,9 @@ func _ready() -> void:
 		if not wanted.is_empty() and not String(r["label"]) in wanted:
 			continue
 		var view: Vector2 = r["view"]
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(Vector2i(view) * zoom)
-		await get_tree().create_timer(0.3).timeout
-		get_tree().root.get_node(^"PixelScaler").call("_apply")
-		await get_tree().process_frame
-		var got := Vector2(get_tree().root.content_scale_size)
+		var got := Vector2(await DeviceWindow.fit(self, Vector2i(view) * zoom))
 		if got != view:
-			Log.warn("screens_runner: %s pedido, %s obtido (a janela não coube no monitor)" % [view, got])
+			Log.warn("screens_runner: %s pedido, %s obtido (o PixelScaler escolhe outra escala para esse zoom)" % [view, got])
 		for lang: String in langs:
 			Locale.set_language(lang, false)
 			var app := App.new()

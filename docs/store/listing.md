@@ -6,10 +6,12 @@ Respostas dos formulários do Play Console (classificação, segurança de dados
 [play-console.md](play-console.md). Revisão por falantes nativos antes do envio ainda é recomendada.
 
 > Desde a 1.18 a versão da Play **contém anúncios recompensados opcionais** (Google AdMob: só quando o jogador
-> pede, nunca durante a missão, sem venda de poder) e **não tem compras no app** (sem o plugin do Play Billing o
-> build de release esconde a loja paga; ver `Store.purchases_enabled`). Se ligar compras, atualize este texto, a
-> [política de privacidade](privacy-policy.md) e as declarações de [play-console.md](play-console.md) **antes** de
-> enviar o build.
+> pede, nunca durante a missão, sem venda de poder). Com o Turbo ela passa a ter **uma compra no app**: o Turbo
+> (produto `turbo`, compra única, não consumível, US$ 1,99), que acelera a partida em 1,5x ou 2x. O Turbo deixa o
+> jogo mais **rápido**, não mais **fácil**: nada de dano, vida ou recompensa a mais. "Apoiar" e o passe dourado
+> continuam fora do release (`Store.purchases_enabled`). Na Steam o Turbo vem incluído. Se ligar outra compra,
+> atualize este texto, a [política de privacidade](privacy-policy.md) e as declarações de
+> [play-console.md](play-console.md) **antes** de enviar o build.
 
 ## Português (Brasil) — idioma padrão da ficha
 
@@ -34,6 +36,7 @@ Atlantis Ascension é um shoot'em up vertical em pixel art, feito para ser jogad
 • Desafio Diário igual para todos, Sobrevivência, Boss Rush, Arcade, Prática e o Fantasma do seu recorde.
 • Jogue offline. Sem energia, sem espera e sem venda de poder.
 • Anúncios só se você quiser: um vídeo opcional para reviver ou dobrar recompensas, nunca durante a missão.
+• Turbo opcional (compra única): jogue em 1,5x ou 2x. Mais rápido, não mais fácil.
 • Acessível: modos de daltonismo, texto maior, menos clarões, dificuldade Brisa.
 • 11 idiomas.
 
@@ -63,6 +66,7 @@ Atlantis Ascension is a vertical pixel-art shoot 'em up built for one thumb:
 • A Daily Challenge shared by everyone, Survival, Boss Rush, Arcade, Practice and a Ghost of your best run.
 • Play offline. No energy, no waiting and no pay-to-win.
 • Ads only if you want them: an optional video to revive or double rewards, never during a mission.
+• Optional Turbo (one-time purchase): play at 1.5x or 2x. Faster, not easier.
 • Accessible: colorblind modes, larger text, fewer flashes, Breeze difficulty.
 • 11 languages.
 

@@ -121,7 +121,8 @@ func step(sim: Sim, precise: bool, precise2: bool) -> void:
 			continue
 		ship.resist = drag
 		if wind != Vector2.ZERO:
-			ship.pos = (ship.pos + wind * Sim.STEP).clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
+			ship.pos += wind * Sim.STEP
+			ship.keep_inside()
 	_mastery(sim)
 
 
@@ -204,7 +205,8 @@ func _turbulence(sim: Sim, ship: SimPlayer, offset: Vector2, precise: bool, salt
 		n.y += TURB_WEIGHT[k] * sin(t * TURB_FREQ[k] * 0.83 + _phase[(k + salt + 3) % 8])
 	var target := Vector2(n.x, n.y * 0.6) * amp
 	var delta := (target - offset).limit_length(TURB_STEP)
-	ship.pos = (ship.pos + delta).clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
+	ship.pos += delta
+	ship.keep_inside()
 	return offset + delta
 
 

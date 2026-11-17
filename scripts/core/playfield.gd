@@ -2,52 +2,70 @@ class_name Playfield
 extends RefCounted
 ## Onde fica a área de jogo em cada tela (plano mestre 10.8; docs/policies/testes.md).
 ##
-## A simulação usa um campo fixo de FIELD (270x450 unidades), desenhado 1:1 em pixels lógicos em
-## todos os aparelhos: telas maiores nunca mostram mais área de jogo, então dificuldade, placar e
-## determinismo são iguais em todo lugar. O que sobra vira:
-## - retrato: HUD em cima do campo (se couber), zona do polegar embaixo, molduras nas laterais;
-## - paisagem (Steam): campo no centro, painéis laterais com HUD e arte.
+## A simulação usa um campo de FIELD.x (270) unidades de largura em todos os aparelhos e altura entre
+## FIELD.y (450) e MAX_HEIGHT (640). A altura é decidida no começo da
+## missão a partir da tela (height_for) e vai na carga da partida ("field_h"), então replay e Fantasma
+## reproduzem a mesma partida; replays antigos, sem ela, rodam em 450. Os inimigos surgem pelo topo: a
+## altura extra é espaço do jogador. O que sobra da tela vira:
+## - retrato: HUD sobre o topo do campo (ou numa faixa acima, se sobrar altura), molduras nas laterais;
+##   os botões de ação ficam empilhados na borda esquerda, sobre a parte de baixo do campo (GameHud);
+## - retrato: o campo é desenhado 1:1 em pixels lógicos;
+## - paisagem (PC, Steam): o campo é ampliado (`scale`) até ocupar a altura inteira da área segura, centralizado;
+##   as laterais viram painéis com o HUD e os botões, perto do campo. A altura é a maior em que a ampliação dá
+##   pixels inteiros na tela física (1080 → 540 em 2x, 1440 → 480 em 3x); sem nenhuma, 640 com ampliação
+##   fracionária, que o Game desenha com filtro nítido.
 ##
-## Regra pura (sem nós): layout() recebe a tela lógica e a área segura e devolve os retângulos.
+## Regra pura (sem nós): layout() recebe a tela lógica, a área segura e a altura do campo e devolve os retângulos.
 
 const FIELD := Vector2(270, 450)
-## Faixa do HUD (pontuação, multiplicador, casco, arma). Em telas curtas fica sobre o campo.
+## Teto da altura: 9:21,3. Cobre, já sem o recorte da câmera, os celulares 9:19,5 a 9:22 da tabela de
+## resoluções; acima disso a distância do surgimento até a nave deixaria balas miradas fáceis demais.
+const MAX_HEIGHT := 640.0
+## Faixa do HUD (pontuação, multiplicador, casco). Sobre o campo quando não sobra altura para ela.
 const HUD_HEIGHT := 24.0
-## Faixa mínima de zona do polegar para os botões saírem de cima do campo.
-const THUMB_MIN := 56.0
 
 
-## Retângulos da tela: field, hud, thumb, left, right (Rect2) e hud_overlay (bool).
+## Altura do campo para uma área segura (a partida guarda o valor; a tela pode mudar depois). `k` é a escala
+## inteira da tela lógica para a física (PixelScaler), usada só em paisagem.
+static func height_for(safe: Rect2, k: int = 1) -> float:
+	var h := floorf(safe.end.y) - ceilf(safe.position.y)
+	if safe.size.x <= safe.size.y:
+		return clampf(h, FIELD.y, MAX_HEIGHT)
+	var p := h * maxi(1, k)
+	for n: int in range(1, int(p / FIELD.y) + 1):
+		if p / n <= MAX_HEIGHT:
+			return floorf(p / n)
+	return MAX_HEIGHT if p > MAX_HEIGHT else FIELD.y
+
+
+## Retângulos da tela: field (na tela, já ampliado), hud, left, right (Rect2), hud_overlay (bool) e scale (ampliação do
+## campo: 1 em retrato).
 ## `safe` é a área segura (fora do recorte da câmera) dentro de `view`.
-static func layout(view: Vector2, safe: Rect2) -> Dictionary:
+static func layout(view: Vector2, safe: Rect2, height: float = FIELD.y) -> Dictionary:
+	var size := Vector2(FIELD.x, height)
 	var field_pos := Vector2.ZERO
 	var hud := Rect2()
-	var thumb := Rect2()
 	var overlay := false
+	var scale := 1.0
 	if view.y >= view.x:
-		field_pos.x = floorf((view.x - FIELD.x) * 0.5)
+		field_pos.x = floorf((view.x - size.x) * 0.5)
 		var top := ceilf(safe.position.y)
 		var bottom := floorf(safe.end.y)
-		if bottom - top >= FIELD.y + HUD_HEIGHT:
-			hud = Rect2(field_pos.x, top, FIELD.x, HUD_HEIGHT)
-			field_pos.y = top + HUD_HEIGHT
-		else:
-			overlay = true
-			field_pos.y = top + floorf(maxf(0.0, bottom - top - FIELD.y) * 0.5)
-			hud = Rect2(field_pos.x, field_pos.y, FIELD.x, HUD_HEIGHT)
-		var field_end := field_pos.y + FIELD.y
-		thumb = Rect2(field_pos.x, field_end, FIELD.x, maxf(0.0, bottom - field_end))
+		# O campo encosta embaixo da área segura (sem faixa reservada); o HUD vai acima se couber.
+		field_pos.y = maxf(top, bottom - size.y)
+		overlay = field_pos.y - top < HUD_HEIGHT
+		hud = Rect2(field_pos.x, field_pos.y - (0.0 if overlay else HUD_HEIGHT), size.x, HUD_HEIGHT)
 	else:
-		field_pos = Vector2(floorf((view.x - FIELD.x) * 0.5),
-				floorf(safe.position.y + (safe.size.y - FIELD.y) * 0.5))
+		scale = (floorf(safe.end.y) - ceilf(safe.position.y)) / height
+		size *= scale
+		field_pos = Vector2(floorf((view.x - size.x) * 0.5), ceilf(safe.position.y))
 		hud = Rect2(safe.position.x, safe.position.y, maxf(0.0, field_pos.x - safe.position.x), safe.size.y)
-	var field := Rect2(field_pos, FIELD)
+	var field := Rect2(field_pos, size)
 	return {
 		"field": field,
 		"hud": hud,
 		"hud_overlay": overlay,
-		"thumb": thumb,
-		"thumb_separate": thumb.size.y >= THUMB_MIN,
+		"scale": scale,
 		"left": Rect2(0.0, 0.0, field.position.x, view.y),
 		"right": Rect2(field.end.x, 0.0, maxf(0.0, view.x - field.end.x), view.y),
 	}

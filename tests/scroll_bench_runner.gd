@@ -6,6 +6,7 @@ extends Node
 ## Critério com --strict: p95 ≤ 6 ms, nenhum quadro > 33 ms e nenhuma travada, por lista.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
+const DeviceWindow := preload("res://tests/device_window.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const WARMUP := 30
 const P95_MAX := 6.0
@@ -47,10 +48,7 @@ func _ready() -> void:
 
 func _resolution(r: Dictionary) -> void:
 	var view: Vector2 = r["view"]
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(Vector2i(view) * 2)
-	await get_tree().create_timer(0.3).timeout
-	get_tree().root.get_node(^"PixelScaler").call("_apply")
+	await DeviceWindow.fit(self, Vector2i(view) * 2)
 	var app := App.new()
 	add_child(app)
 	await get_tree().process_frame

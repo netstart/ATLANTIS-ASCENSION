@@ -20,6 +20,9 @@ var paused: bool = true
 ## Câmera lenta do golpe final (Game): menos passos por segundo real, a mesma partida passo a passo.
 ## Só muda quando os passos acontecem, nunca o que cada passo faz (o hash não muda).
 var time_scale: float = 1.0
+## Turbo (compra, Game): 1,0, 1,5 ou 2,0 vezes os passos por segundo real. Como a velocidade dos testes, só
+## muda quantos passos rodam por quadro, nunca o passo de 1/60 s: o hash não muda e a música não acelera.
+var turbo: float = 1.0
 ## Fração entre o último passo e o próximo; usada para interpolar o desenho.
 var alpha: float = 0.0
 var last_frame_steps: int = 0
@@ -62,8 +65,8 @@ func _process(delta: float) -> void:
 	last_frame_steps = 0
 	if paused:
 		return
-	_accumulator += minf(delta, 0.1) * speed * clampf(time_scale, 0.05, 1.0)
-	var max_steps := speed * MAX_STEPS_PER_SPEED
+	_accumulator += minf(delta, 0.1) * speed * turbo * clampf(time_scale, 0.05, 1.0)
+	var max_steps := ceili(speed * turbo) * MAX_STEPS_PER_SPEED
 	var start := Time.get_ticks_usec()
 	while _accumulator >= STEP and last_frame_steps < max_steps:
 		_accumulator -= STEP

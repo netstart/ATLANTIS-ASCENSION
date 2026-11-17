@@ -172,7 +172,7 @@ func cast(sim: Sim, id: StringName, tier: int) -> void:
 	for spec: Dictionary in specs:
 		var e := {"id": String(id), "type": StringName(String(spec.get("type", ""))), "tier": tier,
 				"color": String(def.get("color", "#ffffff")), "pos": sim.player.pos, "frames": 0,
-				"total": PowerEffects.duration(spec), "wait": int(spec.get("delay", 0)), "_spec": spec}
+				"total": PowerEffects.duration(spec, sim.field.y), "wait": int(spec.get("delay", 0)), "_spec": spec}
 		longest = maxi(longest, int(e["wait"]) + int(e["total"]))
 		PowerEffects.prepare(sim, self, e)
 		sim.power_fx.append(e)
@@ -362,7 +362,7 @@ func strongest_target(sim: Sim) -> Vector2:
 	var best := Vector2.INF
 	var best_hp := -INF
 	for e: SimEnemy in sim.enemies:
-		if e.active() and Rect2(Vector2.ZERO, Playfield.FIELD).has_point(e.pos) and e.hp > best_hp:
+		if e.active() and Rect2(Vector2.ZERO, sim.field).has_point(e.pos) and e.hp > best_hp:
 			best_hp = e.hp
 			best = e.pos
 	return best

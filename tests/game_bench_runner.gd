@@ -9,6 +9,7 @@ extends Node
 ## Critério com --strict: p95 ≤ 8 ms e nenhum quadro > 33 ms depois do aquecimento.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
+const DeviceWindow := preload("res://tests/device_window.gd")
 const GAME := preload("res://scenes/game/Game.tscn")
 const WARMUP := 90
 const P95_MAX := 8.0
@@ -49,10 +50,7 @@ func _ready() -> void:
 	for r: Dictionary in DeviceProfiles.RESOLUTIONS:
 		if r["label"] == res:
 			view = r["view"]
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(Vector2i(view) * 2)
-	await get_tree().create_timer(0.3).timeout
-	get_tree().root.get_node(^"PixelScaler").call("_apply")
+	await DeviceWindow.fit(self, Vector2i(view) * 2)
 	_game = GAME.instantiate() as Game
 	var loadout := Sim.default_loadout(&"falcon")
 	loadout["ship_level"] = level

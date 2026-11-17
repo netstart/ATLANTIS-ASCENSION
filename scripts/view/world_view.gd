@@ -2,8 +2,9 @@ class_name WorldView
 extends Node2D
 ## Desenho do campo de jogo a partir da Sim (só leitura). Camadas, de baixo para cima:
 ##   sombras no chão → destroços caindo → entidades (inimigos, chefe, coletáveis) → fumaça e estilhaços →
-##   tiros do jogador (com halo) → nave e laser → efeitos de baixo (feixes, explosões, duelo) →
-##   luz aditiva (laser, motores, clarões, anéis de choque) → faíscas e brilhos (CombatFx) →
+##   tiros do jogador (com halo) → nave → efeitos de baixo (feixes, explosões, duelo) →
+##   luz aditiva (bocal do laser, motores, clarões, anéis de choque) → laser e fluxo solar (EnergyStream) →
+##   poderes aditivos → faíscas e brilhos (CombatFx) →
 ##   balas inimigas (sempre por cima: leitura) → efeitos de cima (escuridão, números de pontos).
 ## Só texturas e retângulos por quadro (docs/policies/qualidade.md); partículas em MultiMesh
 ## (ParticleField). Efeitos vivem aqui, não na Sim: qualidade gráfica e "reduzir flashes" nunca
@@ -71,6 +72,8 @@ var rings: Array[Dictionary] = []
 var fx := CombatFx.new()
 ## Poderes das naves (PowerView): projéteis, feixes, raios, ondas e a escuridão do eclipse.
 var powers := PowerView.new()
+## Laser e fluxo do Mergulho Solar saindo do bico (shader aditivo, um quad).
+var stream := EnergyStream.new()
 
 var _shadows: _Layer
 var _entities: _Layer
@@ -201,7 +204,10 @@ func setup(p_sim: Sim) -> void:
 	_fx_add.material = add
 	_fx_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	add_child(_fx_add)
-	_power_add = _Layer.new(self, _draw_power_add)
+	stream.reduce_flashes = reduce_flashes
+	stream.setup(sim)
+	add_child(stream)
+	_power_add =_Layer.new(self, _draw_power_add)
 	_power_add.material = add
 	_power_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_power_add.texture_repeat = CanvasItem.TEXTURE_REPEAT_ENABLED
@@ -231,6 +237,7 @@ func refresh(delta: float) -> void:
 		_emit()
 	fx.advance(delta)
 	powers.advance(sim, delta)
+	stream.refresh(delta, time)
 	_player_bullets.render(sim.player_bullets)
 	_enemy_bullets.render(sim.enemy_bullets)
 	var ease := 1.0 - exp(-delta * 12.0)
@@ -629,14 +636,6 @@ func _draw_player(ci: CanvasItem) -> void:
 	if not pl.alive:
 		return
 	var p := pl.pos
-	if sim.laser_active:
-		var w := sim.laser_width * 1.6
-		var top := sim.laser_to_y
-		var flicker := 0.85 + 0.15 * sin(time * 50.0)
-		# Só o núcleo; o brilho largo e os pulsos vêm da camada aditiva (_draw_fx_add).
-		ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.5, top, w, p.y - 14.0 - top), false,
-				Color(LASER_COLOR, LASER_COLOR.a * flicker))
-		ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.18, top, w * 0.36, p.y - 14.0 - top), false, Color(1, 1, 1, 0.9))
 	var hull_frac := float(pl.hull) / maxf(1.0, float(pl.max_hull))
 	var base := _ship_bases[clampi(int(ceil(hull_frac * 3.0)), 0, 3)]
 	# Durante um poder a invulnerabilidade é do poder: o escudo aparece, a nave não pisca.
@@ -706,7 +705,7 @@ func _bank_transform(ci: CanvasItem, at: Vector2, bank: float) -> void:
 
 func _draw_fx_below(ci: CanvasItem) -> void:
 	for c: Dictionary in sim.covers:
-		var r := Hazards.cover_rect(c)
+		var r := Hazards.cover_rect(c, sim.field.y)
 		ci.draw_rect(r, COVER_COLOR)
 		ci.draw_rect(Rect2(r.position, Vector2(r.size.x, 2.0)), COVER_TRIM)
 		for wy: int in range(int(r.position.y) + 8, int(r.end.y) - 4, 12):
@@ -717,7 +716,7 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 		var x := float(b["x"])
 		var y := float(b["y"])
 		var w := float(b["width"])
-		var length := Playfield.FIELD.y + 40.0 - y
+		var length := sim.field.y + 40.0 - y
 		if int(b["age"]) < int(b["warn"]):
 			var on := floori(int(b["age"]) / 4.0) % 2 == 0
 			var a := WARN_COLOR.a * (1.0 if on else 0.35)
@@ -760,13 +759,13 @@ func _blast(at: Vector2, size: int, delay: float, zoom: float) -> void:
 func _draw_breach(ci: CanvasItem) -> void:
 	var dir := sim.breach_dir.normalized()
 	var shift := fposmod(time * 40.0, 24.0)
-	for k: int in range(-1, int(Playfield.FIELD.x / 24.0) + 2):
+	for k: int in range(-1, int(sim.field.x / 24.0) + 2):
 		var gx := k * 24.0 + dir.x * shift
-		ci.draw_rect(Rect2(gx, 0, 1.0, Playfield.FIELD.y), BREACH_COLOR)
-	for k: int in range(-1, int(Playfield.FIELD.y / 24.0) + 2):
+		ci.draw_rect(Rect2(gx, 0, 1.0, sim.field.y), BREACH_COLOR)
+	for k: int in range(-1, int(sim.field.y / 24.0) + 2):
 		var gy := k * 24.0 + dir.y * shift
-		ci.draw_rect(Rect2(0, gy, Playfield.FIELD.x, 1.0), BREACH_COLOR)
-	var c := Playfield.FIELD * 0.5
+		ci.draw_rect(Rect2(0, gy, sim.field.x, 1.0), BREACH_COLOR)
+	var c := sim.field * 0.5
 	for k: int in range(5):
 		var p := c + dir * (k * 6.0 - 12.0)
 		ci.draw_rect(Rect2(p - Vector2(2, 2), Vector2(4, 4)), Color(0.85, 0.7, 1.0, 0.25 + 0.12 * k))
@@ -809,21 +808,15 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 	var flicker := 0.85 + 0.15 * sin(time * 50.0)
 	if pl.alive:
 		var p := pl.pos
-		if sim.laser_active:
-			var w := sim.laser_width * 1.6
-			var top := sim.laser_to_y
-			var length := p.y - 14.0 - top
-			ci.draw_texture_rect(_beam, Rect2(p.x - w * 2.2, top, w * 4.4, length), false,
-					Color(0.25, 0.75, 1.0, 0.4 * flicker))
-			ci.draw_texture_rect(_beam, Rect2(p.x - w * 0.9, top, w * 1.8, length), false, Color(0.6, 1.0, 1.0, 0.6))
-			# Pulsos correndo para cima ao longo do feixe.
-			if fx_level >= 1:
-				for k: int in range(8):
-					var y := p.y - 14.0 - fposmod(time * 520.0 + k * 41.0, maxf(1.0, length))
-					_tex_centered(ci, _flare, Vector2(p.x, y), w / 40.0, Color(0.6, 1.0, 1.0, 0.45))
-			_tex_centered(ci, _flare, Vector2(p.x, top), (w / 20.0) * (0.9 + 0.2 * sin(time * 40.0)),
-					Color(0.6, 1.0, 1.0, 0.9))
-			_tex_centered(ci, _flare, Vector2(p.x, p.y - 16.0), w / 24.0, Color(0.8, 1.0, 1.0, 0.8))
+		if stream.open > 0.0:
+			# O feixe é o EnergyStream (shader); aqui só o bocal pulsando no bico e o clarão onde ele bate.
+			var w := sim.laser_width * 1.6 * stream.open
+			var sun := Color(0.6, 1.0, 1.0).lerp(Color(1.0, 0.85, 0.55), stream.heat)
+			var beat := 0.5 + 0.5 * sin(time * 23.0)
+			_tex_centered(ci, _flare, Vector2(p.x, stream.top), (w / 20.0) * (0.9 + 0.2 * sin(time * 40.0)),
+					Color(sun, 0.8 * stream.open))
+			_tex_centered(ci, _flare, Vector2(p.x, p.y - EnergyStream.NOSE), w / 26.0 * (0.9 + 0.2 * beat),
+					Color(sun.lerp(Color.WHITE, 0.3), (0.55 + 0.25 * beat) * stream.open))
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
 		for n: Vector2 in NOZZLES:
 			_tex_centered(ci, _flare, p + n, (0.28 + 0.12 * thrust) * (0.85 + 0.15 * sin(time * 37.0 + n.x)),
@@ -863,7 +856,7 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 			var hc: Color = HAZARD_COLORS.get(String(b.get("kind", "")), BEAM_COLOR)
 			var bw := float(b["width"])
 			var by := float(b["y"])
-			ci.draw_texture_rect(_beam, Rect2(float(b["x"]) - bw * 1.4, by, bw * 2.8, Playfield.FIELD.y + 40.0 - by),
+			ci.draw_texture_rect(_beam, Rect2(float(b["x"]) - bw * 1.4, by, bw * 2.8, sim.field.y + 40.0 - by),
 					false, Color(hc, 0.3 * flicker))
 	for r: Dictionary in rings:
 		var u := float(r["t"]) / float(r["duration"])
@@ -919,7 +912,7 @@ func _draw_dark(ci: CanvasItem) -> void:
 	var p := sim.player.pos
 	var halo := 70.0
 	var shade := Color(0.0, 0.01, 0.03, 0.86)
-	var f := Playfield.FIELD
+	var f := sim.field
 	ci.draw_rect(Rect2(0, 0, f.x, maxf(0.0, p.y - halo)), shade)
 	ci.draw_rect(Rect2(0, p.y + halo, f.x, maxf(0.0, f.y - p.y - halo)), shade)
 	ci.draw_rect(Rect2(0, p.y - halo, maxf(0.0, p.x - halo), halo * 2.0), shade)

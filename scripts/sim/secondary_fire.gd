@@ -88,6 +88,6 @@ static func _guide(sim: Sim) -> void:
 				m["pierce"] = int(m["pierce"]) - 1
 				m["last"] = struck
 				hit = false
-		if hit or int(m["life"]) > MISSILE_LIFE or not Sim.BOUNDS.has_point(pos):
+		if hit or int(m["life"]) > MISSILE_LIFE or not sim.bounds.has_point(pos):
 			sim.missiles.remove_at(i)
 		i -= 1

@@ -60,8 +60,9 @@ static func finish() -> void:
 	Locale.set_language("pt_BR", false)
 
 
-## HUD da partida num caso (idiomas mais longos): controles na área segura, campo inteiro e
-## HUD cobrindo no máximo 6% do campo.
+## HUD da partida num caso (idiomas mais longos): campo com a altura da tela e inteiro na área segura, HUD
+## cobrindo no máximo 6% do campo, controles na área segura sem encostar uns nos outros e a pilha de botões
+## sobre a parte de baixo do campo, na borda (esquerda; direita na mão esquerda), abaixo do HUD de cima.
 func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 	var view: Vector2 = c["view"]
 	var safe := DeviceProfiles.safe_rect(view, c["insets"])
@@ -70,6 +71,7 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		Locale.set_language(lang, false)
 		var game := GAME.instantiate() as Game
 		game.configure(&"c1m1", &"falcon", 7, true)
+		game.screen = view
 		host.add_child(game)
 		await host.get_tree().process_frame
 		game.relayout_for(view)
@@ -77,17 +79,32 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		await host.get_tree().process_frame
 		var tag := "Layout HUD %s [%s]" % [lang, c["label"]]
 		var layout: Dictionary = game.hud().layout
-		check.call(Playfield.fits(layout, safe), "%s: campo na área segura" % tag)
+		# Em paisagem o HUD trabalha em unidades do campo ampliado (Game.hud_scale): a área segura também.
+		var u := game.hud_scale()
+		var hsafe := Rect2(safe.position / u, safe.size / u)
+		var usable := floorf(safe.end.y) - ceilf(safe.position.y)
+		var tall := (layout["field"] as Rect2).size.y
+		check.call(absf(tall - game.sim.field.y) < 1.0 and (view.x > view.y or tall == Playfield.height_for(safe)),
+				"%s: campo com a altura da tela (%.0f)" % [tag, tall])
+		check.call(view.x <= view.y or absf(tall * u - usable) < 1.0,
+				"%s: no PC deitado o campo ampliado ocupa a altura inteira" % tag)
+		check.call(Playfield.fits(layout, hsafe), "%s: campo na área segura" % tag)
+		check_stack(game.hud(), layout, false, check, tag)
 		check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
-		check_screen_controls(game.hud().layout_controls(), safe, check, tag)
+		check_screen_controls(game.hud().layout_controls(), hsafe, check, tag)
 		# PODER com a Corrente cheia: o nome do poder aparece e também cabe, nas duas mãos.
 		game.sim.player.power_charge = Powers.SEGMENTS
 		game.hud().refresh(game.sim, 0.5)
 		check.call(game.hud().power_button().name_label.visible, "%s: nome do poder visível com a Corrente cheia" % tag)
-		check_screen_controls(game.hud().layout_controls(), safe, check, tag + " poder")
+		check_screen_controls(game.hud().layout_controls(), hsafe, check, tag + " poder")
 		Settings.set_value("handedness", "left")
 		game.relayout_for(view)
-		check_screen_controls(game.hud().layout_controls(), safe, check, tag + " poder canhoto")
+		check_screen_controls(game.hud().layout_controls(), hsafe, check, tag + " poder canhoto")
+		check_stack(game.hud(), layout, true, check, tag + " canhoto")
+		# Vaga do Turbo ocupada (a compra é do outro teste): ainda cabe e não encosta em nada.
+		game.hud().set_turbo(true, 1.5)
+		check_screen_controls(game.hud().layout_controls(), hsafe, check, tag + " turbo canhoto")
+		game.hud().set_turbo(false, 1.0)
 		Settings.set_value("handedness", "right")
 		game.relayout_for(view)
 		game.sim.offer_blessings()
@@ -95,9 +112,64 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		await host.get_tree().process_frame
 		var panel := game.hud().offer_panel()
 		check.call(layout["field"].encloses(panel.get_global_rect()), "%s: bênçãos dentro do campo" % tag)
-		check_screen_controls([panel], safe, check, tag + " bênçãos")
+		check_screen_controls([panel], hsafe, check, tag + " bênçãos")
 		game.queue_free()
 		await host.get_tree().process_frame
+	if c["label"] == DeviceProfiles.RESOLUTIONS[0]["label"]:
+		await run_turbo(host, check)
+
+
+## Botão Turbo do HUD (na tela de referência): só aparece com a compra; tocar troca a velocidade da partida
+## (GameClock.turbo: mais passos fixos por quadro), e sair da partida volta a 1x.
+func run_turbo(host: Node, check: Callable) -> void:
+	var profile := SaveManager.data
+	var purchases: Dictionary = profile["purchases"]
+	var selected: Dictionary = profile["selected"]
+	var had: Variant = purchases.get("turbo", false)
+	var rate: Variant = selected.get("turbo", 1.0)
+	for own: bool in [false, true]:
+		purchases["turbo"] = own
+		selected["turbo"] = 1.0
+		var game := GAME.instantiate() as Game
+		game.configure(&"c1m1", &"falcon", 7, false)
+		game.screen = DeviceProfiles.main_view()
+		host.add_child(game)
+		await host.get_tree().process_frame
+		var button := game.hud().turbo_button()
+		check.call(button.visible == Turbo.owned(profile) and (own or Store.is_steam() or not button.visible),
+				"Turbo: botão só com a compra (comprado: %s, visível: %s)" % [own, button.visible])
+		if own:
+			check.call(is_equal_approx(GameClock.turbo, 1.0), "Turbo: a partida começa na velocidade guardada (1x)")
+			button.pressed.emit()
+			check.call(is_equal_approx(GameClock.turbo, 1.5) and is_equal_approx(Turbo.speed(profile), 1.5),
+					"Turbo: tocar passa para 1,5x (relógio %.2f)" % GameClock.turbo)
+			button.pressed.emit()
+			button.pressed.emit()
+			check.call(is_equal_approx(GameClock.turbo, 1.0), "Turbo: 2x e de volta a 1x")
+			button.pressed.emit()
+		game.queue_free()
+		await host.get_tree().process_frame
+		check.call(is_equal_approx(GameClock.turbo, 1.0), "Turbo: fora da partida o relógio volta a 1x")
+	purchases["turbo"] = had
+	selected["turbo"] = rate
+
+
+## Pilha de botões (retrato): dentro do campo, na parte de baixo, colada na borda do lado da mão e abaixo da linha
+## do HUD de cima; o toque que começa num botão não move a nave (Game.touches_button).
+static func check_stack(hud: GameHud, layout: Dictionary, left_handed: bool, check: Callable, tag: String) -> void:
+	var field: Rect2 = layout["field"]
+	var top: Rect2 = layout["hud"]
+	if hud.size.x > hud.size.y:
+		return
+	for b: Button in [hud.power_button(), hud.get_node("Bomb") as Button, hud.get_node("Special") as Button,
+			hud.turbo_button()]:
+		var r := b.get_global_rect()
+		var edge := field.end.x - r.end.x if left_handed else r.position.x - field.position.x
+		check.call(field.encloses(r) and r.position.y >= field.get_center().y and edge <= GameHud.STACK_MARGIN + 0.5,
+				"%s: botão %s na pilha da borda, embaixo do campo (%s)" % [tag, b.name, r])
+		check.call(r.position.y >= top.end.y + 8.0, "%s: botão %s longe do HUD de cima" % [tag, b.name])
+		check.call(hud.touches_button(r.get_center()) == b.visible, "%s: toque no %s é do botão" % [tag, b.name])
+	check.call(not hud.touches_button(field.get_center()), "%s: toque no meio do campo move a nave" % tag)
 
 
 ## O teste roda numa janela pequena (headless): a raiz das telas recebe o tamanho lógico do aparelho.

@@ -88,6 +88,8 @@ func _ready() -> void:
 	Locale.language_changed.connect(_on_language_changed)
 	# Consentimento (UMP) e SDK do AdMob antes do primeiro pedido de anúncio; não espera nem trava a abertura.
 	Ads.start(self)
+	# Play Billing (só Android com o plugin): preço do Turbo e restauração da compra (queryPurchases).
+	Turbo.start(self)
 	var args := OS.get_cmdline_user_args()
 	var mission := ""
 	var seed := 7

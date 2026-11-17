@@ -4,6 +4,7 @@ extends Node
 ##   godot --path . res://tests/store_art_runner.tscn -- --out=<pasta> [--lang=pt_BR]
 ## Grava <pasta>/feature_graphic_<idioma>.png. Chamado por tools/build_store_art.ps1.
 
+const DeviceWindow := preload("res://tests/device_window.gd")
 const SIZE := Vector2i(1024, 500)
 ## Nave em pixel inteiro: 48 px x 8.
 const SHIP_SCALE := 8
@@ -25,11 +26,8 @@ func _ready() -> void:
 		return
 	DirAccess.make_dir_recursive_absolute(out)
 	Locale.set_language(lang, false)
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(SIZE)
-	await get_tree().create_timer(0.3).timeout
-	# Arte na resolução física: sem a escala lógica do PixelScaler (texto e pixel art nítidos).
-	get_tree().root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
+	# Arte na resolução física: lógico = físico, sem a escala do PixelScaler (texto e pixel art nítidos).
+	await DeviceWindow.fit(self, SIZE, SIZE)
 	var art := _compose()
 	add_child(art)
 	# O fundo é um shader animado: deixa a água andar um pouco para sair do primeiro quadro.

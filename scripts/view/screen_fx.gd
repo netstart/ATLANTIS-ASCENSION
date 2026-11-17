@@ -58,8 +58,8 @@ func shockwave(at: Vector2, strength: float = 0.02) -> void:
 		return
 	_wave_t = 0.0
 	_wave_strength = strength * (0.5 if reduce_flashes else 1.0)
-	_wave_mat.set_shader_parameter("center", at / Playfield.FIELD)
-	_wave_mat.set_shader_parameter("aspect", Playfield.FIELD.x / Playfield.FIELD.y)
+	_wave_mat.set_shader_parameter("center", at / size)
+	_wave_mat.set_shader_parameter("aspect", size.x / size.y)
 	_wave.visible = true
 
 

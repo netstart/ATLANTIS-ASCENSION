@@ -175,9 +175,9 @@ Surge XT, BeepBox. A trilha original é o maior ganho de identidade e o item de 
 | Godot Engine 4.7.2 | https://godotengine.org/license | MIT | ✅ (mesma entrada do hyakki) |
 | Android Jetpack (AndroidX) | https://developer.android.com/jetpack/androidx | Apache-2.0 | ✅ (mesma entrada do hyakki) |
 | Poing Godot AdMob | registro do hyakki | MIT | ✅ 1.17.0, licença `poing_admob_plugin`, `addons/admob` |
-| GodotGooglePlayBilling | registro do hyakki | MIT | ✅ (Beta em diante) |
+| GodotGooglePlayBilling | registro do hyakki | MIT | ✅ Turbo, licença `godot_play_billing`, `addons/GodotGooglePlayBilling` |
 | Google Mobile Ads SDK | registro do hyakki | `LicenseRef-` | ✅ 1.17.0, licença `google_mobile_ads_sdk` (decisão registrada) |
-| Play Billing Library | registro do hyakki | `LicenseRef-` | 🔶 decisão já tomada no hyakki; copiar |
+| Play Billing Library | registro do hyakki | `LicenseRef-` | ✅ Turbo, licença `play_billing_library` (decisão registrada) |
 | GodotSteam | https://github.com/GodotSteam/GodotSteam | MIT | ⚠️ |
 | Steamworks SDK | partner.steamgames.com | `LicenseRef-Steamworks` | 🔶 |
 

@@ -1,7 +1,10 @@
 extends Node
 ## Capturas da partida para revisão visual (não é teste de aprovação). Sem --headless:
 ##   godot --path . res://tests/game_shots_runner.tscn -- --shots=<pasta> [--at=12,50,100] [--res=305x678]
-##     [--mission=c1m1] [--speed=3] [--zoom=4] [--lang=de] [--radio=thalassa_hello]
+##     [--mission=c1m1] [--speed=3] [--zoom=4] [--lang=de] [--radio=thalassa_hello] [--cutout] [--turbo] [--left]
+## --cutout simula o furo da câmera da resolução em cima (área segura); --turbo mostra o botão Turbo (1,5x);
+## --left põe os botões na mão esquerda. --window=1102x874 usa uma janela física qualquer (fora da tabela), com a
+## tela lógica que o PixelScaler der para ela.
 ## O bot joga em velocidade acelerada; em cada segundo de jogo pedido grava <pasta>/game_<s>_<res>.png.
 ## --radio abre essa fala de data/dialogue.json no rádio meio segundo antes de cada captura (retrato com efeito).
 ##
@@ -11,6 +14,7 @@ extends Node
 ## (meter_<nave>_<res>.png). Entre os lançamentos a Corrente fica abaixo de 1 segmento (o bot não gasta).
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
+const DeviceWindow := preload("res://tests/device_window.gd")
 const GAME := preload("res://scenes/game/Game.tscn")
 ## Segundos de jogo em que saem os Poderes I, II e III de cada nave.
 const CASTS: Array[float] = [9.0, 17.0, 26.0]
@@ -41,6 +45,7 @@ var _game: Game
 var _mission: StringName = &"c1m1"
 var _zoom: int = 2
 var _view := Vector2(305, 678)
+var _turbo := false
 ## Modo poderes: naves que faltam, a nave da vez, o próximo lançamento e as capturas pendentes (passo, id).
 var _powers := false
 var _ships: Array[StringName] = []
@@ -58,6 +63,8 @@ func _ready() -> void:
 	InputSetup.ensure_actions()
 	var res := "305x678"
 	var only := ""
+	var cutout := false
+	var window := Vector2i.ZERO
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--shots="):
 			_out = arg.trim_prefix("--shots=")
@@ -77,17 +84,28 @@ func _ready() -> void:
 		elif arg == "--powers" or arg.begins_with("--powers="):
 			_powers = true
 			only = arg.trim_prefix("--powers").trim_prefix("=")
+		elif arg.begins_with("--window="):
+			var wh := arg.trim_prefix("--window=").split("x")
+			window = Vector2i(int(wh[0]), int(wh[1]))
+		elif arg == "--cutout":
+			cutout = true
+		elif arg == "--turbo":
+			_turbo = true
+		elif arg == "--left":
+			Settings.set_value("handedness", "left")
 	if _shots.is_empty():
 		_shots = [6.0, 30.0, 52.0, 70.0, 110.0, 150.0]
 	DirAccess.make_dir_recursive_absolute(_out)
 	for r: Dictionary in DeviceProfiles.RESOLUTIONS:
 		if r["label"] == res:
 			_view = r["view"]
+			if cutout and DeviceProfiles.is_portrait(r):
+				DeviceProfiles.simulate_insets(Vector4(0.0, DeviceProfiles.cutout_logical(r), 0.0, 0.0))
 	_label = res
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	DisplayServer.window_set_size(Vector2i(_view) * _zoom)
-	await get_tree().create_timer(0.3).timeout
-	get_tree().root.get_node(^"PixelScaler").call("_apply")
+	if window != Vector2i.ZERO:
+		_view = Vector2(PixelScaler.logical_for(window))
+		_label = "win%dx%d" % [window.x, window.y]
+	await DeviceWindow.fit(self, window if window != Vector2i.ZERO else Vector2i(_view) * _zoom)
 	if _powers:
 		for row: Variant in DB.rows("ships"):
 			var id := StringName(String((row as Dictionary)["id"]))
@@ -97,7 +115,10 @@ func _ready() -> void:
 		return
 	_game = GAME.instantiate() as Game
 	_game.configure(_mission, &"falcon", 7, true)
+	_game.screen = _view
 	add_child(_game)
+	if _turbo:
+		_game.hud().set_turbo(true, 1.5)
 
 
 func _process(_delta: float) -> void:
@@ -135,6 +156,7 @@ func _next_ship() -> void:
 	_pending.clear()
 	_game = GAME.instantiate() as Game
 	_game.configure(_mission, _ship, 7, true)
+	_game.screen = _view
 	add_child(_game)
 
 

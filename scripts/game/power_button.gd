@@ -1,9 +1,9 @@
 class_name PowerButton
 extends Button
-## Botão PODER do HUD da partida (.ai/08-poderes-das-naves.md), o terceiro da zona do polegar. Dentro dele, o
+## Botão PODER do HUD da partida (.ai/08-poderes-das-naves.md), na pilha lateral. Dentro dele, o
 ## anel da Corrente em 3 segmentos (HudKit.draw_power) que anda suave até a carga real (encaixa na hora quando o
 ## jogador gasta), o ícone do poder que sairia agora e a legenda; no nível III um halo na cor da nave pulsa.
-## O nome do poder fica num rótulo do GameHud (fora do botão, ao lado dos botões), que este botão preenche.
+## O nome do poder fica num rótulo do GameHud (fora do botão, ao lado dele), que este botão preenche.
 ## Como o resto do HUD, só troca StyleBox, texto e desenho quando o degrau, o nível ou o poder vivo mudam.
 
 ## Segmentos por segundo que o desenho anda até a carga real.
@@ -13,7 +13,7 @@ const STEPS := 48
 ## Algarismos romanos dos níveis (nome no HUD e faixa do poder).
 const ROMAN: Array[String] = ["", "I", "II", "III"]
 
-## Botão grande (zona do polegar com espaço e desktop): legenda embaixo do anel.
+## Botão grande (painel do desktop): legenda embaixo do anel.
 var big := false
 ## "Reduzir movimento": sem pulso, tremida, halo pulsando nem enchimento animado.
 var reduced := false
@@ -64,22 +64,17 @@ func set_side(side: float, p_big: bool) -> void:
 	_caption.visible = big
 	_caption.position = Vector2(2, side - 15.0)
 	_caption.size = Vector2(side - 4.0, 13)
+	_restyle()
 	_gauge.queue_redraw()
 
 
-## Rótulo do nome: na altura `y`, encostado no botão e correndo para dentro até `inner_x` (a borda do outro
-## lado). Nome comprido diminui a letra e, no limite, termina em reticências (nunca quebra a linha).
-func place_name(y: float, inner_x: float, left_handed: bool) -> void:
-	var h := 14.0
-	if left_handed:
-		_name_w = inner_x - position.x
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		name_label.position = Vector2(position.x, y)
-	else:
-		_name_w = position.x + size.x - inner_x
-		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		name_label.position = Vector2(inner_x, y)
-	name_label.size = Vector2(_name_w, h)
+## Rótulo do nome no retângulo `rect` (o GameHud põe ao lado do botão), alinhado a `align` (o lado do botão).
+## Nome comprido diminui a letra e, no limite, termina em reticências (nunca quebra a linha).
+func place_name(rect: Rect2, align: HorizontalAlignment) -> void:
+	_name_w = rect.size.x
+	name_label.horizontal_alignment = align
+	name_label.position = rect.position
+	name_label.size = rect.size
 	_fit_name()
 
 
@@ -164,7 +159,7 @@ func _fit_name() -> void:
 ## Vidro na cor da nave: fraco sem carga, aceso com um segmento cheio; no nível III, halo pulsando.
 func _restyle() -> void:
 	var lit := _seg >= 1 and not _live
-	HudKit.style_round(self, _tint, 1.0 if lit else 0.75, lit, 14)
+	HudKit.style_round(self, _tint, 1.0 if lit else 0.75, lit, 14 if big else HudKit.DISC)
 	_caption.add_theme_color_override("font_color", _tint if lit else UiTheme.TEXT_DIM)
 	var supreme := _seg >= 3 and not _live
 	_glow.add_theme_stylebox_override("panel", HudKit.glow_box(_tint))

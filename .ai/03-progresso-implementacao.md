@@ -36,6 +36,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - 🔄 Google Play (16/11/2026): AdMob (app, bloco recompensado, mensagem GDPR), declarações, ficha pt-BR e teste
   fechado Alpha 1.18.0 (34) aprovado no mesmo dia; 1.18.1 (35), com as correções da revisão do AdMob, enviada
   para revisão. Faltam: 12 testadores por 14 dias, produção e vincular o app à loja no AdMob.
+- 🔄 Turbo (1x/1,5x/2x): compra única `turbo` pela Play Billing real (plugin GodotGooglePlayBilling, pendente, acknowledge, restauração), incluído na Steam; falta 👤 criar o produto no Play Console (`docs/store/play-console.md`).
 - ⬜ Steam: checklist de lançamento (conta, Steamworks).
 
 ## Decisões pendentes do mantenedor
@@ -448,3 +449,24 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   recompensa não somem na revelação); chave `consent` sem uso tirada do save; `tools/build_release.ps1` falha
   cedo sem o JDK 17. Testes em `tests/beta_tests.gd` (Diário pelo `App.record_result`, consentimento, desfechos do
   anúncio, save) e `tests/glory_tests.gd` (botões de dobrar)
+- ✅ Campo mais alto e botões na lateral: campo de 270 x 450 a 640 pela altura da tela (`Playfield.height_for`), guardado
+  na carga da partida (`field_h`; replay e Fantasma reproduzem igual, replays antigos rodam em 450), indo até a borda de
+  baixo; Sim, bot, VFX, clima e poderes leem `sim.field`. HUD de cima sobre o topo do campo, pausa pequena na linha do
+  placar (toque de 36 pontos), botões redondos empilhados na borda esquerda (bomba, PODER, especial e a vaga do Turbo;
+  direita para canhotos) com a arma e o nome do poder ao lado, mais apagados com a nave por baixo; o dedo que começa num
+  botão não move a nave. Botão Turbo (`Turbo.owned`) troca 1x/1,5x/2x rodando mais passos fixos por quadro
+  (`GameClock.turbo`). PC deitado: campo e HUD ampliados até a altura da janela (escala inteira quando dá, senão
+  SubViewport com `shaders/sharp_pixels.gdshader`), placar, pausa e bloco 2x2 de botões colados no campo. Testes em `tests/run_tests.gd`, `tests/sim_tests.gd` (campo alto e replay antigo) e
+  `tests/layout_tests.gd` (pilha, toque e Turbo)
+- ✅ Laser e Mergulho Solar fluidos: o feixe do Laser deixa de ser dois retângulos de `fx/beam` esticados (bordas duras,
+  miolo branco chapado, corte reto no bico) e vira um quad só com `shaders/energy_stream.gdshader` (aditivo: núcleo
+  claro, corpo e halo gaussianos que somem até zero, nasce fino no bico e abre, faixas de ruído subindo, apaga macio
+  na ponta) desenhado por `scripts/view/energy_stream.gd`, que abre e fecha em rampa (0,07 s / 0,12 s). No Mergulho
+  Solar (overdrive de cadência 2x) o feixe esquenta para branco-dourado e, com outra arma, sai uma pluma curta de sol
+  do bico; bocal pulsante no bico e anel de choque com frente morna e rastro (`PowerView.solar_heat`: entra em 12 e
+  sai em 30 passos). "Reduzir flashes" corta a cintilação e o halo. Só desenho (hash da Sim igual). Capturas:
+  `tests/power_shots_runner.tscn -- --shots=<pasta> --power=falcon_3 --weapon=laser --level=4 --at=...`. Teste em
+  `tests/vfx_tests.gd` (rampas de entrada e saída e a Sim intocada)
+- ✅ Janela dos runners que cabe no monitor (AGENTS.md, regra 7): `tests/device_window.gd` põe o runner num
+  SubViewport do tamanho físico pedido (tela lógica do PixelScaler) e mostra o quadro reduzido numa janela na área útil,
+  centralizada. Capturas, benchmarks, retratos, arte da loja e Oficina usam o helper; PNGs e layout iguais aos de antes

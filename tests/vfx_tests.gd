@@ -1,6 +1,6 @@
 extends RefCounted
-## Testes dos efeitos visuais da partida (ParticleField e CombatFx) e da luz dos menus (UiSpark,
-## AbyssMotes, UiGlint), sem cena e sem autoloads.
+## Testes dos efeitos visuais da partida (ParticleField, CombatFx e o EnergyStream do bico) e da luz dos
+## menus (UiSpark, AbyssMotes, UiGlint), sem cena e sem autoloads.
 ## Chamados por tests/run_tests.gd.
 
 var _check: Callable
@@ -17,6 +17,7 @@ func run_unit(check: Callable) -> void:
 	_test_ui_spark()
 	_test_motes()
 	_test_glint()
+	_test_energy_stream()
 
 
 func _field(capacity: int) -> ParticleField:
@@ -198,3 +199,43 @@ func _fx(level: int, light: int, matter: int) -> CombatFx:
 func _free(fx: CombatFx) -> void:
 	fx.light.free()
 	fx.matter.free()
+
+
+## Fluxo do bico (Laser e Mergulho Solar): o sol acende e apaga em rampa, o Laser abre e fecha em rampa, e o
+## desenho não muda a Sim (o hash de estado fica igual ao de uma Sim gêmea sem desenho).
+func _test_energy_stream() -> void:
+	var tables := Sim.load_tables()
+	var empty := {"id": "vfx_test", "events": []}
+	var sim := Sim.new()
+	sim.setup(empty, tables, Sim.default_loadout(&"falcon"), 3)
+	var twin := Sim.new()
+	twin.setup(empty, tables, Sim.default_loadout(&"falcon"), 3)
+	var stream := EnergyStream.new()
+	stream.setup(sim)
+	for s: Sim in [sim, twin]:
+		s.player.invuln = 1 << 24
+		s.powers.cast(s, &"falcon_3", 3)
+	var heats: Array[float] = []
+	var input := SimInput.new()
+	for k: int in range(400):
+		sim.step(input)
+		twin.step(input)
+		stream.refresh(1.0 / 60.0, k / 60.0)
+		heats.append(stream.heat)
+	_check.call(sim.state_hash() == twin.state_hash(), "EnergyStream: o desenho não mexe na Sim")
+	var lit: Array[float] = []
+	for h: float in heats:
+		if h > 0.0:
+			lit.append(h)
+	_check.call(lit.max() == 1.0 and lit[0] < 0.2, "EnergyStream: o sol acende em rampa (%s)" % [lit.slice(0, 3)])
+	_check.call(lit[-1] < 0.2 and heats[-1] == 0.0, "EnergyStream: o sol apaga em rampa (%s)" % [lit.slice(-3)])
+	sim.player.weapon = &"laser"
+	sim.laser_active = true
+	sim.laser_to_y = 40.0
+	sim.laser_width = 9.0
+	stream.refresh(1.0 / 60.0, 7.0)
+	_check.call(stream.open > 0.0 and stream.open < 1.0, "EnergyStream: o Laser abre em rampa (%.2f)" % stream.open)
+	sim.laser_active = false
+	stream.refresh(1.0 / 60.0, 7.1)
+	_check.call(stream.open > 0.0 and stream.top == 40.0, "EnergyStream: o Laser fecha em rampa, no mesmo lugar")
+	stream.free()

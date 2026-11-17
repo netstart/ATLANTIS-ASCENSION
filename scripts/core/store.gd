@@ -1,11 +1,11 @@
 class_name Store
 extends RefCounted
 ## Loja (plano mestre 17): cosméticos por Pérolas de Maré, compra única "Apoiar" e anúncio recompensado
-## opcional. Nada de poder à venda e nenhuma compra de moeda. O pagamento real fica para a Fase 4 (Play
-## Billing): aqui é SIMULADO — `simulated()` diz quando a loja finge a transação (editor, testes e builds
-## de desenvolvimento) e nenhuma cobrança acontece. O anúncio é o do `Ads` (AdMob real, simulado ou
-## "off"). No build de release sem Billing e sem IDs do AdMob (o AAB da Play hoje) não há compra nem
-## anúncio: a loja some e a recompensa sai direto.
+## opcional. Nada de poder à venda e nenhuma compra de moeda. A única compra com cobrança real é o Turbo
+## (scripts/core/turbo.gd, Play Billing); "Apoiar" e o passe seguem SIMULADOS — `simulated()` diz quando a
+## loja finge a transação (editor, testes e builds de desenvolvimento) e nenhuma cobrança acontece; em
+## release eles somem. O anúncio é o do `Ads` (AdMob real, simulado ou "off"): sem IDs do AdMob não há
+## anúncio e a recompensa sai direto.
 ## Steam: premium, sem anúncios; os cosméticos vêm todos inclusos (feature "steam" no preset).
 
 const COSMETICS_PATH := "res://data/cosmetics.json"
@@ -58,16 +58,19 @@ static func ads_allowed(profile: Dictionary) -> bool:
 			and Ads.mode() != "off")
 
 
-## Sem plugin de pagamento a loja simula a compra (Fase 4 liga o Play Billing) — só em builds de
-## desenvolvimento (editor, testes, APK de debug). Release sem plugin nunca finge uma cobrança. O AdMob
-## não conta aqui: o APK de debug com o plugin de anúncio continua simulando a compra.
+## Sem plugin de pagamento a loja simula a compra — só em builds de desenvolvimento (editor, testes, APK
+## de debug sem o plugin). Release sem plugin nunca finge uma cobrança. O AdMob não conta aqui: o APK de
+## debug com o plugin de anúncio continua simulando a compra. Com o plugin GodotGooglePlayBilling no
+## pacote, só o Turbo (scripts/core/turbo.gd) é cobrado de verdade.
 static func simulated() -> bool:
 	return not Engine.has_singleton("GodotGooglePlayBilling") and OS.is_debug_build()
 
 
-## Compras com dinheiro aparecem na tela: pagamento real (plugin) ou simulado (desenvolvimento).
+## "Apoiar" (supporter) e passe dourado (season_gold) aparecem na tela. Eles ainda NÃO têm produto no
+## Play Console: só existem simulados (desenvolvimento). O plugin de Billing entrou no release para o
+## Turbo e não liga estes dois; quando tiverem produto, passam pelo PlayBillingProvider como o Turbo.
 static func purchases_enabled() -> bool:
-	return not is_steam() and (Engine.has_singleton("GodotGooglePlayBilling") or simulated())
+	return not is_steam() and simulated()
 
 
 ## "Apoiar": compra única que remove anúncios e dá a pintura dourada. Simulada até a Fase 4.

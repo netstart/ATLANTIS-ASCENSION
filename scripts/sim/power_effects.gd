@@ -21,13 +21,13 @@ const DRONE_SHARE := 0.3
 
 
 ## Passos ativos do efeito (sem o "delay"). Calculado dos parâmetros para o Poder III saber quanto dura.
-static func duration(spec: Dictionary) -> int:
+static func duration(spec: Dictionary, field_h: float = Playfield.FIELD.y) -> int:
 	match StringName(String(spec.get("type", ""))):
 		&"salvo":
 			return int(spec.get("interval", 0)) * maxi(0, int(spec.get("count", 1)) - 1) + int(spec.get("life", 180)) + 1
 		&"wave":
 			var height := float(spec.get("height", 28.0))
-			return ceili((Playfield.FIELD.y + height * 2.0) / maxf(1.0, float(spec.get("speed", 300.0))) * 60.0)
+			return ceili((field_h + height * 2.0) / maxf(1.0, float(spec.get("speed", 300.0))) * 60.0)
 		&"strike":
 			return int(spec.get("interval", 6)) * maxi(0, int(spec.get("count", 1)) - 1) + int(spec.get("warn", 40)) + 1
 		&"heal":
@@ -43,8 +43,8 @@ static func _vec(value: Variant, fallback: Vector2) -> Vector2:
 	return fallback
 
 
-static func _inside(p: Vector2) -> Vector2:
-	return p.clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
+static func _inside(sim: Sim, p: Vector2) -> Vector2:
+	return p.clamp(SimPlayer.MARGIN, sim.field - SimPlayer.MARGIN)
 
 
 ## Ao lançar: fixa a posição e monta o estado de cada primitiva.
@@ -78,7 +78,8 @@ static func prepare(sim: Sim, pw: Powers, e: Dictionary) -> void:
 			e["_next"] = 0
 		&"beam":
 			e["width"] = float(spec.get("width", 10.0))
-			e["length"] = BEAM_LENGTH
+			# O feixe alcança o topo também no campo alto.
+			e["length"] = BEAM_LENGTH + sim.field.y - Playfield.FIELD.y
 			e["angles"] = PackedFloat32Array([-PI / 2.0])
 			e["angle"] = -PI / 2.0
 		&"chain":
@@ -87,11 +88,11 @@ static func prepare(sim: Sim, pw: Powers, e: Dictionary) -> void:
 		&"wave":
 			e["width"] = Playfield.FIELD.x
 			e["height"] = float(spec.get("height", 28.0))
-			e["pos"] = Vector2(Playfield.FIELD.x * 0.5, Playfield.FIELD.y + float(e["height"]))
+			e["pos"] = Vector2(sim.field.x * 0.5, sim.field.y + float(e["height"]))
 			e["_hit"] = []
 			e["_boss_hit"] = false
 		&"vortex":
-			e["pos"] = _inside(p.pos + _vec(spec.get("offset"), Vector2(0, -110)))
+			e["pos"] = _inside(sim, p.pos + _vec(spec.get("offset"), Vector2(0, -110)))
 			e["radius"] = float(spec.get("radius", 110.0))
 		&"reflect", &"barrier":
 			e["width"] = float(spec.get("width", 64.0))
@@ -113,7 +114,7 @@ static func prepare(sim: Sim, pw: Powers, e: Dictionary) -> void:
 			e["radius"] = 400.0
 			sim.beams.clear()
 		&"delayed_blast":
-			e["pos"] = _inside(p.pos + _vec(spec.get("offset"), Vector2.ZERO))
+			e["pos"] = _inside(sim, p.pos + _vec(spec.get("offset"), Vector2.ZERO))
 			e["radius"] = float(spec.get("radius", 48.0))
 		&"overdrive":
 			if bool(spec.get("resonance", false)) and int(e["wait"]) <= 0:
@@ -141,7 +142,7 @@ static func _prepare_strike(sim: Sim, e: Dictionary, spec: Dictionary) -> void:
 	else:
 		var foes: Array[SimEnemy] = []
 		for foe: SimEnemy in sim.enemies:
-			if foe.active() and Rect2(Vector2.ZERO, Playfield.FIELD).has_point(foe.pos):
+			if foe.active() and Rect2(Vector2.ZERO, sim.field).has_point(foe.pos):
 				foes.append(foe)
 		var me := sim.player.pos
 		foes.sort_custom(func(a: SimEnemy, b: SimEnemy) -> bool:
@@ -154,7 +155,7 @@ static func _prepare_strike(sim: Sim, e: Dictionary, spec: Dictionary) -> void:
 			else:
 				points.append(me + Vector2(stream.randf_range(-70.0, 70.0), -90.0 - stream.randf_range(0.0, 120.0)))
 	for k: int in range(points.size()):
-		points[k] = points[k].clamp(Vector2.ZERO, Playfield.FIELD)
+		points[k] = points[k].clamp(Vector2.ZERO, sim.field)
 	e["points"] = points
 	e["warn"] = int(spec.get("warn", 40))
 	e["radius"] = float(spec.get("radius", 26.0))
@@ -257,7 +258,7 @@ static func _sweep(sim: Sim, pw: Powers, e: Dictionary, at: Vector2, reach: floa
 static func _dash(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> bool:
 	var p := sim.player
 	var dir: Vector2 = e["_dir"]
-	p.pos = _inside(p.pos + dir * float(spec.get("dist", 72.0)) / maxf(1.0, float(e["total"])))
+	p.pos = _inside(sim, p.pos + dir * float(spec.get("dist", 72.0)) / maxf(1.0, float(e["total"])))
 	p.invuln = maxi(p.invuln, DASH_INVULN)
 	e["pos"] = p.pos
 	var cut := float(spec.get("cut", 14.0))
@@ -338,7 +339,7 @@ static func _salvo(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 			if pierce[i] > 0:
 				pierce[i] -= 1
 				hit = false
-		if hit or life[i] > max_life or not Sim.BOUNDS.has_point(pos):
+		if hit or life[i] > max_life or not sim.bounds.has_point(pos):
 			points.remove_at(i)
 			vel.remove_at(i)
 			angles.remove_at(i)
@@ -529,7 +530,7 @@ static func _reflect(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> b
 	var k := points.size() - 1
 	while k >= 0:
 		points[k] += vel[k] * Sim.STEP
-		if _shot_hit(sim, pw, points[k], 4.0, amount, []) or not Sim.BOUNDS.has_point(points[k]):
+		if _shot_hit(sim, pw, points[k], 4.0, amount, []) or not sim.bounds.has_point(points[k]):
 			points.remove_at(k)
 			vel.remove_at(k)
 		k -= 1
@@ -626,7 +627,7 @@ static func _drones(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> bo
 	var i := bullets.size() - 1
 	while i >= 0:
 		bullets[i] += Vector2(0, -WeaponFire.SHOT_SPEED * Sim.STEP)
-		if _shot_hit(sim, pw, bullets[i], 3.0, amount, []) or bullets[i].y < Sim.BOUNDS.position.y:
+		if _shot_hit(sim, pw, bullets[i], 3.0, amount, []) or bullets[i].y < sim.bounds.position.y:
 			bullets.remove_at(i)
 		i -= 1
 	e["bullets"] = bullets
@@ -675,5 +676,5 @@ static func _eclipse(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> b
 	for foe: SimEnemy in sim.enemies:
 		pw.hurt(sim, foe, amount)
 	pw.hurt_boss(sim, amount)
-	sim.emit(&"power_blast", {"id": String(e["id"]), "pos": Playfield.FIELD * 0.5, "radius": float(e["radius"])})
+	sim.emit(&"power_blast", {"id": String(e["id"]), "pos": sim.field * 0.5, "radius": float(e["radius"])})
 	return false

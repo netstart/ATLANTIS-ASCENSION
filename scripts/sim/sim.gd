@@ -67,6 +67,9 @@ var stage := StageScript.new()
 ## Clima e mar (frentes, vento ou corrente, turbulência, resistência do meio).
 var weather := Weather.new()
 var events: Array[Dictionary] = []
+## Campo desta partida (largura fixa, altura da carga "field_h"; Playfield) e o limite das balas, que desce junto.
+var field := Playfield.FIELD
+var bounds := BOUNDS
 var hitstop: int = 0
 var no_fire: int = 0
 ## Vento e corrente (capítulos 2 e 3) e, depois, Gravity Breach: aceleração das balas inimigas.
@@ -181,6 +184,8 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	mutators = (loadout.get("mutators", []) as Array).duplicate()
 	if not DIFFICULTY.has(difficulty):
 		difficulty = &"normal"
+	field.y = clampf(float(loadout.get("field_h", Playfield.FIELD.y)), Playfield.FIELD.y, Playfield.MAX_HEIGHT)
+	bounds.size.y += field.y - Playfield.FIELD.y
 	rng = SimRng.new(seed + int(mission.get("seed_salt", 0)))
 	mods.apply(&"damage", float(loadout.get("damage", 0.0)))
 	mods.apply(&"hull", float(loadout.get("hull", 0)))
@@ -191,6 +196,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 			mods.apply(StringName(String(wing.get("effect", ""))), float(wing.get("value", 0.0)))
 	var ship_id := StringName(String(loadout.get("ship", "falcon")))
 	player.setup((tables["ships"] as Dictionary).get(ship_id, {}), sensitivity * mods.speed_mult)
+	player.place(field)
 	var diff: Dictionary = DIFFICULTY[difficulty]
 	player.max_hull = maxi(1, player.max_hull + mods.extra_hull + int(diff["hull"]))
 	player.hull = player.max_hull
@@ -229,7 +235,8 @@ func _setup_wing(ship_id: StringName) -> void:
 		wing.signature = &"pulsar"
 		wing.weapon = &"pulsar"
 	player.pos.x -= COOP_OFFSET
-	wing.pos = SimPlayer.START + Vector2(COOP_OFFSET, 0)
+	wing.place(field)
+	wing.pos.x += COOP_OFFSET
 	if player.weapon_lock != &"" and player.weapon_lock != &"laser":
 		wing.weapon_lock = player.weapon_lock
 		wing.weapon = player.weapon_lock
@@ -316,7 +323,7 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 		player.move(input)
 		if drift_frames > 0:
 			player.pos += drift * STEP
-			player.pos = player.pos.clamp(SimPlayer.MARGIN, Playfield.FIELD - SimPlayer.MARGIN)
+			player.keep_inside()
 		_player_actions(input)
 		if wing != null:
 			_wing_actions(input2 if input2 != null else SimInput.new())
@@ -337,9 +344,9 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 		boss.step(self)
 		if boss.state == SimBoss.State.DEAD:
 			boss = null
-	enemy_bullets.step(STEP * powers.time_scale, BOUNDS, gravity + breach_dir + weather.bullet_accel(),
+	enemy_bullets.step(STEP * powers.time_scale, bounds, gravity + breach_dir + weather.bullet_accel(),
 			Specials.frozen(self) or powers.frozen)
-	player_bullets.step(STEP, BOUNDS, breach_dir * Hazards.BREACH_PLAYER_SHARE)
+	player_bullets.step(STEP, bounds, breach_dir * Hazards.BREACH_PLAYER_SHARE)
 	if tide_frames > 0:
 		pearls_from(enemy_bullets.cancel_near(player.pos, TIDE_RADIUS))
 	_beams_step()
@@ -804,7 +811,7 @@ func nearest_target(from: Vector2) -> Vector2:
 	var best := Vector2.INF
 	var best_d := INF
 	for e: SimEnemy in enemies:
-		if e.active() and Rect2(Vector2.ZERO, Playfield.FIELD).has_point(e.pos):
+		if e.active() and Rect2(Vector2.ZERO, field).has_point(e.pos):
 			var d := from.distance_squared_to(e.pos)
 			if d < best_d:
 				best_d = d
@@ -1052,7 +1059,7 @@ func _pickups_step() -> void:
 		if who != null:
 			_collect(kind, frames, who)
 			pickups.remove_at(i)
-		elif p.y > Playfield.FIELD.y + 24.0 or (kind == &"pearl" and frames > 600):
+		elif p.y > field.y + 24.0 or (kind == &"pearl" and frames > 600):
 			if kind == &"medal" and mods.medal_net and not pk.has("bounced"):
 				pk["bounced"] = true
 				pk["vel"] = Vector2(0, -MEDAL_FALL * 1.6)
@@ -1179,22 +1186,6 @@ func progress() -> float:
 	return base
 
 
-## Hash do estado (teste de determinismo em 1x, 2x, 3x e em qualquer qualidade gráfica).
+## Hash do estado (teste de determinismo em 1x, 2x, 3x e em qualquer qualidade gráfica; SimHash).
 func state_hash() -> String:
-	var parts := PackedStringArray([str(frame), str(scoring.score), str(scoring.grazes), str(player.hull),
-			"%.3f,%.3f" % [player.pos.x, player.pos.y], str(enemy_bullets.count), str(player_bullets.count),
-			str(enemies.size()), str(pickups.size()), "%.4f" % rank, str(missiles.size()), ",".join(mods.taken),
-			str(rescued), str(breach_frames), str(captured), "%.4f" % player.power_charge, str(power_fx.size()),
-			str(powers.casts)])
-	if wing != null:
-		parts.append("w%.3f,%.3f:%d" % [wing.pos.x, wing.pos.y, wing.level])
-	parts.append("%s:%.3f:%d" % [weather.state, weather.blend, weather.mastered])
-	for e: SimEnemy in enemies:
-		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
-	var sum := Vector2.ZERO
-	for i: int in range(enemy_bullets.count):
-		sum += enemy_bullets.pos[i]
-	parts.append("%.2f,%.2f" % [sum.x, sum.y])
-	if boss != null:
-		parts.append("%s:%d:%.2f" % [boss.id, boss.phase_index, boss.hp])
-	return ",".join(parts).md5_text()
+	return SimHash.of(self)

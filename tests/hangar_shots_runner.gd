@@ -8,6 +8,7 @@ extends Node
 ## ladrilho que tem ação aberto no cartão de detalhe (a "nave" sem cartão, como o jogador a encontra).
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
+const DeviceWindow := preload("res://tests/device_window.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const HangarTests := preload("res://tests/hangar_tests.gd")
 ## Ladrilho aberto em cada sub-aba nas capturas.
@@ -52,11 +53,7 @@ func _ready() -> void:
 		if not String(r["label"]) in wanted:
 			continue
 		var view: Vector2 = r["view"]
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(Vector2i(view) * zoom)
-		await get_tree().create_timer(0.3).timeout
-		get_tree().root.get_node(^"PixelScaler").call("_apply")
-		await get_tree().process_frame
+		await DeviceWindow.fit(self, Vector2i(view) * zoom)
 		for lang: String in langs:
 			Locale.set_language(lang, false)
 			for profile: String in profiles:
