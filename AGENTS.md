@@ -89,6 +89,8 @@ Sempre que houver uma nova versão (commit com SemVer, ver [docs/policies/versio
 - **Arte própria do mantenedor:** `D:\src\assets-meus` (hoje só a arte do Hyakki; veja o `readme.md` de lá).
 - **Idiomas:** pt-BR, en, es, de, fr, ru, id, ja, ko, zh-TW, zh-CN.
 - **Lojas:** Google Play (grátis, anúncio recompensado opcional, cosméticos) e Steam (premium, sem anúncios).
+- **Publicação na Play:** push na `main` publica sozinho no teste fechado (`alpha`) se o `version/code` for novo;
+  produção só por Actions → Android Play → Run workflow (`production`), promovendo a versão do teste fechado.
 - **Pacote Android:** `io.github.netstart.atlantisascension` (provisório até o Play Console).
 
 ## Comandos

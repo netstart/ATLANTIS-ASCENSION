@@ -204,12 +204,19 @@ site opcional (`https://github.com/netstart/ATLANTIS-ASCENSION`).
 
 O workflow [`.github/workflows/android-play.yml`](../../.github/workflows/android-play.yml) roda no `windows-latest`:
 
-- **Push e pull request na `main`:** `tools\run_checks.ps1` (Godot 4.7.2 e templates baixados e guardados em cache).
-- **Tag `vX.Y.Z` ou "Run workflow":** checagens, depois o AAB assinado (`tools\build_release.ps1 -PlayOnly`, que
-  também roda `check_release_ads.py`), o AAB como artifact e o envio para a Play com o nome `X.Y.Z (versionCode)`.
-  Na tag, a faixa é `alpha` (teste fechado) com status `completed`, e a tag precisa ser igual ao `config/version` do
-  `project.godot`. No "Run workflow" (Actions → Android Play) escolha a faixa (`internal`, `alpha`, `beta`,
-  `production`) e o status (`completed` ou `draft`).
+- **Pull request na `main`:** só `tools\run_checks.ps1` (Godot 4.7.2 e templates baixados e guardados em cache).
+- **Push na `main`:** checagens → AAB assinado (`tools\build_release.ps1 -PlayOnly`, que também roda
+  `check_release_ads.py`) → AAB como artifact → envio ao **teste fechado** (`alpha`, status `completed`) com o nome
+  `X.Y.Z (versionCode)`. Antes do build, `tools/play_publish.py has-version` consulta a Play: se o `version/code` do
+  `export_presets.cfg` já está em alguma faixa, o build e o envio são pulados com um aviso e o job fica verde.
+- **"Run workflow" (Actions → Android Play):** faixa `internal`, `alpha` ou `beta` faz o mesmo build e envio (com o
+  status `completed` ou `draft`). Faixa **`production`** não roda checagens nem build: `tools/play_publish.py
+  promote` pega a versão mais nova (maior versionCode) do `alpha` e a põe na produção com as mesmas notas e nome, em
+  liberação gradual (`rollout`, fração de 0 a 1, padrão 0.2; `1` = `completed`). Para testar sem publicar:
+  `python tools/play_publish.py --key D:\src\keys\atlantis-play-publisher.json promote --dry-run`.
+- **Hoje a produção está bloqueada:** em 17/11/2026 a Play respondeu `FAILED_PRECONDITION` (a conta ainda não tem
+  acesso à produção). Libera depois do teste fechado com 12 testadores por 14 dias e de "Solicitar acesso à
+  produção" no Play Console.
 
 Secrets do repositório (grave com `powershell -ExecutionPolicy Bypass -File tools\setup_ci_secrets.ps1
 -ServiceAccountJson <arquivo.json>`, que lê `D:\src\keys\atlantis-upload.env` e nunca imprime valores):
@@ -221,8 +228,8 @@ Secrets do repositório (grave com `powershell -ExecutionPolicy Bypass -File too
 | `ANDROID_UPLOAD_KEYSTORE_PASSWORD` | senha do keystore |
 | `PLAY_SERVICE_ACCOUNT_JSON` | `D:\src\keys\atlantis-play-publisher.json`: chave da conta de serviço `atlantis-play-publisher@gen-lang-client-0110100183.iam.gserviceaccount.com` (projeto do Google Cloud do Hyakki, API Google Play Android Developer ligada), com as permissões "Enviar para produção" e "Liberar apps para as faixas de teste" só neste app no Play Console |
 
-Disparar: `git tag vX.Y.Z && git push origin vX.Y.Z`, ou Actions → Android Play → Run workflow. A Play recusa um
-AAB com `version/code` já enviado: suba o versionCode a cada envio (`docs/policies/versionamento.md`).
+A Play recusa um AAB com `version/code` já enviado: suba o versionCode a cada commit
+(`docs/policies/versionamento.md`); commit sem subir só é pulado.
 
 ## Compras no app: o Turbo
 
