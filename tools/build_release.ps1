@@ -8,11 +8,13 @@
 #
 # Uso:  powershell -ExecutionPolicy Bypass -File tools\build_release.ps1
 #       (opcional) -Godot "C:\...\Godot_v4.7.2-stable_win64_console.exe" -KeyEnv "C:\...\minha-chave.env"
+#       (opcional) -PlayOnly  só o AAB da Play (CI: .github/workflows/android-play.yml); sem a chave, falha
 
 param(
     [string]$Godot = $(if ($env:GODOT) { $env:GODOT } else { 'D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe' }),
     [string]$KeyEnv = 'D:\src\keys\atlantis-upload.env',
-    [string]$Java = $(if (Test-Path 'D:\Programs\jdk') { Get-ChildItem 'D:\Programs\jdk' -Directory -Filter 'jdk-17*' | Select-Object -First 1 -ExpandProperty FullName })
+    [string]$Java = $(if (Test-Path 'D:\Programs\jdk') { Get-ChildItem 'D:\Programs\jdk' -Directory -Filter 'jdk-17*' | Select-Object -First 1 -ExpandProperty FullName }),
+    [switch]$PlayOnly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -46,7 +48,7 @@ function Export([string]$Preset, [string]$Path, [string]$Kind) {
     if (-not (Test-Path (Join-Path $project $Path))) { Write-Host "FALHOU: $Path" -ForegroundColor Red; $script:failed = $true }
 }
 
-Export 'Android' 'build/atlantis-ascension-debug.apk' 'debug'
+if (-not $PlayOnly) { Export 'Android' 'build/atlantis-ascension-debug.apk' 'debug' }
 if (Test-Path $KeyEnv) {
     foreach ($line in Get-Content $KeyEnv) {
         if ($line -match '^\s*([A-Z_]+)=(.*)$') { Set-Item -Path "env:$($Matches[1])" -Value $Matches[2] }
@@ -55,8 +57,16 @@ if (Test-Path $KeyEnv) {
     # Trava dos anúncios: o AAB precisa sair com o AdMob real (ID do app, plugin, SDK, AD_ID, versão nova).
     & python -I (Join-Path $PSScriptRoot 'check_release_ads.py') (Join-Path $build 'atlantis-ascension-release.aab')
     if ($LASTEXITCODE -ne 0) { $failed = $true }
+} elseif ($PlayOnly) {
+    Write-Host "FALHOU: sem $KeyEnv não há AAB de release" -ForegroundColor Red
+    exit 1
 } else {
     Write-Host "Sem $KeyEnv : AAB de release pulado (ver docs/store/release-checklist.md)" -ForegroundColor Yellow
+}
+if ($PlayOnly) {
+    if ($failed) { Write-Host 'FALHOU' -ForegroundColor Red; exit 1 }
+    Write-Host "AAB OK ($version)" -ForegroundColor Green
+    exit 0
 }
 Export 'Windows' 'build/windows/AtlantisAscension.exe' 'release'
 Export 'Linux' "build/linux/atlantis-ascension-$version-linux.x86_64" 'release'

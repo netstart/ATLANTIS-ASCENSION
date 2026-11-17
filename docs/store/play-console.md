@@ -193,6 +193,30 @@ site opcional (`https://github.com/netstart/ATLANTIS-ASCENSION`).
 3. A cada nova versão: subir a versão (SemVer + versionCode, `docs/policies/versionamento.md`), rodar
    `tools\build_release.ps1` e `tools\build_store_art.ps1` se a interface mudou.
 
+## Publicação automática (GitHub Actions)
+
+O workflow [`.github/workflows/android-play.yml`](../../.github/workflows/android-play.yml) roda no `windows-latest`:
+
+- **Push e pull request na `main`:** `tools\run_checks.ps1` (Godot 4.7.2 e templates baixados e guardados em cache).
+- **Tag `vX.Y.Z` ou "Run workflow":** checagens, depois o AAB assinado (`tools\build_release.ps1 -PlayOnly`, que
+  também roda `check_release_ads.py`), o AAB como artifact e o envio para a Play com o nome `X.Y.Z (versionCode)`.
+  Na tag, a faixa é `alpha` (teste fechado) com status `completed`, e a tag precisa ser igual ao `config/version` do
+  `project.godot`. No "Run workflow" (Actions → Android Play) escolha a faixa (`internal`, `alpha`, `beta`,
+  `production`) e o status (`completed` ou `draft`).
+
+Secrets do repositório (grave com `powershell -ExecutionPolicy Bypass -File tools\setup_ci_secrets.ps1
+-ServiceAccountJson <arquivo.json>`, que lê `D:\src\keys\atlantis-upload.env` e nunca imprime valores):
+
+| Secret | Conteúdo |
+|---|---|
+| `ANDROID_UPLOAD_KEYSTORE_BASE64` | `atlantis-upload.keystore` em base64 |
+| `ANDROID_UPLOAD_KEYSTORE_ALIAS` | alias da chave de upload |
+| `ANDROID_UPLOAD_KEYSTORE_PASSWORD` | senha do keystore |
+| `PLAY_SERVICE_ACCOUNT_JSON` | `D:\src\keys\atlantis-play-publisher.json`: chave da conta de serviço `atlantis-play-publisher@gen-lang-client-0110100183.iam.gserviceaccount.com` (projeto do Google Cloud do Hyakki, API Google Play Android Developer ligada), com as permissões "Enviar para produção" e "Liberar apps para as faixas de teste" só neste app no Play Console |
+
+Disparar: `git tag vX.Y.Z && git push origin vX.Y.Z`, ou Actions → Android Play → Run workflow. A Play recusa um
+AAB com `version/code` já enviado: suba o versionCode a cada envio (`docs/policies/versionamento.md`).
+
 ## Quando ligar compras (Fase 4)
 
 Os anúncios já estão ligados (seção seguinte). Antes de enviar um build com o plugin `GodotGooglePlayBilling`:

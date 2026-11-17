@@ -140,6 +140,8 @@ python -I tools\gen_livery.py
 python tools\gen_power_sprites.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)
 powershell -ExecutionPolicy Bypass -File tools\build_release.ps1
+# CI/CD (.github/workflows/android-play.yml): grava os secrets do GitHub a partir da chave de upload e do JSON da Play
+powershell -ExecutionPolicy Bypass -File tools\setup_ci_secrets.ps1 -ServiceAccountJson D:\src\keys\atlantis-play-publisher.json
 # Google Play: arte da ficha (capturas e destaque nos 11 idiomas) e página da política de privacidade
 powershell -ExecutionPolicy Bypass -File tools\build_store_art.ps1
 python -I tools\build_privacy_page.py
