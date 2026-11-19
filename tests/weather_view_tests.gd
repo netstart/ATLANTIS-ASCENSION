@@ -35,7 +35,7 @@ func run_view(host: Node, check: Callable) -> void:
 		var size: Vector2 = c["view"]
 		game.relayout_for(size)
 		var sky := view.get_child(0) as ColorRect
-		# Em paisagem o palco é ampliado (Game.field_scale): o céu, em unidades do campo, cobre a tela ampliado.
+		# O palco é ampliado (Game.field_scale): o céu, em unidades do campo, cobre a tela ampliado.
 		var covered := sky.size * game.field_scale()
 		check.call(covered.x >= size.x - 1.0 and covered.y >= size.y - 1.0, "Clima [%s]: céu cobre a tela" % c["label"])
 	game.relayout_for(Vector2(360, 640))

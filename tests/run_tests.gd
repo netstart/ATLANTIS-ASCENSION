@@ -95,7 +95,7 @@ func _test_scaler() -> void:
 
 
 ## Área de jogo: 270 x (450 a 640) pela altura da área segura, inteira nela, encostada embaixo (sem faixa
-## reservada), alinhada ao pixel, HUD cobrindo no máximo 6%.
+## reservada), em retrato com a largura inteira da área segura, HUD cobrindo no máximo 6%.
 func _test_playfield() -> void:
 	for c: Dictionary in DeviceProfiles.layout_cases():
 		var view: Vector2 = c["view"]
@@ -106,8 +106,9 @@ func _test_playfield() -> void:
 		var tag := "Campo [%s]" % c["label"]
 		_check(height >= Playfield.FIELD.y and height <= Playfield.MAX_HEIGHT and height == floorf(height),
 				"%s: altura %.0f entre %.0f e %.0f" % [tag, height, Playfield.FIELD.y, Playfield.MAX_HEIGHT])
-		_check(height == minf(Playfield.MAX_HEIGHT, floorf(safe.end.y) - ceilf(safe.position.y)) or view.x > view.y,
-				"%s: campo ocupa a altura útil (%.0f)" % [tag, height])
+		var usable := floorf(safe.end.y) - ceilf(safe.position.y)
+		_check(view.x > view.y or height == clampf(floorf(usable * Playfield.FIELD.x / safe.size.x + 0.001),
+				Playfield.FIELD.y, Playfield.MAX_HEIGHT), "%s: campo ocupa a altura útil (%.0f)" % [tag, height])
 		_check(field.size.is_equal_approx(Vector2(Playfield.FIELD.x, height) * float(result["scale"])),
 				"%s: tamanho %s" % [tag, field.size])
 		if view.x > view.y:
@@ -115,8 +116,13 @@ func _test_playfield() -> void:
 					"%s: no PC deitado o campo ampliado ocupa a altura inteira" % tag)
 		_check(Playfield.fits(result, safe), "%s: %s dentro da área segura %s" % [tag, field, safe])
 		if view.y >= view.x:
-			_check(field.end.y == floorf(safe.end.y), "%s: campo vai até a borda de baixo (%.0f)" % [tag, field.end.y])
-		_check(field.position == field.position.floor(), "%s: alinhado ao pixel %s" % [tag, field.position])
+			_check(is_equal_approx(field.end.y, floorf(safe.end.y)),
+					"%s: campo vai até a borda de baixo (%.0f)" % [tag, field.end.y])
+			_check(is_equal_approx(field.size.x, safe.size.x) or is_equal_approx(field.size.y, usable),
+					"%s: campo com a largura inteira da área segura (%.1f de %.0f)" % [tag, field.size.x, safe.size.x])
+			_check(is_equal_approx(field.get_center().x, safe.get_center().x), "%s: campo centrado" % tag)
+		else:
+			_check(field.position == field.position.floor(), "%s: alinhado ao pixel %s" % [tag, field.position])
 		_check(Playfield.hud_coverage(result) <= 0.06,
 				"%s: HUD cobre %.1f%% do campo" % [tag, Playfield.hud_coverage(result) * 100.0])
 		var hud: Rect2 = result["hud"]
@@ -126,12 +132,22 @@ func _test_playfield() -> void:
 	# Mínimo, teto e onde vai a sobra.
 	_check(Playfield.height_for(Rect2(0, 0, 270, 300)) == Playfield.FIELD.y, "Campo: nunca abaixo de 450")
 	_check(Playfield.height_for(Rect2(0, 0, 360, 2000)) == Playfield.MAX_HEIGHT, "Campo: teto de 640")
+	_check(Playfield.height_for(Rect2(0, 0, 305, 678)) == 600.0, "Campo: 305x678 dá 600 de altura na largura inteira")
 	var ref := Playfield.layout(Vector2(305, 678), Rect2(0, 30, 305, 648), Playfield.height_for(Rect2(0, 30, 305, 648)))
-	_check((ref["field"] as Rect2).size.y == 640.0 and bool(ref["hud_overlay"]),
-			"Campo: 305x678 com recorte dá 640 de altura e o HUD sobre o topo do campo")
-	var tall := Playfield.layout(Vector2(360, 806), Rect2(0, 40, 360, 766), Playfield.MAX_HEIGHT)
-	_check(not bool(tall["hud_overlay"]) and (tall["hud"] as Rect2).end.y == (tall["field"] as Rect2).position.y,
-			"Campo: no teto, a sobra de cima recebe o HUD logo acima do campo")
+	_check(Playfield.height_for(Rect2(0, 30, 305, 648)) == 573.0 and bool(ref["hud_overlay"])
+			and (ref["field"] as Rect2).size.x == 305.0,
+			"Campo: 305x678 com recorte dá 573 de altura, a largura inteira e o HUD sobre o topo do campo")
+	var narrow := Playfield.layout(Vector2(262, 582), Rect2(0, 0, 262, 582), Playfield.height_for(Rect2(0, 0, 262, 582)))
+	_check((narrow["field"] as Rect2).size.x == 262.0 and float(narrow["scale"]) < 1.0,
+			"Campo: abaixo de 270 de largura o campo é reduzido e não vaza")
+	var tall := Playfield.layout(Vector2(300, 800), Rect2(0, 40, 300, 760), Playfield.MAX_HEIGHT)
+	var tall_hud: Rect2 = tall["hud"]
+	_check(not bool(tall["hud_overlay"]) and is_equal_approx(tall_hud.end.y, (tall["field"] as Rect2).position.y)
+			and is_equal_approx(tall_hud.size.y, Playfield.HUD_HEIGHT * float(tall["scale"])),
+			"Campo: no teto, a sobra de cima recebe o HUD (ampliado) logo acima do campo")
+	var tablet := Playfield.layout(Vector2(600, 800), Rect2(0, 0, 600, 800), Playfield.height_for(Rect2(0, 0, 600, 800)))
+	_check((tablet["field"] as Rect2).is_equal_approx(Rect2(60, 0, 480, 800)),
+			"Campo: no tablet a altura manda e o campo fica centralizado (%s)" % tablet["field"])
 	var short := Playfield.layout(Vector2(270, 480), Rect2(0, 29.5, 270, 450.5))
 	_check(bool(short["hud_overlay"]), "Campo: tela 9:16 com recorte põe o HUD sobre o campo")
 	# PC deitado: maior altura com pixels físicos inteiros; sem nenhuma, 640 ampliado (filtro nítido).

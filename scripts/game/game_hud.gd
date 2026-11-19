@@ -711,13 +711,15 @@ func _place_buttons(field: Rect2) -> void:
 	_turbo_glyph.queue_redraw()
 
 
-## Retrato: pilha na borda do campo, de baixo para cima bomba (a de pânico, mais perto do polegar), PODER,
-## especial e a vaga do Turbo (mesmo lugar com ou sem a compra: os outros nunca mudam de posição). A arma fica
-## ao lado da bomba e o nome do poder ao lado do PODER, correndo para dentro do campo; a maré, acima da pilha.
+## Retrato: pilha encostada na borda do campo (esquerda; direita na mão esquerda), centrada na vertical do campo
+## para não roubar o canto de baixo, onde a nave mais anda. De baixo para cima bomba, PODER, especial e a vaga do
+## Turbo (mesmo lugar com ou sem a compra: os outros nunca mudam de posição; a vaga entra na centralização). A arma
+## fica ao lado da bomba e o nome do poder ao lado do PODER, correndo para dentro do campo; a maré, acima da pilha.
 func _place_stack(field: Rect2, left_handed: bool) -> void:
-	var x := field.end.x - STACK_MARGIN - _btn if left_handed else field.position.x + STACK_MARGIN
-	var bottom := field.end.y - STACK_MARGIN - _btn
 	var order: Array[Button] = [_bomb, _power, _special, _turbo]
+	var x := field.end.x - _btn if left_handed else field.position.x
+	var stack_h := order.size() * _btn + (order.size() - 1) * STACK_GAP
+	var bottom := floorf(field.get_center().y + stack_h * 0.5) - _btn
 	for i: int in range(order.size()):
 		order[i].position = Vector2(x, bottom - i * (_btn + STACK_GAP))
 	_stack_zone = Rect2(x, _turbo.position.y, _btn, bottom + _btn - _turbo.position.y)

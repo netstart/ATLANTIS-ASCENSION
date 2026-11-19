@@ -80,9 +80,11 @@ Sempre que houver uma nova versão (commit com SemVer, ver [docs/policies/versio
   Gradle do Android (o Gradle 8.11.1 do Godot não roda em Java acima do 23; o JDK 27 do sistema não serve).
 - **Orientação:** retrato no Android (`sensor_portrait`); paisagem no desktop com área de jogo 9:16 central.
 - **Área de jogo:** 270 unidades de largura em todos os aparelhos e altura de 450 a 640, decidida pela tela no começo da
-  missão e guardada no replay (replays antigos rodam em 450). O campo vai até a borda de baixo; o HUD fica sobre o topo
-  dele e os botões de ação empilhados na borda esquerda (direita para canhotos). No PC deitado o campo (e o HUD) é
-  ampliado até a altura da janela, centralizado; as laterais viram painéis. Sobras viram moldura.
+  missão e guardada no replay (replays antigos rodam em 450). Em retrato o campo (e o HUD) é ampliado, em escala
+  fracionária com filtro nítido, até a largura inteira da área segura e vai até a borda de baixo; só quando a altura
+  não cabe (tablet) a escala vem da altura e as laterais viram moldura. O HUD fica numa faixa acima ou sobre o topo do
+  campo e os botões de ação empilhados no meio da borda esquerda (direita para canhotos). No PC deitado o campo (e o
+  HUD) é ampliado até a altura da janela, centralizado; as laterais viram painéis. Sobras viram moldura.
 - **Simulação:** passo fixo de 1/60 s, determinística por semente.
 - **Catálogo de assets livres:** `D:\src\awsome-free-assets-to-games` (catálogos em Markdown na pasta `assets\`).
 - **Assets baixados:** `D:\src\assets-downloaded\<fonte>\` (fora do repositório). Só o usado entra em `assets/`.

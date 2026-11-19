@@ -458,6 +458,11 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (`GameClock.turbo`). PC deitado: campo e HUD ampliados até a altura da janela (escala inteira quando dá, senão
   SubViewport com `shaders/sharp_pixels.gdshader`), placar, pausa e bloco 2x2 de botões colados no campo. Testes em `tests/run_tests.gd`, `tests/sim_tests.gd` (campo alto e replay antigo) e
   `tests/layout_tests.gd` (pilha, toque e Turbo)
+- ✅ Retrato na largura inteira: o campo e o HUD são ampliados até a largura da área segura (escala = largura / 270, que
+  pode ficar abaixo de 1; altura = altura / escala, entre 450 e 640), sem faixas laterais nos celulares; em tablet a
+  altura manda e as laterais viram moldura. A pilha de botões fica centrada na vertical, encostada na borda esquerda
+  (direita para canhotos), longe do canto de baixo onde a nave anda. Testes em `tests/run_tests.gd` e
+  `tests/layout_tests.gd`
 - ✅ Laser e Mergulho Solar fluidos: o feixe do Laser deixa de ser dois retângulos de `fx/beam` esticados (bordas duras,
   miolo branco chapado, corte reto no bico) e vira um quad só com `shaders/energy_stream.gdshader` (aditivo: núcleo
   claro, corpo e halo gaussianos que somem até zero, nasce fino no bico e abre, faixas de ruído subindo, apaga macio

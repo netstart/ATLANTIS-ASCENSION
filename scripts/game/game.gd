@@ -225,11 +225,20 @@ func relayout_for(view: Vector2) -> void:
 	_weather.set_layout(stage_view, local)
 	_clip.position = at
 	_clip.size = sim.field
-	# Em paisagem o HUD cresce junto com o campo: a camada é ampliada e o HUD trabalha em unidades do campo.
-	var u := _scale if view.x > view.y else 1.0
+	# O HUD cresce junto com o campo: a camada é ampliada e o HUD trabalha em unidades do campo. Em retrato os
+	# retângulos são os mesmos, só divididos (refazer o layout arredondaria a área segura e mudaria a escala).
+	var u := _scale
 	_layer.scale = Vector2(u, u)
 	var hud_safe := Rect2(safe.position / u, safe.size / u)
-	var hud_layout := layout if u == 1.0 else Playfield.layout(view / u, hud_safe, sim.field.y)
+	var hud_layout := layout
+	if u != 1.0 and view.x > view.y:
+		hud_layout = Playfield.layout(view / u, hud_safe, sim.field.y)
+	elif u != 1.0:
+		hud_layout = layout.duplicate()
+		for key: String in ["field", "hud", "left", "right"]:
+			var r: Rect2 = layout[key]
+			hud_layout[key] = Rect2(r.position / u, r.size / u)
+		hud_layout["scale"] = 1.0
 	_hud.size = view / u
 	_hud.apply_layout(hud_layout, hud_safe)
 	_callouts.position = (hud_layout["field"] as Rect2).position
@@ -241,7 +250,7 @@ func _pixel_k() -> int:
 	return maxi(1, roundi(get_viewport().get_final_transform().x.x))
 
 
-## Palco na tela: `origin` é onde cai o canto dele. Ampliação que dá pixels físicos inteiros (e o retrato, em 1)
+## Palco na tela: `origin` é onde cai o canto dele. Ampliação que dá pixels físicos inteiros (1, por exemplo)
 ## é só escala no nó; fracionária desenha num SubViewport (`m` pixels por unidade) e amplia com o filtro nítido.
 func _place_stage(stage_view: Vector2, origin: Vector2) -> void:
 	var k := _pixel_k()
@@ -283,12 +292,12 @@ func _place_stage(stage_view: Vector2, origin: Vector2) -> void:
 	_sharp.visible = true
 
 
-## Ampliação do campo na tela (1 em retrato).
+## Ampliação do campo na tela (pixels lógicos por unidade do campo).
 func field_scale() -> float:
 	return _scale
 
 
-## Ampliação da camada do HUD (a do campo em paisagem, 1 em retrato).
+## Ampliação da camada do HUD (a mesma do campo).
 func hud_scale() -> float:
 	return _layer.scale.x
 

@@ -81,14 +81,16 @@ aparelhos são só exemplos de cada resolução.
   de layout que percorra a tabela inteira (`DeviceProfiles.layout_cases()`). Falha em uma resolução reprova o commit,
   mesmo que as outras passem. A correção é sempre de layout responsivo (quebra de linha, rolagem, empilhar, colunas
   menores, tamanhos a partir da tela), nunca caso especial para uma resolução.
-- **Área de jogo:** a simulação usa um campo de **270 unidades de largura** e **altura de 450 a 640**, desenhado 1:1
-  em pixels lógicos. 450 é o maior campo que cabe na menor tela da tabela (270x480) depois do recorte; as telas mais
-  altas usam a altura útil até o teto de 640 (9:21,3). A altura é decidida no começo da missão e guardada na carga da
+- **Área de jogo:** a simulação usa um campo de **270 unidades de largura** e **altura de 450 a 640**, ampliado em
+  retrato até a largura inteira da área segura (escala fracionária, filtro nítido; abaixo de 1 nas telas com menos de
+  270 de largura). A altura é a altura útil nessa escala, de 450 (a menor tela da tabela, 270x480, depois do recorte)
+  até o teto de 640 (9:21,3); quando nem 450 cabe na largura inteira (tablets), a escala vem da altura e o campo fica
+  centralizado, com moldura nas laterais. A altura é decidida no começo da missão e guardada na carga da
   partida (replay e Fantasma reproduzem igual; replays antigos rodam em 450), então o determinismo vale por partida.
   O campo vai até a borda de baixo da área segura; o HUD de cima fica sobre o topo dele e os botões de ação ficam
-  empilhados na borda esquerda, sobre a parte de baixo do campo. No PC deitado o campo e o HUD são ampliados até a
+  empilhados no meio da borda esquerda do campo, encostados nela. No PC deitado o campo e o HUD são ampliados até a
   altura inteira da janela (pixels inteiros quando dá; senão filtro nítido). O teste do campo em `tests/run_tests.gd` (regra
-  pura `Playfield.layout`) confere a altura, que o campo cabe inteiro e encosta embaixo em todas as resoluções, fora
+  pura `Playfield.layout`) confere a altura, que o campo cabe inteiro, encosta embaixo e cobre a largura em todas as resoluções, fora
   do recorte, e que o HUD não cobre mais de 6% do campo; o teste do HUD confere a pilha de botões em cada resolução.
 - **Fonte única:** a lista de resoluções fica em `tests/device_profiles.gd`. Os testes de layout leem dela, sem tamanho
   fixo no código. Resolução nova é uma linha nesta tabela **e** em `tests/device_profiles.gd`. Aparelhos que dão a

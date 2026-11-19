@@ -61,8 +61,9 @@ static func finish() -> void:
 
 
 ## HUD da partida num caso (idiomas mais longos): campo com a altura da tela e inteiro na área segura, HUD
-## cobrindo no máximo 6% do campo, controles na área segura sem encostar uns nos outros e a pilha de botões
-## sobre a parte de baixo do campo, na borda (esquerda; direita na mão esquerda), abaixo do HUD de cima.
+## cobrindo no máximo 6% do campo, em retrato com a largura inteira da área segura (ou a altura inteira, quando a
+## largura não cabe), controles na área segura sem encostar uns nos outros e a pilha de botões no meio da borda
+## (esquerda; direita na mão esquerda), abaixo do HUD de cima.
 func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 	var view: Vector2 = c["view"]
 	var safe := DeviceProfiles.safe_rect(view, c["insets"])
@@ -75,19 +76,23 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		host.add_child(game)
 		await host.get_tree().process_frame
 		game.relayout_for(view)
-		game.hud().size = view
+		# O HUD trabalha em unidades do campo ampliado (Game.hud_scale): a área segura também.
+		var u := game.hud_scale()
+		game.hud().size = view / u
 		await host.get_tree().process_frame
 		var tag := "Layout HUD %s [%s]" % [lang, c["label"]]
 		var layout: Dictionary = game.hud().layout
-		# Em paisagem o HUD trabalha em unidades do campo ampliado (Game.hud_scale): a área segura também.
-		var u := game.hud_scale()
 		var hsafe := Rect2(safe.position / u, safe.size / u)
 		var usable := floorf(safe.end.y) - ceilf(safe.position.y)
 		var tall := (layout["field"] as Rect2).size.y
+		var wide := (layout["field"] as Rect2).size.x
 		check.call(absf(tall - game.sim.field.y) < 1.0 and (view.x > view.y or tall == Playfield.height_for(safe)),
 				"%s: campo com a altura da tela (%.0f)" % [tag, tall])
 		check.call(view.x <= view.y or absf(tall * u - usable) < 1.0,
 				"%s: no PC deitado o campo ampliado ocupa a altura inteira" % tag)
+		check.call(view.x > view.y or absf(wide * u - safe.size.x) < 0.5 or absf(tall * u - usable) < 0.5,
+				"%s: em retrato o campo cobre a largura da área segura (%.1f de %.0f)" % [tag, wide * u, safe.size.x])
+		check.call(absf(game.field_scale() - u) < 0.0001, "%s: HUD na mesma escala do campo (%.3f)" % [tag, u])
 		check.call(Playfield.fits(layout, hsafe), "%s: campo na área segura" % tag)
 		check_stack(game.hud(), layout, false, check, tag)
 		check.call(Playfield.hud_coverage(layout) <= 0.06, "%s: HUD cobre ≤ 6%% do campo" % tag)
@@ -154,22 +159,33 @@ func run_turbo(host: Node, check: Callable) -> void:
 	selected["turbo"] = rate
 
 
-## Pilha de botões (retrato): dentro do campo, na parte de baixo, colada na borda do lado da mão e abaixo da linha
-## do HUD de cima; o toque que começa num botão não move a nave (Game.touches_button).
+## Pilha de botões (retrato): dentro do campo, centrada na vertical dele (a vaga do Turbo conta), colada na borda
+## do lado da mão e abaixo da linha do HUD de cima; o toque que começa num botão não move a nave
+## (Game.touches_button).
 static func check_stack(hud: GameHud, layout: Dictionary, left_handed: bool, check: Callable, tag: String) -> void:
 	var field: Rect2 = layout["field"]
 	var top: Rect2 = layout["hud"]
 	if hud.size.x > hud.size.y:
 		return
-	for b: Button in [hud.power_button(), hud.get_node("Bomb") as Button, hud.get_node("Special") as Button,
-			hud.turbo_button()]:
+	var stack := Rect2()
+	var buttons: Array[Button] = [hud.get_node("Bomb") as Button, hud.power_button(), hud.get_node("Special") as Button,
+			hud.turbo_button()]
+	for i: int in range(buttons.size()):
+		var b := buttons[i]
 		var r := b.get_global_rect()
+		stack = r if i == 0 else stack.merge(r)
 		var edge := field.end.x - r.end.x if left_handed else r.position.x - field.position.x
-		check.call(field.encloses(r) and r.position.y >= field.get_center().y and edge <= GameHud.STACK_MARGIN + 0.5,
-				"%s: botão %s na pilha da borda, embaixo do campo (%s)" % [tag, b.name, r])
+		check.call(field.grow(0.01).encloses(r) and absf(edge) <= 0.5,
+				"%s: botão %s encostado na borda do campo (%s)" % [tag, b.name, r])
+		check.call(i == 0 or r.end.y <= buttons[i - 1].get_global_rect().position.y,
+				"%s: botão %s acima do anterior (bomba embaixo)" % [tag, b.name])
 		check.call(r.position.y >= top.end.y + 8.0, "%s: botão %s longe do HUD de cima" % [tag, b.name])
 		check.call(hud.touches_button(r.get_center()) == b.visible, "%s: toque no %s é do botão" % [tag, b.name])
+	check.call(absf(stack.get_center().y - field.get_center().y) <= 1.0,
+			"%s: pilha centrada na vertical do campo (%.1f, campo %.1f)" % [tag, stack.get_center().y, field.get_center().y])
 	check.call(not hud.touches_button(field.get_center()), "%s: toque no meio do campo move a nave" % tag)
+	check.call(not hud.touches_button(Vector2(stack.get_center().x, field.end.y - 20.0)),
+			"%s: toque no canto de baixo move a nave" % tag)
 
 
 ## O teste roda numa janela pequena (headless): a raiz das telas recebe o tamanho lógico do aparelho.
