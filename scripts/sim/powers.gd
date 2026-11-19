@@ -216,6 +216,16 @@ func step(sim: Sim) -> void:
 	_boss_hp = sim.boss.hp if sim.boss != null else 0.0
 
 
+## Fim da missão (SimOutro): todos os efeitos vivos acabam na hora, sem explosão pendente, e os modificadores
+## voltam ao normal (a Ressonância devolve o nível de antes).
+func stop(sim: Sim) -> void:
+	resonance_off(sim)
+	if not sim.power_fx.is_empty():
+		sim.power_fx.clear()
+		sim.emit(&"power_end", {"id": ""})
+	_recompute(sim)
+
+
 ## Abate: enche a Corrente pela classe do inimigo e, na Reação em Cadeia, explode em área.
 func on_kill(sim: Sim, e: SimEnemy) -> void:
 	if kill_blast_radius > 0.0 and _depth < KILL_BLAST_DEPTH:

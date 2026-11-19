@@ -134,7 +134,9 @@ func _process(_delta: float) -> void:
 		_game.hud().show_radio(_radio)
 	if _game.sim.frame >= int(_shots[0] * 60.0) or _game.sim.finished:
 		var at := _shots.pop_front() as float
-		await _capture("%s/game_%03d_%s.png" % [_out, int(at), _label])
+		# Segundos quebrados (--at=221.5) ganham a casa decimal no nome, para não sobrescrever o segundo inteiro.
+		var tag := "%03d" % int(at) if is_equal_approx(at, roundf(at)) else "%05.1f" % at
+		await _capture("%s/game_%s_%s.png" % [_out, tag, _label])
 		if _shots.is_empty() or _game.sim.finished:
 			_quit()
 

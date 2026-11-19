@@ -124,6 +124,8 @@ var specials_used: int = 0
 ## Poderes das naves (Powers): medidor de Corrente na nave e os efeitos vivos (contrato em powers.gd).
 var powers := Powers.new()
 var power_fx: Array[Dictionary] = []
+## Saída da missão vencida: campo limpo e a nave voando pelo topo (SimOutro).
+var outro := SimOutro.new()
 ## Abismo Infinito: profundidade atual (0 fora do modo); acelera as balas e multiplica os pontos.
 var abyss_depth: int = 0
 ## Segunda nave do co-op local (null no jogo solo) e se o Elo de Maré está ligado neste passo.
@@ -220,6 +222,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	scoring.point_mult = float(diff["score"]) * float(mission.get("score_mult", 1.0))
 	_bubble_timer = mods.bubble_recharge
 	_abyss_points = scoring.point_mult
+	outro.setup(loadout)
 	stage.setup(mission)
 	weather.setup(mission, tables.get("weather", {}), rng)
 	for c: int in range(COLUMNS):
@@ -312,6 +315,9 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 	frame += 1
 	if hitstop > 0:
 		hitstop -= 1
+		return
+	if outro.active():
+		outro.step(self)
 		return
 	player.tick()
 	scoring.tick()
@@ -603,6 +609,7 @@ func on_boss_duel_start(b: SimBoss) -> void:
 
 
 func on_boss_defeated(b: SimBoss) -> void:
+	outro.on_boss_defeated(self)
 	pearls_from(enemy_bullets.cancel_all())
 	beams.clear()
 	bosses_killed += 1
@@ -1057,7 +1064,7 @@ func _pickups_step() -> void:
 		elif wing != null and wing.alive and p.distance_to(wing.pos) <= radius:
 			who = wing
 		if who != null:
-			_collect(kind, frames, who)
+			collect(kind, frames, who)
 			pickups.remove_at(i)
 		elif p.y > field.y + 24.0 or (kind == &"pearl" and frames > 600):
 			if kind == &"medal" and mods.medal_net and not pk.has("bounced"):
@@ -1073,7 +1080,7 @@ func _pickups_step() -> void:
 		i -= 1
 
 
-func _collect(kind: StringName, frames: int, who: SimPlayer = null) -> void:
+func collect(kind: StringName, frames: int, who: SimPlayer = null) -> void:
 	if who == null:
 		who = player
 	match kind:
@@ -1115,6 +1122,8 @@ func _check_finish() -> void:
 		finished = true
 		cleared = false
 		emit(&"finished", {"cleared": false})
+		return
+	if outro.check(self):
 		return
 	if _finish_timer < 0 and stage.ended and boss == null and enemies.is_empty():
 		_finish_timer = FINISH_DELAY

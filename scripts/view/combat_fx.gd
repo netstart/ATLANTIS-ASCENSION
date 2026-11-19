@@ -72,6 +72,15 @@ func advance(delta: float) -> void:
 	_age_wrecks(delta)
 
 
+## Apaga tudo de uma vez (fim da missão, SimOutro): partículas, agendados, números e destroços.
+func clear() -> void:
+	light.clear()
+	matter.clear()
+	_pending.clear()
+	popups.clear()
+	wrecks.clear()
+
+
 func later(seconds: float, what: Callable) -> void:
 	_pending.append({"t": seconds, "call": what})
 

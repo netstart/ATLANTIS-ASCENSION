@@ -9,7 +9,9 @@ extends RefCounted
 ## perfil, em "boards", apontando para o replay do recorde.
 
 const DIR := "user://replays"
-## Versão 1 continua: o bit 32 (PODER) é novo e replays antigos, sem ele, reproduzem igual.
+## Versão 1 continua: o bit 32 (PODER) é novo e replays antigos, sem ele, reproduzem igual. A carga ganhou
+## "outro" (fim com a saída da nave, SimOutro): replays gravados antes, sem a marca, rodam com o fim antigo
+## (Sim.FINISH_DELAY), senão a entrada gravada acabaria em outro passo e o placar mudaria.
 const VERSION := 1
 const BOARD_SIZE := 10
 
@@ -79,13 +81,17 @@ func rewind() -> void:
 
 
 func to_dict() -> Dictionary:
-	return {"v": VERSION, "mission": mission, "seed": seed, "loadout": loadout, "score": score, "blocks": blocks}
+	var load := loadout.duplicate()
+	load["outro"] = bool(loadout.get("outro", true))
+	return {"v": VERSION, "mission": mission, "seed": seed, "loadout": load, "score": score, "blocks": blocks}
 
 
 static func from_dict(d: Dictionary) -> Replay:
 	if int(d.get("v", 0)) != VERSION:
 		return null
-	var r := Replay.new(d.get("mission", {}), int(d.get("seed", 0)), d.get("loadout", {}))
+	var load: Dictionary = (d.get("loadout", {}) as Dictionary).duplicate()
+	load["outro"] = bool(load.get("outro", false))
+	var r := Replay.new(d.get("mission", {}), int(d.get("seed", 0)), load)
 	r.score = int(d.get("score", 0))
 	r.blocks = d.get("blocks", [])
 	return r

@@ -263,6 +263,16 @@ func refresh(delta: float) -> void:
 func on_event(ev: Dictionary) -> void:
 	var at: Vector2 = ev.get("pos", Vector2.ZERO)
 	match StringName(ev["type"]):
+		&"outro":
+			# Fim da missão: o campo fica limpo (a explosão do chefe vem logo depois, no &"boss_dead").
+			fx.clear()
+			powers.clear()
+			explosions.clear()
+			rings.clear()
+			_wake.clear()
+			_muzzle = 0.0
+		&"outro_rise":
+			_ring_at(at + Vector2(0, 14), 0.45, 36.0, Color(EXHAUST_COLOR, 0.9))
 		&"kill":
 			var ship := SpriteBank.ship(StringName(ev.get("sprite", "")))
 			var big := bool(ev.get("big", false))
@@ -387,6 +397,13 @@ func _emit() -> void:
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
 		_nozzle = 1 - _nozzle
 		fx.exhaust(pl.pos + NOZZLES[_nozzle], EXHAUST_COLOR, thrust)
+		if sim.outro.rise >= 0:
+			# Arrancada da saída: os dois bocais a cada passo, com o rastro mais longo quanto mais rápido.
+			for ship: SimPlayer in ([pl, sim.wing] if sim.wing != null else [pl]):
+				for n: Vector2 in NOZZLES:
+					# Também a meio caminho do passo anterior: na subida rápida o rastro sai contínuo, sem contas soltas.
+					fx.exhaust(ship.pos + n, EXHAUST_COLOR, _boost())
+					fx.exhaust(ship.pos + n - ship.last_move * 0.5, EXHAUST_COLOR, _boost())
 		if sim.laser_active and _ticks % 2 == 0:
 			fx.impact(Vector2(pl.pos.x, sim.laser_to_y), WEAPON_TINTS[&"laser"])
 	if fx_level < 1:
@@ -400,6 +417,11 @@ func _emit() -> void:
 	if sim.boss != null and sim.boss.state == SimBoss.State.DYING and _ticks % 7 == 0:
 		var body := sim.boss.body_pos()
 		fx.explosion(body + Vector2(sin(time * 13.0) * 60.0, cos(time * 7.0) * 30.0), 0.8)
+
+
+## Força do motor na arrancada da saída: 1 no começo, 3 quando a nave some.
+func _boost() -> float:
+	return 1.0 + 2.0 * clampf(sim.outro.rise / float(SimOutro.RISE_FRAMES), 0.0, 1.0)
 
 
 func _age(list: Array[Dictionary], delta: float) -> void:
@@ -818,6 +840,8 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 			_tex_centered(ci, _flare, Vector2(p.x, p.y - EnergyStream.NOSE), w / 26.0 * (0.9 + 0.2 * beat),
 					Color(sun.lerp(Color.WHITE, 0.3), (0.55 + 0.25 * beat) * stream.open))
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
+		if sim.outro.rise >= 0:
+			thrust = _boost() * 2.0
 		for n: Vector2 in NOZZLES:
 			_tex_centered(ci, _flare, p + n, (0.28 + 0.12 * thrust) * (0.85 + 0.15 * sin(time * 37.0 + n.x)),
 					Color(EXHAUST_COLOR, 0.75))

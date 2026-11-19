@@ -45,6 +45,11 @@ func step(sim: Sim) -> void:
 			i += 1
 
 
+## Membros de onda ainda por nascer (já disparadas pelo roteiro)?
+func has_pending_spawns() -> bool:
+	return not _pending.is_empty()
+
+
 ## Ainda há ondas por nascer?
 func has_pending() -> bool:
 	return not _pending.is_empty() or index < events.size()

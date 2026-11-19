@@ -24,6 +24,7 @@ func run_basics(check: Callable) -> void:
 	_orbs(check)
 	_data(check)
 	_pierce(check)
+	_outro(check)
 
 
 func _pool(check: Callable) -> void:
@@ -42,6 +43,103 @@ func _pool(check: Callable) -> void:
 	pool.spawn(Vector2(90, 50), Vector2.ZERO, 3.0, 0)
 	var cancelled := pool.cancel_near(Vector2(50, 50), 10.0)
 	check.call(cancelled.size() == 1 and pool.count == 1, "Balas: cancelamento por raio")
+
+
+## Saída da missão (SimOutro): o chefe que encerra a c2m3 cai com inimigos, balas, feixes, poder e coletáveis no
+## campo. O campo fica limpo no mesmo passo, os coletáveis contam, a nave não leva dano, sobe pelo topo e só então
+## a missão termina, em 2,5 a 3 s e igual nas duas vezes. Chefe de meio de fase com ondas depois não encerra, e
+## replay antigo (sem "outro" na carga) mantém o fim antigo.
+func _outro(check: Callable) -> void:
+	var a := _outro_run(true)
+	var b := _outro_run(true)
+	check.call(bool(a["clean"]), "Saída: o chefe final cai e o campo fica sem inimigos, balas, feixes e poderes")
+	check.call(int(a["kills"]) == 0 and int(a["medals"]) >= 7 and bool(a["no_pickups"]),
+			"Saída: inimigos somem sem pontos e todos os coletáveis contam (medalhas %d)" % a["medals"])
+	check.call(bool(a["safe"]) and bool(a["no_fire"]), "Saída: a nave não leva dano nem atira")
+	check.call(bool(a["cleared"]) and bool(a["top"]) and bool(a["late"]),
+			"Saída: finished e cleared só quando a nave some pelo topo")
+	var seconds := float(a["frames"]) / 60.0
+	check.call(seconds >= 2.5 and seconds <= 3.0, "Saída: da morte do chefe ao fim em 2,5 a 3 s (%.2f s)" % seconds)
+	check.call(a["hash"] == b["hash"] and a["frames"] == b["frames"], "Saída: determinística (mesmo hash)")
+	var legacy := _outro_run(false)
+	check.call(bool(legacy["cleared"]) and not bool(legacy["outro_event"]),
+			"Saída: replay antigo (sem a marca) termina como antes, sem a saída")
+	var mid := Sim.new()
+	mid.setup(Sim.load_mission(&"c1m2"), _tables_once(), &"falcon", 7)
+	mid.stage.index = _event_index(mid.stage, "miniboss") + 1
+	mid.on_boss_defeated(SimBoss.new())
+	mid.step(SimInput.new())
+	check.call(not mid.outro.active(), "Saída: chefe de meio de fase com ondas depois não encerra a missão")
+	var old := Replay.from_dict({"v": Replay.VERSION, "loadout": {"ship": "falcon"}, "blocks": []})
+	var fresh := Replay.new({}, 7, {"ship": "falcon"}).to_dict()
+	check.call(not bool(old.loadout["outro"]) and bool((fresh["loadout"] as Dictionary)["outro"]),
+			"Replay: gravação nova marca \"outro\"; a antiga carrega sem a marca")
+
+
+## Chefe da c2m3 caindo com o campo cheio; `outro` false = carga de replay antigo. Devolve o que o teste confere.
+func _outro_run(outro: bool) -> Dictionary:
+	var sim := Sim.new()
+	var load := Sim.default_loadout(&"falcon")
+	if not outro:
+		load["outro"] = false
+	sim.setup(Sim.load_mission(&"c2m3"), _tables_once(), load, 7)
+	var k := _event_index(sim.stage, "boss")
+	sim.stage.index = k + 1
+	sim.stage.frame = roundi(float((sim.stage.events[k] as Dictionary)["t"]) * 60.0)
+	sim.stage.waiting_boss = true
+	sim.spawn_boss(StringName(String((sim.stage.events[k] as Dictionary)["id"])), true)
+	sim.boss.state = SimBoss.State.DUEL
+	sim.boss.state_frames = SimBoss.DUEL_FRAMES - 1
+	sim.player.pos = Vector2(40, 300)
+	sim.spawn_enemy({"enemy": "skiff", "x": 0.5, "y": 120.0}, 0)
+	for i: int in range(20):
+		sim.fire_enemy(Vector2(20 + i * 10, 200), 90.0, 40.0, 0, 0.0, 0.0)
+		sim.player_bullets.spawn(Vector2(20 + i * 10, 250), Vector2(0, -300), 3.0, 0)
+	sim.add_beam(Vector2(200, 0), 20.0, 10, 600)
+	sim.pickups.append({"kind": &"medal", "pos": Vector2(250, 10), "vel": Vector2.ZERO, "frames": 0})
+	sim.power_fx.append({"id": "test", "type": &"slow", "_spec": {}, "wait": 0, "frames": 0, "total": 9999})
+	var out := {"clean": false, "safe": true, "no_fire": true, "top": false, "late": true, "outro_event": false}
+	var kills := sim.scoring.kills
+	var hull := sim.player.hull
+	# Depois da morte do chefe a entrada pede tiro, bomba e descida: a saída ignora tudo.
+	var input := SimInput.new()
+	var frames := 0
+	while not sim.finished and frames < 1500:
+		var y := sim.player.pos.y
+		sim.step(input)
+		input.fire = true
+		input.bomb = true
+		input.move = Vector2(0, 20)
+		frames += 1
+		for ev: Dictionary in sim.take_events():
+			if ev["type"] == &"outro":
+				out["outro_event"] = true
+			elif (ev["type"] == &"shot" or ev["type"] == &"bomb") and outro and frames > 1:
+				out["no_fire"] = false
+		if frames == 1:
+			out["clean"] = sim.enemies.is_empty() and sim.enemy_bullets.count == 0 and sim.player_bullets.count == 0 \
+					and sim.beams.is_empty() and sim.power_fx.is_empty() and sim.outro.active()
+		if sim.player.hull != hull:
+			out["safe"] = false
+		if sim.finished:
+			out["top"] = sim.player.pos.y <= SimOutro.EXIT_Y + 0.01 and sim.boss == null
+		elif y <= SimOutro.EXIT_Y + 0.01:
+			out["late"] = false
+	out["kills"] = sim.scoring.kills - kills
+	out["medals"] = sim.scoring.medals
+	out["no_pickups"] = sim.pickups.is_empty()
+	out["cleared"] = sim.cleared
+	out["frames"] = frames
+	out["hash"] = sim.state_hash()
+	return out
+
+
+static func _event_index(stage: StageScript, op: String) -> int:
+	var found := -1
+	for k: int in range(stage.events.size()):
+		if String((stage.events[k] as Dictionary).get("op", "")) == op:
+			found = k
+	return found
 
 
 ## Bala perfurante (Railgun, Eclipse, poderes): cada alvo leva dano dela uma vez só, mesmo ficando

@@ -475,3 +475,9 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
 - ✅ Janela dos runners que cabe no monitor (AGENTS.md, regra 7): `tests/device_window.gd` põe o runner num
   SubViewport do tamanho físico pedido (tela lógica do PixelScaler) e mostra o quadro reduzido numa janela na área útil,
   centralizada. Capturas, benchmarks, retratos, arte da loja e Oficina usam o helper; PNGs e layout iguais aos de antes
+- ✅ Saída da missão vencida (`scripts/sim/sim_outro.gd`): quando o chefe que encerra a fase cai (ou a última onda
+  some, nas fases sem chefe no fim), o campo fica limpo de vez (inimigos sem pontos nem drops, balas, feixes, mísseis,
+  perigos, poderes, especial, laser e Maré Alta), os coletáveis vêm todos até a nave, e ela centraliza, arranca com
+  rastro maior (som da investida do Falcon) e sai pelo topo; só então `finished`/`cleared`, ~2,7 s depois da morte
+  do chefe, no lugar do `FINISH_DELAY`. Botões de ação somem e a vista apaga os efeitos restantes (fica a explosão do
+  chefe). Replays sem a marca `"outro"` na carga rodam com o fim antigo. Teste em `tests/sim_tests.gd` (`_outro`)

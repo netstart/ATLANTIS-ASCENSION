@@ -9,6 +9,8 @@ extends Node2D
 signal finished(result: Dictionary)
 
 const FINISH_DELAY := 1.6
+## Depois da saída da nave (SimOutro) a tela já está vazia: só um respiro antes do resultado.
+const OUTRO_DELAY := 0.5
 const DOUBLE_TAP_MS := 280
 const SHAKE_DECAY := 18.0
 ## Hitstop (congelar a partida por um instante no golpe forte): parte do chefe e morte do chefe.
@@ -525,7 +527,7 @@ func _process(delta: float) -> void:
 		if _hud.revive_visible():
 			return
 		if _done < 0.0:
-			_done = FINISH_DELAY
+			_done = OUTRO_DELAY if sim.cleared and sim.outro.enabled else FINISH_DELAY
 		_done -= delta
 		if _done <= 0.0:
 			_finish(false)
@@ -691,6 +693,12 @@ func _on_event(ev: Dictionary) -> void:
 			_emerge_t = 0.0
 			if float(ev.get("warn", 0.0)) > 0.0:
 				_hud.show_banner(tr("hud.ocean_shift"))
+		&"outro":
+			_hud.fade_actions()
+		&"outro_rise":
+			# Arrancada: a investida do Falcon, mais grave (som que já existe; nada novo baixado).
+			AudioManager.play("power_falcon_1", 0.8, 0.0, -2.0)
+			Settings.vibrate(40, 0.4, 0)
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)

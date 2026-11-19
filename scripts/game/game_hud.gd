@@ -119,9 +119,10 @@ var _turbo: Button
 var _turbo_glyph: Control
 var _turbo_caption: Label
 var _turbo_rate: float = 1.0
-## Pilha lateral (retrato): retângulo dos botões no campo e se a nave está por baixo dela.
+## Pilha lateral (retrato): retângulo dos botões no campo, se a nave está por baixo dela e se já sumiu (fade_actions).
 var _stack_zone := Rect2()
 var _ship_under := false
+var _outro := false
 var _tutorial := false
 var _tide: Button
 var _pressure_track: ColorRect
@@ -590,14 +591,12 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	safe = p_safe
 	var field: Rect2 = layout["field"]
 	_portrait_mode = size.y >= size.x
-	_side_shade[0].position = Vector2.ZERO
-	_side_shade[0].size = Vector2(field.position.x, size.y)
-	_side_shade[1].position = Vector2(field.end.x, 0)
-	_side_shade[1].size = Vector2(maxf(0.0, size.x - field.end.x), size.y)
-	_side_shade[2].position = Vector2(field.position.x, 0)
-	_side_shade[2].size = Vector2(field.size.x, field.position.y)
-	_side_shade[3].position = Vector2(field.position.x, field.end.y)
-	_side_shade[3].size = Vector2(field.size.x, maxf(0.0, size.y - field.end.y))
+	var shades: Array[Rect2] = [Rect2(0, 0, field.position.x, size.y), Rect2(field.end.x, 0, maxf(0.0, size.x
+			- field.end.x), size.y), Rect2(field.position.x, 0, field.size.x, field.position.y),
+			Rect2(field.position.x, field.end.y, field.size.x, maxf(0.0, size.y - field.end.y))]
+	for k: int in range(shades.size()):
+		_side_shade[k].position = shades[k].position
+		_side_shade[k].size = shades[k].size
 	# Fio ciano nas bordas do campo que encostam no HUD (cima e baixo em retrato, lados no desktop).
 	if _portrait_mode:
 		_frame_lines[0].position = Vector2(field.position.x, field.position.y)
@@ -761,8 +760,8 @@ func _place_row(field: Rect2) -> void:
 
 ## Alfa da pilha lateral: translúcida sobre o campo e mais ainda com a nave por baixo (no desktop, opaca).
 func _apply_stack_alpha() -> void:
-	var a := 1.0
-	if _portrait_mode:
+	var a := 0.0 if _outro else 1.0
+	if _portrait_mode and not _outro:
 		a = STACK_ALPHA_SHIP if _ship_under else STACK_ALPHA
 	for node: CanvasItem in [_special, _bomb, _power, _turbo, _weapon, _weapon_pips, _power_name]:
 		node.modulate.a = a
@@ -1103,7 +1102,7 @@ func _refresh_buttons(sim: Sim) -> void:
 	if full != _pressure_full:
 		_pressure_full = full
 		_pressure.color = UiTheme.WHITE if full else UiTheme.CYAN
-	_tide.visible = full
+	_tide.visible = full and not _outro
 	_tide.disabled = sim.tide_frames > 0
 	if _tide.visible and not _tide.disabled and not _reduced:
 		_tide.modulate.a = 0.75 + 0.25 * sin(Time.get_ticks_msec() * 0.012)
@@ -1112,21 +1111,16 @@ func _refresh_buttons(sim: Sim) -> void:
 ## Especial: vidro com borda ouro fraca enquanto carrega; pronto, borda ouro cheia e halo pulsando.
 func _style_special() -> void:
 	var inside := _special.modulate.a < 1.0
-	if _special_ready:
-		HudKit.style_round(_special, UiTheme.GOLD, 1.0, true, _cut())
-	else:
-		HudKit.style_round(_special, UiTheme.GOLD, 0.6 if inside else 0.9, false, _cut())
+	HudKit.style_round(_special, UiTheme.GOLD, 1.0 if _special_ready else (0.6 if inside else 0.9), _special_ready, _cut())
 	_special_caption.add_theme_color_override("font_color", UiTheme.GOLD if _special_ready else UiTheme.TEXT_DIM)
 	_special_glow.visible = _special_ready
 	if _glow_tween != null and _glow_tween.is_valid():
 		_glow_tween.kill()
+	_special_glow.modulate.a = 1.0
 	if _special_ready and not _reduced:
-		_special_glow.modulate.a = 1.0
 		_glow_tween = _special_glow.create_tween().set_loops()
 		_glow_tween.tween_property(_special_glow, "modulate:a", 0.3, 0.55).set_trans(Tween.TRANS_SINE)
 		_glow_tween.tween_property(_special_glow, "modulate:a", 1.0, 0.55).set_trans(Tween.TRANS_SINE)
-	else:
-		_special_glow.modulate.a = 1.0
 
 
 ## Botões da pilha lateral são discos; os do painel do desktop, chanfrados.
@@ -1136,9 +1130,8 @@ func _cut() -> int:
 
 ## Turbo: ciano fraco em 1x; aceso (borda cheia) quando acelera.
 func _style_turbo() -> void:
-	var fast := _turbo_rate > 1.0
-	HudKit.style_round(_turbo, UiTheme.CYAN, 1.0 if fast else 0.75, fast, _cut())
-	_turbo_caption.add_theme_color_override("font_color", UiTheme.WHITE if fast else UiTheme.TEXT_DIM)
+	HudKit.style_round(_turbo, UiTheme.CYAN, 1.0 if _turbo_rate > 1.0 else 0.75, _turbo_rate > 1.0, _cut())
+	_turbo_caption.add_theme_color_override("font_color", UiTheme.WHITE if _turbo_rate > 1.0 else UiTheme.TEXT_DIM)
 
 
 ## Botão Turbo: aparece só com a compra ("on") e mostra a velocidade ("1x", "1,5x", "2x").
@@ -1166,6 +1159,13 @@ func touches_button(at: Vector2) -> bool:
 		if b.is_visible_in_tree() and b.get_global_rect().has_point(at):
 			return true
 	return false
+
+
+## Saída da nave no fim da missão (SimOutro): os botões de ação, a arma e o nome do poder somem em 0,3 s.
+func fade_actions() -> void:
+	_outro = true
+	for node: CanvasItem in [_special, _bomb, _power, _turbo, _tide, _weapon, _weapon_pips, _power_name]:
+		node.create_tween().tween_property(node, "modulate:a", 0.0, 0.3)
 
 
 func turbo_button() -> Button:
