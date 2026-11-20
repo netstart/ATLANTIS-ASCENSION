@@ -52,6 +52,14 @@ func run(host: Node, check: Callable) -> void:
 	await LayoutTests.settle(host)
 	var results := app.screen(&"results")
 	check.call(results.default_focus().name == "Continue", "Montagem: resultado da vitória abre no Continuar")
+	# Campanha → Carta → (missão) → resultado → Continuar → Carta: o voltar da Carta leva à Campanha.
+	app.go(&"hub")
+	app.go(&"map")
+	app.go(&"results")
+	app.go(&"map")
+	app.go(&"back")
+	await LayoutTests.settle(host)
+	check.call(app.current == &"hub", "Montagem: voltar da Carta depois do resultado leva à Campanha, sem laço")
 	app.go(&"hub")
 	await LayoutTests.settle(host)
 	app.last_result = {"mission": "c1m2", "cleared": false, "score": 10, "stars": [false, false, false, false]}

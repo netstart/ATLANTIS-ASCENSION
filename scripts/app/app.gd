@@ -116,10 +116,15 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 	# Entre abas não há histórico: a barra de baixo já é o caminho de volta.
 	if NavShell.is_tab(current) and NavShell.is_tab(screen_name):
 		remember = false
-	if remember and not current.is_empty() and current != screen_name:
+	# Resultado e história são de passagem: voltar nunca cai neles (senão Carta → voltar → resultado →
+	# Continuar → Carta vira um laço sem saída para a Campanha e o hangar).
+	if remember and not current.is_empty() and current != screen_name and current not in [&"results", &"story"]:
 		_history.append(current)
 		if screen_name == ROOT_SCREEN:
 			_history.clear()
+	# A tela pedida já está no topo do histórico (o resultado devolve à Carta de onde a missão saiu): tira.
+	if not _history.is_empty() and _history.back() == screen_name:
+		_history.pop_back()
 	for key: StringName in _screens:
 		(_screens[key] as Control).visible = key == screen_name
 	if not _screens.has(screen_name):
