@@ -19,6 +19,7 @@ func run_unit(check: Callable) -> void:
 	_test_glint()
 	_test_energy_stream()
 	_test_hit_pulse()
+	_test_enemy_pulses()
 
 
 func _field(capacity: int) -> ParticleField:
@@ -286,3 +287,71 @@ func _test_hit_pulse() -> void:
 		still = still and calm.offset() == Vector2.ZERO
 	_check.call(still and calm_top <= HitPulse.PEAK_CALM + 0.0001,
 			"HitPulse: reduzir movimento sem tranco e tinte até %.2f (%.3f)" % [HitPulse.PEAK_CALM, calm_top])
+
+
+## Retorno de dano dos inimigos (EnemyPulses): acerto em todo passo num inimigo comum respeita o teto e o
+## intervalo do HitPulse e nunca vira o branco antigo (modulate com vermelho > 1,5); hitstop não repete
+## pulso; quem morre ou sai libera o estado, que volta ao estoque sem objeto novo.
+func _test_enemy_pulses() -> void:
+	var tough := SimEnemy.new()
+	tough.max_hp = 400.0
+	tough.hp = 400.0
+	var small := SimEnemy.new()
+	var enemies: Array[SimEnemy] = [tough, small]
+	var pulses := EnemyPulses.new()
+	var top := 0.0
+	var peaks: Array[int] = []
+	var last := 0.0
+	var clean := 0
+	var white := false
+	for k: int in range(240):
+		tough.hp -= 1.5
+		tough.flash = 3
+		pulses.tick(enemies, true, false)
+		var now := pulses.of(tough).intensity()
+		top = maxf(top, now)
+		if now > last + 0.001:
+			peaks.append(k)
+		if now < 0.05:
+			clean += 1
+		last = now
+		var col := HitPulse.tint(Color(1, 1, 1), now, false)
+		white = white or col.r > 1.5
+	var gaps_ok := peaks.size() > 1
+	for i: int in range(1, peaks.size()):
+		gaps_ok = gaps_ok and peaks[i] - peaks[i - 1] >= HitPulse.GAP
+	_check.call(top <= HitPulse.PEAK_MAX + 0.0001 and top > 0.0 and gaps_ok and clean > 0 and not white,
+			"EnemyPulses: tiro contínuo pulsa a cada %d+ passos, até %.2f (%.3f, %d pulsos), sem branco"
+			% [HitPulse.GAP, HitPulse.PEAK_MAX, top, peaks.size()])
+	_check.call(pulses.of(small) == pulses.idle and pulses.live_count() == 1,
+			"EnemyPulses: inimigo sem dano não ganha estado")
+	# Hitstop: a Sim parada (fresh = false) com o flash ainda aceso não dispara pulso novo.
+	var before := pulses.of(tough).intensity()
+	var rose := false
+	for k: int in range(30):
+		pulses.tick(enemies, false, false)
+		var now := pulses.of(tough).intensity()
+		rose = rose or now > before + 0.001
+		before = now
+	_check.call(not rose and pulses.of(tough).intensity() == 0.0, "EnemyPulses: no hitstop o pulso só apaga")
+	var calm_top := 0.0
+	var still := true
+	for k: int in range(60):
+		tough.flash = 3
+		pulses.tick(enemies, true, true)
+		calm_top = maxf(calm_top, pulses.of(tough).intensity())
+		still = still and pulses.of(tough).offset() == Vector2.ZERO
+	_check.call(still and calm_top <= HitPulse.PEAK_CALM + 0.0001,
+			"EnemyPulses: reduzir movimento sem tranco e tinte até %.2f (%.3f)" % [HitPulse.PEAK_CALM, calm_top])
+	# Morte: some da lista da Sim e o estado é liberado; o próximo reaproveita o mesmo pulso.
+	var used := pulses.of(tough)
+	enemies.erase(tough)
+	pulses.tick(enemies, true, false)
+	var freed := pulses.live_count() == 0 and pulses.of(tough) == pulses.idle
+	small.flash = 3
+	pulses.tick(enemies, true, false)
+	_check.call(freed and pulses.of(small) == used and pulses.live_count() == 1,
+			"EnemyPulses: quem morre libera o estado e o pulso volta ao estoque")
+	enemies.clear()
+	pulses.tick(enemies, true, false)
+	_check.call(pulses.live_count() == 0, "EnemyPulses: campo vazio, nenhum estado sobra")

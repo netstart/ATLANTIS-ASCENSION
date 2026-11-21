@@ -377,6 +377,11 @@ func _rebuild() -> void:
 	_milestone.title = milestone_text(_milestone_info)
 	_milestone.set_progress(int(_milestone_info["have"]), int(_milestone_info["need"]), bool(_milestone_info["done"]))
 	var today := App.today()
+	# Tema dourado do hub para quem apoiou (Iap "support" ou pacote inicial): os atalhos ganham o ouro.
+	var gold := Iap.supporter(p)
+	for s: CampaignParts.ShortcutButton in _shortcuts + [_map_button]:
+		s.accent = UiTheme.GOLD if gold else UiTheme.CYAN
+		s.queue_redraw()
 	_shortcuts[2].set_notice(Notices.season_reward_ready(p, today))
 	_daily_button.set_notice(Notices.daily_event_open(p, today))
 	_marker.tint = ListScreen.ship_tint(String(p["selected"].get("ship", "falcon")),

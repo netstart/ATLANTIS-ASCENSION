@@ -5,7 +5,8 @@ extends Node
 ## Grava <pasta>/<tela>_<resolução>_<idioma>.png em 2x da tela lógica (k = 2, ou --zoom; a janela
 ## mostra o quadro reduzido para caber no monitor, tests/device_window.gd).
 ## Save e opções usam os arquivos dos testes. --showcase troca o perfil novo por um jogador no meio da
-## campanha (capturas da ficha da loja, tools/build_store_art.ps1).
+## campanha (capturas da ficha da loja, tools/build_store_art.ps1). --paint=<id> equipa a pintura; na Loja,
+## --shop-tab=support abre a sub-aba Extras e --sheet=<id> abre o painel da pintura.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -23,6 +24,9 @@ func _ready() -> void:
 	var only := PackedStringArray()
 	var zoom := 2
 	var showcase := false
+	var paint := ""
+	var sheet := ""
+	var shop_tab := ""
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--shots="):
 			out = arg.trim_prefix("--shots=")
@@ -32,6 +36,12 @@ func _ready() -> void:
 			only = arg.trim_prefix("--screens=").split(",", false)
 		elif arg == "--showcase":
 			showcase = true
+		elif arg.begins_with("--paint="):
+			paint = arg.trim_prefix("--paint=")
+		elif arg.begins_with("--sheet="):
+			sheet = arg.trim_prefix("--sheet=")
+		elif arg.begins_with("--shop-tab="):
+			shop_tab = arg.trim_prefix("--shop-tab=")
 		elif arg.begins_with("--zoom="):
 			zoom = int(arg.trim_prefix("--zoom="))
 		elif arg.begins_with("--langs="):
@@ -43,6 +53,9 @@ func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(out)
 	if showcase:
 		_fill_showcase(SaveManager.data)
+	if not paint.is_empty():
+		(SaveManager.data["unlocked"]["cosmetics"] as Array).append(paint)
+		SaveManager.data["selected"]["cosmetic"] = paint
 	for r: Dictionary in DeviceProfiles.RESOLUTIONS:
 		if not wanted.is_empty() and not String(r["label"]) in wanted:
 			continue
@@ -61,7 +74,12 @@ func _ready() -> void:
 			for screen_name: StringName in SCREENS:
 				if not only.is_empty() and not String(screen_name) in only:
 					continue
+				if screen_name == &"shop" and not shop_tab.is_empty():
+					ShopScreen.next_tab = StringName(shop_tab)
 				app.go(screen_name)
+				if screen_name == &"shop" and not sheet.is_empty():
+					await LayoutTests.settle(self)
+					app.screen(&"shop").call("_open", sheet)
 				if screen_name == &"story":
 					# Prólogo no 3º quadro: o primeiro com retrato (o narrador não tem rosto).
 					var story := app.find_child("Story", true, false)

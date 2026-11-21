@@ -12,8 +12,9 @@ extends Node2D
 ## 2,5D: cada nave tem uma sombra (cópia escura do sprite, 80%, deslocada (+6, +10)) desenhada no chão,
 ## abaixo de tudo; inimigos que sobem do fundo (SimEnemy.depth < 1, ainda sem colisão na Sim) crescem
 ## de 35% a 100% saindo da neblina, e a sombra se separa deles conforme sobem. A nave inclina nas
-## curvas (some com "reduzir movimento") e o dano pisca em branco (shaders/sprite_flash.gdshader); no
-## chefe, em vez do branco, um tinte quente que pulsa no máximo a cada 7 passos e um tranco curto (HitPulse).
+## curvas (some com "reduzir movimento"). Dano, no chefe e em todo inimigo: nada de branco chapado, um tinte
+## quente (shaders/sprite_flash.gdshader) que pulsa no máximo a cada 7 passos e um tranco curto (HitPulse; um
+## por inimigo atingido em EnemyPulses, sem tranco nos pequenos), legível mesmo sob tiro contínuo.
 ## A nave veste as peças do nível do hangar (ShipLivery, carga "ship_level"); na Ascendida (nível 10)
 ## deixa um rastro de centelhas de ouro.
 
@@ -112,6 +113,9 @@ var _capsule: Texture2D
 var _drone: Texture2D
 var _rocket: Texture2D
 var _ship_tint := Color(1, 1, 1)
+## Pintura equipada (Store.paint_fx, só desenho): cor do motor e do rastro e cor do estouro da nave.
+var _exhaust := EXHAUST_COLOR
+var _burst := Color(0, 0, 0, 0)
 ## Cor da neblina do cenário (inimigos que sobem do fundo saem dela).
 var _depth_tint := Color(0.45, 0.72, 0.92, 0.6)
 var _bank: float = 0.0
@@ -134,12 +138,16 @@ var _boss_pulse := HitPulse.new()
 var _part_pulses: Dictionary = {}
 var _boss_seen: SimBoss
 var _boss_hp: float = 0.0
-var _boss_frame: int = -1
+## Passo da Sim visto no último passo de 60 Hz (acerto só conta em passo novo: nada repete no hitstop).
+var _sim_frame: int = -1
+## Retorno de dano dos inimigos: um HitPulse por inimigo atingido, liberado quando ele sai.
+var _enemy_pulses := EnemyPulses.new()
 var _boss_pulse_idle := HitPulse.new()
 
 
 func setup(p_sim: Sim) -> void:
 	sim = p_sim
+	_enemy_pulses.clear()
 	_glow = SpriteBank.generated("fx/glow_32")
 	_ring = SpriteBank.generated("fx/ring_32")
 	_flare = SpriteBank.generated("fx/flare_64")
@@ -163,6 +171,9 @@ func setup(p_sim: Sim) -> void:
 	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
 	if not paint.is_empty():
 		_ship_tint = Color(paint)
+	var paint_fx := Store.paint_fx(String(sim.loadout.get("cosmetic", "")))
+	_exhaust = paint_fx.get("trail", EXHAUST_COLOR)
+	_burst = paint_fx.get("burst", Color(0, 0, 0, 0))
 	_livery = clampi(int(sim.loadout.get("ship_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
 	_wing_livery = clampi(int(sim.loadout.get("coop_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
 	for name: String in ["base_very_damaged", "base_damaged", "base_slight", "base_full"]:
@@ -196,6 +207,8 @@ func setup(p_sim: Sim) -> void:
 	_player_bullets.halo_alpha = [0.0, 0.6, 0.85][clampi(fx_level, 0, 2)]
 	_player_bullets.halo_scale = 3.6
 	_player_bullets.setup(BulletKinds.PLAYER, sim.player_bullets.capacity)
+	if paint_fx.has("shot"):
+		_player_bullets.set_glow(paint_fx["shot"])
 	add_child(_player_bullets)
 	_player = _Layer.new(self, _draw_player)
 	_player.material = flash
@@ -286,7 +299,7 @@ func on_event(ev: Dictionary) -> void:
 			_wake.clear()
 			_muzzle = 0.0
 		&"outro_rise":
-			_ring_at(at + Vector2(0, 14), 0.45, 36.0, Color(EXHAUST_COLOR, 0.9))
+			_ring_at(at + Vector2(0, 14), 0.45, 36.0, Color(_exhaust, 0.9))
 		&"kill":
 			var ship := SpriteBank.ship(StringName(ev.get("sprite", "")))
 			var big := bool(ev.get("big", false))
@@ -306,6 +319,10 @@ func on_event(ev: Dictionary) -> void:
 		&"player_hit":
 			_ring_at(at, 0.5, 70.0, Color(1.0, 0.4, 0.4))
 			fx.explosion(at, 0.8, Color(1.0, 0.4, 0.35, 0.9))
+			# Casco perdido com pintura: o estouro próprio da pintura por cima (anel e explosão na cor dela).
+			if _burst.a > 0.0 and int(ev.get("hull", 1)) <= 0:
+				_ring_at(at, 0.6, 90.0, _burst)
+				fx.explosion(at, 1.6, Color(_burst, 0.95))
 		&"capture":
 			_ring_at(at, 0.45, 50.0, Color(0.4, 1.0, 1.0))
 			fx.collect(at, Color(0.4, 1.0, 1.0), true)
@@ -407,19 +424,22 @@ func _weapon_tint() -> Color:
 func _emit() -> void:
 	_ticks += 1
 	var pl := sim.player
-	_tick_boss_hits()
+	var fresh := sim.frame != _sim_frame
+	_sim_frame = sim.frame
+	_tick_boss_hits(fresh)
+	_enemy_pulses.tick(sim.enemies, fresh, reduce_motion)
 	powers.emit(sim, fx, _ticks)
 	if pl.alive and fx_level >= 1:
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
 		_nozzle = 1 - _nozzle
-		fx.exhaust(pl.pos + NOZZLES[_nozzle], EXHAUST_COLOR, thrust)
+		fx.exhaust(pl.pos + NOZZLES[_nozzle], _exhaust, thrust)
 		if sim.outro.rise >= 0:
 			# Arrancada da saída: os dois bocais a cada passo, com o rastro mais longo quanto mais rápido.
 			for ship: SimPlayer in ([pl, sim.wing] if sim.wing != null else [pl]):
 				for n: Vector2 in NOZZLES:
 					# Também a meio caminho do passo anterior: na subida rápida o rastro sai contínuo, sem contas soltas.
-					fx.exhaust(ship.pos + n, EXHAUST_COLOR, _boost())
-					fx.exhaust(ship.pos + n - ship.last_move * 0.5, EXHAUST_COLOR, _boost())
+					fx.exhaust(ship.pos + n, _exhaust, _boost())
+					fx.exhaust(ship.pos + n - ship.last_move * 0.5, _exhaust, _boost())
 		if sim.laser_active and _ticks % 2 == 0:
 			fx.impact(Vector2(pl.pos.x, sim.laser_to_y), WEAPON_TINTS[&"laser"])
 	if fx_level < 1:
@@ -439,7 +459,7 @@ func _emit() -> void:
 
 ## Acertos no chefe viram pulsos (HitPulse), um passo de 60 Hz por vez. Só conta acerto num passo novo da
 ## Sim (no hitstop e na pausa o pulso apaga em vez de repetir); o tamanho do golpe é o HP que caiu.
-func _tick_boss_hits() -> void:
+func _tick_boss_hits(fresh: bool) -> void:
 	var b := sim.boss
 	if b != _boss_seen:
 		_boss_seen = b
@@ -448,8 +468,6 @@ func _tick_boss_hits() -> void:
 		_boss_hp = b.hp if b != null else 0.0
 	if b == null:
 		return
-	var fresh := sim.frame != _boss_frame
-	_boss_frame = sim.frame
 	# 2,5% do HP total num passo (bomba, poder grande, parte destruída) já é golpe grande.
 	var strength := clampf((_boss_hp - b.hp) / maxf(1.0, b.max_hp) * 40.0, 0.0, 1.0)
 	_boss_hp = b.hp
@@ -589,8 +607,10 @@ func _shadow_tex(ci: CanvasItem, tex: Texture2D, pos: Vector2, squeeze: Vector2,
 
 func _draw_entities(ci: CanvasItem) -> void:
 	for e: SimEnemy in sim.enemies:
-		var tint := Color(String(e.def.get("tint", "#ffffff")))
-		_draw_ship(ci, SpriteBank.ship(e.sprite), e.pos, e.depth, e.flash > 0, float(e.def.get("scale", 1.0)), tint)
+		var pulse := _enemy_pulses.of(e)
+		var tint := _hit_color(Color(String(e.def.get("tint", "#ffffff"))), pulse.intensity(), false)
+		var at := e.pos + pulse.offset() * _shake_scale(e.radius)
+		_draw_ship(ci, SpriteBank.ship(e.sprite), at, e.depth, float(e.def.get("scale", 1.0)), tint)
 		if e.marked and sim.mods.chart and e.depth >= 1.0:
 			# Carta de Nereu: losango dourado sobre os marcados.
 			var m := e.pos + Vector2(0, -e.radius - 8.0)
@@ -638,10 +658,16 @@ func _draw_entities(ci: CanvasItem) -> void:
 		# Escolta capturada: o inimigo dominado, menor e em ciano; pisca no último segundo.
 		var fading := int(esc["frames"]) < 60 and int(time * 10.0) % 2 == 0
 		var col := Color(0.55, 1.0, 1.0, 0.45 if fading else 0.95)
-		_draw_ship(ci, SpriteBank.ship(StringName(String(esc["sprite"]))), esc["pos"], 1.0, false, 0.6, col, true)
+		_draw_ship(ci, SpriteBank.ship(StringName(String(esc["sprite"]))), esc["pos"], 1.0, 0.6, col, true)
 
 
-func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, flash: bool, scale: float,
+## Tranco do acerto num inimigo, pelo raio: nenhum nos pequenos (tremer 1 px num sprite de 24 só parece
+## defeito), metade nos médios e o do chefe nos grandes.
+static func _shake_scale(radius: float) -> float:
+	return 0.0 if radius < 15.0 else clampf(radius / 30.0, 0.5, 1.0)
+
+
+func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, scale: float,
 		tint: Color = Color(1, 1, 1), up: bool = false) -> void:
 	var size: int = ship["size"]
 	var base: Texture2D = ship["base"]
@@ -654,8 +680,6 @@ func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, fl
 		var rise := rise_of(depth)
 		s *= lerpf(RISE_SCALE, 1.0, rise)
 		modulate = _depth_tint.lerp(tint, rise)
-	if flash:
-		modulate = Color(1.8, 1.8, 1.8)
 	ci.draw_set_transform(pos, 0.0 if up else PI, Vector2(s, s))
 	var half := Vector2(size, size) * 0.5
 	var engine: Texture2D = ship["engine"]
@@ -692,7 +716,7 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 			_tex_centered(ci, _tip, tip, 1.0, color)
 	_draw_boss_parts(ci, b, body, shake)
 	var tint := _hit_color(Color(String(b.def.get("tint", "#ffffff"))), _boss_pulse.intensity(), false)
-	_draw_ship(ci, ship, b.pos + shake, 1.0, false, scale, tint)
+	_draw_ship(ci, ship, b.pos + shake, 1.0, scale, tint)
 	_draw_wounds(ci, b, shake)
 	var beat := 0.6 + 0.4 * sin(time * 9.0)
 	for part: Dictionary in b.parts:
@@ -725,7 +749,7 @@ func _draw_boss_parts(ci: CanvasItem, b: SimBoss, body: Vector2, shake: Vector2)
 			var s := float(part.get("part_scale", 1.0))
 			var gold := float(part.get("weak", 0.0)) > 0.0
 			var hit := _hit_color(color, pulse.intensity() if alive else 0.0, gold)
-			_draw_ship(ci, SpriteBank.ship(StringName(String(part["sprite"]))), at, 1.0, false, s, hit)
+			_draw_ship(ci, SpriteBank.ship(StringName(String(part["sprite"]))), at, 1.0, s, hit)
 		elif bool(part.get("ring", false)) and alive:
 			ci.draw_set_transform(at, time * (2.0 if b.part_active(part) else 0.4), Vector2(0.5, 0.5))
 			ci.draw_texture(_ring, -_ring.get_size() * 0.5, Color(1.0, 0.85, 0.4, 0.9 if b.part_active(part) else 0.35))
@@ -737,12 +761,9 @@ func _pulse_of(part: Dictionary) -> HitPulse:
 	return pulse if pulse != null else _boss_pulse_idle
 
 
-## Modulate que o shader de dano (shaders/sprite_flash.gdshader) lê como tinte de acerto: a força vai
-## no alfa (2 + força: quente; 4 + força: dourado, ponto fraco). Sem força, a cor normal.
+## Modulate de tinte de acerto que o shader de dano lê (HitPulse.tint).
 static func _hit_color(base: Color, amount: float, gold: bool) -> Color:
-	if amount <= 0.0:
-		return base
-	return Color(base.r, base.g, base.b, (4.0 if gold else 2.0) + clampf(amount, 0.0, 1.0))
+	return HitPulse.tint(base, amount, gold)
 
 
 # --- Jogador -----------------------------------------------------------------------------------
@@ -958,7 +979,7 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 			thrust = _boost() * 2.0
 		for n: Vector2 in NOZZLES:
 			_tex_centered(ci, _flare, p + n, (0.28 + 0.12 * thrust) * (0.85 + 0.15 * sin(time * 37.0 + n.x)),
-					Color(EXHAUST_COLOR, 0.75))
+					Color(_exhaust, 0.75))
 		if _muzzle > 0.0:
 			var tint := _weapon_tint()
 			_tex_centered(ci, _flare, p + Vector2(0, -21), 0.42, Color(tint, 0.9 * _muzzle / 0.06))

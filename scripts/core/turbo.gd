@@ -14,9 +14,9 @@ extends RefCounted
 ##   plugin): a compra é fingida na hora, sem cobrança;
 ## - "off": release sem o plugin: não há como comprar (o cartão da Loja some) e nada é fingido.
 ##
-## ATENÇÃO: só o Turbo é cobrado de verdade. O "Apoiar" (supporter) e o passe dourado (season_gold)
-## ainda não têm produto no Play Console e continuam só simulados (Store.simulated), escondidos em
-## release, mesmo com o plugin de Billing no pacote (Store.purchases_enabled).
+## A cobrança é a do catálogo de compras (scripts/core/iap.gd), que o Turbo usa como os outros produtos;
+## esta classe guarda a API do HUD e as regras próprias do Turbo (velocidades, cartão sempre visível com
+## o plugin, reembolso que volta a 1x). O passe dourado (season_gold) continua só simulado.
 ##
 ## A compra fica em profile["purchases"]["turbo"] e a velocidade escolhida em
 ## profile["selected"]["turbo"] (1.0 nos saves antigos, por SaveManager.migrate). Este arquivo não
@@ -26,12 +26,8 @@ const PRODUCT := "turbo"
 const SPEEDS: Array[float] = [1.0, 1.5, 2.0]
 
 ## Só os testes: finge o modo (ex.: "play" com o BillingClient falso no PC). "" = o do aparelho.
+## Vale para todo o catálogo (Iap.mode).
 static var forced_mode: String = ""
-static var _billing: PlayBillingProvider
-## Último desfecho que não liberou: "pending", "canceled", "unavailable", "failed" ou "" (nenhum).
-static var _status: String = ""
-## Telas que se refazem quando a compra ou o preço mudam (on_changed).
-static var _listeners: Array[Callable] = []
 
 
 # --- API do HUD (fixa) -------------------------------------------------------------------------
@@ -63,25 +59,19 @@ static func cycle(profile: Dictionary) -> float:
 		return 1.0
 	var next := SPEEDS[(SPEEDS.find(speed(profile)) + 1) % SPEEDS.size()]
 	(profile["selected"] as Dictionary)["turbo"] = next
-	_persist(profile)
+	Iap.persist(profile)
 	return next
 
 
-# --- Compra ------------------------------------------------------------------------------------
+# --- Compra (pelo catálogo, scripts/core/iap.gd) ------------------------------------------------
 
 ## "steam", "play", "simulated" ou "off" neste aparelho e neste build (veja o topo).
 static func mode() -> String:
-	if not forced_mode.is_empty():
-		return forced_mode
-	return mode_for(Store.is_steam(), PlayBillingProvider.is_supported(), Store.simulated())
+	return Iap.mode()
 
 
 static func mode_for(steam: bool, play: bool, simulated: bool) -> String:
-	if steam:
-		return "steam"
-	if play:
-		return "play"
-	return "simulated" if simulated else "off"
+	return Iap.mode_for(steam, play, simulated)
 
 
 ## O cartão da Loja aparece: dá para comprar (Play ou simulado) ou a conta já tem (para mostrar "Ativo").
@@ -90,130 +80,41 @@ static func shop_visible(profile: Dictionary, in_mode: String = "") -> bool:
 	return m == "play" or m == "simulated" or (m != "steam" and owned(profile))
 
 
-## Abertura do app: no modo "play" cria o provedor, que conecta, busca o preço e consulta as compras
-## (restauração). Nos outros modos não faz nada.
+## Abertura do app: cria o provedor da Play com o catálogo inteiro (Iap.start).
 static func start(parent: Node) -> void:
-	if mode() != "play" or _billing != null:
-		return
-	var play := PlayBillingProvider.new()
-	play.name = "PlayBilling"
-	play.process_mode = Node.PROCESS_MODE_ALWAYS
-	parent.add_child(play)
-	use_provider(play)
-	play.setup(PackedStringArray([PRODUCT]))
+	Iap.start(parent)
 
 
-## Liga um provedor (o do `start` ou, nos testes, um com o BillingClient falso, antes do setup).
-## null desliga.
 static func use_provider(play: PlayBillingProvider) -> void:
-	if _billing != null and _billing.purchase_state.is_connected(_on_state):
-		_billing.purchase_state.disconnect(_on_state)
-		_billing.product_price_changed.disconnect(_on_price)
-	_billing = play
-	_status = ""
-	if play != null:
-		play.purchase_state.connect(_on_state)
-		play.product_price_changed.connect(_on_price)
+	Iap.use_provider(play)
 
 
-## Pede a compra. Simulado: libera na hora e devolve true. Play: abre a tela de pagamento e devolve
-## false (o resultado chega por on_changed). Steam, "off" ou já comprado: nada, false.
 static func buy(profile: Dictionary, in_mode: String = "") -> bool:
-	var m := in_mode if not in_mode.is_empty() else mode()
 	if owned(profile):
 		return false
-	if m == "simulated":
-		apply_state(profile, "purchased")
-		return true
-	if m == "play" and _billing != null:
-		_status = ""
-		_billing.purchase(PRODUCT)
-	return false
+	return Iap.buy(profile, PRODUCT, in_mode)
 
 
-## "Restaurar compras": consulta as compras na Play de novo (só no modo "play").
 static func restore() -> void:
-	if _billing != null:
-		_status = ""
-		_billing.restore()
+	Iap.restore()
 
 
-## Preço formatado pela Play ("US$ 1,99", "R$ 10,99"...) ou "" enquanto não chegou.
 static func price() -> String:
-	return _billing.price_of(PRODUCT) if _billing != null else ""
+	return Iap.price(PRODUCT)
 
 
-## "busy" (esperando a Play ou com a tela de pagamento aberta), "pending", "canceled", "unavailable",
-## "failed" ou "".
 static func status() -> String:
-	if _billing != null and _billing.busy_product() == PRODUCT:
-		return "busy"
-	return _status
+	return Iap.status(PRODUCT)
 
 
-## Chama `target` (sem argumentos) quando a compra ou o preço mudam.
 static func on_changed(target: Callable) -> void:
-	if not _listeners.has(target):
-		_listeners.append(target)
+	Iap.on_changed(target)
 
 
-## Tira um `target` de on_changed. Use com lambdas: guardada em variável estática até o fim do processo,
-## uma lambda sobrevive ao script que a criou e derruba o Godot ao sair.
 static func off_changed(target: Callable) -> void:
-	_listeners.erase(target)
+	Iap.off_changed(target)
 
 
-## Regra pura: aplica um desfecho da Play ao perfil e devolve se o perfil mudou. Só "purchased" libera
-## (pendente não); "refunded" tira o Turbo e volta a 1x; os outros só viram o status da Loja.
+## Regra pura: aplica um desfecho da Play ao Turbo (o reembolso volta a 1x). Veja Iap.apply_state.
 static func apply_state(profile: Dictionary, state: String) -> bool:
-	var purchases: Dictionary = profile["purchases"]
-	var had := bool(purchases.get(PRODUCT, false))
-	match state:
-		"purchased":
-			_status = ""
-			purchases[PRODUCT] = true
-			return not had
-		"refunded":
-			if _status == "pending":
-				_status = ""
-			purchases[PRODUCT] = false
-			if had:
-				(profile["selected"] as Dictionary)["turbo"] = 1.0
-			return had
-		_:
-			_status = state
-			return false
-
-
-static func _on_state(product: String, state: String) -> void:
-	if product != PRODUCT:
-		return
-	var saver := _saver()
-	if saver != null and apply_state(saver.get("data") as Dictionary, state):
-		saver.call("save_profile")
-	_notify()
-
-
-static func _on_price(product: String, _price: String) -> void:
-	if product == PRODUCT:
-		_notify()
-
-
-static func _notify() -> void:
-	_listeners = _listeners.filter(func(c: Callable) -> bool: return c.is_valid())
-	for c: Callable in _listeners:
-		c.call()
-
-
-## Grava o save se `profile` é o do jogador (SaveManager.data).
-static func _persist(profile: Dictionary) -> void:
-	var saver := _saver()
-	if saver != null and is_same(profile, saver.get("data")):
-		saver.call("save_profile")
-
-
-static func _saver() -> Node:
-	var tree := Engine.get_main_loop() as SceneTree
-	if tree == null or tree.root == null:
-		return null
-	return tree.root.get_node_or_null(^"SaveManager")
+	return Iap.apply_state(profile, PRODUCT, state)

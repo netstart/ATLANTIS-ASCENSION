@@ -155,9 +155,11 @@ static func ship_level_cost(level: int, profile: Dictionary = {}) -> int:
 	return roundi(cost * (1.0 - district_bonus(profile, &"discount"))) if not profile.is_empty() else cost
 
 
-## Bônus do nível da aeronave: +4% de dano por nível; +1 de casco a partir do 6.
+## Bônus do nível da aeronave: +3% de dano por nível (+27% no 10; com a asa Gume, +5%, fica em +33%, dentro do teto
+## de poder de +35% do plano mestre 4.9); +1 de casco a partir do 6. Era +4% (+36%) até o rebalanceamento da
+## revisão 3 da Sim; replays guardam o dano na carga e não mudam.
 static func ship_bonus(level: int) -> Dictionary:
-	return {"damage": 0.04 * float(level - 1), "hull": 1 if level >= 6 else 0}
+	return {"damage": 0.03 * float(level - 1), "hull": 1 if level >= 6 else 0}
 
 
 ## Custo para subir a secundária do nível `level` (créditos e oricalco).

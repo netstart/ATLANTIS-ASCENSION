@@ -27,7 +27,7 @@ var pos := Vector2.ZERO
 var depth: float = 1.0
 var alive: bool = true
 var entered: bool = false
-## Passos de brilho branco depois de levar dano (só visual).
+## Passos de retorno de dano depois de levar dano (só visual: WorldView o lê como pulso, EnemyPulses).
 var flash: int = 0
 var runner: PatternRunner
 

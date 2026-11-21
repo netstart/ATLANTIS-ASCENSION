@@ -8,5 +8,13 @@
 	{"id": "tint_supporter", "kind": "tint", "color": "#ffe9a8", "pearls": 0, "supporter": true},
 	{"id": "tint_season_a", "kind": "tint", "color": "#7affe4", "pearls": 0, "season": true},
 	{"id": "tint_season_b", "kind": "tint", "color": "#ff7ad9", "pearls": 0, "season": true},
-	{"id": "tint_season_c", "kind": "tint", "color": "#b4ff7a", "pearls": 0, "season": true}
+	{"id": "tint_season_c", "kind": "tint", "color": "#b4ff7a", "pearls": 0, "season": true},
+	{"id": "paint_aurora", "kind": "paint", "color": "#8affd8", "trail": "#5affc0",
+		"shot": "#d8ffe8", "burst": "#9affd8", "pearls": 250, "product": "paint_aurora", "usd": "0.99"},
+	{"id": "paint_reef", "kind": "paint", "color": "#ffb3cf", "trail": "#ff7fb0",
+		"shot": "#ffe0ec", "burst": "#ff9ec4", "pearls": 250, "product": "paint_reef", "usd": "0.99"},
+	{"id": "paint_abyssal", "kind": "paint", "color": "#7a96ff", "trail": "#4ad2ff",
+		"shot": "#d6f0ff", "burst": "#7ab8ff", "pearls": 400, "product": "paint_abyssal", "usd": "1.99"},
+	{"id": "paint_solar", "kind": "paint", "color": "#ffc85a", "trail": "#ffd27a",
+		"shot": "#fff2c8", "burst": "#ffb347", "pearls": 400, "product": "paint_solar", "usd": "1.99"}
 ]

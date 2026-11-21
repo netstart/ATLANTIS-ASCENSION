@@ -23,6 +23,9 @@ const SHAKE_MIN := 1.0
 const SHAKE_MAX := 2.0
 
 var calm: bool = false
+## Para quem guarda um pulso por alvo (EnemyPulses): o HP visto no último passo e a marca do passo.
+var seen_hp: float = 0.0
+var mark: int = 0
 ## Passos desde o último pulso (começa "há muito tempo").
 var _since: int = 1 << 20
 var _peak: float = 0.0
@@ -54,6 +57,14 @@ func offset() -> Vector2:
 	var side := 1.0 if _since % 2 == 0 else -1.0
 	var a := _shake * (1.0 - float(_since) / SHAKE_STEPS)
 	return Vector2(side * a, -0.5 * a)
+
+
+## Modulate que o shader de dano (shaders/sprite_flash.gdshader) lê como tinte de acerto: a força vai no
+## alfa (2 + força: quente; 4 + força: dourado, ponto fraco). Sem força, a cor normal.
+static func tint(base: Color, amount: float, gold: bool) -> Color:
+	if amount <= 0.0:
+		return base
+	return Color(base.r, base.g, base.b, (4.0 if gold else 2.0) + clampf(amount, 0.0, 1.0))
 
 
 func reset() -> void:

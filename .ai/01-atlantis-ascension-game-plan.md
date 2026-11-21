@@ -305,7 +305,7 @@ Estrelas desbloqueiam aeronaves, alas e as missões secretas. O mapa mostra quan
 ### 4.6 Rank dinâmico leve
 
 Valor de 0,0 a 1,0 que sobe com tempo sem dano e nível de arma e cai ao receber dano. Afeta velocidade de bala
-(±12%) e cadência inimiga (±10%). Nunca adiciona padrões. Desligado em Brisa. Visível nas opções avançadas.
+(±12%) e cadência inimiga (±10%, desde a revisão 3 da Sim). Nunca adiciona padrões. Desligado em Brisa. Visível nas opções avançadas.
 
 ### 4.7 Dificuldades
 
@@ -315,6 +315,27 @@ Valor de 0,0 a 1,0 que sobe com tempo sem dano e nível de arma e cai ao receber
 | Normal | base | 100% | ligado | principal |
 | Veterano | base | 110%, padrões densos | ligado | principal |
 | Abissal (final verdadeiro) | 1 segmento | 115%, balas de vingança | ligado | próprio |
+
+**Curva por capítulo** (revisão 3 da Sim, `scripts/sim/sim_curve.gd`). Do capítulo 1 (nada) ao 10 (cheia, na Normal):
+balas +30%, esperas dos padrões −31% (cadência +45%), vida dos inimigos comuns +80% e do chefe de ato +15%. Brisa usa
+metade da curva, Veterano 1,3x, Abissal 1,5x. Nunca adiciona padrões nem balas por emissão. Quem desce com o cenário
+(torre de coral, trirreme) fica com a vida da tabela, senão vira parede. Os chefes de meio de fase e as elites já sobem
+pela tabela (`CHAPTER_HP` em `tools/gen_bosses_mid.py`). O rank também mexe na cadência (±10%, seção 4.6). O bônus de
+dano do hangar caiu de +4% para +3% por nível (+27% no nível 10, +33% com a asa Gume), dentro do teto de poder (4.9).
+
+**Meta de dificuldade medida pelo bot** (`tests/boss_timing.gd`, Normal, sem hangar, sementes 7, 11, 23 e 42):
+
+| Capítulos | Meta | Medido na revisão 3 |
+|---|---|---|
+| 1 a 3 | quase sem dano: até 0,25 segmento por fase, nenhuma perdida | 0 a 0,12 |
+| 4 a 6 | algum dano: 0,1 a 0,5 por fase | 0,05 a 0,15 |
+| 7 a 10 e chefes de ato | risco real: 0,3 a 1,5 por fase; às vezes no último segmento ou uma perdida | 0 a 0,75; 4 no último segmento |
+| Todas | a semente 7 vence toda fase (teste); fase de 2 a 5,5 min | ok; 2 de 160 partidas passam de 330 s |
+
+Brisa: nenhuma fase perdida, 0 a 0,7 por fase. Veterano: mais perdas que a Normal (2 de 80 partidas).
+Ainda abaixo da meta: capítulos 4 a 6 e o capítulo 9 (0 dano). O bot desvia com visão exata das balas e reação de
+um passo; ele erra por encurralamento (vários emissores ao mesmo tempo), não por velocidade. Um humano sente a
+curva de velocidade e cadência bem antes dele, então a meta vale como piso, não como sensação.
 
 ### 4.8 Mecânicas especiais
 
@@ -1093,25 +1114,50 @@ Metas de retenção (D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 6%) e as referências de me
   quem apoiou.
 - **Cosméticos:** pinturas de aeronave, rastros de motor, cores de tiro do jogador (dentro dos limites de leitura),
   temas do hub, molduras de perfil. Compra direta ou com Pérolas ganhas jogando.
-- **Compra única "Apoiar a Halcyon"** (~US$ 3,99): recompensas da Loja sem anúncio, reviver sem anúncio, tema
-  dourado do hub.
-- **Turbo** (compra única, não consumível, produto `turbo`, US$ 1,99): o botão do HUD alterna a velocidade da
-  partida entre 1x, 1,5x e 2x. Deixa o jogo mais **rápido**, não mais **fácil**: tudo acelera junto (nave, inimigos,
-  balas), sem dano, vida ou recompensa a mais. É a **única** compra com cobrança real: Play Billing pelo plugin
-  oficial GodotGooglePlayBilling 3.3.0 (`addons/GodotGooglePlayBilling`, MIT), `scripts/core/play_billing_provider.gd`
-  (portado do hyakki) e `scripts/core/turbo.gd` (API do HUD: `Turbo.owned`, `Turbo.speed`, `Turbo.cycle`). Ao abrir,
-  consulta as compras (restaura quem reinstalou); compra pendente não libera até a Play concluir; compra concluída é
-  confirmada (acknowledge); reembolso tira e volta a 1x. A Loja mostra o cartão com o preço da Play, o estado e
-  "Restaurar compras". Desenvolvimento sem o plugin simula; release sem o plugin não vende nem finge.
-  `tools/check_release_ads.py` exige o plugin, a permissão `BILLING` e a Billing Library no AAB. Escolha salva em
-  `selected.turbo` (1x nos saves antigos). Na Steam vem incluído.
-- "Apoiar" e o passe dourado continuam só **simulados** (sem produto no Play Console) e escondidos em release, mesmo
-  com o plugin de Billing no pacote (`Store.purchases_enabled`).
+- **Compras no app (`scripts/core/iap.gd`)**: um catálogo único na Play Billing, pelo plugin oficial
+  GodotGooglePlayBilling 3.3.0 (`addons/GodotGooglePlayBilling`, MIT) e `scripts/core/play_billing_provider.gd`
+  (portado do hyakki). **Nada vende força**: nada de créditos, upgrades, vidas ou revive extra. Tudo o que se vende
+  também sai jogando, exceto o conforto/visual puro do "Apoiar". Ao abrir, consulta preços e compras (restaura quem
+  reinstalou); pendente não libera até a Play concluir; concluída é confirmada (acknowledge); reembolso tira (o que
+  foi ganho jogando fica); "Restaurar compras" na Loja; preço sempre o da Play. **Produto sem preço da Play (não
+  criado no Console) não aparece**; desenvolvimento sem o plugin simula; release sem o plugin não vende nem finge.
+  `tools/check_release_ads.py` exige o plugin, a permissão `BILLING` e a Billing Library no AAB. Lista exata para
+  o Console em `docs/store/play-console.md`:
+  - **Turbo** (`turbo`, US$ 1,99): o HUD alterna 1x, 1,5x e 2x. Mais **rápido**, não mais **fácil**: tudo acelera
+    junto, sem dano, vida ou recompensa a mais. Escolha em `selected.turbo`; reembolso volta a 1x.
+  - **"Apoiar a Halcyon"** (`support`, US$ 3,99): recompensas da Loja e reviver sem anúncio, tema dourado do hub
+    (os atalhos ganham o ouro) e a pintura dourada.
+  - **Pinturas** (`paint_aurora` e `paint_reef` US$ 0,99; `paint_abyssal` e `paint_solar` US$ 1,99; ou 250/400
+    Pérolas): servem em qualquer nave (todas partem da mesma arte 48x48 tingida, então uma pintura por nave só
+    dividiria a oferta). Cada uma troca a tinta da nave (a evolução do hangar deriva o acento dela), o rastro do
+    motor, o halo do tiro do jogador e o estouro da explosão da nave. O halo do tiro é sempre pastel (saturação
+    ≤ 0,3, valor ≥ 0,9), longe das balas inimigas, que são saturadas; o núcleo e a forma do tiro não mudam. Só
+    desenho, feito em tempo real com as texturas que o projeto já gera (sem asset novo): a Sim não lê a pintura
+    (mesmo hash com e sem). Loja e hangar mostram a prévia (nave pintada, rastro, tiro e estouro) e "só visual".
+  - **Atalho da Tridente** (`ship_trident`, US$ 1,99): a Tridente é a nave **lateral** liberável: casco 3,
+    velocidade 0,95, cadência 0,9, hitbox 3, sem traço, só joga diferente (controle de área, Plasma e Fenda
+    gravitacional) e sai por fragmentos no meio da campanha (c4m2/c5m1). Manta tem os mesmos números da Falcon, mas
+    sai na primeira hora (não vale um atalho); Atlas (+1 casco), Tempest (hitbox menor) e as naves 7 a 12 (traços
+    que somam dano) dão vantagem e ficam fora. Quem não compra continua liberando pelos fragmentos; o card some
+    para quem já tem; o reembolso não tira a nave de quem completou os fragmentos.
+  - **Pacote inicial** (`starter_pack`, US$ 4,49 (Apoiar US$ 3,99 + Solar US$ 1,99 = US$ 5,98; 25% de desconto)): Apoiar + a pintura Solar. Oferecido uma única vez, num cartão
+    discreto no resultado da primeira vitória contra um chefe de ato (nunca popup), e sempre na sub-aba Extras da
+    Loja enquanto não comprado. Some para quem já apoia.
+  - **Pacote de 3 revives sem anúncio** (`revive_pack_3`, US$ 0,99, consumível leve): na tela "Casco perdido",
+    com carga, o botão "Reviver (2)" revive sem anúncio e gasta uma carga. **Não dá revive extra**: continua 1 por
+    missão; sem anúncio para mostrar (apoiador, anúncio que não carregou) a vez não gasta carga. Credita 3 cargas
+    (`iap.revive_charges`), grava e só então consome na Play, com o token guardado para nunca creditar duas vezes;
+    pendente não credita. Some para quem apoia; não existe na Steam (o reviver lá não tem anúncio).
+  - **Ficou de fora: Expansão de modos.** Abismo Infinito e Boss Rush já existem e abrem jogando (c7m1; os 4 chefes
+    de ato). Vender a abertura antecipada seria vender progresso: o Abismo paga créditos (upgrades) e o Boss Rush
+    sem os chefes vencidos é spoiler e frustração. Continuam grátis por jogo.
+- O passe dourado continua só **simulado** (sem produto no Play Console) e escondido em release
+  (`Store.purchases_enabled`).
 - Nada de energia, gacha pago, moeda vendida ou vantagem de poder.
 - Conformidade: UMP para consentimento, classificação etária, Data Safety, `app-ads.txt`, IARC "compras digitais".
 
-**Steam (premium, preço-alvo US$ 9,99):** jogo completo, sem anúncios, com o Turbo incluído e os cosméticos da
-1.0 desbloqueáveis jogando. Pacote de trilha sonora opcional (só faixas criadas pelo projeto).
+**Steam (premium, preço-alvo US$ 9,99):** jogo completo, sem anúncios, com o Turbo e todas as pinturas incluídos
+(`Store.owned`), a Tridente por fragmentos e o reviver sem anúncio; nada a comprar dentro do jogo. Pacote de trilha sonora opcional (só faixas criadas pelo projeto).
 
 ---
 
@@ -1125,8 +1171,9 @@ pontos_abate = valor_inimigo × multiplicador_corrente × (1 + 0,5 × sem_dano)
 corrente     = +1 por abate se t − t_último_abate ≤ 0,8 s; multiplicador = min(16, 1 + floor(corrente / 8))
 graze        = bala com distância ≤ 8 u da hitbox, contada 1 vez por bala
 rank         = clamp(rank + 0,002 por segundo sem dano + 0,05 por nível de arma − 0,25 por dano, 0, 1)
-vel_bala     = vel_base × (1 + 0,12 × (rank − 0,5) × 2) × mult_dificuldade
-hp_inimigo   = hp_base × (1 + 0,18 × (capítulo − 1))
+vel_bala     = vel_base × (1 + 0,12 × (rank − 0,5) × 2) × (1 + 0,3 × (capítulo − 1) / 9 × curva_dificuldade) × mult_dificuldade
+espera       = espera_base / ((1 + 0,45 × (capítulo − 1) / 9 × curva_dificuldade) × (1 + 0,1 × (rank − 0,5) × 2))
+hp_inimigo   = hp_base × (1 + 0,8 × (capítulo − 1) / 9 × curva_dificuldade)   (revisão 3; scroll fica na tabela)
 créditos     = 50 + floor(pontuação / 2.000) + 25 × estrelas_novas
 ```
 

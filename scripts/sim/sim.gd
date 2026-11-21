@@ -33,10 +33,10 @@ const LINK_RANGE := 64.0
 const LINK_CANCEL := 12.0
 const COOP_OFFSET := 36.0
 const DIFFICULTY := {
-	&"brisa": {"hull": 2, "bullet": 0.8, "rank": false, "score": 0.5},
-	&"normal": {"hull": 0, "bullet": 1.0, "rank": true, "score": 1.0},
-	&"veteran": {"hull": 0, "bullet": 1.1, "rank": true, "score": 1.3},
-	&"abyssal": {"hull": -2, "bullet": 1.15, "rank": true, "score": 1.6},
+	&"brisa": {"hull": 2, "bullet": 0.8, "rank": false, "score": 0.5, "curve": 0.5},
+	&"normal": {"hull": 0, "bullet": 1.0, "rank": true, "score": 1.0, "curve": 1.0},
+	&"veteran": {"hull": 0, "bullet": 1.1, "rank": true, "score": 1.3, "curve": 1.3},
+	&"abyssal": {"hull": -2, "bullet": 1.15, "rank": true, "score": 1.6, "curve": 1.5},
 }
 const TABLES: Array[String] = ["enemies", "patterns", "bosses", "weapons", "ships", "blessings", "wings", "weather",
 		"powers"]
@@ -80,6 +80,8 @@ var drift_frames: int = 0
 var scroll: float = 0.0
 var scroll_speed: float = 22.0
 var rank: float = RANK_START
+## Posição na curva por capítulo (SimCurve; o "curve" de DIFFICULTY diz quanto dela a dificuldade usa).
+var curve: float = 0.0
 var laser_active: bool = false
 var laser_width: float = 0.0
 var laser_to_y: float = 0.0
@@ -200,6 +202,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	player.setup((tables["ships"] as Dictionary).get(ship_id, {}), sensitivity * mods.speed_mult)
 	player.place(field)
 	var diff: Dictionary = DIFFICULTY[difficulty]
+	curve = SimCurve.position(loadout, mission, float(diff["curve"]))
 	player.max_hull = maxi(1, player.max_hull + mods.extra_hull + int(diff["hull"]))
 	player.hull = player.max_hull
 	player.bombs += int(loadout.get("bombs", 0))
@@ -278,20 +281,9 @@ func can_fire() -> bool:
 	return no_fire <= 0 and not finished and not Specials.frozen(self) and not powers.frozen
 
 
+## Velocidade das balas inimigas agora (dificuldade, rank, curva, chefe, modos; SimCurve.bullet_speed).
 func bullet_speed_mult() -> float:
-	var diff: Dictionary = DIFFICULTY[difficulty]
-	var mult := float(diff["bullet"])
-	if bool(diff["rank"]):
-		mult *= 1.0 + 0.12 * (rank - 0.5) * 2.0
-	if boss != null and boss.desperate:
-		mult *= 1.15
-	if second_tide:
-		mult *= 1.15
-	if "fast_bullets" in mutators:
-		mult *= 1.2
-	if abyss_depth > 1:
-		mult *= 1.0 + minf(0.45, 0.01 * (abyss_depth - 1))
-	return mult
+	return SimCurve.bullet_speed(self)
 
 
 ## Multiplicador de dano do jogador agora (hangar, bênçãos, Fúria e Maré Alta).
@@ -538,6 +530,7 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 		params["side"] = -float(params.get("side", 1.0))
 	e.setup(def, Vector2(x, y), StringName(String(spec.get("path", "straight"))), params,
 			tables["patterns"], bool(spec.get("from_depth", false)))
+	SimCurve.apply_enemy(e, curve)
 	e.marked = bool(spec.get("marked", def.get("marked", false)))
 	if e.marked:
 		scoring.marked_total += 1
@@ -557,7 +550,7 @@ func spawn_boss(boss_id: StringName, final: bool) -> void:
 	if def.is_empty():
 		return
 	boss = SimBoss.new()
-	boss.setup(def, tables["patterns"])
+	boss.setup(def, tables["patterns"], SimCurve.boss_hp_mult(curve, def))
 	if not final:
 		_miniboss_start = frame
 	else:

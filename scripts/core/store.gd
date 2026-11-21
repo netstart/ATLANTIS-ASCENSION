@@ -1,11 +1,11 @@
 class_name Store
 extends RefCounted
-## Loja (plano mestre 17): cosméticos por Pérolas de Maré, compra única "Apoiar" e anúncio recompensado
-## opcional. Nada de poder à venda e nenhuma compra de moeda. A única compra com cobrança real é o Turbo
-## (scripts/core/turbo.gd, Play Billing); "Apoiar" e o passe seguem SIMULADOS — `simulated()` diz quando a
-## loja finge a transação (editor, testes e builds de desenvolvimento) e nenhuma cobrança acontece; em
-## release eles somem. O anúncio é o do `Ads` (AdMob real, simulado ou "off"): sem IDs do AdMob não há
-## anúncio e a recompensa sai direto.
+## Loja (plano mestre 17): cosméticos por Pérolas de Maré e anúncio recompensado opcional. Nada de poder à
+## venda e nenhuma compra de moeda. As compras com dinheiro real (Turbo, Apoiar, pinturas, atalho de nave,
+## pacotes) são as do catálogo `Iap` (scripts/core/iap.gd, Play Billing); só o passe dourado segue SIMULADO
+## — `simulated()` diz quando a loja finge a transação (editor, testes e builds de desenvolvimento) e
+## nenhuma cobrança acontece. As pinturas com produto na Play também saem por Pérolas. O anúncio é o do
+## `Ads` (AdMob real, simulado ou "off"): sem IDs do AdMob não há anúncio e a recompensa sai direto.
 ## Steam: premium, sem anúncios; os cosméticos vêm todos inclusos (feature "steam" no preset).
 
 const COSMETICS_PATH := "res://data/cosmetics.json"
@@ -17,7 +17,7 @@ static func cosmetics() -> Array:
 
 
 static func owned(profile: Dictionary, id: String) -> bool:
-	return is_steam() or (profile["unlocked"]["cosmetics"] as Array).has(id)
+	return is_steam() or (profile["unlocked"]["cosmetics"] as Array).has(id) or Iap.grants_cosmetic(profile, id)
 
 
 ## Compra um cosmético com Pérolas. Devolve se comprou.
@@ -41,10 +41,28 @@ static func equip(profile: Dictionary, id: String) -> void:
 
 ## Cor do cosmético equipado (tinta da aeronave) ou "" para a cor padrão.
 static func tint_of(id: String) -> String:
+	return String(cosmetic(id).get("color", ""))
+
+
+static func cosmetic(id: String) -> Dictionary:
+	if id.is_empty():
+		return {}
 	for c: Variant in cosmetics():
 		if String((c as Dictionary)["id"]) == id:
-			return String((c as Dictionary).get("color", ""))
-	return ""
+			return c
+	return {}
+
+
+## Efeitos da pintura na partida (só desenho: a Sim não lê nada disto): rastro do motor, halo do tiro do
+## jogador e estouro da explosão da nave. Cor vazia = a padrão. O halo do tiro é sempre pastel (pouca
+## saturação, muito claro) para nunca lembrar uma bala inimiga, que é saturada (tests/iap_tests.gd).
+static func paint_fx(id: String) -> Dictionary:
+	var def := cosmetic(id)
+	var out := {}
+	for key: String in ["trail", "shot", "burst"]:
+		if def.has(key):
+			out[key] = Color(String(def[key]))
+	return out
 
 
 static func is_steam() -> bool:
@@ -61,24 +79,17 @@ static func ads_allowed(profile: Dictionary) -> bool:
 ## Sem plugin de pagamento a loja simula a compra — só em builds de desenvolvimento (editor, testes, APK
 ## de debug sem o plugin). Release sem plugin nunca finge uma cobrança. O AdMob não conta aqui: o APK de
 ## debug com o plugin de anúncio continua simulando a compra. Com o plugin GodotGooglePlayBilling no
-## pacote, só o Turbo (scripts/core/turbo.gd) é cobrado de verdade.
+## pacote, as compras do catálogo (scripts/core/iap.gd) são cobradas de verdade.
 static func simulated() -> bool:
 	return not Engine.has_singleton("GodotGooglePlayBilling") and OS.is_debug_build()
 
 
-## "Apoiar" (supporter) e passe dourado (season_gold) aparecem na tela. Eles ainda NÃO têm produto no
-## Play Console: só existem simulados (desenvolvimento). O plugin de Billing entrou no release para o
-## Turbo e não liga estes dois; quando tiverem produto, passam pelo PlayBillingProvider como o Turbo.
+## Passe dourado (season_gold) à venda: ainda NÃO tem produto no Play Console e só existe simulado
+## (desenvolvimento). O "Apoiar" deixou de depender disto: é do catálogo `Iap`.
 static func purchases_enabled() -> bool:
 	return not is_steam() and simulated()
 
 
-## "Apoiar": compra única que remove anúncios e dá a pintura dourada. Simulada até a Fase 4.
+## "Apoiar" no modo simulado (testes): o mesmo `Iap.buy` da Loja. Na Play a compra volta por Iap.on_changed.
 static func support(profile: Dictionary) -> bool:
-	if bool(profile["purchases"].get("supporter", false)) or not simulated():
-		return false
-	profile["purchases"]["supporter"] = true
-	var list: Array = profile["unlocked"]["cosmetics"]
-	if not list.has("tint_supporter"):
-		list.append("tint_supporter")
-	return true
+	return Iap.buy(profile, Iap.SUPPORT)

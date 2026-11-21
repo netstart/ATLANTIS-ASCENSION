@@ -77,7 +77,10 @@ func step(sim: Sim, origin: Vector2, can_fire: bool) -> void:
 		pc += 1
 		match StringName(String(s.get("op", ""))):
 			&"wait":
-				wait = maxi(0, int(s.get("frames", 1)) - 1)
+				var frames := int(s.get("frames", 1))
+				if SimRevision.of(sim.loadout) >= 3:
+					frames = maxi(1, roundi(frames * SimCurve.wait_for(sim)))
+				wait = maxi(0, frames - 1)
 				return
 			&"rotate":
 				angle += float(s.get("deg", 0.0))

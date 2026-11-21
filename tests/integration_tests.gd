@@ -25,6 +25,7 @@ const CampaignTests := preload("res://tests/campaign_tests.gd")
 const HangarTests := preload("res://tests/hangar_tests.gd")
 const StoreTests := preload("res://tests/store_tests.gd")
 const TurboTests := preload("res://tests/turbo_tests.gd")
+const IapTests := preload("res://tests/iap_tests.gd")
 const ScriptGate := preload("res://tests/script_gate.gd")
 
 var _count: int = 0
@@ -96,7 +97,8 @@ func _ready() -> void:
 		CommandTests.new().run(_check)
 		CampaignTests.new().run(_check)
 		StoreTests.new().run(_check)
-		TurboTests.new().run(_check)})
+		TurboTests.new().run(_check)
+		IapTests.new().run(_check)})
 	units.append({"name": "Casca de comando", "weight": 1.0, "run": func() -> void:
 		await CommandTests.new().run_view(self, _check)})
 	units.append({"name": "Campanha", "weight": 4.5, "run": func() -> void:
@@ -111,6 +113,8 @@ func _ready() -> void:
 		await StoreTests.new().run_view(self, _check)})
 	units.append({"name": "Turbo e Play Billing", "weight": 1.0, "run": func() -> void:
 		await TurboTests.new().run_view(self, _check)})
+	units.append({"name": "Compras da Play (catálogo)", "weight": 1.5, "run": func() -> void:
+		await IapTests.new().run_view(self, _check)})
 	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
 	units.append({"name": "Poderes na tela", "weight": 8.0, "run": func() -> void:
 		await PowerViewTests.new().run(self, _check)})

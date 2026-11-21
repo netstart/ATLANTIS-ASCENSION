@@ -3,7 +3,8 @@ extends Node
 ##   godot --path . res://tests/game_shots_runner.tscn -- --shots=<pasta> [--at=12,50,100] [--res=305x678]
 ##     [--mission=c1m1] [--speed=3] [--zoom=4] [--lang=de] [--radio=thalassa_hello] [--cutout] [--turbo] [--left]
 ## --cutout simula o furo da câmera da resolução em cima (área segura); --turbo mostra o botão Turbo (1,5x);
-## --left põe os botões na mão esquerda. --rev=1 joga com as regras de uma revisão antiga da Sim (SimRevision), para
+## --left põe os botões na mão esquerda. --paint=paint_solar voa com essa pintura (rastro, tiro e estouro).
+## --rev=1 joga com as regras de uma revisão antiga da Sim (SimRevision), para
 ## comparar antes e depois. --window=1102x874 usa uma janela física qualquer (fora da tabela), com a
 ## tela lógica que o PixelScaler der para ela.
 ## O bot joga em velocidade acelerada; em cada segundo de jogo pedido grava <pasta>/game_<s>_<res>.png.
@@ -49,6 +50,8 @@ var _view := Vector2(305, 678)
 var _turbo := false
 ## Revisão da Sim pedida por --rev (0 = a atual).
 var _rev: int = 0
+## Pintura pedida por --paint ("" = a original da nave).
+var _paint: String = ""
 ## Modo poderes: naves que faltam, a nave da vez, o próximo lançamento e as capturas pendentes (passo, id).
 var _powers := false
 var _ships: Array[StringName] = []
@@ -96,6 +99,8 @@ func _ready() -> void:
 			cutout = true
 		elif arg == "--turbo":
 			_turbo = true
+		elif arg.begins_with("--paint="):
+			_paint = arg.trim_prefix("--paint=")
 		elif arg == "--left":
 			Settings.set_value("handedness", "left")
 	if _shots.is_empty():
@@ -120,9 +125,11 @@ func _ready() -> void:
 		return
 	_game = GAME.instantiate() as Game
 	var load: Variant = &"falcon"
-	if _rev > 0:
+	if _rev > 0 or not _paint.is_empty():
 		load = Sim.default_loadout(&"falcon")
-		load["rev"] = _rev
+		if _rev > 0:
+			load["rev"] = _rev
+		load["cosmetic"] = _paint
 	_game.configure(_mission, load, 7, true)
 	_game.screen = _view
 	add_child(_game)

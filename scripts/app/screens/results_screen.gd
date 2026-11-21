@@ -53,6 +53,13 @@ var _defeat: DefeatPanel
 var _chest: TideChestPanel
 var _credits_pill: PanelContainer
 var _rewards: VBoxContainer
+## Pintura equipada (a nave pintada e o nome) e a oferta única do pacote inicial (Iap.starter_offer_due).
+var _paint: HBoxContainer
+var _paint_icon: TextureRect
+var _paint_name: Label
+var _offer: PanelContainer
+var _offer_text: Label
+var _offer_now: bool = false
 var _double: Button
 var _double_pearls: Button
 ## Recompensas ("credits", "pearls") cujo anúncio o jogador fechou antes do fim nesta tela.
@@ -81,6 +88,19 @@ func _build() -> void:
 	_card.add_child(_box)
 	_subtitle = _centered(UiTheme.label("", UiTheme.SMALL_SIZE, UiTheme.TEXT_DIM, true))
 	_box.add_child(_subtitle)
+	_paint = HBoxContainer.new()
+	_paint.name = "Paint"
+	_paint.alignment = BoxContainer.ALIGNMENT_CENTER
+	_paint.add_theme_constant_override("separation", 4)
+	_paint_icon = TextureRect.new()
+	_paint_icon.custom_minimum_size = Vector2(24, 24)
+	_paint_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_paint_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_paint.add_child(_paint_icon)
+	_paint_name = UiTheme.label("", UiTheme.SMALL_SIZE, UiTheme.TEXT)
+	_paint_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_paint.add_child(_paint_name)
+	_box.add_child(_paint)
 	_title = _centered(UiTheme.heading("", UiTheme.TITLE_SIZE, UiTheme.MINT))
 	_title.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_box.add_child(_title)
@@ -184,6 +204,7 @@ func _build() -> void:
 	_rewards = VBoxContainer.new()
 	_rewards.add_theme_constant_override("separation", 4)
 	_box.add_child(_rewards)
+	_build_offer()
 	_retry = Button.new()
 	_retry.name = "Retry"
 	_retry.custom_minimum_size = Vector2(0, SECONDARY_HEIGHT)
@@ -209,6 +230,11 @@ func default_focus() -> Control:
 func on_show(app: Node) -> void:
 	result = app.get("last_result") if app != null else {}
 	_declined.clear()
+	# Pacote inicial: um cartão discreto, uma única vez (a marca é gravada ao mostrar).
+	_offer_now = Iap.starter_offer_due(SaveManager.data, result)
+	if _offer_now:
+		SaveManager.data["iap"]["starter_offered"] = true
+		SaveManager.save_profile()
 	# O anúncio que carrega (ou é usado) com a tela aberta troca só o texto dos botões de dobrar: refazer a
 	# tela inteira recriaria as linhas de recompensa apagadas no meio da revelação.
 	Ads.on_ready_changed(_refresh_ad_buttons)
@@ -261,6 +287,16 @@ func refresh_texts() -> void:
 	_double_pearls.visible = Modes.daily_pearls_doublable(SaveManager.data, result)
 	_refresh_ad_buttons()
 	_fill_rewards()
+	var cosmetic := String(SaveManager.data["selected"].get("cosmetic", ""))
+	_paint.visible = not cosmetic.is_empty() and not bool(result.get("replay", false))
+	if _paint.visible:
+		_paint_icon.texture = ShipIcon.texture(Color(Store.tint_of(cosmetic)))
+		_paint_name.text = tr("cosmetic." + cosmetic)
+	_offer.visible = _offer_now and not Iap.owns(SaveManager.data, Iap.STARTER)
+	if _offer.visible:
+		var price := Iap.price(Iap.STARTER)
+		_offer_text.text = tr("store.starter_offer") if price.is_empty() else "%s · %s" % [tr("store.starter_offer"), price]
+		(_offer.find_child("OfferOpen", true, false) as Button).text = tr("store.starter_see")
 	_retry.text = tr("results.retry")
 	_continue.text = tr("results.continue")
 	# A ação principal muda com o desfecho: na vitória, seguir; na derrota, tentar de novo.
@@ -705,6 +741,33 @@ func _fill_rewards() -> void:
 		if _revealing:
 			row.modulate.a = 0.0
 	_rewards.visible = _rewards.get_child_count() > 0
+
+
+## Cartão discreto do pacote inicial (nunca um popup): uma linha e "Ver na Loja", que abre a sub-aba Extras.
+func _build_offer() -> void:
+	_offer = PanelContainer.new()
+	_offer.name = "StarterOffer"
+	_offer.visible = false
+	var box := UiTheme.chamfer(Color(UiTheme.GOLD, 0.08), Color(UiTheme.GOLD, 0.45), 1, 5)
+	box.content_margin_left = 10
+	box.content_margin_right = 10
+	box.content_margin_top = 6
+	box.content_margin_bottom = 6
+	_offer.add_theme_stylebox_override("panel", box)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 4)
+	_offer.add_child(col)
+	_offer_text = _centered(UiTheme.label("", UiTheme.SMALL_SIZE, UiTheme.GOLD, true))
+	_offer_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	col.add_child(_offer_text)
+	var open := Button.new()
+	open.name = "OfferOpen"
+	open.custom_minimum_size = Vector2(0, UiTheme.TOUCH_MIN)
+	open.pressed.connect(func() -> void:
+		ShopScreen.next_tab = ShopScreen.TAB_SUPPORT
+		navigate.emit(&"shop"))
+	col.add_child(open)
+	_box.add_child(_offer)
 
 
 func _card_box(accent: Color) -> StyleBoxFlat:

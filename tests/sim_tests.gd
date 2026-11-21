@@ -68,6 +68,15 @@ func _spawn_spread(check: Callable) -> void:
 	check.call(not rows.is_empty() and bad.is_empty(),
 			"Saída das balas: %d padrões sem bolo na boca do emissor%s" % [rows.size(),
 			"" if bad.is_empty() else "; com bolo: " + ", ".join(bad)])
+	# Revisão 3: a curva por capítulo e o rank encurtam as esperas. No fim da curva (capítulo 10), na Brisa (balas mais
+	# lentas) e na Abissal com rank cheio (esperas mais curtas), as emissões seguidas ainda não se amontoam.
+	for hard: Array in [["brisa", Sim.RANK_START], ["abyssal", 1.0]]:
+		var worst: Array[String] = []
+		for row: Dictionary in spawn_spread_report(_tables_once(), SimRevision.CURRENT, &"c10m3", hard[0], hard[1]):
+			if int(row["group"]) >= SPREAD_GROUP:
+				worst.append("%s (%s): %d balas no passo %d" % [row["pattern"], row["who"], row["group"], row["frame"]])
+		check.call(worst.is_empty(), "Saída das balas: sem bolo no capítulo 10 (%s, rank %.1f)%s" % [hard[0], hard[1],
+				"" if worst.is_empty() else "; com bolo: " + ", ".join(worst)])
 	var old := Sim.new()
 	var load := Sim.default_loadout(&"falcon")
 	load["rev"] = 1
@@ -86,8 +95,10 @@ func _spawn_spread(check: Callable) -> void:
 
 
 ## Maior grupo de balas novas sobrepostas de cada uso de padrão (padrão + raio do emissor), com a Sim na revisão
-## `rev`. Linhas {pattern, who, radius, group, frame}.
-static func spawn_spread_report(tables: Dictionary, rev: int) -> Array[Dictionary]:
+## `rev`, na missão e dificuldade dadas e com o rank fixo em `rank` (curva por capítulo e cadência da revisão 3).
+## Linhas {pattern, who, radius, group, frame}.
+static func spawn_spread_report(tables: Dictionary, rev: int, mission_id: StringName = &"c1m1",
+		difficulty: String = "brisa", rank: float = Sim.RANK_START) -> Array[Dictionary]:
 	var patterns: Dictionary = tables["patterns"]
 	var uses := {}
 	for id: StringName in tables["enemies"]:
@@ -106,9 +117,10 @@ static func spawn_spread_report(tables: Dictionary, rev: int) -> Array[Dictionar
 					uses["%s|%s" % [pid, r]] = [pid, String(id), r]
 	var sim := Sim.new()
 	var load := Sim.default_loadout(&"falcon")
-	load["difficulty"] = "brisa"
+	load["difficulty"] = difficulty
 	load["rev"] = rev
-	sim.setup(Sim.load_mission(&"c1m1"), tables, load, 7)
+	sim.setup(Sim.load_mission(mission_id), tables, load, 7)
+	sim.rank = rank
 	var origin := Vector2(sim.field.x * 0.5, 110.0)
 	var rows: Array[Dictionary] = []
 	for key: String in uses:

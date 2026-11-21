@@ -495,3 +495,19 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   Partes com o mesmo pulso; ponto fraco acende dourado, e o acerto nele solta faíscas douradas. Abaixo de 30% do HP,
   brasas piscando devagar em três ferimentos, fumaça leve e faíscas esparsas. "Reduzir movimento": sem tranco e
   tinte até 16%. Teste em `tests/vfx_tests.gd` (`_test_hit_pulse`)
+- ✅ Mesmo retorno de dano em todo inimigo (comuns, elites, torres, chefes de meio; só vista, hash igual): o branco
+  chapado saiu do shader; cada inimigo atingido ganha um HitPulse (`scripts/view/enemy_pulses.gd`, chave pelo id de
+  instância, estoque reaproveitado, liberado quando ele morre ou sai). Tranco só em raio ≥ 15 (metade a inteiro pelo
+  tamanho). Teste em `tests/vfx_tests.gd` (`_test_enemy_pulses`)
+- ✅ Compras da Play sem vender força (`scripts/core/iap.gd`, catálogo no lugar do caminho só do Turbo): Turbo,
+  "Apoiar a Halcyon" (agora real: sem anúncio e tema dourado do hub), 4 pinturas com rastro, halo de tiro pastel e
+  estouro próprios (também por Pérolas), atalho da Tridente (nave lateral; fragmentos continuam), pacote inicial
+  (oferta única no resultado do 1º chefe de ato, sempre em Loja › Extras) e o consumível de 3 revives sem anúncio
+  (troca só o anúncio; 1 reviver por missão). Restaura, pendente, acknowledge/consume e reembolso; sem preço da Play
+  não aparece. Expansão de modos ficou de fora (seção 17). Produtos para o Console em `docs/store/play-console.md`.
+  Teste em `tests/iap_tests.gd`
+- ✅ Rebalanceamento (revisão 3 da Sim, `scripts/sim/sim_curve.gd`): curva por capítulo (balas +30%, cadência +45%,
+  vida +80% nos comuns e +15% no chefe de ato, no cap. 10 da Normal; Brisa 0,5x, Veterano 1,3x, Abissal 1,5x), rank
+  na cadência (±10%) e hangar +3% de dano por nível (era +4%). Replays antigos seguem as regras da revisão deles.
+  Meta e medição no plano mestre 4.7; `tests/boss_timing.gd` ganhou `--seeds`, `--diff`, `--hangar` e resumo por
+  capítulo

@@ -1,17 +1,18 @@
 class_name ShopScreen
 extends ListScreen
-## Loja (plano mestre 17): baú grátis a cada 6 h (em dobro com anúncio opcional), o Turbo (compra única
-## com dinheiro real na Google Play, scripts/core/turbo.gd), cosméticos por Pérolas e a compra única
-## "Apoiar". Nada de poder à venda, nada de energia, de baú pago aleatório ou de urgência falsa. "Apoiar"
-## e o passe ainda são só simulados (Store.simulated, somem em release); no desenvolvimento uma tira
-## discreta avisa que nada é cobrado. Steam: sem anúncio, sem a sub-aba Apoio e sem o cartão do Turbo
-## (incluído).
+## Loja (plano mestre 17): baú grátis a cada 6 h (em dobro com anúncio opcional), o Turbo, as pinturas (por
+## Pérolas e, as de efeitos, também com dinheiro real) e a sub-aba Extras com as outras compras do catálogo
+## (scripts/core/iap.gd): pacote inicial, "Apoiar a Halcyon", atalho da Tridente e pacote de revives. Nada de
+## poder à venda, nada de energia, de baú pago aleatório ou de urgência falsa; cada cartão diz o que dá e o
+## preço vem da Play (sem preço, o produto não aparece). Sem o plugin (desenvolvimento) a compra é simulada e
+## uma tira discreta avisa que nada é cobrado. Steam: sem anúncio, sem Extras e sem o Turbo (incluídos).
 ##
-## 1.15 (menus de comando): sub-abas em pílula no topo (Baú | Pinturas | Apoio, PillTabs), o baú num
+## 1.15 (menus de comando): sub-abas em pílula no topo (Baú | Pinturas | Extras, PillTabs), o baú num
 ## cartão-destaque com o Duarte em pixel art ampliado (StoreBanner), seções em faixa chevron e as
 ## pinturas numa grade de ladrilhos (CommandKit.item_tile) com a raridade na cor da moldura e o estado
 ## sempre legível embaixo (Equipada, Possuída, preço em pérolas, quanto falta). Tocar num ladrilho abre o
-## painel de detalhe (CommandSheet) com a prévia da própria nave pintada e a ação: Comprar ou Equipar.
+## painel de detalhe (CommandSheet) com a prévia da própria nave pintada (com rastro, tiro e estouro, nas
+## pinturas de efeitos) e a ação: Comprar (Pérolas ou Play) ou Equipar.
 
 const TAB_CHEST := &"chest"
 const TAB_PAINTS := &"paints"
@@ -20,6 +21,9 @@ const TAB_SUPPORT := &"support"
 const CELL := 76.0
 ## Preço que ainda não dá: coral claro (lê bem sobre o vidro escuro).
 const SHORT_COLOR := Color("ff8fa3")
+
+## Sub-aba a abrir na próxima vez (o cartão do pacote inicial no resultado pede Extras).
+static var next_tab: StringName = &""
 
 var _tab: StringName = TAB_CHEST
 var _tabs: PillTabs
@@ -57,6 +61,10 @@ func _build() -> void:
 func on_show(app: Node) -> void:
 	_sheet.visible = false
 	_sheet_id = ""
+	if next_tab != &"":
+		_tab = next_tab
+		next_tab = &""
+		_set_tabs()
 	super(app)
 
 
@@ -130,7 +138,7 @@ func _fill() -> void:
 		TAB_PAINTS:
 			_fill_paints(profile, false)
 		TAB_SUPPORT:
-			_fill_support(profile)
+			_fill_extras(profile)
 		_:
 			_fill_chest(profile, now)
 			if Turbo.shop_visible(profile):
@@ -334,8 +342,12 @@ func _show_sheet() -> void:
 	head.add_child(badge(_rarity_name(int(p["rarity"])), accent, &"diamond"))
 	box.add_child(head)
 	var ship := StringName(String(profile["selected"]["ship"]))
-	box.add_child(ship_view(p["tint"], 2, false, Economy.ship_level(profile, ship)))
-	var hint := text(box, tr("store.preview"), UiTheme.TEXT_DIM, UiTheme.SMALL_SIZE)
+	var view := ship_view(p["tint"], 2, false, Economy.ship_level(profile, ship))
+	view.name = "PaintPreview"
+	view.fx = Store.paint_fx(_sheet_id)
+	box.add_child(view)
+	var hint := text(box, tr("store.preview") if view.fx.is_empty() else tr("store.paint_gives"), UiTheme.TEXT_DIM,
+			UiTheme.SMALL_SIZE)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var main: Button = null
 	var id := _sheet_id
@@ -353,12 +365,44 @@ func _show_sheet() -> void:
 		var how := text(box, String(p["how"]), UiTheme.VIOLET)
 		how.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	else:
+		_play_buy(box, String(Store.cosmetic(_sheet_id).get("product", "")))
 		main = _buy_button(box, row, p, profile)
 	box.add_child(row)
 	var close := _sheet_button(row, tr("store.close"), _sheet.close, "Close", false)
 	row.move_child(close, 0)
 	if FocusNav.pad:
 		FocusNav.focus(main if main != null and not main.disabled else close)
+
+
+## Pintura com produto na Play: a compra com dinheiro real ao lado da de Pérolas (as duas dão o mesmo).
+## Some sem preço da Play (produto ainda não criado no Console) e fora da Play/simulado.
+func _play_buy(box: VBoxContainer, product: String) -> void:
+	if product.is_empty() or not Iap.visible(SaveManager.data, product):
+		return
+	Iap.on_changed(_refresh_sheet)
+	var status := Iap.status(product)
+	var waiting := status == "busy" or status == "pending"
+	if not status.is_empty():
+		var says := {"busy": tr("store.turbo_busy"), "pending": tr("store.pending"),
+				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
+		var line := text(box, String(says.get(status, tr("store.turbo_failed"))),
+				UiTheme.GOLD if waiting else SHORT_COLOR, UiTheme.SMALL_SIZE)
+		line.name = "PaintStatus"
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var price := Iap.price(product)
+	var b := _sheet_button(box, tr("store.buy_price") % price if not price.is_empty() else tr("store.buy_money"),
+			func() -> void:
+				if Iap.buy(SaveManager.data, product):
+					AudioManager.play_ui("kenney_ui_confirm"), "BuyPlay_" + product, false)
+	b.disabled = waiting
+	var or_line := text(box, tr("store.or_pearls"), UiTheme.TEXT_DIM, UiTheme.SMALL_SIZE)
+	or_line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+func _refresh_sheet() -> void:
+	if _sheet != null and _sheet.is_open():
+		refill()
+		_show_sheet()
 
 
 ## Botão de compra: ouro com "Comprar", a pérola e o preço. Sem pérolas suficientes vira vidro com filete
@@ -434,83 +478,148 @@ func _rarity_name(rarity: int) -> String:
 			tr("store.rarity_legendary")][clampi(rarity, 0, 3)]
 
 
-# --- Apoio -------------------------------------------------------------------------------------------
+# --- Extras (compras com dinheiro real, Iap) ---------------------------------------------------------
 
+## A sub-aba aparece quando há algo do catálogo para mostrar (à venda ou já da conta).
 static func _support_visible(profile: Dictionary) -> bool:
-	return Store.purchases_enabled() or bool(profile["purchases"].get("supporter", false))
+	for id: String in [Iap.STARTER, Iap.SUPPORT, Iap.SHIP_SHORTCUT, Iap.REVIVE_PACK]:
+		if _extra_visible(profile, id):
+			return true
+	return false
 
 
-## "Apoiar": compra única, preço e efeito ditos às claras (sem pacote, sem porcentagem, sem relógio).
-func _fill_support(profile: Dictionary) -> void:
-	var banner := StoreBanner.new(UiTheme.VIOLET, tr("shop.support"), "thalassa", "smile")
-	_list.add_child(banner)
-	text(banner.body, tr("shop.support_desc"), UiTheme.WHITE)
+## O atalho da Tridente some para quem já a liberou pelos fragmentos (não daria nada).
+static func _extra_visible(profile: Dictionary, id: String) -> bool:
+	if not Iap.visible(profile, id):
+		return false
+	var ship := String(Iap.product(id).get("ship", ""))
+	return ship.is_empty() or Iap.owns(profile, id) or not (profile["unlocked"]["ships"] as Array).has(ship)
+
+
+## Pacote inicial, Apoiar, atalho de nave e pacote de revives: o que cada um dá, o preço da Play e o
+## estado, sem pacote surpresa, sem porcentagem e sem relógio. "Restaurar compras" no fim, com cobrança real.
+func _fill_extras(profile: Dictionary) -> void:
+	if _extra_visible(profile, Iap.STARTER):
+		_product_card(profile, {"id": Iap.STARTER, "node": "Starter", "color": UiTheme.GOLD,
+				"title": tr("store.starter"), "speaker": "duarte", "desc": tr("store.starter_desc"),
+				"extra": func(body: VBoxContainer) -> void:
+					_gift(body, "tint_supporter")
+					_gift(body, Iap.STARTER_PAINT)})
+	if _extra_visible(profile, Iap.SUPPORT):
+		_product_card(profile, {"id": Iap.SUPPORT, "node": "Support", "color": UiTheme.VIOLET,
+				"title": tr("shop.support"), "speaker": "thalassa", "desc": tr("shop.support_desc"),
+				"owned": tr("shop.support_thanks"), "extra": func(body: VBoxContainer) -> void:
+					_gift(body, "tint_supporter")})
+	if _extra_visible(profile, Iap.SHIP_SHORTCUT):
+		_ship_card(profile)
+	if _extra_visible(profile, Iap.REVIVE_PACK):
+		var charges := Iap.revive_charges(profile)
+		_product_card(profile, {"id": Iap.REVIVE_PACK, "node": "Revive", "color": UiTheme.CORAL,
+				"title": tr("store.revive_pack"), "speaker": "farol", "desc": tr("store.revive_desc"),
+				"note": tr("store.revive_note"), "extra": func(body: VBoxContainer) -> void:
+					var have := text(body, tr("store.revive_have") % charges, UiTheme.GOLD, UiTheme.SMALL_SIZE)
+					have.name = "ReviveCharges"
+					_bold(have)})
+	if Iap.mode() == "play":
+		var restore := button(_list, tr("store.restore"), Iap.restore, true, "Restore")
+		restore.add_theme_font_size_override("font_size", UiTheme.SMALL_SIZE)
+
+
+## Atalho de nave lateral: a nave, quantos fragmentos já tem e que ela continua saindo jogando.
+func _ship_card(profile: Dictionary) -> void:
+	var ship := String(Iap.product(Iap.SHIP_SHORTCUT)["ship"])
+	var need := 0
+	for row: Variant in DB.rows("ships"):
+		if String((row as Dictionary)["id"]) == ship:
+			need = int((row as Dictionary).get("fragments", 0))
+	var have := mini(int((profile["hangar"]["fragments"] as Dictionary).get(ship, 0)), need)
+	_product_card(profile, {"id": Iap.SHIP_SHORTCUT, "node": "Ship", "color": UiTheme.TURQUOISE,
+			"title": tr("store.ship_shortcut") % tr("ship." + ship), "speaker": "mare",
+			"desc": tr("store.ship_desc"), "extra": func(body: VBoxContainer) -> void:
+				_gift_row(body, ShipIcon.texture(ship_tint(ship)), tr("ship." + ship), UiTheme.TURQUOISE).name = "ShipGift"
+				text(body, tr("store.ship_fragments") % [have, need], UiTheme.TEXT, UiTheme.SMALL_SIZE)})
+
+
+## Ladrilho do que a compra dá (a pintura na própria nave) com o nome em ouro.
+func _gift(body: VBoxContainer, cosmetic: String) -> void:
+	var tint := ship_tint(String(SaveManager.data["selected"]["ship"]), cosmetic)
+	_gift_row(body, ShipIcon.texture(tint), tr("cosmetic." + cosmetic), UiTheme.GOLD).name = "Gift_" + cosmetic
+
+
+func _gift_row(body: VBoxContainer, texture: Texture2D, value: String, color: Color) -> HBoxContainer:
 	var gift := HBoxContainer.new()
 	gift.add_theme_constant_override("separation", 6)
-	var swatch := CommandKit.item_tile(ShipIcon.texture(Color(Store.tint_of("tint_supporter"))), 0,
-			CommandKit.LEGENDARY)
+	var swatch := CommandKit.item_tile(texture, 0, CommandKit.LEGENDARY)
 	swatch.focus_mode = Control.FOCUS_NONE
 	swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	swatch.custom_minimum_size = Vector2(44, 44)
 	gift.add_child(swatch)
-	var gift_name := UiTheme.label(tr("cosmetic.tint_supporter"), UiTheme.SMALL_SIZE, UiTheme.GOLD, true)
+	var gift_name := UiTheme.label(value, UiTheme.SMALL_SIZE, color, true)
 	_bold(gift_name)
 	gift_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	gift_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	gift.add_child(gift_name)
-	banner.body.add_child(gift)
-	if bool(profile["purchases"].get("supporter", false)):
-		var thanks := badge(tr("shop.support_thanks"), UiTheme.MINT, &"check")
-		thanks.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		banner.actions.add_child(thanks)
-		return
-	button(banner.actions, tr("shop.support_buy"), func() -> void:
-		if Store.support(SaveManager.data):
-			SaveManager.save_profile(), Store.simulated(), "Support", true)
-	var honest := text(banner.actions, tr("store.support_note"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
+	body.add_child(gift)
+	return gift
+
+
+## Cartão de uma compra com dinheiro real (Iap; simulada no desenvolvimento): o que faz, o que dá
+## (`extra` monta no corpo), o preço da Play (sem preço ainda, "Comprar"), o estado (Ativo, abrindo a
+## Play, pendente, erro) e, com `restore`, "Restaurar compras" no próprio cartão. Se refaz quando a Play
+## responde (Iap.on_changed). Os nós levam o prefixo `node` (TurboBuy, SupportOwned...).
+func _product_card(profile: Dictionary, spec: Dictionary) -> StoreBanner:
+	Iap.on_changed(refill)
+	var id := String(spec["id"])
+	var node := String(spec["node"])
+	var banner := StoreBanner.new(spec["color"], String(spec["title"]), String(spec["speaker"]),
+			String(spec.get("mood", "smile")))
+	banner.name = node + "Banner"
+	_list.add_child(banner)
+	text(banner.body, String(spec["desc"]), UiTheme.WHITE)
+	if spec.has("extra"):
+		(spec["extra"] as Callable).call(banner.body)
+	if Iap.owns(profile, id) or (id == Turbo.PRODUCT and Turbo.owned(profile)):
+		var on := badge(String(spec.get("owned", tr("store.owned"))), UiTheme.MINT, &"check")
+		on.name = node + "Owned"
+		on.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+		banner.actions.add_child(on)
+		return banner
+	var status := Iap.status(id)
+	var waiting := status == "busy" or status == "pending"
+	if not status.is_empty():
+		var says := {"busy": tr("store.turbo_busy"), "pending": String(spec.get("pending", tr("store.pending"))),
+				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
+		var line := text(banner.actions, String(says.get(status, tr("store.turbo_failed"))),
+				UiTheme.GOLD if waiting else SHORT_COLOR, UiTheme.SMALL_SIZE)
+		line.name = node + "Status"
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var price := Iap.price(id)
+	var label := String(spec.get("buy", tr("store.buy_price"))) % price if not price.is_empty() \
+			else String(spec.get("buy_plain", tr("store.buy")))
+	var buy := button(banner.actions, label, func() -> void:
+		if Iap.buy(SaveManager.data, id):
+			AudioManager.play_ui("kenney_ui_confirm")
+			SaveManager.save_profile(), not waiting, node + "Buy", true)
+	buy.custom_minimum_size.y = 44.0
+	if bool(spec.get("restore", false)) and Iap.mode() == "play":
+		var restore := button(banner.actions, tr("store.restore"), Iap.restore, status != "busy", node + "Restore")
+		restore.add_theme_font_size_override("font_size", UiTheme.SMALL_SIZE)
+	var honest := text(banner.actions, String(spec.get("note", tr("store.support_note"))), UiTheme.TEXT,
+			UiTheme.SMALL_SIZE)
 	honest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	return banner
 
 
 # --- Turbo -------------------------------------------------------------------------------------------
 
-## Turbo (compra única com dinheiro real na Google Play; simulada no desenvolvimento): o que faz, o preço
-## da Play (sem preço ainda, "Comprar Turbo"), o estado (Ativo, abrindo a Play, pendente, erro) e
-## "Restaurar compras" quando a cobrança é real. O cartão se refaz quando a Play responde (Turbo.on_changed).
+## Turbo (compra única com dinheiro real na Google Play; simulada no desenvolvimento): o cartão do Baú,
+## com "Restaurar compras" quando a cobrança é real.
 func _fill_turbo(profile: Dictionary) -> void:
-	Turbo.on_changed(refill)
-	var banner := StoreBanner.new(UiTheme.CYAN, tr("store.turbo"), "mare", "alert")
-	banner.name = "TurboBanner"
-	_list.add_child(banner)
-	text(banner.body, tr("store.turbo_desc"), UiTheme.WHITE)
-	var speeds := text(banner.body, tr("store.turbo_speeds"), UiTheme.CYAN, UiTheme.SMALL_SIZE)
-	_bold(speeds)
-	if Turbo.owned(profile):
-		var on := badge(tr("store.turbo_owned"), UiTheme.MINT, &"check")
-		on.name = "TurboOwned"
-		on.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		banner.actions.add_child(on)
-		return
-	var status := Turbo.status()
-	var waiting := status == "busy" or status == "pending"
-	if not status.is_empty():
-		var says := {"busy": tr("store.turbo_busy"), "pending": tr("store.turbo_pending"),
-				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
-		var line := text(banner.actions, String(says.get(status, tr("store.turbo_failed"))),
-				UiTheme.GOLD if waiting else SHORT_COLOR, UiTheme.SMALL_SIZE)
-		line.name = "TurboStatus"
-		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var price := Turbo.price()
-	var label := tr("store.turbo_buy") % price if not price.is_empty() else tr("store.turbo_buy_plain")
-	var buy := button(banner.actions, label, func() -> void:
-		if Turbo.buy(SaveManager.data):
-			AudioManager.play_ui("kenney_ui_confirm")
-			SaveManager.save_profile(), not waiting, "TurboBuy", true)
-	buy.custom_minimum_size.y = 44.0
-	if Turbo.mode() == "play":
-		var restore := button(banner.actions, tr("store.restore"), Turbo.restore, status != "busy", "TurboRestore")
-		restore.add_theme_font_size_override("font_size", UiTheme.SMALL_SIZE)
-	var honest := text(banner.actions, tr("store.support_note"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
-	honest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_product_card(profile, {"id": Turbo.PRODUCT, "node": "Turbo", "color": UiTheme.CYAN, "title": tr("store.turbo"),
+			"speaker": "mare", "mood": "alert", "desc": tr("store.turbo_desc"), "owned": tr("store.turbo_owned"),
+			"pending": tr("store.turbo_pending"), "buy": tr("store.turbo_buy"), "buy_plain": tr("store.turbo_buy_plain"),
+			"restore": true, "extra": func(body: VBoxContainer) -> void:
+				_bold(text(body, tr("store.turbo_speeds"), UiTheme.CYAN, UiTheme.SMALL_SIZE))})
 
 
 # --- Peças -------------------------------------------------------------------------------------------

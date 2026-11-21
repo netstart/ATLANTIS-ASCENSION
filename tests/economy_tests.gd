@@ -53,7 +53,7 @@ func _rules(check: Callable) -> void:
 	check.call(not Economy.toggle_wing(p, &"wing_tide", wings), "Economia: asa sem estrelas suficientes não equipa")
 	var load := Economy.loadout(p)
 	check.call(load["secondary"] == "missiles" and (load["wings"] as Array).has("wing_magnet")
-			and is_equal_approx(float(load["damage"]), 0.04), "Economia: carga leva nível, secundária e asa")
+			and is_equal_approx(float(load["damage"]), 0.03), "Economia: carga leva nível, secundária e asa")
 	for i: int in range(Economy.SHIP_MAX_LEVEL + 2):
 		p["wallet"]["credits"] = 100000
 		Economy.upgrade_ship(p, &"falcon")

@@ -60,6 +60,25 @@ func run(host: Node, check: Callable) -> void:
 	app.go(&"back")
 	await LayoutTests.settle(host)
 	check.call(app.current == &"hub", "Montagem: voltar da Carta depois do resultado leva à Campanha, sem laço")
+	# Passe da Maré: resgatar pelo toque não rola a lista atrás do próximo botão.
+	var had_season: Variant = SaveManager.data.get("season")
+	SaveManager.data["season"] = {"id": Season.id_for(App.today()), "xp": Season.XP_PER_TIER * Season.TIERS,
+			"claimed": [], "premium": false, "premium_claimed": []}
+	app.go(&"season")
+	await LayoutTests.settle(host)
+	var season := app.screen(&"season")
+	var season_scroll := season.get("_scroll") as ScrollContainer
+	season_scroll.scroll_vertical = 160
+	await LayoutTests.settle(host)
+	var before_y := season_scroll.scroll_vertical
+	var tier_button := season.find_child("Tier_6", true, false) as Button
+	tier_button.grab_focus()
+	tier_button.pressed.emit()
+	await LayoutTests.settle(host)
+	check.call(before_y > 0 and season_scroll.scroll_vertical == before_y,
+			"Montagem: resgatar no Passe da Maré deixa a lista onde estava (%d → %d)" % [before_y,
+			season_scroll.scroll_vertical])
+	SaveManager.data["season"] = had_season
 	app.go(&"hub")
 	await LayoutTests.settle(host)
 	app.last_result = {"mission": "c1m2", "cleared": false, "score": 10, "stars": [false, false, false, false]}

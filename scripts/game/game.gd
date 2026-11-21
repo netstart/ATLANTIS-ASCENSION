@@ -792,14 +792,23 @@ func _on_revive_choice(accept: bool) -> void:
 	_hud.hide_revive()
 	if not accept:
 		return
+	# Carga do pacote de revives (Iap): troca só o anúncio; a vez continua 1 por missão (can_revive já caiu).
+	if Iap.revive_path(SaveManager.data) == "charge" and Iap.spend_revive(SaveManager.data):
+		SaveManager.save_profile()
+		_revived()
+		return
 	# Anúncio que não abre (falha técnica) ou que não carregou devolve granted: o reviver só se perde se o
 	# jogador fechar o anúncio antes do fim (Ads.rewarded_granted).
 	Ads.show_rewarded(SaveManager.data, func(granted: bool) -> void:
 		if granted:
-			_done = -1.0
-			sim.revive()
-			AudioManager.play("kenney_weapon_up")
-			_hud.show_banner(tr("hud.revived")))
+			_revived())
+
+
+func _revived() -> void:
+	_done = -1.0
+	sim.revive()
+	AudioManager.play("kenney_weapon_up")
+	_hud.show_banner(tr("hud.revived"))
 
 
 func _finish(quit: bool) -> void:

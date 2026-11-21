@@ -1,8 +1,9 @@
 # Google Play Console — roteiro de publicação e respostas
 
 Tudo o que o Play Console pede para publicar o Atlantis Ascension, na ordem das telas, com a resposta certa para a
-versão atual (**grátis, jogável offline, com anúncios recompensados opcionais do AdMob e uma compra no app: o
-Turbo**, produto `turbo`, compra única de US$ 1,99). O que só o titular da conta pode fazer
+versão atual (**grátis, jogável offline, com anúncios recompensados opcionais do AdMob e compras no app sem
+vantagem de força**: Turbo, Apoiar, pinturas, atalho de nave, pacote inicial e pacote de revives; lista em
+"Compras no app: o catálogo"). O que só o titular da conta pode fazer
 (pagar, aceitar termos, verificar identidade, enviar arquivos) está marcado com 👤.
 
 ## 0. Arquivos prontos
@@ -24,7 +25,7 @@ meta-data `com.google.android.gms.ads.APPLICATION_ID` = `ca-app-pub-655216982829
 `PoingGodotAdMob` no pacote; Play Billing: plugin `GodotGooglePlayBilling` 3.3.0 (Billing Library 9.1.0) e a
 permissão `com.android.vending.BILLING` (`python -I tools/check_release_ads.py` confere os dois;
 `tools/build_release.ps1` o roda). Permissões do manifesto final: `VIBRATE` (do jogo); `com.android.vending.BILLING`
-(Billing Library, compra do Turbo); `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (as duas,
+(Billing Library, compras no app); `INTERNET`, `ACCESS_NETWORK_STATE`, `AD_ID` (as duas,
 `android.` e `com.google.android.gms.`) e `READ_BASIC_PHONE_STATE` (SDK de anúncios); `WAKE_LOCK` e
 `FOREGROUND_SERVICE` (WorkManager, dependência do SDK); `<pacote>.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
 (AndroidX, interna). Nenhuma é "perigosa" (nenhum diálogo de permissão para o jogador).
@@ -94,7 +95,7 @@ ficha. Declarar errado é violação de política.
 | Apostas / jogos de azar simulados | Não (o baú grátis dá recompensa fixa sem compra; não há loot box paga) |
 | Interação entre usuários, chat, conteúdo gerado | Não |
 | Compartilha localização | Não |
-| Compras digitais | **Sim** (o Turbo, compra única opcional pela Google Play; não é loot box nem moeda) |
+| Compras digitais | **Sim** (compras opcionais pela Google Play: Turbo, Apoiar, pinturas, atalho de nave, pacotes; nenhuma é loot box, moeda ou vantagem de força) |
 | Navegador / acesso irrestrito à internet | Não |
 
 Resultado esperado: classificação baixa (ex.: PEGI 7, ESRB E10+, ClassInd 10). A Play mostra o resultado antes de
@@ -131,7 +132,7 @@ Tipos de dados, todos com **Coletado: Sim**, **Compartilhado: Sim**, **Processad
 | Informações e desempenho do app › **Diagnóstico** (tempo de carga, falhas do SDK) | Análise; Prevenção de fraudes, segurança e conformidade |
 | IDs do dispositivo ou outros IDs › **IDs do dispositivo ou outros IDs** (ID de publicidade, ID do conjunto de apps) | Publicidade ou marketing; Análise; Prevenção de fraudes, segurança e conformidade |
 
-A compra do Turbo **não acrescenta tipo de dado**: o pagamento é feito na tela da própria Google Play (o Google
+As compras no app **não acrescentam tipo de dado**: o pagamento é feito na tela da própria Google Play (o Google
 é quem coleta, sob a política dele), e o jogo só recebe se a compra existe. Por isso **Informações financeiras ›
 Histórico de compras** fica desmarcado, como no guia do Google para apps que só usam o Play Billing.
 
@@ -154,7 +155,7 @@ Responder "Não" com a permissão no manifesto faz a Play bloquear o envio.
 | Declaração | Resposta |
 |---|---|
 | App governamental | Não |
-| Recursos financeiros | Meu app não oferece recursos financeiros (a compra do Turbo pela Google Play não conta) |
+| Recursos financeiros | Meu app não oferece recursos financeiros (as compras no app pela Google Play não contam) |
 | Saúde | Meu app não tem recursos de saúde |
 | App de notícias | Não |
 | Permissões sensíveis (fotos/vídeos, localização, SMS, chamadas, serviço em primeiro plano, intent em tela cheia, alarme exato) | nenhuma é usada pelo jogo. Se a Play pedir declaração de serviço em primeiro plano, responda que o app não usa: o `FOREGROUND_SERVICE` genérico vem da WorkManager (dependência do SDK de anúncios), sem nenhum `FOREGROUND_SERVICE_<tipo>` |
@@ -231,32 +232,57 @@ Secrets do repositório (grave com `powershell -ExecutionPolicy Bypass -File too
 A Play recusa um AAB com `version/code` já enviado: suba o versionCode a cada commit
 (`docs/policies/versionamento.md`); commit sem subir só é pulado.
 
-## Compras no app: o Turbo
+## Compras no app: o catálogo
 
 O código está pronto: plugin `GodotGooglePlayBilling` 3.3.0 em `addons/GodotGooglePlayBilling` (ligado no
-`project.godot`), `scripts/core/play_billing_provider.gd` (portado do hyakki) e `scripts/core/turbo.gd`. O Turbo
-acelera a partida em 1,5x ou 2x (botão no HUD); deixa o jogo mais rápido, não mais fácil. Na Steam vem incluído.
-Política de privacidade, ficha e as respostas acima (IARC "Compras digitais" = Sim) já estão atualizadas.
+`project.godot`), `scripts/core/play_billing_provider.gd` (portado do hyakki), o catálogo em
+`scripts/core/iap.gd` e o Turbo em `scripts/core/turbo.gd`. **Nada vende força**: nada de créditos, upgrades,
+vidas ou vantagem. Tudo o que é vendido também sai jogando (pinturas por Pérolas, a Tridente por fragmentos), exceto
+o "Apoiar" e o pacote inicial, que são só conforto (sem anúncio) e visual. Na Steam (premium) tudo vem incluído ou
+sai jogando: Turbo e pinturas inclusos, sem anúncio, sem pacote de revives.
 
-Fluxo no aparelho: ao abrir, o jogo conecta à Play, busca o preço e consulta as compras (`queryPurchases`): quem
-reinstala ou troca de aparelho recupera o Turbo sozinho (e a Loja tem "Restaurar compras"). Comprar abre a tela da
+Fluxo no aparelho: ao abrir, o jogo conecta à Play, busca os preços e consulta as compras (`queryPurchases`): quem
+reinstala ou troca de aparelho recupera tudo sozinho (e a Loja tem "Restaurar compras"). Comprar abre a tela da
 Play; compra concluída libera e é confirmada (`acknowledge`, sem isso a Play estorna em 3 dias); compra
-**pendente** (boleto, dinheiro em loja) não libera até a Play concluir; reembolso tira o Turbo na próxima abertura.
+**pendente** (boleto, dinheiro em loja) não libera até a Play concluir; reembolso tira o item na próxima abertura
+(a nave e as pinturas ganhas jogando ficam). O consumível (`revive_pack_3`) credita 3 cargas, grava o save e só
+então é consumido (`consume`); o token fica guardado para nunca creditar duas vezes. **Produto sem preço da Play
+(ainda não criado ou inativo no Console) não aparece na Loja**: dá para ativar um por vez.
 
-Faltam 👤, nesta ordem:
+### Produtos no Play Console (criados e ativos em 2026-11-21)
 
-1. Play Console → Monetizar → Produtos → **Produtos no app** → Criar produto: ID **`turbo`** (não muda nunca),
-   nome "Turbo", descrição "Acelera a partida em 1,5x ou 2x. Mais rápido, não mais fácil.", preço padrão
-   **US$ 1,99** (a Play converte para cada país; revise o preço em reais) e **Ativar**. A Play só deixa criar
-   produtos depois de um AAB com a permissão `BILLING` enviado a alguma faixa (o AAB novo já tem).
+Cada produto tem uma opção de compra "Comprar" com ID `<id>-compra` (hífens no lugar de `_`, ex.: `starter-pack-compra`),
+compatível com versões anteriores (a Billing Library do plugin usa essa), preço em USD aplicado a todas as 174 regiões.
+Play Console → Monetizar → Produtos → **Produtos no app** → Criar produto, um por linha. O ID não muda nunca.
+Preço padrão em dólar (a Play converte para cada país; revise o preço em reais) e **Ativar**.
+
+| ID | Tipo na Play | Preço | Título (pt-BR / en) | Descrição (pt-BR / en) |
+|---|---|---|---|---|
+| `turbo` | Produto no app (não consumível) | US$ 1,99 | Turbo / Turbo | Acelera a partida em 1,5x ou 2x. Mais rápido, não mais fácil. / Speeds the run up to 1.5x or 2x. Faster, not easier. |
+| `support` | Produto no app (não consumível) | US$ 3,99 | Apoiar a Halcyon / Support the Halcyon | Recompensas da Loja e reviver sem anúncio, tema dourado no hub e a pintura dourada. Nenhum poder extra. / Shop rewards and revives without ads, a gold hub theme and the gold paint. No extra power. |
+| `starter_pack` | Produto no app (não consumível) | US$ 4,49 | Pacote inicial / Starter pack | "Apoiar a Halcyon" e a pintura Solar juntos, com desconto. Nenhum poder extra. / "Support the Halcyon" plus the Solar paint, at a discount. No extra power. |
+| `ship_trident` | Produto no app (não consumível) | US$ 1,99 | Atalho: Tridente / Shortcut: Trident | Libera a Tridente agora. Joga diferente, não é mais forte; também sai por fragmentos jogando. / Unlocks the Trident now. It plays differently, it is not stronger; fragments still unlock it by playing. |
+| `paint_aurora` | Produto no app (não consumível) | US$ 0,99 | Pintura Aurora / Aurora paint | Pintura de nave com rastro, cor de tiro e estouro próprios. Só visual; também sai por Pérolas. / Ship paint with its own trail, shot color and burst. Looks only; also earned with Pearls. |
+| `paint_reef` | Produto no app (não consumível) | US$ 0,99 | Pintura Recife / Reef paint | (a mesma descrição da Aurora) |
+| `paint_abyssal` | Produto no app (não consumível) | US$ 1,99 | Pintura Abissal / Abyssal paint | (a mesma descrição da Aurora) |
+| `paint_solar` | Produto no app (não consumível) | US$ 1,99 | Pintura Solar / Solar paint | (a mesma descrição da Aurora) |
+| `revive_pack_3` | Produto no app (**consumível**: o jogo consome) | US$ 0,99 | 3 revives sem anúncio / 3 ad-free revives | Na tela "Casco perdido", reviva sem ver anúncio. Continua 1 reviver por missão. / On the "Hull lost" screen, revive without an ad. Still 1 revive per mission. |
+
+Na Play os produtos no app são todos do mesmo tipo: "consumível" é só o jeito como o jogo trata a compra (o
+`consume`), não um campo do Console. Pérolas das pinturas: Aurora e Recife 250, Abissal e Solar 400.
+
+Depois de criar:
+
+1. A Play só deixa criar produtos depois de um AAB com a permissão `BILLING` enviado a alguma faixa (o AAB atual já
+   tem).
 2. Configuração → Teste de licença: pôr os e-mails dos testadores (compram sem cobrança de verdade) e testar no
-   teste interno: comprar, compra pendente ("Cartão de teste, aprovar depois"), cancelar, desinstalar e reinstalar.
+   teste interno, para cada produto: comprar, compra pendente ("Cartão de teste, aprovar depois"), cancelar,
+   desinstalar e reinstalar (restaura), reembolsar pelo Console (o item some na próxima abertura). No pacote de
+   revives: comprar duas vezes seguidas (a Play só deixa se o jogo consumiu a primeira).
 3. Ficha da loja: a Play mostra "Compras no app" sozinha depois de o produto estar ativo; confira.
 
-"Apoiar" (`supporter`) e o passe dourado (`season_gold`) **não** são vendidos: continuam só simulados no
-desenvolvimento e escondidos no release (`Store.purchases_enabled`), mesmo com o plugin no pacote. Para vendê-los
-um dia: criar os produtos aqui, ligá-los pelo `PlayBillingProvider` como o Turbo e atualizar a política e este
-documento antes do envio.
+O passe dourado (`season_gold`) **não** é vendido: continua só simulado no desenvolvimento e escondido no release
+(`Store.purchases_enabled`).
 
 ## Ligar o anúncio recompensado (AdMob)
 

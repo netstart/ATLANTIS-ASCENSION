@@ -244,6 +244,9 @@ func _fill_stage(parent: Container, profile: Dictionary) -> void:
 	center.add_child(holder)
 	var view := ship_view(tint, zoom, false, level)
 	view.name = "HeroShip"
+	# Pintura equipada com efeitos: rastro, tiro e estouro em volta da nave (a altura do palco não muda).
+	view.fx = Store.paint_fx(String(profile["selected"].get("cosmetic", "")))
+	view.fx_room = false
 	view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	holder.add_child(view)
 	view.custom_minimum_size = Vector2(ShipView.SIZE * float(zoom) + 8.0, ShipView.SIZE * float(zoom) + 8.0)
@@ -904,9 +907,19 @@ func _detail_wing(box: VBoxContainer, profile: Dictionary, entry: Dictionary) ->
 				SaveManager.save_profile())
 
 
-func _detail_paint(box: VBoxContainer, _profile: Dictionary, entry: Dictionary) -> void:
+func _detail_paint(box: VBoxContainer, profile: Dictionary, entry: Dictionary) -> void:
 	var id := String(entry["id"])
 	var def := _cosmetic(id)
+	var fx := Store.paint_fx(id)
+	if not fx.is_empty():
+		# Prévia da pintura com rastro, tiro e estouro, e o que ela dá (só visual).
+		var ship := StringName(String(profile["selected"]["ship"]))
+		var view := ship_view(Color(String(def.get("color", "#ffffff"))), 2, false, Economy.ship_level(profile, ship))
+		view.name = "PaintPreview"
+		view.fx = fx
+		box.add_child(view)
+		var gives := text(box, tr("store.paint_gives"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
+		gives.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	if bool(entry["selected"]):
 		_status(box, tr("hangar.equipped"), UiTheme.MINT, &"check")
 		return

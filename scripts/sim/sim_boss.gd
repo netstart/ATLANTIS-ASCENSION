@@ -39,11 +39,12 @@ var _patterns: Dictionary = {}
 var _start := Vector2.ZERO
 
 
-func setup(p_def: Dictionary, patterns: Dictionary) -> void:
+## `hp_mult`: curva por capítulo da Sim (corpo e partes; 1 = vida da tabela).
+func setup(p_def: Dictionary, patterns: Dictionary, hp_mult: float = 1.0) -> void:
 	def = p_def
 	id = StringName(String(def.get("id", "")))
 	is_final = bool(def.get("duel", false))
-	max_hp = float(def.get("hp", 1000.0))
+	max_hp = float(def.get("hp", 1000.0)) * hp_mult
 	hp = max_hp
 	_patterns = patterns
 	home = Vector2(float(def.get("home_x", 135.0)), float(def.get("home_y", 110.0)))
@@ -54,7 +55,7 @@ func setup(p_def: Dictionary, patterns: Dictionary) -> void:
 		p["id"] = StringName(String(p.get("id", "")))
 		p["base"] = Vector2(float(p.get("x", 0.0)), float(p.get("y", 0.0)))
 		p["offset"] = p["base"]
-		p["max_hp"] = float(p.get("hp", 0.0))
+		p["max_hp"] = float(p.get("hp", 0.0)) * hp_mult
 		p["hp"] = p["max_hp"]
 		p["alive"] = true
 		p["flash"] = 0

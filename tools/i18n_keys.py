@@ -42,7 +42,8 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"mutator.{m}" for m in ("fast_bullets", "laser_only", "railgun_only", "dark", "gravity", "glass")] + [
     f"achievement.{a['id']}" for a in json.loads((ROOT / "data" / "achievements.json").read_text(encoding="utf-8"))] + [
     f"results.{r}" for r in ("achievement", "board", "season_xp")] + [
-    f"cosmetic.tint_season_{s}" for s in ("a", "b", "c")] + ["season.title", "options.ghost"] + ["speaker.narrator", "hangar.title", "ships.title"] + [
+    f"cosmetic.tint_season_{s}" for s in ("a", "b", "c")] + [
+    f"cosmetic.paint_{s}" for s in ("aurora", "reef", "abyssal", "solar")] + ["season.title", "options.ghost"] + ["speaker.narrator", "hangar.title", "ships.title"] + [
     f"results.{r}" for r in ("fragments", "log", "new_mission", "new_ship", "new_wing")] + [
     f"role.{r}" for r in ("artillery", "drones", "piercing", "critical", "explosive", "hybrid")] + [
     f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"] + [

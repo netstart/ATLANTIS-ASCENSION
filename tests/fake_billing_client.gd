@@ -1,12 +1,14 @@
 extends BillingClient
-## BillingClient falso para os testes do Turbo (tests/turbo_tests.gd): no PC não há o singleton do
-## plugin, então BillingClient._init não toca em nada. Guarda cada chamada em `calls` e só responde
-## quando o teste manda (connect_now, answer_details, answer_purchases, purchase_update), como a Play,
-## que responde depois por sinal. Origem: tests/fake_billing_client.gd do hyakki (mesmo autor, MIT).
+## BillingClient falso para os testes do Turbo e do catálogo (tests/turbo_tests.gd, tests/iap_tests.gd):
+## no PC não há o singleton do plugin, então BillingClient._init não toca em nada. Guarda cada chamada
+## em `calls` e só responde quando o teste manda (connect_now, answer_details, answer_purchases,
+## purchase_update), como a Play, que responde depois por sinal. Origem: tests/fake_billing_client.gd do
+## hyakki (mesmo autor, MIT).
 
 var play_ready: bool = false
 ## Chamadas recebidas, em ordem: ["start_connection"], ["query_product_details", ids, tipo],
-## ["query_purchases", tipo, suspensas], ["purchase", id, ...], ["acknowledge_purchase", token].
+## ["query_purchases", tipo, suspensas], ["purchase", id, ...], ["acknowledge_purchase", token],
+## ["consume_purchase", token].
 var calls: Array = []
 ## Respostas de purchase() (launchBillingFlow), uma por chamada; vazia = OK.
 var launch_results: Array[Dictionary] = []
@@ -40,6 +42,10 @@ func acknowledge_purchase(purchase_token: String) -> void:
 	calls.append(["acknowledge_purchase", purchase_token])
 
 
+func consume_purchase(purchase_token: String) -> void:
+	calls.append(["consume_purchase", purchase_token])
+
+
 func count(method: String) -> int:
 	return calls.filter(func(entry: Array) -> bool: return entry[0] == method).size()
 
@@ -71,6 +77,6 @@ func purchase_update(code: int, purchases: Array = []) -> void:
 
 
 static func make_purchase(product: String, state: int = PurchaseState.PURCHASED,
-		acknowledged: bool = false) -> Dictionary:
+		acknowledged: bool = false, token: String = "") -> Dictionary:
 	return {"product_ids": [product], "purchase_state": state, "is_acknowledged": acknowledged,
-			"purchase_token": "token_%s" % product}
+			"purchase_token": token if not token.is_empty() else "token_%s" % product}

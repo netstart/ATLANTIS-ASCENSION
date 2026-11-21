@@ -92,6 +92,13 @@ func setup(kinds: Array[Dictionary], capacity: int) -> void:
 	_counts.resize(kinds.size())
 
 
+## Halo de todos os tipos numa cor (pintura do jogador, Store.paint_fx "shot"). O núcleo e o contorno
+## continuam os do tipo: só a luz muda, e a pintura só usa cor pastel, longe das balas inimigas.
+func set_glow(color: Color) -> void:
+	for halo: MultiMeshInstance2D in _halos:
+		halo.modulate = Color(color, halo_alpha)
+
+
 func render(pool: BulletPool) -> void:
 	_counts.fill(0)
 	for i: int in range(pool.count):

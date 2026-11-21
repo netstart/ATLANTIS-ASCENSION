@@ -46,8 +46,11 @@ static func default_profile() -> Dictionary:
 				"bombs_used": 0, "tide_used": 0, "time_played": 0.0, "bosses_defeated": {}},
 		"daily": {"date": "", "best_score": 0, "attempted": false, "pearls_doubled": false},
 		"login": {"streak": 0, "last_date": "", "shields_left": 1},
-		# "turbo": compra única do Turbo (Turbo.owned); "selected.turbo" é a velocidade escolhida.
-		"purchases": {"supporter": false, "pending": false, "turbo": false},
+		# "turbo": compra única do Turbo (Turbo.owned); "selected.turbo" é a velocidade escolhida. As outras
+		# compras da Play entram pelo id do produto (Iap); "supporter" é derivado de "support"/"starter_pack".
+		"purchases": {"supporter": false, "pending": false, "turbo": false, "support": false},
+		# Consumíveis e ofertas (Iap): cargas de reviver sem anúncio, tokens já creditados, pacote inicial oferecido.
+		"iap": {"revive_charges": 0, "credited": [], "starter_offered": false},
 		"tutorial_done": false,
 		"launches": 0,
 		# Avisos dos menus (Notices): aeronaves que o jogador já viu na coleção (as outras abertas acendem "!").
@@ -81,6 +84,10 @@ static func migrate(old: Dictionary) -> Dictionary:
 	_fill_missing(old, default_profile())
 	# "consent" (1.17-1.18.0) nunca foi lido: a escolha de consentimento é guardada pelo próprio UMP do Google.
 	old.erase("consent")
+	# "Apoiar" simulado de antes do catálogo (só "supporter"): vira a compra "support".
+	var purchases: Dictionary = old["purchases"]
+	if bool(purchases["supporter"]) and not bool(purchases.get("starter_pack", false)):
+		purchases["support"] = true
 	for ship: Variant in (old["unlocked"]["ships"] as Array):
 		if not (old["hangar"]["ship_levels"] as Dictionary).has(String(ship)):
 			old["hangar"]["ship_levels"][String(ship)] = 1

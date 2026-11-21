@@ -5,9 +5,10 @@ extends RefCounted
 ## reproduzirem igual. Carga sem "rev" numa partida nova = revisão atual; replay sem "rev" = 1 (Replay.from_dict).
 ##   1: até a 1.20.1.
 ##   2: balas inimigas nascem na boca do emissor, espalhadas, não no centro (PatternRunner.muzzle).
+##   3: rebalanceamento da dificuldade: curva por capítulo (balas, cadência, vida; Sim.CURVE_*) e rank na cadência.
 ## A saída da fase continua na marca "outro" da carga, anterior a este número (SimOutro).
 
-const CURRENT := 2
+const CURRENT := 3
 
 
 ## Revisão das regras de uma partida com esta carga.

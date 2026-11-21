@@ -137,8 +137,10 @@ func refill() -> void:
 	# Foco do controle na lista: volta para a mesma posição depois de remontar (comprar, equipar).
 	var keep := -1
 	var focused := get_viewport().gui_get_focus_owner() if is_inside_tree() else null
-	if focused != null and _list.is_ancestor_of(focused):
+	if FocusNav.pad and focused != null and _list.is_ancestor_of(focused):
 		keep = FocusNav.all(_list).find(focused)
+	# No toque, a lista fica onde o dedo deixou (resgatar não pode rolar a tela atrás de outro botão).
+	var scroll_y := _scroll.scroll_vertical
 	fills += 1
 	for child: Node in _list.get_children():
 		_list.remove_child(child)
@@ -152,6 +154,9 @@ func refill() -> void:
 		(value.get_parent().get_parent() as Control).tooltip_text = tr("currency." + kind)
 	_fill()
 	relayout()
+	# Depois que os contêineres reordenam (no mesmo quadro o limite da rolagem ainda é o da lista vazia).
+	if is_inside_tree():
+		get_tree().process_frame.connect(func() -> void: _scroll.scroll_vertical = scroll_y, CONNECT_ONE_SHOT)
 	if keep >= 0:
 		var controls := FocusNav.all(_list)
 		FocusNav.focus(controls[mini(keep, controls.size() - 1)] if not controls.is_empty() else _back)
@@ -763,17 +768,26 @@ class ShipView:
 	const SIZE := 48.0
 	const REVEAL_TIME := 1.4
 	const ASCEND_TIME := 2.4
+	const FX_LOOP := 2.6
 
 	var tint := Color.WHITE
 	var zoom: int = 2
 	var dim: bool = false
 	var level: int = 1
+	## Efeitos da pintura (Store.paint_fx: "trail", "shot", "burst"), em volta da nave: rastro dos dois
+	## bocais, tiros subindo com o halo da pintura e, a cada FX_LOOP s, o estouro da explosão. Vazio = nada.
+	var fx: Dictionary = {}
+	## Com `fx`, a vista cresce na altura para o rastro e os tiros. Sem espaço (palco do Hangar) os tiros, que
+	## subiriam sobre o título, ficam de fora: o rastro e o estouro cabem em volta da nave.
+	var fx_room: bool = true
 
 	var _time: float = 0.0
 	var _reveal: float = -1.0
 	var _wait: float = 0.0
 	var _base: Texture2D
 	var _engine: Texture2D
+	var _shot: Texture2D
+	var _glow: Texture2D
 
 	func _ready() -> void:
 		_base = SpriteBank.texture("res://assets/art/void/main_ship/base_full.png")
@@ -781,6 +795,11 @@ class ShipView:
 		texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		custom_minimum_size = Vector2(SIZE * float(zoom) + 24.0, SIZE * float(zoom) + 12.0)
+		if not fx.is_empty():
+			_shot = SpriteBank.texture("res://assets/art/generated/bullets/shot_pulsar.png")
+			_glow = SpriteBank.generated("fx/glow_32")
+			if fx_room:
+				custom_minimum_size.y += SIZE * float(zoom) * 0.9
 
 	## Começa a revelação da peça nova (em "reduzir movimento" a peça só aparece).
 	func reveal() -> void:
@@ -800,7 +819,7 @@ class ShipView:
 			if _reveal > _reveal_time():
 				_reveal = -1.0
 		if _wait <= 0.0:
-			_wait = 1.0 / (60.0 if _reveal >= 0.0 else REDRAW_HZ)
+			_wait = 1.0 / (60.0 if _reveal >= 0.0 else (30.0 if not fx.is_empty() else REDRAW_HZ))
 			queue_redraw()
 
 	func _draw() -> void:
@@ -820,6 +839,8 @@ class ShipView:
 		var calm := UiFx.reduced()
 		if _reveal >= 0.0 and level >= Economy.SHIP_MAX_LEVEL:
 			_draw_ascend(center, radius, clampf(_reveal / ASCEND_TIME, 0.0, 1.0))
+		if not dim and fx.has("trail"):
+			_draw_trail(center, z, fx["trail"])
 		draw_set_transform(center.round(), 0.0, Vector2(z, z))
 		var half := Vector2(SIZE, SIZE) * 0.5
 		if _engine != null and not dim:
@@ -832,8 +853,45 @@ class ShipView:
 		if not dim:
 			ShipLivery.draw_over(self, level, col, _time, 1.0, calm)
 		draw_set_transform(Vector2.ZERO)
+		if not dim and fx.has("shot") and fx_room:
+			_draw_shots(center, z, fx["shot"])
+		if not dim and fx.has("burst"):
+			_draw_burst(center, radius, fx["burst"])
 		if _reveal >= 0.0:
 			_draw_reveal(center, radius)
+
+	## Rastro: contas de luz que saem dos dois bocais e apagam descendo.
+	func _draw_trail(center: Vector2, z: float, color: Color) -> void:
+		for i: int in range(7):
+			var t := fmod(_time * 1.4 + float(i) / 7.0, 1.0)
+			for side: float in [-7.0, 7.0]:
+				var p := center + Vector2(side * z, (17.0 + t * SIZE * 0.42) * z)
+				draw_circle(p, (1.9 - 1.3 * t) * z * 0.7, Color(color, 0.85 * (1.0 - t)), true, -1.0, true)
+
+	## Tiros subindo do bico: o núcleo é o do jogo (contorno e forma de tiro do jogador); a cor é a do halo.
+	func _draw_shots(center: Vector2, z: float, color: Color) -> void:
+		for i: int in range(3):
+			var t := fmod(_time * 1.1 + float(i) / 3.0, 1.0)
+			var p := center + Vector2(0.0, (-22.0 - t * SIZE * 0.42) * z)
+			if _glow != null:
+				var g := 12.0 * z
+				draw_texture_rect(_glow, Rect2(p - Vector2(g, g) * 0.5, Vector2(g, g)), false, Color(color, 0.9))
+			if _shot != null:
+				var s := Vector2(_shot.get_size()) * z * 0.5
+				draw_texture_rect(_shot, Rect2(p - s * 0.5, s), false, Color(1, 1, 1, 1.0 - t * 0.4))
+
+	## Estouro da explosão da nave na cor da pintura: anel que abre e oito centelhas, a cada FX_LOOP s.
+	func _draw_burst(center: Vector2, radius: float, color: Color) -> void:
+		var t := fmod(_time, FX_LOOP) / FX_LOOP / 0.3
+		if t >= 1.0:
+			return
+		var fade := 1.0 - t
+		var wave := ease(t, 0.4)
+		draw_arc(center, radius * (0.4 + 0.8 * wave), 0.0, TAU, 48, Color(color, 0.9 * fade), 2.0, true)
+		for i: int in range(8):
+			var a := TAU * float(i) / 8.0
+			draw_circle(center + Vector2(cos(a), sin(a)) * radius * (0.3 + 0.9 * wave), 1.5 * fade + 0.5,
+					Color(color.lightened(0.3), fade), true, -1.0, true)
 
 	## A Ascendida (nível máximo) ganha a revelação longa, com raios de ouro.
 	func _reveal_time() -> float:

@@ -6,7 +6,10 @@ extends Node
 ## "unavailable"; nada é liberado sem confirmação do Google.
 ##
 ## Origem: scripts/ads/play_billing_provider.gd do projeto hyakki (mesmo autor, MIT), sem os pacotes
-## (bundles), que este jogo não vende. Produtos in-app não consumíveis (hoje só "turbo").
+## (bundles), que este jogo não vende. Produtos in-app do catálogo (scripts/core/iap.gd): não consumíveis
+## (Turbo, Apoiar, pinturas...) e consumíveis (`consumables`, hoje o pacote de revives). Consumível
+## concluído não é confirmado nem "reembolsado" pela consulta: sai em `consumable_purchased` com o token, o
+## Iap credita e grava, e só então chama `consume` (sem isso a Play não deixa comprar de novo).
 ##
 ## Ao conectar (abertura do app) consulta os detalhes (preço) e as compras (queryPurchases): é a
 ## restauração automática de quem reinstalou ou trocou de aparelho. Compra concluída e ainda não
@@ -31,6 +34,8 @@ signal product_price_changed(product: String, price: String)
 ## state: "purchased", "pending", "refunded" (a consulta da Play não traz mais o produto), "canceled",
 ## "unavailable" (a Play não respondeu ou o produto está indisponível) ou "failed" (outro erro).
 signal purchase_state(product: String, state: String)
+## Consumível concluído (pela tela de pagamento ou pela consulta): crédito a fazer antes do `consume`.
+signal consumable_purchased(product: String, token: String)
 
 const SINGLETON := "GodotGooglePlayBilling"
 ## Prazo (s) para a Play conectar e mandar os detalhes (ou a consulta da restauração) de um pedido.
@@ -55,6 +60,7 @@ var purchase_timeout: float = PURCHASE_TIMEOUT
 var resume_grace: float = RESUME_GRACE
 var _client: BillingClient
 var _products: PackedStringArray = PackedStringArray()
+var _consumables: PackedStringArray = PackedStringArray()
 ## Produtos com detalhes na última consulta que deu certo (o plugin só compra esses).
 var _fetched: Dictionary = {}
 ## Produto do pedido em andamento ("" = nenhum) e a fase ("wait", "open", "check" ou "restore").
@@ -72,8 +78,10 @@ static func is_supported() -> bool:
 
 ## `client`: o BillingClient do plugin (padrão) ou, nos testes, um falso que o estende. Chame com o nó
 ## já na árvore (o prazo é um Timer filho).
-func setup(products: PackedStringArray, client: BillingClient = null) -> void:
+func setup(products: PackedStringArray, client: BillingClient = null,
+		consumables: PackedStringArray = PackedStringArray()) -> void:
 	_products = products
+	_consumables = consumables
 	_client = client if client != null else BillingClient.new()
 	if _client.get_parent() == null:
 		add_child(_client)
@@ -92,11 +100,22 @@ func setup(products: PackedStringArray, client: BillingClient = null) -> void:
 		if int(response.get("response_code", -1)) != BillingClient.BillingResponseCode.OK:
 			push_warning("Billing: erro na confirmação (%d) %s" % [
 					int(response.get("response_code", -1)), response.get("debug_message", "")]))
+	# Consumo que não fecha: a compra volta na próxima consulta e o Iap não credita de novo (token guardado).
+	_client.consume_purchase_response.connect(func(response: Dictionary) -> void:
+		if int(response.get("response_code", -1)) != BillingClient.BillingResponseCode.OK:
+			push_warning("Billing: erro no consumo (%d) %s" % [
+					int(response.get("response_code", -1)), response.get("debug_message", "")]))
 	_client.start_connection()
 
 
 func price_of(product: String) -> String:
 	return String(prices.get(product, ""))
+
+
+## Consome a compra de um consumível (só depois de o crédito estar gravado).
+func consume(token: String) -> void:
+	if _client != null and not token.is_empty():
+		_client.consume_purchase(token)
 
 
 func is_ready() -> bool:
@@ -321,16 +340,22 @@ func _on_purchases(response: Dictionary, from_query: bool) -> void:
 			found[product] = true
 			match state:
 				BillingClient.PurchaseState.PURCHASED:
+					if product in _consumables:
+						consumable_purchased.emit(product, String(purchase.get("purchase_token", "")))
 					_emit_state(product, "purchased", from_query)
 				BillingClient.PurchaseState.PENDING:
 					_emit_state(product, "pending", from_query)
-		# Uma confirmação por compra (o token vale para todos os produtos dela); pendente não se confirma.
+		# Uma confirmação por compra (o token vale para todos os produtos dela); pendente não se confirma e
+		# consumível também não (o consumo já confirma).
 		if state == BillingClient.PurchaseState.PURCHASED and not bool(purchase.get("is_acknowledged", false)) \
-				and ids.any(func(id: Variant) -> bool: return String(id) in _products):
+				and ids.any(func(id: Variant) -> bool: return String(id) in _products and not String(id) in _consumables):
 			_client.acknowledge_purchase(String(purchase.get("purchase_token", "")))
 	if from_query:
 		for product: String in _products:
 			if found.has(product):
+				continue
+			# Consumível consumido some da consulta: isso não é reembolso (só encerra o pedido em "check"/"restore").
+			if product in _consumables and not (product == _request and _phase in ["check", "restore"]):
 				continue
 			if product == _request and _phase == "check":
 				_finish("canceled", code, "a tela de pagamento fechou sem resposta e a compra não está na consulta")
