@@ -4,6 +4,13 @@ extends RefCounted
 ## (mesmo hash) e com outra semente. Chamado por tests/run_tests.gd.
 
 const MAX_FRAMES := 60 * 60 * 10
+## Saída das balas (_spawn_spread): balas "novas" (até SPREAD_YOUNG passos de vida), quantas podem se amontoar
+## e por quantos passos cada padrão roda. Duas balas se sobrepõem com os centros a menos de SPREAD_DRAW × raio de
+## colisão (o desenho tem ≈ 1,7 × o raio; 2,5 = três quartos do diâmetro desenhado).
+const SPREAD_YOUNG := 30
+const SPREAD_GROUP := 4
+const SPREAD_FRAMES := 600
+const SPREAD_DRAW := 2.5
 
 
 var _tables: Dictionary = {}
@@ -25,6 +32,7 @@ func run_basics(check: Callable) -> void:
 	_data(check)
 	_pierce(check)
 	_outro(check)
+	_spawn_spread(check)
 
 
 func _pool(check: Callable) -> void:
@@ -43,6 +51,93 @@ func _pool(check: Callable) -> void:
 	pool.spawn(Vector2(90, 50), Vector2.ZERO, 3.0, 0)
 	var cancelled := pool.cancel_near(Vector2(50, 50), 10.0)
 	check.call(cancelled.size() == 1 and pool.count == 1, "Balas: cancelamento por raio")
+
+
+## Saída das balas (PatternRunner.muzzle, revisão 2 da Sim): cada padrão de inimigo, chefe e chefe de meio roda
+## SPREAD_FRAMES passos saindo do emissor que o usa (raio do inimigo, do corpo ou da parte), na dificuldade de
+## balas mais lentas (Brisa). Em nenhum passo um grupo de SPREAD_GROUP ou mais balas novas pode ficar com os centros
+## a menos de um raio de desenho umas das outras: é o bolo que aparecia em cima do sprite (Raia-Trovão). Replay
+## antigo (revisão 1) mantém a saída antiga, no centro.
+func _spawn_spread(check: Callable) -> void:
+	var bad: Array[String] = []
+	var rows := spawn_spread_report(_tables_once(), SimRevision.CURRENT)
+	for row: Dictionary in rows:
+		if int(row["group"]) >= SPREAD_GROUP:
+			bad.append("%s (%s, raio %d): %d balas no passo %d" % [row["pattern"], row["who"], row["radius"],
+					row["group"], row["frame"]])
+	check.call(not rows.is_empty() and bad.is_empty(),
+			"Saída das balas: %d padrões sem bolo na boca do emissor%s" % [rows.size(),
+			"" if bad.is_empty() else "; com bolo: " + ", ".join(bad)])
+	var old := Sim.new()
+	var load := Sim.default_loadout(&"falcon")
+	load["rev"] = 1
+	old.setup(Sim.load_mission(&"c1m1"), _tables_once(), load, 7)
+	var runner := PatternRunner.new({"steps": [{"op": "ring", "count": 4, "speed": 60}, {"op": "wait", "frames": 60}]}, 0,
+			30.0)
+	runner.step(old, Vector2(135, 100), true)
+	var center := old.enemy_bullets.pos[0] == Vector2(135, 100)
+	check.call(SimRevision.of(old.loadout) == 1 and old.enemy_bullets.count == 4 and center,
+			"Saída das balas: replay de revisão 1 nasce no centro, como antes")
+	var replay := Replay.from_dict({"v": Replay.VERSION, "loadout": {"ship": "falcon"}, "blocks": []})
+	var fresh := Replay.new({}, 7, {"ship": "falcon"}).to_dict()
+	var fresh_rev := int((fresh["loadout"] as Dictionary)["rev"])
+	check.call(int(replay.loadout["rev"]) == 1 and fresh_rev == SimRevision.CURRENT,
+			"Replay: gravação nova marca a revisão da Sim; a antiga carrega como revisão 1")
+
+
+## Maior grupo de balas novas sobrepostas de cada uso de padrão (padrão + raio do emissor), com a Sim na revisão
+## `rev`. Linhas {pattern, who, radius, group, frame}.
+static func spawn_spread_report(tables: Dictionary, rev: int) -> Array[Dictionary]:
+	var patterns: Dictionary = tables["patterns"]
+	var uses := {}
+	for id: StringName in tables["enemies"]:
+		var e: Dictionary = tables["enemies"][id]
+		var pid := StringName(String(e.get("pattern", "")))
+		if patterns.has(pid):
+			uses["%s|%s" % [pid, e.get("radius", 12.0)]] = [pid, String(id), float(e.get("radius", 12.0))]
+	for id: StringName in tables["bosses"]:
+		var boss := SimBoss.new()
+		boss.setup(tables["bosses"][id], patterns)
+		for ph: Variant in boss.def.get("phases", []):
+			for entry: Variant in (ph as Dictionary).get("patterns", []):
+				var pid := StringName(String((entry as Dictionary).get("pattern", "")))
+				var r := boss.anchor_radius(StringName(String((entry as Dictionary).get("anchor", "body"))))
+				if patterns.has(pid):
+					uses["%s|%s" % [pid, r]] = [pid, String(id), r]
+	var sim := Sim.new()
+	var load := Sim.default_loadout(&"falcon")
+	load["difficulty"] = "brisa"
+	load["rev"] = rev
+	sim.setup(Sim.load_mission(&"c1m1"), tables, load, 7)
+	var origin := Vector2(sim.field.x * 0.5, 110.0)
+	var rows: Array[Dictionary] = []
+	for key: String in uses:
+		var use: Array = uses[key]
+		var pool := sim.enemy_bullets
+		pool.clear()
+		sim.player.pos = Vector2(origin.x, sim.field.y - 60.0)
+		var runner := PatternRunner.new(patterns[use[0]], 0, float(use[2]))
+		var worst := 0
+		var at := 0
+		for f: int in range(SPREAD_FRAMES):
+			runner.step(sim, origin, true)
+			pool.step(Sim.STEP, sim.bounds)
+			var young: Array[int] = []
+			for i: int in range(pool.count):
+				if pool.age[i] <= SPREAD_YOUNG:
+					young.append(i)
+			for i: int in young:
+				var n := 1
+				for j: int in young:
+					if j != i:
+						var d := maxf(pool.radius[i], pool.radius[j]) * SPREAD_DRAW
+						if (pool.pos[i] as Vector2).distance_squared_to(pool.pos[j]) < d * d:
+							n += 1
+				if n > worst:
+					worst = n
+					at = f
+		rows.append({"pattern": String(use[0]), "who": use[1], "radius": int(use[2]), "group": worst, "frame": at})
+	return rows
 
 
 ## Saída da missão (SimOutro): o chefe que encerra a c2m3 cai com inimigos, balas, feixes, poder e coletáveis no
@@ -309,7 +404,14 @@ func _mission_checks(check: Callable, id: StringName, run: Dictionary) -> void:
 	check.call(int(run["peak"]) <= 300, "Densidade %s: no máximo 300 balas vivas (%d)" % [id, run["peak"]])
 	var seconds := float(r.get("seconds", 0.0))
 	check.call(seconds >= 120.0 and seconds <= 330.0, "Ritmo %s: de 2 a 5,5 min (%.0f s)" % [id, seconds])
-	check.call(int(r.get("kills", 0)) >= 50, "Missão %s: o bot derruba a maioria (%d)" % [id, r.get("kills")])
+	# 50 abates, ou 80% dos inimigos das ondas nas fases curtas (a c7m3s tem 50 ao todo: 50 exigia todos).
+	var spawned := 0
+	for ev: Variant in Sim.load_mission(id).get("events", []):
+		if String((ev as Dictionary).get("op", "")) == "wave":
+			spawned += int((ev as Dictionary).get("count", 1))
+	var need := mini(50, ceili(spawned * 0.8))
+	check.call(int(r.get("kills", 0)) >= need, "Missão %s: o bot derruba a maioria (%d de %d, mínimo %d)" % [id,
+			r.get("kills"), spawned, need])
 
 
 ## Campo alto (Playfield.MAX_HEIGHT): a nave começa à mesma distância do fundo, o bot ainda vence, o replay

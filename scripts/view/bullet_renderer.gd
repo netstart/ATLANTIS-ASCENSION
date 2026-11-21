@@ -6,6 +6,9 @@ extends Node2D
 ## Halo (opcional): um segundo MultiMesh por tipo, aditivo e com filtro linear, que reaproveita o
 ## mesmo buffer com a textura de clarão maior e a cor "glow" do tipo. Fica atrás das balas: o núcleo e
 ## o contorno continuam por cima (leitura), o halo só dá a luz neon.
+## Entrada (balas inimigas): a bala nasce a GROW_FROM do tamanho e chega ao cheio em `grow_frames` passos, com
+## saída rápida e freio no fim; a saída do emissor parece um disparo, não um bolo que surge pronto. Só desenho: a
+## hitbox é a mesma desde o primeiro passo, e GROW_FROM mantém o desenho maior que ela (BulletKinds "radius").
 
 ## Floats por instância no buffer 2D: duas linhas de 4 (base x, base y, origem).
 const STRIDE := 8
@@ -20,11 +23,16 @@ const COLORBLIND := {
 			&"orb_gold_m": Color(1.0, 0.72, 0.72), &"needle_gold": Color(1.0, 0.72, 0.72)},
 }
 
+## Tamanho em que a bala nasce na entrada (fração do cheio).
+const GROW_FROM := 0.65
+
 ## Paleta de daltonismo ativa ("off" = cores originais).
 var palette: String = "off"
 ## Alfa do halo aditivo (0 = sem halo) e quanto ele é maior que a bala.
 var halo_alpha: float = 0.0
 var halo_scale: float = 3.0
+## Passos da entrada (0 = nasce no tamanho cheio).
+var grow_frames: int = 0
 
 var _kinds: Array[Dictionary] = []
 var _instances: Array[MultiMeshInstance2D] = []
@@ -94,8 +102,13 @@ func render(pool: BulletPool) -> void:
 		var p: Vector2 = pool.pos[i]
 		var base := n * STRIDE
 		var buf := _buffers[k]
+		var sc := 1.0
+		var age: int = pool.age[i]
+		if age < grow_frames:
+			var u := float(age + 1) / float(grow_frames + 1)
+			sc = lerpf(GROW_FROM, 1.0, 1.0 - (1.0 - u) * (1.0 - u))
 		if _orient[k] == 1:
-			var dir: Vector2 = (pool.vel[i] as Vector2).normalized()
+			var dir: Vector2 = (pool.vel[i] as Vector2).normalized() * sc
 			# Eixo y da textura ao longo da velocidade (a agulha aponta para onde vai); eixo x
 			# perpendicular: x = (d.y, -d.x), y = (d.x, d.y). Buffer: [x.x, y.x, _, o.x, x.y, y.y, _, o.y].
 			buf[base] = dir.y
@@ -105,11 +118,11 @@ func render(pool: BulletPool) -> void:
 			buf[base + 5] = dir.y
 			buf[base + 7] = p.y
 		else:
-			buf[base] = 1.0
+			buf[base] = sc
 			buf[base + 1] = 0.0
 			buf[base + 3] = p.x
 			buf[base + 4] = 0.0
-			buf[base + 5] = 1.0
+			buf[base + 5] = sc
 			buf[base + 7] = p.y
 		_counts[k] = n + 1
 	for k: int in range(_kinds.size()):

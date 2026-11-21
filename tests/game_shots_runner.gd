@@ -3,7 +3,8 @@ extends Node
 ##   godot --path . res://tests/game_shots_runner.tscn -- --shots=<pasta> [--at=12,50,100] [--res=305x678]
 ##     [--mission=c1m1] [--speed=3] [--zoom=4] [--lang=de] [--radio=thalassa_hello] [--cutout] [--turbo] [--left]
 ## --cutout simula o furo da câmera da resolução em cima (área segura); --turbo mostra o botão Turbo (1,5x);
-## --left põe os botões na mão esquerda. --window=1102x874 usa uma janela física qualquer (fora da tabela), com a
+## --left põe os botões na mão esquerda. --rev=1 joga com as regras de uma revisão antiga da Sim (SimRevision), para
+## comparar antes e depois. --window=1102x874 usa uma janela física qualquer (fora da tabela), com a
 ## tela lógica que o PixelScaler der para ela.
 ## O bot joga em velocidade acelerada; em cada segundo de jogo pedido grava <pasta>/game_<s>_<res>.png.
 ## --radio abre essa fala de data/dialogue.json no rádio meio segundo antes de cada captura (retrato com efeito).
@@ -46,6 +47,8 @@ var _mission: StringName = &"c1m1"
 var _zoom: int = 2
 var _view := Vector2(305, 678)
 var _turbo := false
+## Revisão da Sim pedida por --rev (0 = a atual).
+var _rev: int = 0
 ## Modo poderes: naves que faltam, a nave da vez, o próximo lançamento e as capturas pendentes (passo, id).
 var _powers := false
 var _ships: Array[StringName] = []
@@ -77,6 +80,8 @@ func _ready() -> void:
 			_zoom = int(arg.trim_prefix("--zoom="))
 		elif arg.begins_with("--radio="):
 			_radio = arg.trim_prefix("--radio=")
+		elif arg.begins_with("--rev="):
+			_rev = int(arg.trim_prefix("--rev="))
 		elif arg.begins_with("--mission="):
 			_mission = StringName(arg.trim_prefix("--mission="))
 		elif arg.begins_with("--lang="):
@@ -114,7 +119,11 @@ func _ready() -> void:
 		_next_ship()
 		return
 	_game = GAME.instantiate() as Game
-	_game.configure(_mission, &"falcon", 7, true)
+	var load: Variant = &"falcon"
+	if _rev > 0:
+		load = Sim.default_loadout(&"falcon")
+		load["rev"] = _rev
+	_game.configure(_mission, load, 7, true)
 	_game.screen = _view
 	add_child(_game)
 	if _turbo:

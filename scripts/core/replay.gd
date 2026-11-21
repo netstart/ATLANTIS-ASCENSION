@@ -11,7 +11,8 @@ extends RefCounted
 const DIR := "user://replays"
 ## Versão 1 continua: o bit 32 (PODER) é novo e replays antigos, sem ele, reproduzem igual. A carga ganhou
 ## "outro" (fim com a saída da nave, SimOutro): replays gravados antes, sem a marca, rodam com o fim antigo
-## (Sim.FINISH_DELAY), senão a entrada gravada acabaria em outro passo e o placar mudaria.
+## (Sim.FINISH_DELAY), senão a entrada gravada acabaria em outro passo e o placar mudaria. A carga também guarda
+## "rev" (SimRevision, revisão das regras da Sim): replays sem ela são da revisão 1 e rodam com as regras de então.
 const VERSION := 1
 const BOARD_SIZE := 10
 
@@ -83,6 +84,7 @@ func rewind() -> void:
 func to_dict() -> Dictionary:
 	var load := loadout.duplicate()
 	load["outro"] = bool(loadout.get("outro", true))
+	load["rev"] = int(loadout.get("rev", SimRevision.CURRENT))
 	return {"v": VERSION, "mission": mission, "seed": seed, "loadout": load, "score": score, "blocks": blocks}
 
 
@@ -91,6 +93,7 @@ static func from_dict(d: Dictionary) -> Replay:
 		return null
 	var load: Dictionary = (d.get("loadout", {}) as Dictionary).duplicate()
 	load["outro"] = bool(load.get("outro", false))
+	load["rev"] = int(load.get("rev", 1))
 	var r := Replay.new(d.get("mission", {}), int(d.get("seed", 0)), load)
 	r.score = int(d.get("score", 0))
 	r.blocks = d.get("blocks", [])

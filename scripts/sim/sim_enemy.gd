@@ -49,7 +49,7 @@ func setup(p_def: Dictionary, p_origin: Vector2, p_path: StringName, p_params: D
 	glyph = int(def.get("glyph", -1))
 	var pattern_id := String(def.get("pattern", ""))
 	if not pattern_id.is_empty() and patterns.has(StringName(pattern_id)):
-		runner = PatternRunner.new(patterns[StringName(pattern_id)], int(def.get("pattern_delay", 30)))
+		runner = PatternRunner.new(patterns[StringName(pattern_id)], int(def.get("pattern_delay", 30)), radius)
 
 
 func active() -> bool:

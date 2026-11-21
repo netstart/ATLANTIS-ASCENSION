@@ -12,7 +12,8 @@ extends Node2D
 ## 2,5D: cada nave tem uma sombra (cópia escura do sprite, 80%, deslocada (+6, +10)) desenhada no chão,
 ## abaixo de tudo; inimigos que sobem do fundo (SimEnemy.depth < 1, ainda sem colisão na Sim) crescem
 ## de 35% a 100% saindo da neblina, e a sombra se separa deles conforme sobem. A nave inclina nas
-## curvas (some com "reduzir movimento") e o dano pisca em branco (shaders/sprite_flash.gdshader).
+## curvas (some com "reduzir movimento") e o dano pisca em branco (shaders/sprite_flash.gdshader); no
+## chefe, em vez do branco, um tinte quente que pulsa no máximo a cada 7 passos e um tranco curto (HitPulse).
 ## A nave veste as peças do nível do hangar (ShipLivery, carga "ship_level"); na Ascendida (nível 10)
 ## deixa um rastro de centelhas de ouro.
 
@@ -50,6 +51,9 @@ const BREACH_COLOR := Color(0.75, 0.55, 1.0, 0.22)
 ## Rastro da nave Ascendida: uma centelha a cada WAKE_STEP s, WAKE_LEN delas.
 const WAKE_STEP := 0.05
 const WAKE_LEN := 9
+## Chefe avariado (fumaça e brasas) abaixo desta fração do HP; ferimentos em raios do corpo.
+const WOUNDED_HP := 0.3
+const WOUNDS: Array[Vector2] = [Vector2(-0.55, 0.1), Vector2(0.45, -0.25), Vector2(0.05, 0.4)]
 var dark: bool = false
 ## Paleta de daltonismo das balas inimigas (Settings "colorblind").
 var colorblind: String = "off"
@@ -124,6 +128,14 @@ var _nozzle: int = 0
 var _muzzle: float = 0.0
 ## As camadas dos poderes desenharam algo no último quadro (redesenha uma vez a mais para limpar).
 var _power_drawn := false
+## Retorno de dano do chefe (HitPulse): corpo e cada parte por id; o chefe, o HP e o passo da Sim vistos
+## no último passo de 60 Hz.
+var _boss_pulse := HitPulse.new()
+var _part_pulses: Dictionary = {}
+var _boss_seen: SimBoss
+var _boss_hp: float = 0.0
+var _boss_frame: int = -1
+var _boss_pulse_idle := HitPulse.new()
 
 
 func setup(p_sim: Sim) -> void:
@@ -219,6 +231,8 @@ func setup(p_sim: Sim) -> void:
 	# Halo discreto e só em Alta: centenas de balas somando luz não podem lavar o campo.
 	_enemy_bullets.halo_alpha = 0.22 if fx_level >= 2 else 0.0
 	_enemy_bullets.halo_scale = 2.4
+	# Entrada de 6 passos (0,1 s): a saída do emissor fica fluida sem atrasar a leitura da bala.
+	_enemy_bullets.grow_frames = 6
 	_enemy_bullets.setup(BulletKinds.ENEMY, sim.enemy_bullets.capacity)
 	add_child(_enemy_bullets)
 	_fx_above = _Layer.new(self, _draw_fx_above)
@@ -283,7 +297,8 @@ func on_event(ev: Dictionary) -> void:
 			fx.popup(at, int(ev.get("points", 0)), UiTheme.GOLD if big else Color(1.0, 0.95, 0.82))
 			_ring_at(at, 0.35, 46.0 if big else 28.0, Color(1.0, 0.7, 0.4))
 		&"hit":
-			fx.impact(at, _weapon_tint())
+			# No ponto fraco do chefe as faíscas saem douradas: o jogador vê onde está acertando.
+			fx.impact(at, UiTheme.GOLD if _on_weak_point(at) else _weapon_tint())
 		&"graze":
 			fx.graze(at)
 		&"shot":
@@ -392,6 +407,7 @@ func _weapon_tint() -> Color:
 func _emit() -> void:
 	_ticks += 1
 	var pl := sim.player
+	_tick_boss_hits()
 	powers.emit(sim, fx, _ticks)
 	if pl.alive and fx_level >= 1:
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
@@ -417,6 +433,81 @@ func _emit() -> void:
 	if sim.boss != null and sim.boss.state == SimBoss.State.DYING and _ticks % 7 == 0:
 		var body := sim.boss.body_pos()
 		fx.explosion(body + Vector2(sin(time * 13.0) * 60.0, cos(time * 7.0) * 30.0), 0.8)
+	_boss_wounds()
+
+
+
+## Acertos no chefe viram pulsos (HitPulse), um passo de 60 Hz por vez. Só conta acerto num passo novo da
+## Sim (no hitstop e na pausa o pulso apaga em vez de repetir); o tamanho do golpe é o HP que caiu.
+func _tick_boss_hits() -> void:
+	var b := sim.boss
+	if b != _boss_seen:
+		_boss_seen = b
+		_boss_pulse.reset()
+		_part_pulses.clear()
+		_boss_hp = b.hp if b != null else 0.0
+	if b == null:
+		return
+	var fresh := sim.frame != _boss_frame
+	_boss_frame = sim.frame
+	# 2,5% do HP total num passo (bomba, poder grande, parte destruída) já é golpe grande.
+	var strength := clampf((_boss_hp - b.hp) / maxf(1.0, b.max_hp) * 40.0, 0.0, 1.0)
+	_boss_hp = b.hp
+	_boss_pulse.calm = reduce_motion
+	_boss_pulse.tick(fresh and b.flash > 0, strength)
+	for part: Dictionary in b.parts:
+		var pulse: HitPulse = _part_pulses.get(part["id"])
+		if pulse == null:
+			pulse = HitPulse.new()
+			_part_pulses[part["id"]] = pulse
+		pulse.calm = reduce_motion
+		pulse.tick(fresh and int(part["flash"]) > 0, strength)
+
+
+## Chefe com menos de 30% do HP: fumaça leve saindo de três ferimentos fixos do casco, um por vez,
+## e faíscas soltas de vez em quando (as brasas acesas ficam em _draw_wounds). Sinal contínuo de avaria
+## que não cobre o sprite.
+func _boss_wounds() -> void:
+	var b := sim.boss
+	if not _wounded(b) or _ticks % 9 != 0:
+		return
+	var spot := _wound_spot(b, (_ticks / 9) % WOUNDS.size()) + _boss_pulse.offset()
+	fx.matter.spawn(CombatFx.SMOKE, spot, Vector2(sin(_ticks * 0.7) * 6.0, 26.0), 0.8, 0.5, 1.3,
+			Color(0.16, 0.16, 0.18, 0.5), CombatFx.SMOKE_END, 1.0, Vector2.ZERO, _ticks * 0.37, 1.0)
+	if _ticks % 36 == 0:
+		fx.impact(spot, Color(1.0, 0.6, 0.25))
+
+
+func _wounded(b: SimBoss) -> bool:
+	return b != null and b.fighting() and b.hp < b.max_hp * WOUNDED_HP
+
+
+func _wound_spot(b: SimBoss, k: int) -> Vector2:
+	return b.body_pos() + WOUNDS[k] * b.body_radius()
+
+
+## Brasas nos ferimentos do chefe avariado: piscam devagar (~1 Hz), defasadas, pequenas.
+func _draw_wounds(ci: CanvasItem, b: SimBoss, shake: Vector2) -> void:
+	if not _wounded(b):
+		return
+	var calm := 0.6 if reduce_flashes else 1.0
+	for k: int in range(WOUNDS.size()):
+		var beat := 0.5 + 0.5 * sin(time * 6.0 + k * 2.1)
+		var at := _wound_spot(b, k) + shake
+		_tex_centered(ci, _glow, at, 0.6 + 0.2 * beat, Color(1.0, 0.45, 0.15, (0.4 + 0.4 * beat) * calm))
+		_tex_centered(ci, _sparkle, at, 1.0 + 0.3 * beat, Color(1.0, 0.85, 0.5, (0.5 + 0.5 * beat) * calm))
+
+
+func _on_weak_point(at: Vector2) -> bool:
+	var b := sim.boss
+	if b == null:
+		return false
+	for part: Dictionary in b.parts:
+		if float(part.get("weak", 0.0)) > 0.0 and b.part_active(part):
+			var r := float(part.get("radius", 10.0)) + 4.0
+			if at.distance_squared_to(b.part_pos(part)) <= r * r:
+				return true
+	return false
 
 
 ## Força do motor na arrancada da saída: 1 no começo, 3 quando a nave some.
@@ -578,19 +669,20 @@ func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, fl
 func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 	var ship := SpriteBank.ship(StringName(String(b.def.get("sprite", ""))))
 	var scale := float(b.def.get("scale", 1.0))
-	var body := b.body_pos()
+	# Tranco do acerto (HitPulse): o chefe todo junto, sem mexer na Sim.
+	var shake := _boss_pulse.offset()
+	var body := b.body_pos() + shake
 	# Tentáculos atrás do corpo: segmentos numa curva da base até a ponta (a ponta é a parte da Sim).
 	for part: Dictionary in b.parts:
 		var tid := String(part["id"])
 		if not tid.begins_with("t") or not tid.substr(1).is_valid_int():
 			continue
-		var tip := b.part_pos(part)
+		var pulse := _pulse_of(part)
+		var tip := b.part_pos(part) + shake + pulse.offset()
 		var root := body + Vector2((part["base"] as Vector2).x * 0.32, 18.0)
 		var alive := bool(part["alive"])
 		var segments := 11 if alive else 3
-		var color := Color(1, 1, 1) if alive else Color(0.45, 0.4, 0.5)
-		if int(part["flash"]) > 0:
-			color = Color(1.8, 1.8, 1.8)
+		var color := _hit_color(Color(1, 1, 1), pulse.intensity(), false) if alive else Color(0.45, 0.4, 0.5)
 		var ctrl := root + Vector2(0, 56)
 		for k: int in range(segments):
 			var u := float(k) / 11.0
@@ -598,24 +690,31 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 			_tex_centered(ci, _seg, p, 1.0 - u * 0.25, color)
 		if alive:
 			_tex_centered(ci, _tip, tip, 1.0, color)
-	_draw_boss_parts(ci, b, body)
-	_draw_ship(ci, ship, b.pos, 1.0, b.flash > 0, scale, Color(String(b.def.get("tint", "#ffffff"))))
-	var pulse := 0.6 + 0.4 * sin(time * 9.0)
+	_draw_boss_parts(ci, b, body, shake)
+	var tint := _hit_color(Color(String(b.def.get("tint", "#ffffff"))), _boss_pulse.intensity(), false)
+	_draw_ship(ci, ship, b.pos + shake, 1.0, false, scale, tint)
+	_draw_wounds(ci, b, shake)
+	var beat := 0.6 + 0.4 * sin(time * 9.0)
 	for part: Dictionary in b.parts:
 		var pid := String(part["id"])
 		if (pid.begins_with("eye") or pid == "core") and b.part_active(part):
-			var col := Color(1.0, 0.35, 0.4, pulse) if pid.begins_with("eye") else Color(0.4, 1.0, 1.0, pulse)
-			_tex_centered(ci, _glow, b.part_pos(part), 0.6 + float(part.get("radius", 10.0)) / 20.0, col)
+			# Ponto fraco atingido: o brilho vira dourado e cresce um pouco a cada pulso.
+			var k := _pulse_of(part).intensity() / HitPulse.PEAK_MAX
+			var col := Color(1.0, 0.35, 0.4, beat) if pid.begins_with("eye") else Color(0.4, 1.0, 1.0, beat)
+			col = Color(col.lerp(UiTheme.GOLD, minf(1.0, k * 1.6)), maxf(beat, k))
+			_tex_centered(ci, _glow, b.part_pos(part) + shake,
+					(0.6 + float(part.get("radius", 10.0)) / 20.0) * (1.0 + 0.25 * k), col)
 
 
 ## Partes genéricas dos chefes do Beta: corrente de segmentos (Sky Leviathan) ligada do corpo à
 ## cauda, anéis de escudo girando (Poseidon Prime) e núcleos com sprite próprio (Leviathan Protocol).
-func _draw_boss_parts(ci: CanvasItem, b: SimBoss, body: Vector2) -> void:
+func _draw_boss_parts(ci: CanvasItem, b: SimBoss, body: Vector2, shake: Vector2) -> void:
 	var prev := body
 	for part: Dictionary in b.parts:
-		var at := b.part_pos(part)
+		var pulse := _pulse_of(part)
+		var at := b.part_pos(part) + shake + pulse.offset()
 		var alive := bool(part["alive"])
-		var color := Color(1.8, 1.8, 1.8) if int(part["flash"]) > 0 else Color(String(b.def.get("tint", "#ffffff")))
+		var color := Color(String(b.def.get("tint", "#ffffff")))
 		if not alive:
 			color = Color(0.4, 0.38, 0.45)
 		if bool(part.get("chain", false)):
@@ -624,11 +723,26 @@ func _draw_boss_parts(ci: CanvasItem, b: SimBoss, body: Vector2) -> void:
 			prev = at
 		if part.has("sprite") and (alive or bool(part.get("chain", false))):
 			var s := float(part.get("part_scale", 1.0))
-			_draw_ship(ci, SpriteBank.ship(StringName(String(part["sprite"]))), at, 1.0, int(part["flash"]) > 0, s, color)
+			var gold := float(part.get("weak", 0.0)) > 0.0
+			var hit := _hit_color(color, pulse.intensity() if alive else 0.0, gold)
+			_draw_ship(ci, SpriteBank.ship(StringName(String(part["sprite"]))), at, 1.0, false, s, hit)
 		elif bool(part.get("ring", false)) and alive:
 			ci.draw_set_transform(at, time * (2.0 if b.part_active(part) else 0.4), Vector2(0.5, 0.5))
 			ci.draw_texture(_ring, -_ring.get_size() * 0.5, Color(1.0, 0.85, 0.4, 0.9 if b.part_active(part) else 0.35))
 			ci.draw_set_transform(Vector2.ZERO)
+
+
+func _pulse_of(part: Dictionary) -> HitPulse:
+	var pulse: HitPulse = _part_pulses.get(part["id"])
+	return pulse if pulse != null else _boss_pulse_idle
+
+
+## Modulate que o shader de dano (shaders/sprite_flash.gdshader) lê como tinte de acerto: a força vai
+## no alfa (2 + força: quente; 4 + força: dourado, ponto fraco). Sem força, a cor normal.
+static func _hit_color(base: Color, amount: float, gold: bool) -> Color:
+	if amount <= 0.0:
+		return base
+	return Color(base.r, base.g, base.b, (4.0 if gold else 2.0) + clampf(amount, 0.0, 1.0))
 
 
 # --- Jogador -----------------------------------------------------------------------------------

@@ -84,6 +84,14 @@ func body_radius() -> float:
 	return float(def.get("body_radius", 30.0))
 
 
+## Raio de colisão de onde um padrão sai: o corpo ou a parte (PatternRunner.muzzle_for).
+func anchor_radius(anchor: StringName) -> float:
+	if anchor == &"body":
+		return body_radius()
+	var part := _part(anchor)
+	return float(part.get("radius", 10.0)) if not part.is_empty() else body_radius()
+
+
 func part_pos(part: Dictionary) -> Vector2:
 	return pos + (part["offset"] as Vector2)
 
@@ -201,8 +209,9 @@ func _enter_phase(index: int, sim: Sim) -> void:
 		var entry: Dictionary = raw
 		var pattern_id := StringName(String(entry.get("pattern", "")))
 		if _patterns.has(pattern_id):
-			_runners.append({"anchor": String(entry.get("anchor", "body")),
-					"runner": PatternRunner.new(_patterns[pattern_id], int(entry.get("delay", PHASE_QUIET)))})
+			var anchor := String(entry.get("anchor", "body"))
+			_runners.append({"anchor": anchor, "runner": PatternRunner.new(_patterns[pattern_id],
+					int(entry.get("delay", PHASE_QUIET)), anchor_radius(StringName(anchor)))})
 	sim.on_boss_phase(self, ph, index > 0)
 
 

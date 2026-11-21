@@ -481,3 +481,17 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   rastro maior (som da investida do Falcon) e sai pelo topo; só então `finished`/`cleared`, ~2,7 s depois da morte
   do chefe, no lugar do `FINISH_DELAY`. Botões de ação somem e a vista apaga os efeitos restantes (fica a explosão do
   chefe). Replays sem a marca `"outro"` na carga rodam com o fim antigo. Teste em `tests/sim_tests.gd` (`_outro`)
+- ✅ Saída fluida das balas inimigas (revisão 2 da Sim, `scripts/sim/sim_revision.gd`): a bala nasce na boca do emissor
+  (`PatternRunner.muzzle`, na borda do raio do inimigo, do corpo ou da parte do chefe, até 30), não no centro;
+  vizinhas da mesma emissão nascem a ≥ 2,6 raios uma da outra (anel abre o raio, leque estreito abre de lado, fila
+  escalonada).
+  Acabou o bolo de balas em cima do sprite (Raia-Trovão e 86 outros usos de padrão). Na vista, a bala inimiga entra em
+  6 passos de 65% ao tamanho cheio (hitbox igual desde o primeiro passo). A carga do replay grava `"rev"`; replays e
+  Fantasmas sem ela rodam na revisão 1. Teste em `tests/sim_tests.gd` (`_spawn_spread`, todos os padrões);
+  `boss_timing.gd` e `game_shots_runner` aceitam `--rev=1` para comparar
+- ✅ Retorno de dano do chefe legível (só vista, hash igual): no lugar do branco chapado, que sob tiro contínuo escondia
+  o chefe, um tinte quente (borda alaranjada e ~30% no miolo) que pulsa no máximo a cada 7 passos e apaga em 10,
+  com tranco de 1 a 2 px pelo tamanho do golpe (`scripts/view/hit_pulse.gd`, `shaders/sprite_flash.gdshader`).
+  Partes com o mesmo pulso; ponto fraco acende dourado, e o acerto nele solta faíscas douradas. Abaixo de 30% do HP,
+  brasas piscando devagar em três ferimentos, fumaça leve e faíscas esparsas. "Reduzir movimento": sem tranco e
+  tinte até 16%. Teste em `tests/vfx_tests.gd` (`_test_hit_pulse`)

@@ -18,6 +18,7 @@ func run_unit(check: Callable) -> void:
 	_test_motes()
 	_test_glint()
 	_test_energy_stream()
+	_test_hit_pulse()
 
 
 func _field(capacity: int) -> ParticleField:
@@ -239,3 +240,49 @@ func _test_energy_stream() -> void:
 	stream.refresh(1.0 / 60.0, 7.1)
 	_check.call(stream.open > 0.0 and stream.top == 40.0, "EnergyStream: o Laser fecha em rampa, no mesmo lugar")
 	stream.free()
+
+
+## Retorno de dano do chefe (HitPulse): com acerto em todo passo o tinte nunca passa do teto, cada pulso
+## novo respeita o intervalo e o sprite volta a aparecer limpo entre os pulsos; "reduzir movimento" tira
+## o tranco e enfraquece o tinte.
+func _test_hit_pulse() -> void:
+	var pulse := HitPulse.new()
+	var top := 0.0
+	var peaks: Array[int] = []
+	var last := 0.0
+	var clean := 0
+	var shook := false
+	var max_off := 0.0
+	for k: int in range(240):
+		pulse.tick(true, 1.0 if k % 50 == 0 else 0.1)
+		var now := pulse.intensity()
+		top = maxf(top, now)
+		if now > last + 0.001:
+			peaks.append(k)
+		if now < 0.05:
+			clean += 1
+		shook = shook or pulse.offset() != Vector2.ZERO
+		max_off = maxf(max_off, pulse.offset().length())
+		last = now
+	_check.call(top <= HitPulse.PEAK_MAX + 0.0001 and top >= HitPulse.PEAK_MIN,
+			"HitPulse: tinte sob tiro contínuo fica entre %.2f e %.2f (%.3f)" % [HitPulse.PEAK_MIN, HitPulse.PEAK_MAX, top])
+	var gaps_ok := peaks.size() > 1
+	for i: int in range(1, peaks.size()):
+		gaps_ok = gaps_ok and peaks[i] - peaks[i - 1] >= HitPulse.GAP
+	_check.call(gaps_ok and peaks.size() <= 240 / HitPulse.GAP + 1,
+			"HitPulse: um pulso a cada %d passos no máximo (%d pulsos)" % [HitPulse.GAP, peaks.size()])
+	_check.call(clean > 0 and shook and max_off <= HitPulse.SHAKE_MAX * 1.2,
+			"HitPulse: o sprite volta limpo entre pulsos (%d passos) e treme até %.1f px" % [clean, max_off])
+	for k: int in range(HitPulse.FADE):
+		pulse.tick(false)
+	_check.call(pulse.intensity() == 0.0 and pulse.offset() == Vector2.ZERO, "HitPulse: sem acerto apaga e para")
+	var calm := HitPulse.new()
+	calm.calm = true
+	var calm_top := 0.0
+	var still := true
+	for k: int in range(60):
+		calm.tick(true, 1.0)
+		calm_top = maxf(calm_top, calm.intensity())
+		still = still and calm.offset() == Vector2.ZERO
+	_check.call(still and calm_top <= HitPulse.PEAK_CALM + 0.0001,
+			"HitPulse: reduzir movimento sem tranco e tinte até %.2f (%.3f)" % [HitPulse.PEAK_CALM, calm_top])
