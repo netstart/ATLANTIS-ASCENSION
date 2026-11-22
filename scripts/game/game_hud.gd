@@ -131,6 +131,7 @@ var _pressure_q: int = -1
 var _pressure_full := false
 var _objective_panel: PanelContainer
 var _objective: Label
+var _tracker := HudObjective.new()
 var _offer_panel: PanelContainer
 var _offer_title: Label
 var _offer_buttons: Array[Button] = []
@@ -351,11 +352,11 @@ func _build_objective() -> void:
 	_objective_panel.add_theme_stylebox_override("panel", box)
 	_objective_panel.visible = false
 	add_child(_objective_panel)
-	_objective = UiTheme.heading("", UiTheme.FONT_SIZE, UiTheme.GOLD)
-	_objective.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_objective = HudKit.ignore(UiTheme.heading("", UiTheme.FONT_SIZE, UiTheme.GOLD)) as Label
 	_objective.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_objective.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_objective_panel.add_child(_objective)
+	add_child(_tracker)
 
 
 func _build_radio() -> void:
@@ -373,11 +374,9 @@ func _build_radio() -> void:
 	var col := HudKit.ignore(VBoxContainer.new()) as VBoxContainer
 	col.add_theme_constant_override("separation", 1)
 	row.add_child(col)
-	_radio_name = UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.CYAN)
-	_radio_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_radio_name = HudKit.ignore(UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.CYAN)) as Label
 	col.add_child(_radio_name)
-	_radio = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT)
-	_radio.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_radio = HudKit.ignore(UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.TEXT)) as Label
 	_radio.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_radio.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 	col.add_child(_radio)
@@ -627,6 +626,7 @@ func apply_layout(p_layout: Dictionary, p_safe: Rect2) -> void:
 	_objective_panel.size = Vector2(field.size.x - 16.0, 0)
 	_objective_panel.reset_size()
 	_objective_panel.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.18)
+	_tracker.place(field, _portrait_mode, String(Settings.get_value("handedness")) == "left", safe.position.y + 86.0)
 	_banner.place(field)
 	_prompt.position = Vector2(field.position.x + 8.0, field.position.y + field.size.y * 0.62)
 	_prompt.size = Vector2(field.size.x - 16.0, 0)
@@ -705,9 +705,8 @@ func _place_buttons(field: Rect2) -> void:
 	_style_special()
 	_style_bomb()
 	_style_turbo()
-	_special_gauge.queue_redraw()
-	_bomb_gauge.queue_redraw()
-	_turbo_glyph.queue_redraw()
+	for glyph: Control in [_special_gauge, _bomb_gauge, _turbo_glyph]:
+		glyph.queue_redraw()
 
 
 ## Retrato: pilha encostada na borda do campo (esquerda; direita na mão esquerda), centrada na vertical do campo
@@ -911,6 +910,7 @@ func refresh(sim: Sim, delta: float) -> void:
 	_objective_left -= delta
 	_objective_panel.visible = _objective_left > 0.0
 	_objective_panel.modulate.a = clampf(_objective_left, 0.0, 1.0)
+	_tracker.refresh(sim)
 	if not _hints.is_empty() and sim.frame >= int(_hints[0][0]):
 		show_radio_text(tr(String(_hints[0][1])), UiTheme.CYAN)
 		_hints.pop_front()
@@ -1192,7 +1192,7 @@ func _refresh_radio(delta: float) -> void:
 
 ## Controles que precisam caber na área segura (testes de layout).
 func layout_controls() -> Array[Control]:
-	return [_score, _pause, _special, _bomb, _power, _turbo, _weapon, _tide, _power_name]
+	return [_score, _pause, _special, _bomb, _power, _turbo, _weapon, _tide, _power_name, _tracker.label]
 
 
 ## Botão PODER (o Game chama charged/empty; testes leem o nome em name_label).

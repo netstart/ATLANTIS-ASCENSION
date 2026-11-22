@@ -424,6 +424,14 @@ func _mission_checks(check: Callable, id: StringName, run: Dictionary) -> void:
 	var need := mini(50, ceili(spawned * 0.8))
 	check.call(int(r.get("kills", 0)) >= need, "Missão %s: o bot derruba a maioria (%d de %d, mínimo %d)" % [id,
 			r.get("kills"), spawned, need])
+	# Objetivos de fase (SimObjectives): todos os do roteiro começam e terminam antes do fim da missão.
+	var planned := (Sim.load_mission(id).get("objectives", []) as Array).size()
+	var goals: Array = r.get("objectives", [])
+	var ok := 0
+	for g: Variant in goals:
+		ok += 1 if bool((g as Dictionary)["ok"]) else 0
+	check.call(planned >= 2 and goals.size() == planned, "Missão %s: os %d objetivos de fase acontecem (%d, %d com êxito)"
+			% [id, planned, goals.size(), ok])
 
 
 ## Campo alto (Playfield.MAX_HEIGHT): a nave começa à mesma distância do fundo, o bot ainda vence, o replay

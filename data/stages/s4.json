@@ -2,7 +2,7 @@
 	"id": "s4",
 	"chapter": 8,
 	"name_key": "stage.s4",
-	"music": "magnesus_deadly_contracts",
+	"music": "davidkbd_orbital_assault",
 	"scroll_speed": 20,
 	"backdrop": "atlantis",
 	"seed_salt": 167,
@@ -439,5 +439,42 @@
 		}
 	],
 	"secret_mission": true,
-	"weather": "plankton"
+	"weather": "plankton",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 5,
+			"x": 0.5,
+			"speed": 52.0,
+			"pod": false,
+			"t": 44.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 102,
+			"hold": 2.55,
+			"t": 78.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 10.9,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "ice_fan",
+				"formation": "line",
+				"count": 4,
+				"x": 0.5,
+				"path": "sine",
+				"params": {
+					"amp": 80,
+					"freq": 0.5,
+					"speed": 62
+				},
+				"spacing": 40
+			},
+			"t": 92.0
+		}
+	]
 }

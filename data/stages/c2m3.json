@@ -2,7 +2,7 @@
 	"id": "c2m3",
 	"chapter": 2,
 	"name_key": "stage.c2m3",
-	"music": "prosensory_binary_village",
+	"music": "fardifferent_temples",
 	"scroll_speed": 20,
 	"backdrop": "atlantis",
 	"seed_salt": 309,
@@ -349,5 +349,22 @@
 			"t": 71.96
 		}
 	],
-	"weather": "calm"
+	"weather": "calm",
+	"objectives": [
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 78,
+			"hold": 3.45,
+			"t": 13.5
+		},
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.7,
+			"speed": 43.0,
+			"pod": false,
+			"t": 39.0
+		}
+	]
 }

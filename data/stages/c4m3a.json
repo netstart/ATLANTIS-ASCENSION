@@ -2,7 +2,7 @@
 	"id": "c4m3a",
 	"chapter": 4,
 	"name_key": "stage.c4m3a",
-	"music": "magnesus_hostile_territory",
+	"music": "bogart_cyber_power",
 	"scroll_speed": 26,
 	"backdrop": "atlantis",
 	"seed_salt": 408,
@@ -692,5 +692,29 @@
 	],
 	"route": "abyss",
 	"score_mult": 1.5,
-	"weather": "calm"
+	"weather": "calm",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.7,
+			"speed": 46.0,
+			"pod": false,
+			"t": 39.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 86,
+			"hold": 3.15,
+			"t": 67.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 86,
+			"hold": 3.15,
+			"t": 89.5
+		}
+	]
 }

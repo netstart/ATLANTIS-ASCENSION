@@ -2,7 +2,7 @@
 	"id": "c8m2",
 	"chapter": 8,
 	"name_key": "stage.c8m2",
-	"music": "magnesus_deadly_contracts",
+	"music": "davidkbd_orbital_assault",
 	"scroll_speed": 24,
 	"backdrop": "orbit",
 	"seed_salt": 314,
@@ -526,5 +526,29 @@
 			"t": 94.56
 		}
 	],
-	"weather": "vacuum"
+	"weather": "vacuum",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 5,
+			"x": 0.3,
+			"speed": 52.0,
+			"pod": true,
+			"t": 33.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 102,
+			"hold": 2.55,
+			"t": 61.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 102,
+			"hold": 2.55,
+			"t": 83.5
+		}
+	]
 }

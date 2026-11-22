@@ -118,6 +118,8 @@ var _engine_power: Texture2D
 var _shield: Texture2D
 var _log: Texture2D
 var _capsule: Texture2D
+## Objetivos de fase: mira dos alvos, atlantes nas bolhas e relíquia.
+var _objectives := ObjectiveView.new()
 var _drone: Texture2D
 var _rocket: Texture2D
 var _ship_tint := Color(1, 1, 1)
@@ -175,6 +177,7 @@ func setup(p_sim: Sim) -> void:
 	_pearl = SpriteBank.generated("pickups/pearl")
 	_log = SpriteBank.generated("pickups/log")
 	_capsule = SpriteBank.generated("pickups/capsule")
+	_objectives.setup()
 	dark = bool(sim.mission.get("dark", false))
 	_drone = SpriteBank.generated("fx/drone")
 	_rocket = SpriteBank.texture("res://assets/art/void/main_ship/proj_rocket.png")
@@ -383,6 +386,11 @@ func on_event(ev: Dictionary) -> void:
 		&"pearl":
 			fx.light.spawn(CombatFx.FLARE, at, Vector2.ZERO, 0.12, 0.15, 0.35, Color(0.6, 1.0, 1.0, 0.6),
 					Color(0.6, 1.0, 1.0, 0.0))
+		&"objective_release":
+			_ring_at(at, 0.5, 46.0, Color(0.5, 1.0, 0.95))
+		&"survivor", &"relic":
+			fx.collect(at, UiTheme.GOLD if StringName(ev["type"]) == &"relic" else Color(0.55, 1.0, 1.0), true)
+			_ring_at(at, 0.4, 34.0, Color(1.0, 0.9, 0.55))
 		&"bomb_pickup", &"capsule", &"log", &"heal", &"revive":
 			fx.collect(at, Color(0.5, 1.0, 0.9), true)
 			_ring_at(at, 0.4, 40.0, Color(0.5, 1.0, 0.9))
@@ -669,6 +677,7 @@ func _draw_entities(ci: CanvasItem) -> void:
 			ci.draw_rect(Rect2(m - Vector2(3, 1), Vector2(6, 2)), UiTheme.GOLD)
 	if sim.boss != null:
 		_draw_boss(ci, sim.boss)
+	_objectives.draw(ci, sim, time)
 	for pk: Dictionary in sim.pickups:
 		var p: Vector2 = pk["pos"]
 		match StringName(pk["kind"]):

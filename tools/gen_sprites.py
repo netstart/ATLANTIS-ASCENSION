@@ -347,6 +347,140 @@ def tentacle(size: int, tip: bool) -> list:
     return px
 
 
+# --- Objetivos de fase (plano mestre 5.6) -------------------------------------------------------------
+# Leitura: o atlante salvo é uma bolha OCA (anel claro, miolo quase transparente) com a silhueta dourada dentro, maior
+# e mais lenta que qualquer bala (as balas são cheias, com contorno escuro e núcleo branco). Os alvos são metal
+# escuro com faixa coral do Protocolo, vistos de cima e simétricos (o jogo desenha inimigo girado 180°).
+STEEL = (58, 66, 82, 255)
+STEEL_LIGHT = (96, 108, 128, 255)
+CAPTIVE = (120, 245, 255, 255)
+
+
+def survivor(size: int) -> list:
+    """Atlante numa bolha de ar: anel ciano claro, brilho no alto à esquerda e a silhueta dourada (cabeça e corpo)."""
+    px = canvas(size, size)
+    c = (size - 1) / 2.0
+    r = size / 2.0 - 0.5
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c)
+            if r - 1.3 <= d <= r:
+                px[y * size + x] = (170, 246, 255, 235)
+            elif d < r - 1.3:
+                px[y * size + x] = (120, 230, 255, 46)
+    for x, y in ((4, 4), (5, 3), (4, 5)):
+        px[y * size + x] = WHITE
+    m = size // 2
+    gold = (255, 214, 92, 255)
+    for dx, dy in ((0, -4), (-1, -4), (0, -3), (-1, -3)):
+        px[(m + dy) * size + m + dx] = gold
+    for dy in range(-2, 3):
+        for dx in (-2, -1, 0, 1):
+            if dy >= 1 and dx in (-2, 1):
+                continue
+            px[(m + dy) * size + m + dx] = gold
+    for dx, dy in ((-3, -1), (2, -1), (-2, 3), (1, 3)):
+        px[(m + dy) * size + m + dx] = gold
+    return px
+
+
+def relic(size: int) -> list:
+    """Relíquia atlante roubada: tridente de oricalco (haste e três pontas) com contorno escuro e joia ciano."""
+    px = canvas(size, size)
+    m = size // 2
+    gold = (255, 214, 92, 255)
+    cells = [(m, y) for y in range(3, size - 1)] + [(m - 1, y) for y in range(3, size - 1)]
+    cells += [(x, 4) for x in range(m - 4, m + 4)] + [(m - 4, y) for y in range(1, 4)] + [(m + 3, y) for y in range(1, 4)]
+    cells += [(m, 1), (m - 1, 1), (m, 2), (m - 1, 2)]
+    for x, y in cells:
+        for ox, oy in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+            if 0 <= x + ox < size and 0 <= y + oy < size and px[(y + oy) * size + x + ox][3] == 0:
+                px[(y + oy) * size + x + ox] = OUTLINE
+    for x, y in cells:
+        px[y * size + x] = gold
+    px[6 * size + m] = CAPTIVE
+    px[6 * size + m - 1] = CAPTIVE
+    return px
+
+
+def prison_barge(size: int) -> list:
+    """Jaula do Protocolo vista de cima: casco blindado comprido, faixas coral nas pontas e três celas com atlantes."""
+    px = canvas(size, size)
+    x0, x1, y0, y1 = 7, size - 8, 2, size - 3
+    for y in range(y0, y1 + 1):
+        for x in range(x0, x1 + 1):
+            cut = min(y - y0, y1 - y) < 2 and x in (x0, x1)
+            if cut:
+                continue
+            edge = x in (x0, x1) or y in (y0, y1)
+            px[y * size + x] = OUTLINE if edge else (STEEL_LIGHT if x in (x0 + 1, x0 + 2) else STEEL)
+    for y in (y0 + 2, y0 + 3, y1 - 3, y1 - 2):
+        for x in range(x0 + 2, x1 - 1):
+            px[y * size + x] = (*PALETTE["coral"][1], 255)
+    for k in range(3):
+        cy = y0 + 7 + k * 7
+        for y in range(cy, cy + 4):
+            for x in range(x0 + 4, x1 - 3):
+                bar = (x - x0) % 3 == 0
+                px[y * size + x] = OUTLINE if bar else CAPTIVE
+    return px
+
+
+def prison_pod(size: int) -> list:
+    """Cápsula-prisão à deriva (céu e espaço): disco blindado, anel coral e a cela com grades no meio."""
+    px = canvas(size, size)
+    c = (size - 1) / 2.0
+    r = size / 2.0 - 0.5
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c)
+            if d > r:
+                continue
+            if d > r - 1.2:
+                px[y * size + x] = OUTLINE
+            elif d > r - 3.2:
+                px[y * size + x] = (*PALETTE["coral"][1], 255)
+            elif d > r * 0.5:
+                px[y * size + x] = STEEL_LIGHT if y < c else STEEL
+            else:
+                px[y * size + x] = OUTLINE if int(x - c + 10) % 3 == 0 else CAPTIVE
+    return px
+
+
+def beacon(size: int) -> list:
+    """Farol do Protocolo visto de cima: base quadrada de aço com quatro aletas e a lâmpada coral acesa no centro."""
+    px = canvas(size, size)
+    c = (size - 1) / 2.0
+    for y in range(size):
+        for x in range(size):
+            dx, dy = abs(x - c), abs(y - c)
+            fin = (dx < 1.6 and dy < c + 0.5) or (dy < 1.6 and dx < c + 0.5)
+            body = max(dx, dy) < c - 3.0
+            if body:
+                px[y * size + x] = OUTLINE if max(dx, dy) > c - 4.2 else STEEL
+            elif fin:
+                px[y * size + x] = STEEL_LIGHT
+    light, dark = PALETTE["coral"]
+    for y in range(size):
+        for x in range(size):
+            d = math.hypot(x - c, y - c)
+            if d < 3.4:
+                px[y * size + x] = WHITE if d < 1.4 else ((*light, 255) if d < 2.4 else (*dark, 255))
+    return px
+
+
+def target_marker(size: int) -> list:
+    """Mira dos alvos de objetivo: quatro cantos em L, brancos (tingidos na hora), 2 px de grossura."""
+    px = canvas(size, size)
+    arm = size // 4
+    for k in range(arm):
+        for t in (0, 1):
+            for x, y in ((k, t), (t, k), (size - 1 - k, t), (size - 1 - t, k), (k, size - 1 - t), (t, size - 1 - k),
+                         (size - 1 - k, size - 1 - t), (size - 1 - t, size - 1 - k)):
+                px[y * size + x] = WHITE
+    return px
+
+
 # --- Ícone do jogo (plano mestre 11): pixel art em grade de 64, ampliada sem filtro -----------------
 # A nave sobe pelo anel dourado do portal atlante, acima das ondas: a "Ascensão" num relance. Fundo em
 # faixas do céu claro (alto) ao abismo (baixo). O ícone adaptativo do Android usa o mesmo desenho sem
@@ -502,6 +636,12 @@ SPRITES = {
     "pickups/capsule.png": (12, 16, lambda: rescue_pod(12, 16)),
     "fx/drone.png": (10, 10, lambda: orb(10, "cyan")),
     "enemies/glyph.png": (20, 20, lambda: glyph(20)),
+    "enemies/prison_barge.png": (32, 32, lambda: prison_barge(32)),
+    "enemies/prison_pod.png": (26, 26, lambda: prison_pod(26)),
+    "enemies/protocol_beacon.png": (22, 22, lambda: beacon(22)),
+    "pickups/survivor.png": (16, 16, lambda: survivor(16)),
+    "pickups/relic.png": (12, 12, lambda: relic(12)),
+    "fx/target_marker.png": (24, 24, lambda: target_marker(24)),
     "pickups/orb_pulsar.png": (18, 18, lambda: weapon_orb(18, "blue", "pulsar")),
     "pickups/orb_laser.png": (18, 18, lambda: weapon_orb(18, "gold", "laser")),
     "pickups/medal.png": (12, 12, lambda: medal(12)),

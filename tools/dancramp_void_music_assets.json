@@ -1,0 +1,8 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "dancramp_void_music",
+	"note": "Trilha preparada por tools/prepare_battle_music.py (laço sem emenda, -14 LUFS, pico real ≤ -1 dBTP).",
+	"files": {
+		"music/dancramp_cyber_side_scroller.ogg": "audio/music/dancramp_cyber_side_scroller.ogg"
+	}
+}

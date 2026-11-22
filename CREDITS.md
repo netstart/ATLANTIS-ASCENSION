@@ -24,17 +24,19 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 ## Música
 
 - **Kenney — Music Jingles** — Kenney (kenney.nl) (CC0-1.0) — https://kenney.nl/assets/music-jingles
-- **8-bit Epic Space Shooter Music** — HydroGene (CC0-1.0) — https://opengameart.org/content/8-bit-epic-space-shooter-music
-- **Epic Boss Battle (Seamlessly Looping)** — Juhani Junkala (SubspaceAudio) (CC0-1.0) — https://opengameart.org/content/boss-battle-music
-- **Deep Sea** — Umplix (CC0-1.0) — https://opengameart.org/content/deep-sea
-- **Ocean Trance** — MintoDog (CC0-1.0) — https://opengameart.org/content/ocean-trance
-- **Binary Underwater Village (Loop)** — Pro Sensory (CC0-1.0) — https://opengameart.org/content/binary-underwater-village-loop
-- **Cyber Runner Music** — Luis Zuno (ansimuz) (CC0-1.0) — https://opengameart.org/content/cyber-runner-music
-- **8-bit Danger!! Strong Boss** — HydroGene (CC0-1.0) — https://opengameart.org/content/8-bit-danger-strong-boss
-- **Boss Stage Synth Track** — killerfishred (CC0-1.0) — https://opengameart.org/content/boss-stage-synth-track
-- **Retro Synthwave Loops (Deadly Contracts, Hostile Territory)** — Magnesus (CC-BY-4.0) — https://opengameart.org/content/retro-synthwave-loops
-- **NES Shooter Music (5 tracks, 3 jingles)** — SketchyLogic (CC0-1.0) — https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles
 - **Tema do menu** — Clayton K. N. Passos com Google Flow Music (LicenseRef-Google-Terms-of-Service) — https://flowmusic.google
+- **Music from 'ESCAPE': Temples** — Of Far Different Nature (https://fardifferent.carrd.co/) (CC-BY-4.0) — https://fardifferent.itch.io/escape
+- **Music: 'Another Step Back' and 'Ritual' (album Another Step Back)** — Of Far Different Nature (https://fardifferent.bandcamp.com/) (CC-BY-4.0) — https://fardifferent.itch.io/another-step-back
+- **Cyber Power** — Bogart VGM (https://www.facebook.com/BogartVGM/) (CC-BY-4.0) — https://opengameart.org/content/cyber-power
+- **Neon Action** — Bogart VGM (https://www.facebook.com/BogartVGM/) (CC-BY-4.0) — https://opengameart.org/content/neon-action
+- **Void: Cyber Side Scroller** — dancramp (CC-BY-4.0) — https://dancramp.itch.io/void-music-pack
+- **Interstellar EDM/Metal Music Pack: Plasma Storm** — David KBD (https://www.davidkbd.com) (CC-BY-4.0) — https://davidkbd.itch.io/interstellar-edm-metal-music-pack
+- **Interstellar vol.2 EDM-Metal Music Pack: Orbital Assault** — David KBD (https://www.davidkbd.com) (CC-BY-4.0) — https://davidkbd.itch.io/interstellar-vol2-edm-metal-music-pack
+- **Code Injection Dark Techno Music Pack: Binary Chaos** — David KBD (https://www.davidkbd.com) (CC-BY-4.0) — https://davidkbd.itch.io/code-injection-dark-techno-music-pack
+- **Calamity (Epic Orchestral Metal)** — Esiltir (CC-BY-4.0) — https://opengameart.org/content/calamity-epic-orchestral-metal
+- **Cyberpunk Boss** — Arold Valda (aroldv) (CC-BY-4.0) — https://opengameart.org/content/cyberpunk-boss
+- **Space Boss Battle** — MintoDog (CC0-1.0) — https://opengameart.org/content/space-boss-battle
+- **Trilhas de batalha: Tactical Combat Loop, Apex Onslaught, Final Onslaught** — Clayton K. N. Passos com Google Flow Music (LicenseRef-Google-Terms-of-Service) — https://flowmusic.google
 
 ## Efeitos sonoros
 

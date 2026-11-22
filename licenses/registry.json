@@ -603,60 +603,6 @@
     "snapshot_file": "docs/licenses/ocean_creatures_2026-10-30.pdf"
   },
   {
-    "id": "hydrogene_space_shooter_music",
-    "name": "8-bit Epic Space Shooter Music",
-    "category": "audio",
-    "author": "HydroGene",
-    "version": "",
-    "source_url": "https://opengameart.org/content/8-bit-epic-space-shooter-music",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "snapshot_url": "https://opengameart.org/content/8-bit-epic-space-shooter-music",
-    "attribution_required": false,
-    "commercial_use": true,
-    "ai_generated": false,
-    "modifications": "",
-    "files": [
-      "assets/audio/music/hydrogene_space_shooter*"
-    ],
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "0ee58136e6cb84783a5e8c47f7e175db22dbf5b104478fc9263148b2b6008ae8"
-    },
-    "downloaded_at": "2026-10-30",
-    "verified_at": "2026-10-30",
-    "verified_by": "Claude (Fase 0); revisão final por Clayton antes do lançamento",
-    "snapshot_file": "docs/licenses/hydrogene_space_shooter_music_2026-10-30.pdf"
-  },
-  {
-    "id": "junkala_boss_battle_music",
-    "name": "Epic Boss Battle (Seamlessly Looping)",
-    "category": "audio",
-    "author": "Juhani Junkala (SubspaceAudio)",
-    "version": "",
-    "source_url": "https://opengameart.org/content/boss-battle-music",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "snapshot_url": "https://opengameart.org/content/boss-battle-music",
-    "attribution_required": false,
-    "commercial_use": true,
-    "ai_generated": false,
-    "modifications": "",
-    "files": [
-      "assets/audio/music/junkala_*"
-    ],
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "c96a1e2eae4514e13e10afb9bb17c155620b2b5453c911f05a94a40b6a4c9c37"
-    },
-    "downloaded_at": "2026-10-30",
-    "verified_at": "2026-10-30",
-    "verified_by": "Claude (Fase 0); revisão final por Clayton antes do lançamento",
-    "snapshot_file": "docs/licenses/junkala_boss_battle_music_2026-10-30.pdf"
-  },
-  {
     "id": "atlantis_generated",
     "name": "Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)",
     "category": "art",
@@ -712,195 +658,6 @@
       "snapshot_file": "afa6d90c6b7b7e7cd86fc95d7dc78ea1c7976127e56d033dc44a231832101958"
     },
     "snapshot_file": "docs/licenses/exo2_font_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "Umplix",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/umplix_*"
-    ],
-    "id": "umplix_deep_sea_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "Deep Sea",
-    "snapshot_url": "https://opengameart.org/content/deep-sea",
-    "source_url": "https://opengameart.org/content/deep-sea",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "9f4a2f00e8433a18f109236bd2c86c5768bccc078417d94dcfdbf2694ed0bc05"
-    },
-    "snapshot_file": "docs/licenses/umplix_deep_sea_music_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "MintoDog",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/mintodog_*"
-    ],
-    "id": "mintodog_ocean_trance_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "Ocean Trance",
-    "snapshot_url": "https://opengameart.org/content/ocean-trance",
-    "source_url": "https://opengameart.org/content/ocean-trance",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "84a9bff4a9cfb16d4bab2fdca1d19107a8eb09b35656ce4c7b22cac20a0816e4"
-    },
-    "snapshot_file": "docs/licenses/mintodog_ocean_trance_music_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "Pro Sensory",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/prosensory_*"
-    ],
-    "id": "prosensory_binary_village_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "Binary Underwater Village (Loop)",
-    "snapshot_url": "https://opengameart.org/content/binary-underwater-village-loop",
-    "source_url": "https://opengameart.org/content/binary-underwater-village-loop",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "b69447badd7b98944d6c5a5b1a71f67e4bb9cf5bea76e979a4f456bbd9ea20c9"
-    },
-    "snapshot_file": "docs/licenses/prosensory_binary_village_music_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "Luis Zuno (ansimuz)",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/ansimuz_*"
-    ],
-    "id": "ansimuz_cyber_runner_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "Cyber Runner Music",
-    "snapshot_url": "https://opengameart.org/content/cyber-runner-music",
-    "source_url": "https://opengameart.org/content/cyber-runner-music",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "e8a8bac40ccccac98e7513648000f81f538a39c016c5aa37d3d49cea5fd12670"
-    },
-    "snapshot_file": "docs/licenses/ansimuz_cyber_runner_music_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "HydroGene",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/hydrogene_strong_*"
-    ],
-    "id": "hydrogene_strong_boss_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "8-bit Danger!! Strong Boss",
-    "snapshot_url": "https://opengameart.org/content/8-bit-danger-strong-boss",
-    "source_url": "https://opengameart.org/content/8-bit-danger-strong-boss",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "aba4a7bad191638e8f2ee31a1549d6b3b7271767fb1e77a0c2e506cf98d1f6c9"
-    },
-    "snapshot_file": "docs/licenses/hydrogene_strong_boss_music_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "killerfishred",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/killerfishred_*"
-    ],
-    "id": "killerfishred_boss_fight_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "Boss Stage Synth Track",
-    "snapshot_url": "https://opengameart.org/content/boss-stage-synth-track",
-    "source_url": "https://opengameart.org/content/boss-stage-synth-track",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "05eeebf4cb5c949fdbf1733a11c573f88d85747ddc5d0e85165aa4652db85481"
-    },
-    "snapshot_file": "docs/licenses/killerfishred_boss_fight_music_2026-10-31.pdf",
-    "downloaded_at": "2026-10-31"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": true,
-    "author": "Magnesus",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/magnesus_*"
-    ],
-    "id": "magnesus_synthwave_music",
-    "license_file": "licenses/texts/CC-BY-4.0.txt",
-    "license_id": "CC-BY-4.0",
-    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
-    "modifications": "",
-    "name": "Retro Synthwave Loops (Deadly Contracts, Hostile Territory)",
-    "snapshot_url": "https://opengameart.org/content/retro-synthwave-loops",
-    "source_url": "https://opengameart.org/content/retro-synthwave-loops",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (redesign 1.6); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "sha256": {
-      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
-      "snapshot_file": "92c8081aa1ecea6a748d90fbdd3eb8b0b351f9149526a20a0a65e83d5810e03b"
-    },
-    "snapshot_file": "docs/licenses/magnesus_synthwave_music_2026-10-31.pdf",
     "downloaded_at": "2026-10-31"
   },
   {
@@ -1070,33 +827,6 @@
       "snapshot_file": "99e4f713744e7021d762841a83526ea1c826510592c3149d31670e342095fe31"
     },
     "snapshot_file": "docs/licenses/faxcorp_electricity_sfx_2026-10-31.pdf"
-  },
-  {
-    "ai_generated": false,
-    "attribution_required": false,
-    "author": "SketchyLogic",
-    "category": "audio",
-    "commercial_use": true,
-    "files": [
-      "assets/audio/music/sketchylogic_*"
-    ],
-    "id": "sketchylogic_nes_music",
-    "license_file": "licenses/texts/CC0-1.0.txt",
-    "license_id": "CC0-1.0",
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
-    "modifications": "",
-    "name": "NES Shooter Music (5 tracks, 3 jingles)",
-    "snapshot_url": "https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles",
-    "source_url": "https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles",
-    "verified_at": "2026-10-31",
-    "verified_by": "Claude (chefes de meio de fase 1.10); revisão final por Clayton antes do lançamento",
-    "version": "",
-    "downloaded_at": "2026-10-31",
-    "sha256": {
-      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
-      "snapshot_file": "185b40569759e15b8bdd7878d4e7b6e53065c8579af9d03360e3eabf47431fe5"
-    },
-    "snapshot_file": "docs/licenses/sketchylogic_nes_music_2026-10-31.pdf"
   },
   {
     "ai_generated": false,
@@ -1325,5 +1055,367 @@
     },
     "snapshot_file": "docs/licenses/flow_tide_rising_music_2026-11-02.pdf",
     "downloaded_at": "2026-11-02"
+  },
+  {
+    "id": "fardifferent_escape_music",
+    "name": "Music from 'ESCAPE': Temples",
+    "category": "audio",
+    "author": "Of Far Different Nature (https://fardifferent.carrd.co/)",
+    "version": "",
+    "source_url": "https://fardifferent.itch.io/escape",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://fardifferent.itch.io/escape",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/fardifferent_temples.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/fardifferent_escape_music_NOTICE.txt",
+    "notice_source": "licenses/notices/fardifferent_escape_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "2d85d06aba0453a12c0b1aabe8e3dd1e18b1d7c8506ea4075ed7d5eb713c175f",
+      "snapshot_file": "743d011da313e3fde0207f9689d5ca258f20ecd7ad1a05869e11532889d4c5fb"
+    },
+    "snapshot_file": "docs/licenses/fardifferent_escape_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "fardifferent_another_step_back_music",
+    "name": "Music: 'Another Step Back' and 'Ritual' (album Another Step Back)",
+    "category": "audio",
+    "author": "Of Far Different Nature (https://fardifferent.bandcamp.com/)",
+    "version": "",
+    "source_url": "https://fardifferent.itch.io/another-step-back",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://fardifferent.itch.io/another-step-back",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/fardifferent_another_step_back.ogg",
+      "assets/audio/music/fardifferent_ritual.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/fardifferent_another_step_back_music_NOTICE.txt",
+    "notice_source": "licenses/notices/fardifferent_another_step_back_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "00d4b196bc782487628430bd48998272c2c3ca6187009521da45b8294a88a0a0",
+      "snapshot_file": "5ad2ae3878e1917d9a5f19f6a0338346f570fe9dacf48b55104e9fe231c5f414"
+    },
+    "snapshot_file": "docs/licenses/fardifferent_another_step_back_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "bogart_cyber_power_music",
+    "name": "Cyber Power",
+    "category": "audio",
+    "author": "Bogart VGM (https://www.facebook.com/BogartVGM/)",
+    "version": "",
+    "source_url": "https://opengameart.org/content/cyber-power",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://opengameart.org/content/cyber-power",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/bogart_cyber_power.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/bogart_cyber_power_music_NOTICE.txt",
+    "notice_source": "licenses/notices/bogart_cyber_power_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "8478160684041a8e1ba7015ad6acb174a692d3291804305c6538141e6919246e",
+      "snapshot_file": "e49f2e26e39538a3e0040c4772ed097f4ce60d6c278b1ba5e7e1fdcae665856a"
+    },
+    "snapshot_file": "docs/licenses/bogart_cyber_power_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "bogart_neon_action_music",
+    "name": "Neon Action",
+    "category": "audio",
+    "author": "Bogart VGM (https://www.facebook.com/BogartVGM/)",
+    "version": "",
+    "source_url": "https://opengameart.org/content/neon-action",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://opengameart.org/content/neon-action",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (versão \"loopable\", que termina num decaimento de 2,4 s; trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/bogart_neon_action.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/bogart_neon_action_music_NOTICE.txt",
+    "notice_source": "licenses/notices/bogart_neon_action_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "bd69f544bfb114383354fd6794471c557a81dc4c304c99f8a6e943df7aab5c5a",
+      "snapshot_file": "ba638f03bc5b45550985f54c3b986fc2f92a4bd0598ec0c01036351f8bfa7d1f"
+    },
+    "snapshot_file": "docs/licenses/bogart_neon_action_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "dancramp_void_music",
+    "name": "Void: Cyber Side Scroller",
+    "category": "audio",
+    "author": "dancramp",
+    "version": "",
+    "source_url": "https://dancramp.itch.io/void-music-pack",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://dancramp.itch.io/void-music-pack",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/dancramp_cyber_side_scroller.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/dancramp_void_music_NOTICE.txt",
+    "notice_source": "licenses/notices/dancramp_void_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "0eb7c5b8606c526b4ab422b52f7d9dd347d05cfea40daa1ffdb1e06aeb34cb60",
+      "snapshot_file": "5d4f2efd3c7db0d2bda8bdbbe5effc212884468bc9d583b1013a770d43d6f8a4"
+    },
+    "snapshot_file": "docs/licenses/dancramp_void_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "davidkbd_interstellar_music",
+    "name": "Interstellar EDM/Metal Music Pack: Plasma Storm",
+    "category": "audio",
+    "author": "David KBD (https://www.davidkbd.com)",
+    "version": "",
+    "source_url": "https://davidkbd.itch.io/interstellar-edm-metal-music-pack",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://davidkbd.itch.io/interstellar-edm-metal-music-pack",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/davidkbd_plasma_storm.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/davidkbd_interstellar_music_NOTICE.txt",
+    "notice_source": "licenses/notices/davidkbd_interstellar_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "d5c6b641a208ff416dbf6879e2b0338bb74de3d7f624faec72608777b2c4b1c1",
+      "snapshot_file": "13582352871234cc536d09987fadfc9ba89af1ce68319f768513066085615941"
+    },
+    "snapshot_file": "docs/licenses/davidkbd_interstellar_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "davidkbd_interstellar_vol2_music",
+    "name": "Interstellar vol.2 EDM-Metal Music Pack: Orbital Assault",
+    "category": "audio",
+    "author": "David KBD (https://www.davidkbd.com)",
+    "version": "",
+    "source_url": "https://davidkbd.itch.io/interstellar-vol2-edm-metal-music-pack",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://davidkbd.itch.io/interstellar-vol2-edm-metal-music-pack",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/davidkbd_orbital_assault.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/davidkbd_interstellar_vol2_music_NOTICE.txt",
+    "notice_source": "licenses/notices/davidkbd_interstellar_vol2_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "ff07da6b6ca711c021e3513a23da20552219a3e42f581c65b1aac33387d3c283",
+      "snapshot_file": "63d8e8b53d289a7e15628732bfb0986d1193a3aad9de6ff5b20aaa4385ce01d5"
+    },
+    "snapshot_file": "docs/licenses/davidkbd_interstellar_vol2_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "davidkbd_code_injection_music",
+    "name": "Code Injection Dark Techno Music Pack: Binary Chaos",
+    "category": "audio",
+    "author": "David KBD (https://www.davidkbd.com)",
+    "version": "",
+    "source_url": "https://davidkbd.itch.io/code-injection-dark-techno-music-pack",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://davidkbd.itch.io/code-injection-dark-techno-music-pack",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (o arquivo -loop do autor já fecha o laço; só a normalização), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/davidkbd_binary_chaos.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/davidkbd_code_injection_music_NOTICE.txt",
+    "notice_source": "licenses/notices/davidkbd_code_injection_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "1c5134337c394b7ec6b8340b9a8a21ac332566139198cfc34d84832d8ee8b6ec",
+      "snapshot_file": "e26173030ba6e65c77b1440c46e0e495e51b801a5f0bdbf59648385d530599c4"
+    },
+    "snapshot_file": "docs/licenses/davidkbd_code_injection_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "esiltir_calamity_music",
+    "name": "Calamity (Epic Orchestral Metal)",
+    "category": "audio",
+    "author": "Esiltir",
+    "version": "",
+    "source_url": "https://opengameart.org/content/calamity-epic-orchestral-metal",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://opengameart.org/content/calamity-epic-orchestral-metal",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/esiltir_calamity.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/esiltir_calamity_music_NOTICE.txt",
+    "notice_source": "licenses/notices/esiltir_calamity_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "2cb1ec44f111cfad29b126c2720055a2f9e3f38341e0880966f45be2fa6dc6f9",
+      "snapshot_file": "f0b25e887fcc4416895b797fe81b14293f6b84b78cbc155bea2e8ad68e3c6d9a"
+    },
+    "snapshot_file": "docs/licenses/esiltir_calamity_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "aroldv_cyberpunk_boss_music",
+    "name": "Cyberpunk Boss",
+    "category": "audio",
+    "author": "Arold Valda (aroldv)",
+    "version": "",
+    "source_url": "https://opengameart.org/content/cyberpunk-boss",
+    "license_id": "CC-BY-4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-4.0.txt",
+    "snapshot_url": "https://opengameart.org/content/cyberpunk-boss",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/aroldv_cyberpunk_boss.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "notice_file": "licenses/notices/aroldv_cyberpunk_boss_music_NOTICE.txt",
+    "notice_source": "licenses/notices/aroldv_cyberpunk_boss_music_NOTICE.txt",
+    "sha256": {
+      "license_file": "9ba9550ad48438d0836ddab3da480b3b69ffa0aac7b7878b5a0039e7ab429411",
+      "notice_file": "bcae8cc002dbf782c80c02ed1da1beab3fc82b78ad256eced9a5919276d7c26f",
+      "snapshot_file": "f07eeacb76e3369e749796ee526378872cd12083424a0e6c877888d28e1be8cd"
+    },
+    "snapshot_file": "docs/licenses/aroldv_cyberpunk_boss_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "mintodog_space_boss_battle_music",
+    "name": "Space Boss Battle",
+    "category": "audio",
+    "author": "MintoDog",
+    "version": "",
+    "source_url": "https://opengameart.org/content/space-boss-battle",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "snapshot_url": "https://opengameart.org/content/space-boss-battle",
+    "attribution_required": false,
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (o arquivo do autor já fecha o laço; só a normalização), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/mintodog_space_boss_battle.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (trilhas modernas das fases e chefes); licença conferida no LICENSE_SOURCE.txt baixado em 2026-11-22; revisão final por Clayton antes do lançamento",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "snapshot_file": "c553a426bc9a3258b986dec57c597220cfbbf82dab72acdeaa36daa324d661e6"
+    },
+    "snapshot_file": "docs/licenses/mintodog_space_boss_battle_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "flow_battle_music",
+    "name": "Trilhas de batalha: Tactical Combat Loop, Apex Onslaught, Final Onslaught",
+    "category": "audio",
+    "author": "Clayton K. N. Passos com Google Flow Music",
+    "version": "Tactical Combat Loop, Apex Onslaught, Final Onslaught (gerados em 2026-10-21)",
+    "source_url": "https://flowmusic.google",
+    "license_id": "LicenseRef-Google-Terms-of-Service",
+    "license_url": "https://policies.google.com/terms",
+    "license_file": "licenses/texts/LicenseRef-Google-Terms-of-Service.txt",
+    "license_source": "licenses/texts/LicenseRef-Google-Terms-of-Service.txt",
+    "notice_file": "licenses/notices/flow_battle_music_NOTICE.txt",
+    "notice_source": "licenses/notices/flow_battle_music_NOTICE.txt",
+    "snapshot_url": "https://policies.google.com/terms?hl=en",
+    "attribution_required": true,
+    "commercial_use": true,
+    "ai_generated": true,
+    "decision": "O mantenedor (Clayton K. N. Passos) gerou ele mesmo no Google Flow Music (modelo Lyria) as faixas \"Tactical Combat Loop\", \"Apex Onslaught\" e \"Final Onslaught\" (arquivos de 2026-10-21, em D:\\src\\assets-downloaded\\google_flow_music\\) e, em 2026-11-22, aprovou o uso delas como trilha do capítulo 1 (flow_tactical_combat), dos chefes de ato (flow_apex_onslaught) e do chefe final (flow_final_onslaught). Mesma fonte e mesma base da decisão do tema do menu (flow_tide_rising_music, 2026-11-01): pelos Termos de Serviço do Google (seção \"Your content\"), o Google não reivindica a propriedade do conteúdo gerado, e o uso comercial no jogo (Google Play e Steam) não é restringido. O áudio do Flow Music leva a marca d'água SynthID do Google, que não é removida. Autoria creditada: o mantenedor via Google Flow Music.",
+    "modifications": "tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo",
+    "files": [
+      "assets/audio/music/flow_tactical_combat.ogg",
+      "assets/audio/music/flow_apex_onslaught.ogg",
+      "assets/audio/music/flow_final_onslaught.ogg"
+    ],
+    "verified_at": "2026-11-22",
+    "verified_by": "Clayton K. N. Passos (aprovação de 2026-11-22); registro por Claude (trilhas modernas das fases e chefes)",
+    "sha256": {
+      "license_file": "f9f2a3000e2eb7de4526fe5dc26dc3a0a90323c0b7f6b326604c564c7a08fa5f",
+      "notice_file": "4ecc3e56be2c0850cf11d2e512515ddf93dc6b536cdfb2e6d0e8f037fb0d6296",
+      "snapshot_file": "852f3ed912d8513094b0408956efc608f363e4747d9419fc316bc19827686cf2"
+    },
+    "snapshot_file": "docs/licenses/flow_battle_music_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
   }
 ]

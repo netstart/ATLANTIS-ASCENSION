@@ -2,7 +2,7 @@
 	"id": "c1m1",
 	"chapter": 1,
 	"name_key": "stage.c1m1",
-	"music": "mintodog_ocean_trance",
+	"music": "flow_tactical_combat",
 	"scroll_speed": 22,
 	"backdrop": "ocean",
 	"seed_salt": 306,
@@ -554,5 +554,33 @@
 		}
 	],
 	"tutorial": true,
-	"weather": "calm"
+	"weather": "calm",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.3,
+			"speed": 41.5,
+			"pod": false,
+			"t": 37.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 13.0,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "skiff",
+				"formation": "line",
+				"count": 6,
+				"x": 0.5,
+				"path": "straight",
+				"params": {
+					"speed": 74
+				},
+				"spacing": 40
+			},
+			"t": 88.0
+		}
+	]
 }

@@ -1,0 +1,10 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "flow_battle_music",
+	"note": "Trilha preparada por tools/prepare_battle_music.py (laço sem emenda, -14 LUFS, pico real ≤ -1 dBTP).",
+	"files": {
+		"music/flow_tactical_combat.ogg": "audio/music/flow_tactical_combat.ogg",
+		"music/flow_apex_onslaught.ogg": "audio/music/flow_apex_onslaught.ogg",
+		"music/flow_final_onslaught.ogg": "audio/music/flow_final_onslaught.ogg"
+	}
+}

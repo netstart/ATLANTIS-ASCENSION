@@ -2,7 +2,7 @@
 	"id": "c7m2",
 	"chapter": 7,
 	"name_key": "stage.c7m2",
-	"music": "ansimuz_cyber_runner",
+	"music": "davidkbd_plasma_storm",
 	"scroll_speed": 24,
 	"backdrop": "stratosphere",
 	"seed_salt": 313,
@@ -500,5 +500,40 @@
 			"t": 94.56
 		}
 	],
-	"weather": "clouds"
+	"weather": "clouds",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 5,
+			"x": 0.5,
+			"speed": 50.5,
+			"pod": true,
+			"t": 25.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 98,
+			"hold": 2.7,
+			"t": 43.5
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 11.2,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "phalanx",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "straight",
+				"params": {
+					"speed": 64
+				},
+				"spacing": 40
+			},
+			"t": 61.0
+		}
+	]
 }

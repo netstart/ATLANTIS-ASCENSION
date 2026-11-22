@@ -19,6 +19,10 @@ var marked: bool = false
 var drop: StringName = &""
 ## Glifo atlante (segredo de rota): ordem em que precisa ser destruído (-1 = não é glifo).
 var glyph: int = -1
+## Alvo de um objetivo de fase (SimObjectives: &"rescue", &"sabotage", &"intercept"; vazio = inimigo comum) e se
+## encostar fere a nave (falso nos alvos no chão e nas jaulas: data/enemies.json "contact").
+var objective: StringName = &""
+var contact: bool = true
 var origin := Vector2.ZERO
 var path: StringName = &"straight"
 var params: Dictionary = {}
@@ -47,6 +51,7 @@ func setup(p_def: Dictionary, p_origin: Vector2, p_path: StringName, p_params: D
 	params = p_params
 	depth = DEPTH_START if from_depth else 1.0
 	glyph = int(def.get("glyph", -1))
+	contact = bool(def.get("contact", true))
 	var pattern_id := String(def.get("pattern", ""))
 	if not pattern_id.is_empty() and patterns.has(StringName(pattern_id)):
 		runner = PatternRunner.new(patterns[StringName(pattern_id)], int(def.get("pattern_delay", 30)), radius)

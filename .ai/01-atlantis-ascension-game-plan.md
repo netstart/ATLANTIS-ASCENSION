@@ -461,6 +461,29 @@ Formação (linha, V, coluna, círculo, onda senoidal, espiral), trajetória (`C
 `data/paths.json`), tempo, quantidade, inimigo, drops. Regra de densidade: no máximo 120 balas inimigas vivas em
 Normal fora de chefes, 300 em chefes, 600 em Abissal. O teste de fase confere esses tetos com o bot.
 
+### 5.6 Objetivos de fase (resgate, sabotagem, interceptação)
+
+Metas curtas dentro da fase, além do objetivo de fim de missão (a 4ª estrela). Cada missão tem **2** (capítulos 1 a
+3) ou **3** (capítulo 4 em diante, quando cabem), sempre com um resgate, de 10 a 25 s cada, um de cada vez. Entram com
+aviso no rádio e 1,5 s antes dos alvos, mostram um marcador compacto no HUD (ícone e "2/5"; barra do prazo na
+sabotagem) e terminam com fala, som e recompensa: **5.000 pontos, 12 pérolas e 2 de oricalco** no acerto (+1 de
+oricalco no resgate perfeito). Falhar **nunca** reprova a missão. O resultado lista cada um ("Resgate 4/5 ★").
+
+| Tipo | No céu e no espaço | Regra | Falha |
+|---|---|---|---|
+| **Resgate** | A Jaula do Protocolo (no chão e no fundo do mar, sem dano de contato) vira a cápsula-prisão à deriva | Destruída, solta 3 a 6 atlantes (sobe com o capítulo) em bolhas ocas que se espalham e sobem para a superfície (12 s); cada um que a nave toca vale 1.000 pontos e conta em atlantes resgatados (4ª estrela "rescue", final 3.4 e Cidade de Thalassa, seção 7). Vale com metade ou mais | A jaula sai do campo inteira |
+| **Sabotagem** | Faróis flutuantes | Derrubar os 3 Faróis do Protocolo (com mira dourada) antes do prazo (13 s no capítulo 1 a 10,3 s no 10) | Os faróis chamam reforços: a maior formação do capítulo, com uma nave a mais, entra na hora |
+| **Interceptação** | Igual | Um Mensageiro do Protocolo (dourado) para no alto com uma relíquia atlante roubada e foge pelo lado (espera de 3,6 s a 2,25 s); abatido, a relíquia voa até a nave (+3.000) | O mensageiro escapa |
+
+Leitura: o atlante é uma bolha oca, clara e lenta com a silhueta dourada dentro, nunca uma bala (as balas são cheias,
+com contorno escuro e núcleo branco). Os alvos são aço escuro com faixa coral do Protocolo e mira dourada que respira.
+Os nomes seguem a facção da história (Leviathan Protocol). A vida dos alvos sobe com a curva por capítulo (4.7).
+
+Técnica: regra pura em `scripts/sim/sim_objectives.gd` (revisão 4 da Sim, `SimRevision`; replays antigos ignoram),
+roteiro em `data/stages/<id>.json` "objectives" gerado por `tools/gen_missions.py` só em trechos de ondas (longe de
+chefes, perigos, falas, bênçãos, cápsulas e glifos; o relógio da fase para com chefe, então nenhum começa durante
+luta), desenho em `scripts/view/objective_view.gd`, marcador em `scripts/game/hud_objective.gd`.
+
 ---
 
 ## 6. Bestiário e chefes

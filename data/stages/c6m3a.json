@@ -2,7 +2,7 @@
 	"id": "c6m3a",
 	"chapter": 6,
 	"name_key": "stage.c6m3a",
-	"music": "mintodog_ocean_trance",
+	"music": "dancramp_cyber_side_scroller",
 	"scroll_speed": 26,
 	"backdrop": "atlantis",
 	"seed_salt": 410,
@@ -724,5 +724,29 @@
 	],
 	"route": "abyss",
 	"score_mult": 1.5,
-	"weather": "calm"
+	"weather": "calm",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.5,
+			"speed": 49.0,
+			"pod": false,
+			"t": 37.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 94,
+			"hold": 2.85,
+			"t": 67.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 94,
+			"hold": 2.85,
+			"t": 89.5
+		}
+	]
 }

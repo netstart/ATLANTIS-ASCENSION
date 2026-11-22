@@ -2,7 +2,7 @@
 	"id": "c3m1",
 	"chapter": 3,
 	"name_key": "stage.c3m1",
-	"music": "ansimuz_cyber_runner",
+	"music": "fardifferent_another_step_back",
 	"scroll_speed": 26,
 	"backdrop": "storm",
 	"seed_salt": 308,
@@ -542,5 +542,22 @@
 			"t": 123.5
 		}
 	],
-	"weather": "clouds"
+	"weather": "clouds",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.5,
+			"speed": 44.5,
+			"pod": false,
+			"t": 39.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 82,
+			"hold": 3.3,
+			"t": 77.5
+		}
+	]
 }

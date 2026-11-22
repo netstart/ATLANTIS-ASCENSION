@@ -2,7 +2,7 @@
 	"id": "c10m1",
 	"chapter": 10,
 	"name_key": "stage.c10m1",
-	"music": "prosensory_binary_village",
+	"music": "fardifferent_ritual",
 	"scroll_speed": 20,
 	"backdrop": "hadal",
 	"seed_salt": 354,
@@ -550,5 +550,43 @@
 		}
 	],
 	"dark": true,
-	"weather": "abyssal"
+	"weather": "abyssal",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 6,
+			"x": 0.5,
+			"speed": 55.0,
+			"pod": false,
+			"t": 33.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 10.3,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "tide_wasp",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "dive",
+				"params": {
+					"side": -1,
+					"amp": 80,
+					"speed": 72
+				},
+				"spacing": 40,
+				"mirror": true
+			},
+			"t": 68.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 110,
+			"hold": 2.25,
+			"t": 89.5
+		}
+	]
 }

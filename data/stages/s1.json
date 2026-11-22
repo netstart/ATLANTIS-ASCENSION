@@ -2,7 +2,7 @@
 	"id": "s1",
 	"chapter": 2,
 	"name_key": "stage.s1",
-	"music": "prosensory_binary_village",
+	"music": "fardifferent_temples",
 	"scroll_speed": 18,
 	"backdrop": "atlantis",
 	"seed_salt": 164,
@@ -564,5 +564,22 @@
 	],
 	"weapon_lock": "railgun",
 	"secret_mission": true,
-	"weather": "abyssal"
+	"weather": "abyssal",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.3,
+			"speed": 43.0,
+			"pod": false,
+			"t": 36.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 78,
+			"hold": 3.45,
+			"t": 72.0
+		}
+	]
 }

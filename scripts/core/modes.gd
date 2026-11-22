@@ -110,7 +110,7 @@ static func remix(id: String, chapters: Array, seed: int, seconds: float, gap: f
 			t += 6.0
 	events.append({"op": "end", "t": snappedf(t + 2.0, 0.01)})
 	var first := int(chapters[0]) if not chapters.is_empty() else 1
-	return {"id": id, "chapter": first, "name_key": "mode." + id.get_slice(":", 0), "music": "hydrogene_space_shooter",
+	return {"id": id, "chapter": first, "name_key": "mode." + id.get_slice(":", 0), "music": "flow_tactical_combat",
 			"scroll_speed": 24, "backdrop": BACKDROPS[clampi(first - 1, 0, BACKDROPS.size() - 1)], "seed_salt": seed % 9973,
 			"objective": {"type": "score", "count": 50000, "text_key": "objective.score"}, "length_s": t, "events": events}
 
@@ -152,7 +152,7 @@ static func abyss(seed: int) -> Dictionary:
 		events.append({"op": "module" if depth % 2 == 1 else "blessing", "t": snappedf(t, 0.01)})
 		t += 3.0
 	events.append({"op": "end", "t": snappedf(t + 2.0, 0.01)})
-	return {"id": "abyss", "chapter": 1, "name_key": "mode.abyss", "music": "hydrogene_space_shooter",
+	return {"id": "abyss", "chapter": 1, "name_key": "mode.abyss", "music": "fardifferent_ritual",
 			"scroll_speed": 26, "backdrop": "core", "seed_salt": seed % 9973, "abyss": true,
 			"objective": {"type": "score", "count": 500000, "text_key": "objective.score"}, "length_s": t, "events": events}
 
@@ -187,7 +187,7 @@ static func survival(seed: int) -> Dictionary:
 		events.append({"op": "blessing", "t": snappedf(t, 0.01)})
 		t += 3.0
 	events.append({"op": "end", "t": t + 2.0})
-	return {"id": "survival", "chapter": 1, "name_key": "mode.survival", "music": "hydrogene_space_shooter",
+	return {"id": "survival", "chapter": 1, "name_key": "mode.survival", "music": "fardifferent_another_step_back",
 			"scroll_speed": 26, "backdrop": "storm", "seed_salt": seed % 9973, "survival": true,
 			"objective": {"type": "score", "count": 150000, "text_key": "objective.score"}, "length_s": t, "events": events}
 
@@ -196,7 +196,7 @@ static func survival(seed: int) -> Dictionary:
 static func boss_only(boss_id: StringName, index: int) -> Dictionary:
 	var op := "boss" if boss_id in ACT_BOSSES else "miniboss"
 	return {"id": "boss_rush:%d" % index, "chapter": 1, "name_key": "boss." + String(boss_id),
-			"music": "junkala_epic_boss_battle", "scroll_speed": 18,
+			"music": "esiltir_calamity", "scroll_speed": 18,
 			"backdrop": BACKDROPS[index % BACKDROPS.size()], "seed_salt": index * 31,
 			"objective": {"type": "score", "count": 20000, "text_key": "objective.score"}, "length_s": 4.0,
 			"events": [{"op": op, "id": String(boss_id), "t": 1.0}, {"op": "end", "t": 2.0}]}

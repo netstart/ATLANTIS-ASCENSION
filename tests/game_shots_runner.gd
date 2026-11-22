@@ -19,6 +19,10 @@ extends Node
 ## cada estilo (explosão, derretimento, queda; em cima pequenos, embaixo grandes), gravando o meio de cada um em
 ## DEATH_SHOTS segundos: <pasta>/deaths_<missão>_<ms>_<res>.png. Use --mission para o mar (c1m1), o chão (c4m1)
 ## e o espaço (c8m1, onde a queda vira outro estilo).
+##
+## Objetivos de fase (SimObjectives): `--objectives` joga a missão inteira e grava cada objetivo no aviso, com os alvos
+## marcados, com os atlantes nas bolhas (resgate) e na fala do fim:
+## <pasta>/objective_<missão>_<n>_<tipo>_<momento>_<res>.png.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -72,6 +76,11 @@ var _busy := false
 ## Modo mortes: ligado, mortes já lançadas e o relógio desde elas.
 var _deaths := false
 var _deaths_t: float = -1.0
+## Modo objetivos: ligado, momentos já gravados ("<n>_<momento>") e o passo em que o último objetivo terminou.
+var _objectives := false
+var _obj_taken: Dictionary = {}
+var _obj_end_frame: int = -1
+var _obj_results: int = 0
 
 
 func _ready() -> void:
@@ -114,10 +123,14 @@ func _ready() -> void:
 			_paint = arg.trim_prefix("--paint=")
 		elif arg == "--deaths":
 			_deaths = true
+		elif arg == "--objectives":
+			_objectives = true
 		elif arg == "--left":
 			Settings.set_value("handedness", "left")
 	if _shots.is_empty():
 		_shots = [6.0, 30.0, 52.0, 70.0, 110.0, 150.0]
+	if _objectives:
+		_shots = [0.0]
 	DirAccess.make_dir_recursive_absolute(_out)
 	for r: Dictionary in DeviceProfiles.RESOLUTIONS:
 		if r["label"] == res:
@@ -155,6 +168,9 @@ func _process(_delta: float) -> void:
 		return
 	if _powers:
 		_process_powers()
+		return
+	if _objectives:
+		_process_objectives()
 		return
 	if _shots.is_empty():
 		return
@@ -199,6 +215,36 @@ func _process_deaths(delta: float) -> void:
 		get_viewport().get_texture().get_image().save_png("%s/deaths_%s_%04d_%s.png" % [_out, _mission,
 				int(shots[i] * 1000.0), _label])
 		_busy = false
+
+
+## Modo --objectives: grava os momentos de cada objetivo de fase; sai quando a missão acaba.
+func _process_objectives() -> void:
+	var sim := _game.sim
+	var obj := sim.objectives
+	if sim.finished:
+		_quit()
+		return
+	if obj.results.size() > _obj_results:
+		_obj_results = obj.results.size()
+		_obj_end_frame = sim.frame
+	var moment := ""
+	var n := obj.next if not obj.current.is_empty() else obj.results.size()
+	var kind := String(obj.current.get("type", obj.results[-1]["type"] if not obj.results.is_empty() else ""))
+	if not obj.current.is_empty():
+		var frames := int(obj.current["frames"])
+		if frames >= 45 and not _obj_taken.has("%d_warn" % n):
+			moment = "warn"
+		elif frames >= SimObjectives.WARN_FRAMES + 70 and not _obj_taken.has("%d_target" % n):
+			moment = "target"
+		elif not obj.survivors.is_empty() and int(obj.survivors[0]["frames"]) >= 50 \
+				and not _obj_taken.has("%d_bubbles" % n):
+			moment = "bubbles"
+	elif _obj_end_frame >= 0 and sim.frame >= _obj_end_frame + 24 and not _obj_taken.has("%d_end" % n):
+		moment = "end"
+	if moment.is_empty():
+		return
+	_obj_taken["%d_%s" % [n, moment]] = true
+	await _capture("%s/objective_%s_%d_%s_%s_%s.png" % [_out, _mission, n, kind, moment, _label])
 
 
 func _next_ship() -> void:

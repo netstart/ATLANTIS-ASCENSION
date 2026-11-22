@@ -71,6 +71,7 @@ func _begin(sim: Sim) -> void:
 		sim.emit(&"outro", {})
 	_pending = false
 	frames = 0
+	sim.objectives.abort(sim)
 	for e: SimEnemy in sim.enemies:
 		e.alive = false
 	sim.enemies.clear()

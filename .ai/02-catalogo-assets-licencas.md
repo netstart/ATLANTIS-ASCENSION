@@ -157,12 +157,41 @@ Ocean Shift (onda subindo), Gravity Breach (grave descendente), voz atlante (sí
 | 8-bit Epic Space Shooter Music | HydroGene | https://opengameart.org/content/8-bit-epic-space-shooter-music | CC0-1.0 | ✅ baixado 30/10 | Missões dos capítulos 1 a 3 (Vertical Slice) |
 | Space Shooter (Loop) | Pro Sensory | OpenGameArt (título no catálogo) | CC0-1.0 | ⚠️ URL a registrar | Missões |
 | futureshmup | OpenGameArt | título no catálogo | CC0-1.0 | ⚠️ URL a registrar | Cidade futurista |
-| Epic Boss Battle (Seamlessly Looping) | Juhani Junkala (SubspaceAudio) | https://opengameart.org/content/boss-battle-music | CC0-1.0 | ✅ baixado 30/10 | Kraken Engine (Vertical Slice) |
+| Epic Boss Battle (Seamlessly Looping) | Juhani Junkala (SubspaceAudio) | https://opengameart.org/content/boss-battle-music | CC0-1.0 | ⏸️ removido em 22/11 (trocado por Calamity) | Era o Kraken Engine |
 | Battle Music, Massive Battle, War Theme | OpenGameArt | títulos no catálogo | CC0-1.0 | ⚠️ URL a registrar | Chefes e mini-chefes |
 | Another space background track, Outer Space Loop, Space 5 | OpenGameArt | títulos no catálogo | CC0-1.0 | ⚠️ URL a registrar | Hub e menus |
 | Space Dimensions (Techno) | Matthew Pablo | OpenGameArt | CC-BY-3.0 | 🔶 | Tempestade |
 | Space Boss Battle Theme | OpenGameArt | título no catálogo | CC-BY-3.0 | 🔶 | Leviathan Protocol |
 | Tema do menu "Atlantis Ascension - Main Theme (Alt Take)" | Clayton K. N. Passos com Google Flow Music (Lyria) | https://flowmusic.google | Termos de Serviço do Google (`LicenseRef-Google-Terms-of-Service`), gerado por IA com decisão registrada | ✅ 1.16.0, licença `flow_tide_rising_music` | Menus (`flow_tide_rising.ogg`, laço por `tools/prepare_menu_music.py`) |
+
+### 9b. Trilhas modernas das fases e chefes (22/11/2026)
+
+Aprovadas pelo mantenedor no lugar das trilhas 8-bit. Licença conferida no `LICENSE_SOURCE.txt` de cada pacote em
+`D:\srcssets-downloaded\`. `tools/prepare_battle_music.py` faz o laço sem emenda, normaliza para -14 LUFS (pico
+real até -1 dBTP) e grava OGG q5 em `atlantis-mix\music\`; os manifestos `tools/*_music_assets.json` copiam.
+
+| Id no jogo | Faixa | Autor | URL | Licença | Status | Uso |
+|---|---|---|---|---|---|---|
+| `flow_tactical_combat` | Tactical Combat Loop | Clayton K. N. Passos com Google Flow Music | https://flowmusic.google | `LicenseRef-Google-Terms-of-Service` (IA, decisão registrada em `flow_battle_music`) | ✅ 22/11 | Capítulo 1 |
+| `fardifferent_temples` | Temples (álbum ESCAPE) | Of Far Different Nature | https://fardifferent.itch.io/escape | CC-BY-4.0 | ✅ 22/11 | Capítulo 2 |
+| `fardifferent_another_step_back` | Another Step Back | Of Far Different Nature | https://fardifferent.itch.io/another-step-back | CC-BY-4.0 | ✅ 22/11 | Capítulo 3 |
+| `bogart_cyber_power` | Cyber Power | Bogart VGM | https://opengameart.org/content/cyber-power | CC-BY-4.0 (crédito com link do Facebook) | ✅ 22/11 | Capítulo 4 |
+| `bogart_neon_action` | Neon Action (loopable) | Bogart VGM | https://opengameart.org/content/neon-action | CC-BY-4.0 | ✅ 22/11 | Capítulo 5 |
+| `dancramp_cyber_side_scroller` | Cyber Side Scroller (Void) | dancramp | https://dancramp.itch.io/void-music-pack | CC-BY-4.0 | ✅ 22/11 | Capítulo 6 |
+| `davidkbd_plasma_storm` | Plasma Storm (Interstellar) | David KBD | https://davidkbd.itch.io/interstellar-edm-metal-music-pack | CC-BY-4.0 | ✅ 22/11 | Capítulo 7 |
+| `davidkbd_orbital_assault` | Orbital Assault (Interstellar vol.2) | David KBD | https://davidkbd.itch.io/interstellar-vol2-edm-metal-music-pack | CC-BY-4.0 | ✅ 22/11 | Capítulo 8 |
+| `davidkbd_binary_chaos` | Binary Chaos-loop (Code Injection) | David KBD | https://davidkbd.itch.io/code-injection-dark-techno-music-pack | CC-BY-4.0 | ✅ 22/11 | Capítulo 9 |
+| `fardifferent_ritual` | Ritual (Another Step Back) | Of Far Different Nature | https://fardifferent.itch.io/another-step-back | CC-BY-4.0 | ✅ 22/11 | Capítulo 10 |
+| `flow_apex_onslaught` | Apex Onslaught | Clayton K. N. Passos com Google Flow Music | https://flowmusic.google | `LicenseRef-Google-Terms-of-Service` (IA, decisão registrada) | ✅ 22/11 | Sky Leviathan |
+| `flow_final_onslaught` | Final Onslaught | Clayton K. N. Passos com Google Flow Music | https://flowmusic.google | `LicenseRef-Google-Terms-of-Service` (IA, decisão registrada) | ✅ 22/11 | Leviathan Protocol (final) |
+| `esiltir_calamity` | Calamity (Epic Orchestral Metal) | Esiltir | https://opengameart.org/content/calamity-epic-orchestral-metal | CC-BY-4.0 (o autor pede uma mensagem contando do jogo) | ✅ 22/11 | Kraken Engine, Poseidon Prime, Boss Rush |
+| `aroldv_cyberpunk_boss` | Cyberpunk Boss | Arold Valda (aroldv) | https://opengameart.org/content/cyberpunk-boss | CC-BY-4.0 | ✅ 22/11 | Hadal Matriarch |
+| `mintodog_space_boss_battle` | Space Boss Battle | MintoDog | https://opengameart.org/content/space-boss-battle | CC0-1.0 | ✅ 22/11 | Chefes de meio de fase |
+
+Removidas em 22/11: Epic Boss Battle (Junkala), 8-bit Danger!! Strong Boss (HydroGene), Boss Stage Synth Track
+(killerfishred), NES Shooter Music (SketchyLogic) e Deep Sea (Umplix, sem uso). As trilhas antigas das fases
+(ansimuz, HydroGene Space Shooter, Magnesus, MintoDog Ocean Trance, Pro Sensory) saem quando o `CHAPTER_MUSIC` de
+`tools/gen_missions.py` passar para as novas.
 
 **Criar (compor, MIT):** tema principal "Return the Sky" (leitmotiv de 4 notas que volta em todo capítulo), coral
 atlante para as ruínas e o hub, e as variações de cada chefe a partir do leitmotiv. Ferramentas livres: LMMS,
@@ -192,7 +221,7 @@ em `x/`. Todos CC0.
 | 80 CC0 creature SFX (1 e 2) | rubberduck | https://opengameart.org/content/80-cc0-creature-sfx | ✅ Rugido e rosnado dos chefes criatura |
 | 30 CC0 SFX loops | rubberduck | https://opengameart.org/content/30-cc0-sfx-loops | ✅ Alarme dos chefes de meio de fase |
 | Electricity Game Sound Pack | faxcorp | https://opengameart.org/content/electricity-game-sound-pack | ✅ Estrondo de queda de chefe |
-| NES Shooter Music | SketchyLogic | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles | ✅ Tema do chefe intermediário |
+| NES Shooter Music | SketchyLogic | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles | ⏸️ Removido em 22/11 (o chefe intermediário toca Space Boss Battle, MintoDog) |
 | Alien / SpaceShip / UFO Boss Sets | The_Scientist___ | https://opengameart.org/content/alien-boss-set | ⏸️ Baixados, não usados: desenho liso, destoa da pixel art Void |
 | Dragon 1 | Master484 | https://opengameart.org/content/dragon-1 | ⏸️ Vista lateral, não serve à câmera de cima |
 | Explosion Sets 1 e 2 | Master484 | https://opengameart.org/content/explosion-set-1-m484-games | ⏸️ Reserva para explosões menores |

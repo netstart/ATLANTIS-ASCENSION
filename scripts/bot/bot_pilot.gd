@@ -6,7 +6,8 @@ extends RefCounted
 ##
 ## A cada passo avalia 17 movimentos (parado e 16 direções), pontua o perigo das balas projetadas
 ## alguns passos à frente, dos feixes e do contato, soma a vontade de ficar embaixo do alvo e de pegar
-## coletáveis, e escolhe o menor custo.
+## coletáveis, e escolhe o menor custo. Objetivos de fase (SimObjectives): mira primeiro nos alvos marcados e sobe
+## atrás dos atlantes soltos e da relíquia, mas o perigo das balas continua mandando.
 
 const STEP_LEN := 3.0
 const LOOK_RADIUS := 110.0
@@ -19,6 +20,10 @@ const CULL_SLACK := 1.0
 ## PODER: perigo que dispara o Poder I e balas perto que pedem o Poder III.
 const POWER_DANGER := 30.0
 const POWER_CROWD := 40
+## Prêmios (atlantes, relíquia, bomba e núcleo de força): alcance e peso da atração, mais longe e mais forte que a
+## dos coletáveis comuns (correr atrás do mensageiro não pode fazer perder a bomba que cai do chefe).
+const RESCUE_REACH := 200.0
+const RESCUE_PULL := 0.015
 
 var _dirs: Array[Vector2] = []
 
@@ -123,19 +128,24 @@ func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_v
 	var foe_pos := PackedVector2Array()
 	var foe_reach := PackedFloat64Array()
 	for e: SimEnemy in sim.enemies:
-		if e.active():
+		if e.active() and e.contact:
 			foe_pos.append(e.pos)
 			foe_reach.append(e.radius + 18.0)
 	var boss_on := sim.boss != null and sim.boss.fighting()
 	var loot := PackedVector2Array()
+	var prize := PackedVector2Array()
 	for pk: Dictionary in sim.pickups:
 		var kind: StringName = pk["kind"]
-		if kind != &"pearl":
+		if kind == &"bomb" or kind == &"power":
+			prize.append(pk["pos"])
+		elif kind != &"pearl":
 			loot.append(pk["pos"])
+	for s: Dictionary in sim.objectives.survivors + sim.objectives.relics:
+		prize.append(s["pos"])
 	return {"hb": hb, "shot_pos": shot_pos, "shot_r": shot_r, "beam_x": beam_x, "beam_y": beam_y,
 			"beam_half": beam_half, "beam_base": beam_base, "foe_pos": foe_pos, "foe_reach": foe_reach,
 			"boss_on": boss_on, "boss_pos": sim.boss.body_pos() if boss_on else Vector2.ZERO,
-			"boss_reach": sim.boss.body_radius() + 30.0 if boss_on else 0.0, "loot": loot}
+			"boss_reach": sim.boss.body_radius() + 30.0 if boss_on else 0.0, "loot": loot, "prize": prize}
 
 
 func _danger(c: Vector2, view: Dictionary) -> float:
@@ -187,6 +197,13 @@ func _target_x(sim: Sim) -> float:
 		return sim.boss.body_pos().x
 	var best := sim.player.pos.x
 	var best_y := -INF
+	# Alvo de objetivo acima da nave vem antes de qualquer outro.
+	for e: SimEnemy in sim.enemies:
+		if e.objective != &"" and e.active() and e.pos.y < sim.player.pos.y - 40.0 and e.pos.y > best_y:
+			best_y = e.pos.y
+			best = e.pos.x
+	if best_y > -INF:
+		return best
 	for e: SimEnemy in sim.enemies:
 		if e.active() and e.pos.y < sim.player.pos.y - 40.0 and e.pos.y > best_y:
 			best_y = e.pos.y
@@ -200,6 +217,10 @@ func _pickup_pull(c: Vector2, view: Dictionary) -> float:
 		var d := c.distance_to(pos)
 		if d < 90.0:
 			pull += (90.0 - d) * 0.02
+	for pos: Vector2 in view["prize"] as PackedVector2Array:
+		var d := c.distance_to(pos)
+		if d < RESCUE_REACH:
+			pull += (RESCUE_REACH - d) * RESCUE_PULL
 	return pull
 
 

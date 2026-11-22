@@ -13,6 +13,12 @@ static func of(sim: Sim) -> String:
 	if sim.wing != null:
 		parts.append("w%.3f,%.3f:%d" % [sim.wing.pos.x, sim.wing.pos.y, sim.wing.level])
 	parts.append("%s:%.3f:%d" % [sim.weather.state, sim.weather.blend, sim.weather.mastered])
+	var obj := sim.objectives
+	if obj.enabled:
+		parts.append("o%d:%d:%d:%d:%d" % [obj.next, int(obj.current.get("frames", -1)), int(obj.current.get("done", -1)),
+				obj.results.size(), obj.orichalcum])
+		for s: Dictionary in obj.survivors + obj.relics:
+			parts.append("%.2f,%.2f" % [(s["pos"] as Vector2).x, (s["pos"] as Vector2).y])
 	for e: SimEnemy in sim.enemies:
 		parts.append("%s:%.2f,%.2f:%.2f" % [e.id, e.pos.x, e.pos.y, e.hp])
 	var sum := Vector2.ZERO

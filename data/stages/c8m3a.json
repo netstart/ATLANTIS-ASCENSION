@@ -2,7 +2,7 @@
 	"id": "c8m3a",
 	"chapter": 8,
 	"name_key": "stage.c8m3a",
-	"music": "magnesus_deadly_contracts",
+	"music": "davidkbd_orbital_assault",
 	"scroll_speed": 26,
 	"backdrop": "atlantis",
 	"seed_salt": 412,
@@ -684,5 +684,42 @@
 	],
 	"route": "abyss",
 	"score_mult": 1.5,
-	"weather": "calm"
+	"weather": "calm",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 5,
+			"x": 0.5,
+			"speed": 52.0,
+			"pod": false,
+			"t": 37.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 102,
+			"hold": 2.55,
+			"t": 67.5
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 10.9,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "ice_fan",
+				"formation": "line",
+				"count": 4,
+				"x": 0.5,
+				"path": "sine",
+				"params": {
+					"amp": 80,
+					"freq": 0.5,
+					"speed": 62
+				},
+				"spacing": 40
+			},
+			"t": 89.5
+		}
+	]
 }

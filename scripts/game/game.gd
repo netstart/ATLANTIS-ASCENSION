@@ -17,7 +17,7 @@ const SHAKE_DECAY := 18.0
 const HITSTOP_PART := 0.05
 const HITSTOP_BOSS := 0.14
 ## Tema dos chefes intermediários (SketchyLogic, CC0); a trilha da fase volta quando ele cai.
-const MID_BOSS_MUSIC := "sketchylogic_boss_main"
+const MID_BOSS_MUSIC := "mintodog_space_boss_battle"
 ## Câmera lenta quando o chefe final cai (pesquisa .ai/07, seção 3.5): segura SLOWMO_SCALE pela
 ## primeira metade e volta suave à velocidade normal. Tempo real; a partida não muda.
 const SLOWMO_TIME := 1.1
@@ -30,6 +30,9 @@ const POWER_BUZZ: Array[int] = [0, 25, 55, 140]
 const POWER_BUZZ_AMP: Array[float] = [0.0, 0.35, 0.55, 1.0]
 const POWER_DUCK_DB := -9.0
 const POWER_DUCK_SECONDS := 1.8
+## Atlante salvo: o sino quente sobe uma escala maior a partir de uma sexta abaixo (nada agudo; o último degrau é o
+## tom original do sino).
+const RESCUE_SCALE: Array[float] = [0.6, 0.675, 0.75, 0.8, 0.9, 1.0]
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
@@ -752,6 +755,9 @@ func _on_event(ev: Dictionary) -> void:
 			_emerge_t = 0.0
 			if float(ev.get("warn", 0.0)) > 0.0:
 				_hud.show_banner(tr("hud.ocean_shift"))
+		&"objective_warn", &"objective_progress", &"objective_release", &"survivor", &"survivor_lost", &"relic", \
+				&"objective_end", &"reinforcements":
+			_on_objective(ev)
 		&"outro":
 			_hud.fade_actions()
 		&"outro_rise":
@@ -764,6 +770,52 @@ func _on_event(ev: Dictionary) -> void:
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)
+
+
+## Objetivos de fase (SimObjectives): aviso no rádio, sinos baixos e quentes no progresso, fanfarra curta no acerto e
+## um baque grave na falha (o dono pediu sons sem agudo: tudo transposto para baixo e mais baixo de volume).
+func _on_objective(ev: Dictionary) -> void:
+	var kind := StringName(String(ev.get("kind", "")))
+	match StringName(ev["type"]):
+		&"objective_warn":
+			AudioManager.play("kenney_beam_warn", 0.7, 0.0, -10.0)
+			AudioManager.play("kenney_ascend_bell", 0.6, 0.0, -9.0)
+			var text := tr("mini.intercept_warn")
+			if kind == &"rescue":
+				text = tr("mini.pod_warn") if bool(ev.get("pod", false)) else tr("mini.rescue_warn")
+			elif kind == &"sabotage":
+				text = tr("mini.sabotage_warn") % int(ev.get("total", 3))
+			_hud.show_radio_text(text, UiTheme.GOLD)
+		&"objective_progress":
+			AudioManager.play("kenney_orb", 0.6 + 0.05 * float(ev.get("done", 0)), 0.0, -6.0)
+		&"objective_release":
+			AudioManager.play("kenney_ocean_shift", 1.2, 0.0, -9.0)
+		&"survivor":
+			AudioManager.play("kenney_ascend_bell", RESCUE_SCALE[clampi(int(ev.get("done", 1)) - 1, 0, 5)], 0.0, -6.0)
+			Settings.vibrate(12, 0.3, 0)
+		&"survivor_lost":
+			AudioManager.play("kenney_hit", 0.5, 0.0, -14.0)
+		&"relic":
+			AudioManager.play("kenney_medal", 0.8, 0.0, -4.0)
+		&"reinforcements":
+			AudioManager.play("kenney_beam_warn", 0.55, 0.0, -6.0)
+		&"objective_end":
+			var ok := bool(ev.get("ok", false))
+			var text := tr("mini.intercept_ok") if ok else tr("mini.intercept_fail")
+			if kind == &"rescue":
+				text = tr("mini.rescue_end") % [int(ev["done"]), int(ev["total"])] if bool(ev.get("released", false)) \
+						else tr("mini.rescue_escaped")
+			elif kind == &"sabotage":
+				text = tr("mini.sabotage_ok") if ok else tr("mini.sabotage_fail")
+			_hud.show_radio_text(text, UiTheme.GOLD if ok else UiTheme.CORAL)
+			if ok:
+				AudioManager.play("kenney_ui_confirm", 0.8, 0.0, -4.0)
+				AudioManager.play("kenney_ascend_bell", 0.5, 0.0, -7.0)
+				_world.fx.popup(ev["pos"], roundi(SimObjectives.SUCCESS_POINTS * sim.scoring.point_mult), UiTheme.GOLD)
+				Settings.vibrate(30, 0.4, 1)
+			else:
+				AudioManager.play("kenney_hit", 0.5, 0.0, -8.0)
+				AudioManager.play("kenney_ocean_shift", 0.5, 0.0, -10.0)
 
 
 ## Poder lançado: o som do poder, tremor, clarão e vibração que crescem com o nível e a faixa com o nome

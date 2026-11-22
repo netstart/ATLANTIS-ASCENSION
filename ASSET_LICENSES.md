@@ -28,24 +28,14 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Void — Environment Pack | Foozle (foozle.io) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://foozlecc.itch.io/void-environment-pack |
 | Void — Pickups Pack | Foozle (foozle.io) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://foozlecc.itch.io/void-pickups-pack |
 | Ocean Creatures | michael-jay-rov | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://michael-jay-rov.itch.io/ocean-creatures |
-| 8-bit Epic Space Shooter Music | HydroGene | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-epic-space-shooter-music |
-| Epic Boss Battle (Seamlessly Looping) | Juhani Junkala (SubspaceAudio) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/boss-battle-music |
 | Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos) | Clayton K. N. Passos | MIT | tools/gen_sprites.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
 | Exo 2 (variable) | Natanael Gama (The Exo 2 Project Authors) | OFL-1.1 |  | sim | sim | `licenses/texts/OFL-1.1.txt` | https://github.com/google/fonts/tree/main/ofl/exo2 |
-| Deep Sea | Umplix | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/deep-sea |
-| Ocean Trance | MintoDog | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/ocean-trance |
-| Binary Underwater Village (Loop) | Pro Sensory | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/binary-underwater-village-loop |
-| Cyber Runner Music | Luis Zuno (ansimuz) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/cyber-runner-music |
-| 8-bit Danger!! Strong Boss | HydroGene | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-danger-strong-boss |
-| Boss Stage Synth Track | killerfishred | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/boss-stage-synth-track |
-| Retro Synthwave Loops (Deadly Contracts, Hostile Territory) | Magnesus | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/retro-synthwave-loops |
 | Animated Explosions | Luis Zuno (ansimuz) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/animated-explosions |
 | 80 CC0 creature SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/80-cc0-creature-sfx |
 | 30 CC0 SFX loops | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/30-cc0-sfx-loops |
 | rain and thunders | kindland | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/rain-and-thunders |
 | Underwater Ambient Pad | isaiah658 | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/underwater-ambient-pad |
 | Electricity Game Sound Pack | faxcorp | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/electricity-game-sound-pack |
-| NES Shooter Music (5 tracks, 3 jingles) | SketchyLogic | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/nes-shooter-music-5-tracks-3-jingles |
 | 8-Bit Sound Effect Pack Vol. 001 | Deva (@Shades) | CC0-1.0 |  | sim | sim | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/8-bit-sound-effect-pack-vol-001 |
 | 10 8bit Coin Sounds | Luke.RUSTLTD | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/10-8bit-coin-sounds |
 | 100 CC0 SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/100-cc0-sfx |
@@ -54,6 +44,18 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | 100 CC0 SFX #2 | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/100-cc0-sfx-2 |
 | Atlantis Ascension — sons dos poderes das naves (mistura e síntese) | Clayton K. N. Passos | MIT | tools/mix_power_audio.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
 | Tema do menu | Clayton K. N. Passos com Google Flow Music | LicenseRef-Google-Terms-of-Service | Atlantis Ascension - Main Theme (Alt Take), 2026-11-01 | sim | sim | `licenses/texts/LicenseRef-Google-Terms-of-Service.txt` | https://flowmusic.google |
+| Music from 'ESCAPE': Temples | Of Far Different Nature (https://fardifferent.carrd.co/) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://fardifferent.itch.io/escape |
+| Music: 'Another Step Back' and 'Ritual' (album Another Step Back) | Of Far Different Nature (https://fardifferent.bandcamp.com/) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://fardifferent.itch.io/another-step-back |
+| Cyber Power | Bogart VGM (https://www.facebook.com/BogartVGM/) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/cyber-power |
+| Neon Action | Bogart VGM (https://www.facebook.com/BogartVGM/) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/neon-action |
+| Void: Cyber Side Scroller | dancramp | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://dancramp.itch.io/void-music-pack |
+| Interstellar EDM/Metal Music Pack: Plasma Storm | David KBD (https://www.davidkbd.com) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://davidkbd.itch.io/interstellar-edm-metal-music-pack |
+| Interstellar vol.2 EDM-Metal Music Pack: Orbital Assault | David KBD (https://www.davidkbd.com) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://davidkbd.itch.io/interstellar-vol2-edm-metal-music-pack |
+| Code Injection Dark Techno Music Pack: Binary Chaos | David KBD (https://www.davidkbd.com) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://davidkbd.itch.io/code-injection-dark-techno-music-pack |
+| Calamity (Epic Orchestral Metal) | Esiltir | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/calamity-epic-orchestral-metal |
+| Cyberpunk Boss | Arold Valda (aroldv) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/cyberpunk-boss |
+| Space Boss Battle | MintoDog | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/space-boss-battle |
+| Trilhas de batalha: Tactical Combat Loop, Apex Onslaught, Final Onslaught | Clayton K. N. Passos com Google Flow Music | LicenseRef-Google-Terms-of-Service | Tactical Combat Loop, Apex Onslaught, Final Onslaught (gerados em 2026-10-21) | sim | sim | `licenses/texts/LicenseRef-Google-Terms-of-Service.txt` | https://flowmusic.google |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

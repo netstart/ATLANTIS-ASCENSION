@@ -1,0 +1,17 @@
+Trilhas de batalha: "Tactical Combat Loop", "Apex Onslaught", "Final Onslaught"
+
+Autor: Clayton K. N. Passos (mantenedor do Atlantis Ascension), com Google Flow Music (modelo Lyria).
+Gerados pelo mantenedor no Google Flow Music (MP3 48 kHz de 2026-10-21, fora do repositório em
+D:\src\assets-downloaded\google_flow_music\Futuristic-tactical-combat\ e ...\boss\).
+
+Arquivos no jogo: assets/audio/music/flow_tactical_combat.ogg (capítulo 1),
+assets/audio/music/flow_apex_onslaught.ogg (chefes de ato) e assets/audio/music/flow_final_onslaught.ogg
+(chefe final).
+Modificações: tools/prepare_battle_music.py escolhe o trecho do laço por busca de repetição, em compassos
+inteiros, mistura 0,6 s na junção para o laço não ter emenda, normaliza para -14 LUFS com pico real até
+-1 dBTP e grava em Ogg Vorbis q5 44,1 kHz estéreo.
+
+Termos: Termos de Serviço do Google (https://policies.google.com/terms). O Google não reivindica a
+propriedade do conteúdo gerado pelo usuário. Resumo em licenses/texts/LicenseRef-Google-Terms-of-Service.txt.
+
+Conteúdo gerado por IA: o áudio contém a marca d'água inaudível SynthID do Google. Não removida.

@@ -112,6 +112,18 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		game.hud().set_turbo(false, 1.0)
 		Settings.set_value("handedness", "right")
 		game.relayout_for(view)
+		# Objetivo de fase em curso (SimObjectives): o marcador de cada tipo cabe e não encosta em nada.
+		var goals := game.sim.objectives
+		for kind: String in ["rescue", "sabotage", "intercept"]:
+			goals.enabled = true
+			goals.current = {}
+			goals.schedule = [{"t": 0.0, "type": kind, "count": 6, "seconds": 12.0}]
+			goals.next = 0
+			goals.step(game.sim)
+			game.hud().refresh(game.sim, 0.1)
+			check.call(game.hud().layout_controls()[-1].is_visible_in_tree(), "%s: marcador do objetivo %s" % [tag, kind])
+			check_screen_controls(game.hud().layout_controls(), hsafe, check, "%s objetivo %s" % [tag, kind])
+		goals.current = {}
 		game.sim.offer_blessings()
 		game.hud().show_offer(game.sim)
 		await host.get_tree().process_frame

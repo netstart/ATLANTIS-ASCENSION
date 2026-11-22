@@ -2,7 +2,7 @@
 	"id": "c5m2",
 	"chapter": 5,
 	"name_key": "stage.c5m2",
-	"music": "hydrogene_space_shooter",
+	"music": "bogart_neon_action",
 	"scroll_speed": 24,
 	"backdrop": "city",
 	"seed_salt": 311,
@@ -478,5 +478,40 @@
 			"t": 94.56
 		}
 	],
-	"weather": "rain"
+	"weather": "rain",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.7,
+			"speed": 47.5,
+			"pod": false,
+			"t": 26.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 90,
+			"hold": 3.0,
+			"t": 43.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 11.8,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "skiff",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "straight",
+				"params": {
+					"speed": 86
+				},
+				"spacing": 40
+			},
+			"t": 62.0
+		}
+	]
 }

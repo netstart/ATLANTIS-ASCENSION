@@ -2,7 +2,7 @@
 	"id": "c10m3",
 	"chapter": 10,
 	"name_key": "stage.c10m3",
-	"music": "prosensory_binary_village",
+	"music": "fardifferent_ritual",
 	"scroll_speed": 22,
 	"backdrop": "hadal",
 	"seed_salt": 356,
@@ -488,5 +488,29 @@
 			"t": 87.78
 		}
 	],
-	"weather": "abyssal"
+	"weather": "abyssal",
+	"objectives": [
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 110,
+			"hold": 2.25,
+			"t": 36.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 110,
+			"hold": 2.25,
+			"t": 46.5
+		},
+		{
+			"type": "rescue",
+			"count": 6,
+			"x": 0.5,
+			"speed": 55.0,
+			"pod": false,
+			"t": 61.0
+		}
+	]
 }

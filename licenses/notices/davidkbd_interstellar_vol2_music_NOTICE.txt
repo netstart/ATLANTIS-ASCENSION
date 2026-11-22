@@ -1,0 +1,8 @@
+Interstellar vol.2 EDM-Metal Music Pack: Orbital Assault
+https://davidkbd.itch.io/interstellar-vol2-edm-metal-music-pack
+
+Credit line required by the author (exact):
+Music: "Orbital Assault" from "Interstellar vol.2, EDM-Metal Music Pack" by David KBD ( https://www.davidkbd.com ), CC BY 4.0.
+
+Files in Atlantis Ascension: assets/audio/music/davidkbd_orbital_assault.ogg
+Modifications: tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo

@@ -120,6 +120,8 @@ python tools\mix_pickup_audio.py
 python tools\mix_power_audio.py
 # Tema do menu: laço sem emenda do WAV gerado no Google Flow Music (numpy e soundfile; antes do sync)
 python tools\prepare_menu_music.py
+# Trilhas das fases e chefes: laço sem emenda, -14 LUFS e pico real até -1 dBTP, OGG q5 (numpy e ffmpeg; antes do sync)
+python tools\prepare_battle_music.py
 # Missões e chefes (fontes: tools\gen_missions.py e tools\gen_bosses_*.py; rode os chefes antes das missões)
 python -I tools\gen_bosses_beta.py
 python -I tools\gen_bosses_post.py

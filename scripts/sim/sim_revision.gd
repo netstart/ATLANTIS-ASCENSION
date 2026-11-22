@@ -6,9 +6,10 @@ extends RefCounted
 ##   1: até a 1.20.1.
 ##   2: balas inimigas nascem na boca do emissor, espalhadas, não no centro (PatternRunner.muzzle).
 ##   3: rebalanceamento da dificuldade: curva por capítulo (balas, cadência, vida; Sim.CURVE_*) e rank na cadência.
+##   4: objetivos de fase (SimObjectives: resgate, sabotagem, interceptação) e alvos sem dano de contato.
 ## A saída da fase continua na marca "outro" da carga, anterior a este número (SimOutro).
 
-const CURRENT := 3
+const CURRENT := 4
 
 
 ## Revisão das regras de uma partida com esta carga.

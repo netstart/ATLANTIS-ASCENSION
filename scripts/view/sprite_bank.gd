@@ -7,8 +7,9 @@ extends RefCounted
 ## Id de sprite = "<frota>_<tipo>" (klaed, nairan, nautolan × scout, fighter, bomber, support, frigate,
 ## torpedo, battlecruiser, dreadnought) → res://assets/art/void/<frota>/<tipo>_<camada>.png.
 const VOID_PATH := "res://assets/art/void/%s/%s_%s.png"
-## Sprites próprios (glifos atlantes): só base, explosão do asteroide Void.
-const SPECIAL := {&"glyph": "enemies/glyph"}
+## Sprites próprios (glifos atlantes e alvos dos objetivos de fase): só base, explosão do asteroide Void.
+const SPECIAL := {&"glyph": "enemies/glyph", &"prison_barge": "enemies/prison_barge",
+		&"prison_pod": "enemies/prison_pod", &"protocol_beacon": "enemies/protocol_beacon"}
 const GENERATED := "res://assets/art/generated/%s.png"
 
 static var _cache: Dictionary = {}

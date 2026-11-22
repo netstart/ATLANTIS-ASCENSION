@@ -1,0 +1,8 @@
+Code Injection Dark Techno Music Pack: Binary Chaos
+https://davidkbd.itch.io/code-injection-dark-techno-music-pack
+
+Credit line required by the author (exact):
+Music: "Binary Chaos" from "Code Injection Dark Techno Music Pack" by David KBD ( https://www.davidkbd.com ), CC BY 4.0.
+
+Files in Atlantis Ascension: assets/audio/music/davidkbd_binary_chaos.ogg
+Modifications: tools/prepare_battle_music.py: laço sem emenda (o arquivo -loop do autor já fecha o laço; só a normalização), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo

@@ -2,7 +2,7 @@
 	"id": "c3m3s",
 	"chapter": 3,
 	"name_key": "stage.c3m3s",
-	"music": "ansimuz_cyber_runner",
+	"music": "fardifferent_another_step_back",
 	"scroll_speed": 28,
 	"backdrop": "storm",
 	"seed_salt": 425,
@@ -564,5 +564,33 @@
 		}
 	],
 	"route": "surface",
-	"weather": "rain"
+	"weather": "rain",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.5,
+			"speed": 44.5,
+			"pod": false,
+			"t": 36.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 12.4,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "phalanx",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "straight",
+				"params": {
+					"speed": 60
+				},
+				"spacing": 40
+			},
+			"t": 83.0
+		}
+	]
 }

@@ -57,7 +57,8 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     "style.storm_master", "weather.front", "weather.front_severe"] + [
     f"power.{s}_{n}{x}" for s in ("falcon", "manta", "hydra", "tempest", "trident", "atlas", "ram", "swarm", "eclipse",
                                   "nova", "titan", "ascension") for n in (1, 2, 3) for x in ("", ".desc")] + [
-    "hud.power", "hint.power", "power.tier", "power.ready", "power.meter"]
+    "hud.power", "hint.power", "power.tier", "power.ready", "power.meter"] + [
+    f"mini.{t}" for t in ("rescue", "sabotage", "intercept")]
 
 
 def _json_keys(value, out: set) -> None:

@@ -78,6 +78,24 @@
   "sha256": "5a69f74ec2a7a3ad362adb10b180a82ad8c50284e5b104b11b8969e57f3ac9e5"
  },
  {
+  "file": "assets/art/generated/enemies/prison_barge.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "639c9c262c2f881611eb465261e640ef387e7c60448a7145ac5b9f959a4ae6e4"
+ },
+ {
+  "file": "assets/art/generated/enemies/prison_pod.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "ad32a60c04a3a636cf5f82cc12dbcb48405507dc8672873bd3f94609fca7acef"
+ },
+ {
+  "file": "assets/art/generated/enemies/protocol_beacon.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f21f877a5e4f249dde876e6703f1a58f2aa0275a4ab338c5e536fd650918a7ba"
+ },
+ {
   "file": "assets/art/generated/fx/beam.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
@@ -148,6 +166,12 @@
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "afefcc0d8d776a4f08cd077b2cf903f9257867638a013e890d4cb535181b5ae0"
+ },
+ {
+  "file": "assets/art/generated/fx/target_marker.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "1b84a99fdfc88e725d2ca7e887289efa25782fc5e796ceb6d8fcec0feb7ac9c3"
  },
  {
   "file": "assets/art/generated/icon/adaptive_background_432.png",
@@ -274,6 +298,18 @@
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "42e54cc1c4bb6f4fda9b2e5c4f9cf37809e60e68aa32f2db2a946e3735538a26"
+ },
+ {
+  "file": "assets/art/generated/pickups/relic.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "4f0e304eee7d144ce0f73159bc946b8f2da2c3065dfc18bc0a1f2d6f6b8d43b7"
+ },
+ {
+  "file": "assets/art/generated/pickups/survivor.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "9b56dfc1e96af58066a6f3823349ed00a03b46a9774e8052d3179727a0b555db"
  },
  {
   "file": "assets/art/generated/portraits/duarte_alert.png",
@@ -1494,34 +1530,94 @@
   "sha256": "7740706b9831d45414ed20c449584bf8c48129cce5bb02cf4fea1be2c06a8c50"
  },
  {
-  "file": "assets/audio/music/ansimuz_cyber_runner.ogg",
-  "source": "opengameart/cyber-runner/Cyber_runer_files/cyber_runner.ogg",
-  "license_id": "ansimuz_cyber_runner_music",
-  "sha256": "2cf1ceb63bdcd989b8a2242d518d00140ef6678b9098cbeb5d2db32bf2c33bc0"
+  "file": "assets/audio/music/aroldv_cyberpunk_boss.ogg",
+  "source": "atlantis-mix/music/aroldv_cyberpunk_boss.ogg",
+  "license_id": "aroldv_cyberpunk_boss_music",
+  "sha256": "e3d71f9553f7960d704b212a649a05b123cd5d4839b566714e72bf082f2135fd"
+ },
+ {
+  "file": "assets/audio/music/bogart_cyber_power.ogg",
+  "source": "atlantis-mix/music/bogart_cyber_power.ogg",
+  "license_id": "bogart_cyber_power_music",
+  "sha256": "c8e4efac1780f214de9dec14ae74d3622be9d34a88de20dbe51c1f9c6d1da2f8"
+ },
+ {
+  "file": "assets/audio/music/bogart_neon_action.ogg",
+  "source": "atlantis-mix/music/bogart_neon_action.ogg",
+  "license_id": "bogart_neon_action_music",
+  "sha256": "5c50812080283252ba73ba0dc54c33c65c406453e494e9a6dd771a5247f1fa19"
+ },
+ {
+  "file": "assets/audio/music/dancramp_cyber_side_scroller.ogg",
+  "source": "atlantis-mix/music/dancramp_cyber_side_scroller.ogg",
+  "license_id": "dancramp_void_music",
+  "sha256": "04f627d7221bf34a011407ab064f3a2a40d4b2e1e2f904cd96ec87c04128453f"
+ },
+ {
+  "file": "assets/audio/music/davidkbd_binary_chaos.ogg",
+  "source": "atlantis-mix/music/davidkbd_binary_chaos.ogg",
+  "license_id": "davidkbd_code_injection_music",
+  "sha256": "d22a0605083fde2196afe964b20c242bfcda38250eef1dbdaf692ff61e72ba7a"
+ },
+ {
+  "file": "assets/audio/music/davidkbd_orbital_assault.ogg",
+  "source": "atlantis-mix/music/davidkbd_orbital_assault.ogg",
+  "license_id": "davidkbd_interstellar_vol2_music",
+  "sha256": "63094300df1e91ee7474c48d660b3f97eddedccf6ac4255e5fffba63f64c9f8a"
+ },
+ {
+  "file": "assets/audio/music/davidkbd_plasma_storm.ogg",
+  "source": "atlantis-mix/music/davidkbd_plasma_storm.ogg",
+  "license_id": "davidkbd_interstellar_music",
+  "sha256": "4efdcef0cbc7ff41e0a3161d0db7c1a949cd5fdcfc82a7a0fce76e973cdb39f1"
+ },
+ {
+  "file": "assets/audio/music/esiltir_calamity.ogg",
+  "source": "atlantis-mix/music/esiltir_calamity.ogg",
+  "license_id": "esiltir_calamity_music",
+  "sha256": "8e31f52d4614ca0f21b85f82948e2315f6bbe3054cb05dc23f5df67150648be0"
+ },
+ {
+  "file": "assets/audio/music/fardifferent_another_step_back.ogg",
+  "source": "atlantis-mix/music/fardifferent_another_step_back.ogg",
+  "license_id": "fardifferent_another_step_back_music",
+  "sha256": "6de287a048d001b1f4ddcded6c460cb35f89b5b81e16a6b33f5c1c1737c33b80"
+ },
+ {
+  "file": "assets/audio/music/fardifferent_ritual.ogg",
+  "source": "atlantis-mix/music/fardifferent_ritual.ogg",
+  "license_id": "fardifferent_another_step_back_music",
+  "sha256": "c74ddc6c28136d0226280a4574dc5a666ab89c8c317c52707b9bacf2ff0b8eac"
+ },
+ {
+  "file": "assets/audio/music/fardifferent_temples.ogg",
+  "source": "atlantis-mix/music/fardifferent_temples.ogg",
+  "license_id": "fardifferent_escape_music",
+  "sha256": "43d22bf8538e6f6d701ceaac6bedc7f89fad8d97d24689886b1e39158560b348"
+ },
+ {
+  "file": "assets/audio/music/flow_apex_onslaught.ogg",
+  "source": "atlantis-mix/music/flow_apex_onslaught.ogg",
+  "license_id": "flow_battle_music",
+  "sha256": "2820fdccfdea3d32538bfe354db2b85571dc414195503910fee5c223aaf21eb8"
+ },
+ {
+  "file": "assets/audio/music/flow_final_onslaught.ogg",
+  "source": "atlantis-mix/music/flow_final_onslaught.ogg",
+  "license_id": "flow_battle_music",
+  "sha256": "bce519e8844dabada7ff6b72d8faaab0c33d9b8c2f5191d315adce1abeec91e2"
+ },
+ {
+  "file": "assets/audio/music/flow_tactical_combat.ogg",
+  "source": "atlantis-mix/music/flow_tactical_combat.ogg",
+  "license_id": "flow_battle_music",
+  "sha256": "91b79ab166e396d434cc61dc103229ec96b34bcbc17d6cca4f108c35d2645c49"
  },
  {
   "file": "assets/audio/music/flow_tide_rising.ogg",
   "source": "flow-music/menu/flow_tide_rising.ogg",
   "license_id": "flow_tide_rising_music",
   "sha256": "087907bbcc1acdd4b64bf2fa28abebaf4f6dc6d9493e0df5d2328f896d34bd20"
- },
- {
-  "file": "assets/audio/music/hydrogene_space_shooter.mp3",
-  "source": "opengameart/8bit-spaceshooter.mp3",
-  "license_id": "hydrogene_space_shooter_music",
-  "sha256": "f8a232f6fc5a52d1ea85705447617a1d6132e63d993d63ad542c253f1b614b93"
- },
- {
-  "file": "assets/audio/music/hydrogene_strong_boss.mp3",
-  "source": "opengameart/strong-boss/8-bit_danger_strong_boss.mp3",
-  "license_id": "hydrogene_strong_boss_music",
-  "sha256": "06651ec01b08d118c1d7216a96a0214272367bf84cb96e287a943c94badb8c76"
- },
- {
-  "file": "assets/audio/music/junkala_epic_boss_battle.wav",
-  "source": "opengameart/juhani-junkala-epic-boss-battle-loop.wav",
-  "license_id": "junkala_boss_battle_music",
-  "sha256": "35f75b4381dfbb053992876f7dfc567d9fd959d61b73954d5b1cd519753e7df1"
  },
  {
   "file": "assets/audio/music/kenney_jingle_ascend.ogg",
@@ -1548,46 +1644,10 @@
   "sha256": "1010c9b566d6c090ff03a4aaaf7439e26eb4cc4f20373800d0b7e6a9057b795d"
  },
  {
-  "file": "assets/audio/music/killerfishred_boss_fight.ogg",
-  "source": "opengameart/boss-stage-synth/fight.ogg",
-  "license_id": "killerfishred_boss_fight_music",
-  "sha256": "f7375c61eeb62fbf6d53d54ea1d1c33158d85e20de03c7432bfa066e8edfcd62"
- },
- {
-  "file": "assets/audio/music/magnesus_deadly_contracts.ogg",
-  "source": "opengameart/retro-synthwave-loops/deadly_contracts-loop1.ogg",
-  "license_id": "magnesus_synthwave_music",
-  "sha256": "07870c7d2840177484e81b853ef6669883ce2c2c52cf643c25b100d9f65ffb17"
- },
- {
-  "file": "assets/audio/music/magnesus_hostile_territory.ogg",
-  "source": "opengameart/retro-synthwave-loops/hostile_territory-loop1.ogg",
-  "license_id": "magnesus_synthwave_music",
-  "sha256": "835fe07e18c44b70e00a8e1b350aecd3f512eba8617caacaa6ffb69115fd74a6"
- },
- {
-  "file": "assets/audio/music/mintodog_ocean_trance.ogg",
-  "source": "opengameart/ocean-trance/ocean_trance_bpm140.ogg",
-  "license_id": "mintodog_ocean_trance_music",
-  "sha256": "19807b2f3ffb8722c183054e115cb6de343c0d41aa8fc33ee586cfeb1a9472d0"
- },
- {
-  "file": "assets/audio/music/prosensory_binary_village.mp3",
-  "source": "opengameart/binary-underwater-village/binary_village.mp3",
-  "license_id": "prosensory_binary_village_music",
-  "sha256": "63ea88e921bce528c6a3d41961579fb6111aeb246c1d677d2225a09b83d309a4"
- },
- {
-  "file": "assets/audio/music/sketchylogic_boss_main.wav",
-  "source": "opengameart/nes-shooter-music/x/BossMain.wav",
-  "license_id": "sketchylogic_nes_music",
-  "sha256": "bca81ff30003ba02e1afbdc4f608a0ec2a378917ad17c554512c71fc737f2403"
- },
- {
-  "file": "assets/audio/music/umplix_deep_sea.mp3",
-  "source": "opengameart/deep-sea/deep_sea.mp3",
-  "license_id": "umplix_deep_sea_music",
-  "sha256": "81ca46dfc0f48b956ce868c85b1545ea6e9b538d8f09cb2ef5f99fea84e192c4"
+  "file": "assets/audio/music/mintodog_space_boss_battle.ogg",
+  "source": "atlantis-mix/music/mintodog_space_boss_battle.ogg",
+  "license_id": "mintodog_space_boss_battle_music",
+  "sha256": "ec3b428ba4a3ff5a84335199470faa1adc468f9f40a2d4bdd7d601ab6b45dc81"
  },
  {
   "file": "assets/audio/sfx/coin_capsule.ogg",

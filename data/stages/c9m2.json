@@ -2,7 +2,7 @@
 	"id": "c9m2",
 	"chapter": 9,
 	"name_key": "stage.c9m2",
-	"music": "magnesus_deadly_contracts",
+	"music": "davidkbd_binary_chaos",
 	"scroll_speed": 26,
 	"backdrop": "core",
 	"seed_salt": 315,
@@ -567,6 +567,44 @@
 		{
 			"op": "end",
 			"t": 119.2
+		}
+	],
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 5,
+			"x": 0.3,
+			"speed": 53.5,
+			"pod": true,
+			"t": 31.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 10.6,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "tide_wasp",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "dive",
+				"params": {
+					"side": 1,
+					"amp": 80,
+					"speed": 72
+				},
+				"spacing": 40,
+				"mirror": true
+			},
+			"t": 67.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 106,
+			"hold": 2.4,
+			"t": 91.0
 		}
 	]
 }

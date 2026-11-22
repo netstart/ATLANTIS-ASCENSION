@@ -1,0 +1,8 @@
+Cyberpunk Boss
+https://opengameart.org/content/cyberpunk-boss
+
+Credit line required by the author (exact):
+Music: "Cyberpunk Boss" by Arold Valda. Licensed under CC BY 4.0.
+
+Files in Atlantis Ascension: assets/audio/music/aroldv_cyberpunk_boss.ogg
+Modifications: tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo

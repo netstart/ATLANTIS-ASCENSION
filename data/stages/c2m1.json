@@ -2,7 +2,7 @@
 	"id": "c2m1",
 	"chapter": 2,
 	"name_key": "stage.c2m1",
-	"music": "prosensory_binary_village",
+	"music": "fardifferent_temples",
 	"scroll_speed": 20,
 	"backdrop": "atlantis",
 	"seed_salt": 307,
@@ -496,5 +496,33 @@
 		"glyphs": 3,
 		"mission": "s1"
 	},
-	"weather": "calm"
+	"weather": "calm",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.3,
+			"speed": 43.0,
+			"pod": false,
+			"t": 35.0
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 12.7,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "skiff",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "straight",
+				"params": {
+					"speed": 82
+				},
+				"spacing": 40
+			},
+			"t": 101.0
+		}
+	]
 }

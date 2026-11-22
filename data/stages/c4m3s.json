@@ -2,7 +2,7 @@
 	"id": "c4m3s",
 	"chapter": 4,
 	"name_key": "stage.c4m3s",
-	"music": "magnesus_hostile_territory",
+	"music": "bogart_cyber_power",
 	"scroll_speed": 26,
 	"backdrop": "volcanic",
 	"seed_salt": 426,
@@ -596,5 +596,29 @@
 		}
 	],
 	"route": "surface",
-	"weather": "clouds"
+	"weather": "clouds",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.3,
+			"speed": 46.0,
+			"pod": false,
+			"t": 39.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 86,
+			"hold": 3.15,
+			"t": 67.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.25,
+			"speed": 86,
+			"hold": 3.15,
+			"t": 89.5
+		}
+	]
 }

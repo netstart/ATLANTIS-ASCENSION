@@ -2,7 +2,7 @@
 	"id": "s3",
 	"chapter": 6,
 	"name_key": "stage.s3",
-	"music": "mintodog_ocean_trance",
+	"music": "dancramp_cyber_side_scroller",
 	"scroll_speed": 20,
 	"backdrop": "ice",
 	"seed_salt": 166,
@@ -581,5 +581,43 @@
 		}
 	],
 	"secret_mission": true,
-	"weather": "snow"
+	"weather": "snow",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.7,
+			"speed": 49.0,
+			"pod": false,
+			"t": 32.5
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 94,
+			"hold": 2.85,
+			"t": 58.5
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 11.5,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "tide_wasp",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "dive",
+				"params": {
+					"side": -1,
+					"amp": 80,
+					"speed": 70
+				},
+				"spacing": 40,
+				"mirror": true
+			},
+			"t": 88.5
+		}
+	]
 }

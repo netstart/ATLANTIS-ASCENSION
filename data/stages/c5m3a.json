@@ -2,7 +2,7 @@
 	"id": "c5m3a",
 	"chapter": 5,
 	"name_key": "stage.c5m3a",
-	"music": "hydrogene_space_shooter",
+	"music": "bogart_neon_action",
 	"scroll_speed": 26,
 	"backdrop": "atlantis",
 	"seed_salt": 409,
@@ -518,5 +518,40 @@
 	],
 	"route": "abyss",
 	"score_mult": 1.5,
-	"weather": "plankton"
+	"weather": "plankton",
+	"objectives": [
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 90,
+			"hold": 3.0,
+			"t": 10.5
+		},
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.7,
+			"speed": 47.5,
+			"pod": false,
+			"t": 26.5
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 11.8,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "skiff",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "straight",
+				"params": {
+					"speed": 86
+				},
+				"spacing": 40
+			},
+			"t": 61.0
+		}
+	]
 }

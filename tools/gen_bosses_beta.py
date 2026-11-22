@@ -125,7 +125,7 @@ BOSSES = [
     mini("orbital_gate", "klaed_dreadnought", "#a0ffd0", 7000, ["gate_rings"], ["gate_beams", "gate_rings"]),
     {"id": "sky_leviathan", "name_key": "boss.sky_leviathan", "sprite": "nautolan_battlecruiser", "scale": 1.5,
      "tint": "#bfe6ff", "hp": 6800, "home_y": 84, "body_radius": 32, "points": 40000, "medals": 10, "duel": True,
-     "music": "hydrogene_strong_boss", "enter_from": 160, "parts": chain(8, "nautolan_scout", 22, 16),
+     "music": "flow_apex_onslaught", "enter_from": 160, "parts": chain(8, "nautolan_scout", 22, 16),
      "phases": [
          {"id": "crossing", "until_hp": 0.6, "armor": 0.4, "par_s": 45, "move": {"amp": 70, "freq": 0.09},
           "patterns": [{"pattern": "leviathan_pellets", "anchor": f"seg{k}", "delay": 40 + 25 * k} for k in range(1, 9)]
@@ -140,7 +140,7 @@ BOSSES = [
                        {"pattern": "leviathan_lunge", "anchor": "body", "delay": 150}]}]},
     {"id": "poseidon_prime", "name_key": "boss.poseidon_prime", "sprite": "nairan_dreadnought", "scale": 1.7,
      "tint": "#ffe08a", "hp": 7400, "home_y": 100, "body_radius": 38, "points": 50000, "medals": 12, "duel": True,
-     "music": "junkala_epic_boss_battle", "enter_from": 160,
+     "music": "esiltir_calamity", "enter_from": 160,
      "parts": [
          {"id": "ring1", "ring": True, "x": -70, "y": 34, "hp": 520, "radius": 13, "share": 0.06, "leak": 0.2,
           "sway": 10, "freq": 0.2, "phase": 0.0, "points": 3000, "active_in": ["barriers", "gravity"]},
@@ -166,7 +166,7 @@ BOSSES = [
           "patterns": [{"pattern": "poseidon_dance", "anchor": "body", "delay": 60}]}]},
     {"id": "leviathan_protocol", "name_key": "boss.leviathan_protocol", "sprite": "klaed_dreadnought", "scale": 2.0,
      "tint": "#ff9da0", "hp": 7600, "home_y": 100, "body_radius": 42, "points": 80000, "medals": 16, "duel": True,
-     "ending": True, "music": "hydrogene_strong_boss", "enter_from": 180,
+     "ending": True, "music": "flow_final_onslaught", "enter_from": 180,
      "parts": [
          {"id": "drone_core", "sprite": "klaed_battlecruiser", "part_scale": 0.8, "x": -78, "y": 30, "hp": 600,
           "radius": 16, "share": 0.07, "leak": 0.2, "sway": 8, "freq": 0.2, "phase": 0.0, "points": 5000,

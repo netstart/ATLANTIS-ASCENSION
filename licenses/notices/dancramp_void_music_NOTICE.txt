@@ -1,0 +1,8 @@
+Void: Cyber Side Scroller
+https://dancramp.itch.io/void-music-pack
+
+Credit line required by the author (exact):
+Music: "Cyber Side Scroller" from "Void" by dancramp, CC BY 4.0.
+
+Files in Atlantis Ascension: assets/audio/music/dancramp_cyber_side_scroller.ogg
+Modifications: tools/prepare_battle_music.py: laço sem emenda (trecho escolhido por busca de repetição, em compassos inteiros, com cruzamento de 0,6 s), -14 LUFS integrado com pico real até -1 dBTP, Ogg Vorbis q5 44,1 kHz estéreo

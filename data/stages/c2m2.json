@@ -2,7 +2,7 @@
 	"id": "c2m2",
 	"chapter": 2,
 	"name_key": "stage.c2m2",
-	"music": "prosensory_binary_village",
+	"music": "fardifferent_temples",
 	"scroll_speed": 22,
 	"backdrop": "atlantis",
 	"seed_salt": 308,
@@ -457,5 +457,22 @@
 			"t": 90.43
 		}
 	],
-	"weather": "plankton"
+	"weather": "plankton",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 3,
+			"x": 0.3,
+			"speed": 43.0,
+			"pod": false,
+			"t": 31.0
+		},
+		{
+			"type": "intercept",
+			"x": 0.75,
+			"speed": 78,
+			"hold": 3.45,
+			"t": 64.0
+		}
+	]
 }

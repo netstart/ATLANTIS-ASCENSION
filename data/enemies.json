@@ -23,5 +23,9 @@
 	{"id": "glass_siren", "name_key": "enemy.glass_siren", "faction": "bio", "sprite": "nautolan_frigate", "hp": 70, "radius": 18, "points": 800, "pattern": "siren_rings", "pattern_delay": 60, "marked": true, "drop": "medal"},
 	{"id": "nautilus", "name_key": "enemy.nautilus", "faction": "bio", "sprite": "nautolan_battlecruiser", "scale": 0.75, "hp": 160, "radius": 30, "points": 2000, "pattern": "nautilus_spiral", "pattern_delay": 60, "marked": true, "drop": "orb"},
 	{"id": "protocol_shard", "name_key": "enemy.protocol_shard", "faction": "protocol", "sprite": "klaed_dreadnought", "scale": 0.45, "tint": "#a0ffe8", "hp": 80, "radius": 22, "points": 1500, "pattern": "shard_shift", "pattern_delay": 40, "marked": true},
-	{"id": "glyph", "name_key": "enemy.glyph", "faction": "atlantis", "sprite": "glyph", "hp": 12, "radius": 11, "points": 1000}
+	{"id": "glyph", "name_key": "enemy.glyph", "faction": "atlantis", "sprite": "glyph", "hp": 12, "radius": 11, "points": 1000},
+	{"id": "prison_barge", "name_key": "enemy.prison_barge", "faction": "protocol", "sprite": "prison_barge", "hp": 140, "radius": 17, "points": 1500, "contact": false},
+	{"id": "prison_pod", "name_key": "enemy.prison_pod", "faction": "protocol", "sprite": "prison_pod", "hp": 120, "radius": 14, "points": 1500, "contact": false},
+	{"id": "protocol_beacon", "name_key": "enemy.protocol_beacon", "faction": "protocol", "sprite": "protocol_beacon", "hp": 40, "radius": 12, "points": 600, "contact": false},
+	{"id": "relic_courier", "name_key": "enemy.relic_courier", "faction": "protocol", "sprite": "nairan_scout", "tint": "#ffd76a", "hp": 24, "radius": 11, "points": 1200}
 ]

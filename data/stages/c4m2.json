@@ -2,7 +2,7 @@
 	"id": "c4m2",
 	"chapter": 4,
 	"name_key": "stage.c4m2",
-	"music": "magnesus_hostile_territory",
+	"music": "bogart_cyber_power",
 	"scroll_speed": 24,
 	"backdrop": "volcanic",
 	"seed_salt": 310,
@@ -511,5 +511,36 @@
 			"t": 94.56
 		}
 	],
-	"weather": "ash"
+	"weather": "ash",
+	"objectives": [
+		{
+			"type": "rescue",
+			"count": 4,
+			"x": 0.5,
+			"speed": 46.0,
+			"pod": false,
+			"t": 35.5
+		},
+		{
+			"type": "sabotage",
+			"count": 3,
+			"seconds": 12.1,
+			"reinforce": {
+				"op": "wave",
+				"enemy": "tide_wasp",
+				"formation": "v",
+				"count": 6,
+				"x": 0.5,
+				"path": "dive",
+				"params": {
+					"side": 1,
+					"amp": 70,
+					"speed": 70
+				},
+				"spacing": 40,
+				"mirror": true
+			},
+			"t": 61.0
+		}
+	]
 }

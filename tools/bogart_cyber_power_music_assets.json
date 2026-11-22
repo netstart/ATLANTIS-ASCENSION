@@ -1,0 +1,8 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "bogart_cyber_power_music",
+	"note": "Trilha preparada por tools/prepare_battle_music.py (laço sem emenda, -14 LUFS, pico real ≤ -1 dBTP).",
+	"files": {
+		"music/bogart_cyber_power.ogg": "audio/music/bogart_cyber_power.ogg"
+	}
+}

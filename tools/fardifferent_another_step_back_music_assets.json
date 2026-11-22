@@ -1,0 +1,9 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "fardifferent_another_step_back_music",
+	"note": "Trilha preparada por tools/prepare_battle_music.py (laço sem emenda, -14 LUFS, pico real ≤ -1 dBTP).",
+	"files": {
+		"music/fardifferent_another_step_back.ogg": "audio/music/fardifferent_another_step_back.ogg",
+		"music/fardifferent_ritual.ogg": "audio/music/fardifferent_ritual.ogg"
+	}
+}

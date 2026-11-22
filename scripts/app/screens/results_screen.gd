@@ -343,6 +343,12 @@ static func reward_items(r: Dictionary) -> Array[Array]:
 		items.append([_t("results.new_district") % _t("district." + String(d)), UiTheme.TURQUOISE])
 	if int(r.get("rescued", 0)) > 0:
 		items.append([_t("results.rescued") % int(r["rescued"]), UiTheme.TURQUOISE])
+	# Objetivos de fase (SimObjectives): "Resgate 4/5 ★"; o que falhou fica apagado, com a estrela vazia.
+	for o: Variant in r.get("objectives", []):
+		var row := o as Dictionary
+		items.append(["%s %d/%d %s" % [_t("mini." + String(row.get("type", ""))), int(row.get("done", 0)),
+				int(row.get("total", 0)), "★" if bool(row.get("ok", false)) else "☆"],
+				UiTheme.TURQUOISE if bool(row.get("ok", false)) else UiTheme.TEXT_DIM])
 	if int(r.get("depth", 0)) > 0:
 		items.append([_t("results.depth") % int(r["depth"]), UiTheme.TURQUOISE])
 	if not String(r.get("ending", "")).is_empty():

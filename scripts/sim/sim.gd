@@ -128,6 +128,8 @@ var powers := Powers.new()
 var power_fx: Array[Dictionary] = []
 ## Saída da missão vencida: campo limpo e a nave voando pelo topo (SimOutro).
 var outro := SimOutro.new()
+## Objetivos de fase (resgate, sabotagem, interceptação; SimObjectives, revisão 4).
+var objectives := SimObjectives.new()
 ## Abismo Infinito: profundidade atual (0 fora do modo); acelera as balas e multiplica os pontos.
 var abyss_depth: int = 0
 ## Segunda nave do co-op local (null no jogo solo) e se o Elo de Maré está ligado neste passo.
@@ -227,6 +229,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 	_abyss_points = scoring.point_mult
 	outro.setup(loadout)
 	stage.setup(mission)
+	objectives.setup(self)
 	weather.setup(mission, tables.get("weather", {}), rng)
 	for c: int in range(COLUMNS):
 		_columns.append([])
@@ -331,6 +334,7 @@ func step(input: SimInput, input2: SimInput = null) -> void:
 	Specials.step(self)
 	powers.step(self)
 	stage.step(self)
+	objectives.step(self)
 	Hazards.step(self)
 	# Eclipse Total: inimigos e chefe param junto com as balas.
 	if not powers.frozen:
@@ -881,7 +885,7 @@ func _collide_ship(ship: SimPlayer) -> void:
 			_graze(p, ship)
 	if not hit:
 		for e: SimEnemy in enemies:
-			if e.active() and pp.distance_to(e.pos) <= e.radius * CONTACT_FACTOR + hb:
+			if e.active() and e.contact and pp.distance_to(e.pos) <= e.radius * CONTACT_FACTOR + hb:
 				hit = true
 				cause = &"contact"
 				break
@@ -978,6 +982,7 @@ func _kill_enemy(e: SimEnemy) -> void:
 		splash(e.pos, 30.0, 8.0 * damage_mult())
 	ShipTraits.on_kill(self, e)
 	powers.on_kill(self, e)
+	objectives.on_kill(self, e)
 	if e.glyph >= 0:
 		_glyph(e.glyph)
 	var drop := e.drop
@@ -1167,7 +1172,8 @@ func result() -> Dictionary:
 		"pearls": scoring.pearls, "hull_lost": scoring.hull_lost, "bombs_used": scoring.bombs_used,
 		"seconds": frame * STEP, "miniboss_seconds": miniboss_seconds, "log_found": log_found,
 		"secret": String(secret_found), "blessings": mods.taken.duplicate(), "difficulty": String(difficulty),
-		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5, "bosses": bosses_killed,
+		"orichalcum": floori(scoring.medals / 2.0) + bosses_killed * 5 + objectives.orichalcum,
+		"bosses": bosses_killed, "objectives": objectives.results.duplicate(true),
 		"rescued": rescued, "max_capsule_combo": max_capsule_combo, "ending": String(ending), "revives": revives,
 		"lane": Hazards.favorite_lane(self), "bosses_met": bosses_met, "captured": captured, "depth": abyss_depth,
 		# Data do Diário jogado (Modes.daily), não a do fim (passar da meia-noite não muda o dia); vazio fora dele.

@@ -148,7 +148,7 @@ def dialogue(id_):
 
 
 MISSIONS = {
-    "c1m1": dict(chapter=1, name="stage.c1m1", music="hydrogene_space_shooter", backdrop="ocean", scroll=22,
+    "c1m1": dict(chapter=1, name="stage.c1m1", music="flow_tactical_combat", backdrop="ocean", scroll=22,
                  objective={"type": "log", "text_key": "objective.log"}, tutorial=True,
                  beats=lambda r: [beat(2, [(0.5, dialogue("c1m1_intro"))]), fill(1, 26, r, 0.8),
                                   beat(4, [(0.5, {"op": "blessing"})]), fill(1, 14, r, 0.9),
@@ -157,7 +157,7 @@ MISSIONS = {
                                   fill(1, 18, r, 0.9, True), beat(3, [(0.0, {"op": "log", "x": 0.3})]),
                                   fill(1, 16, r, 1.0, True), beat(4, [(0.5, {"op": "blessing"})]),
                                   fill(1, 18, r, 1.1), beat(4, [(0.0, {"op": "end"})])]),
-    "c1m2": dict(chapter=1, name="stage.c1m2", music="hydrogene_space_shooter", backdrop="ocean", scroll=24,
+    "c1m2": dict(chapter=1, name="stage.c1m2", music="flow_tactical_combat", backdrop="ocean", scroll=24,
                  objective={"type": "miniboss_time", "seconds": 50, "text_key": "objective.miniboss_time"},
                  beats=lambda r: [fill(1, 24, r, 1.0), beat(4, [(0.5, {"op": "blessing"})]),
                                   beat(10, [(0.0, {"op": "ocean_shift", "to": "ruins", "warn": 2.0, "duration": 6.0})]),
@@ -166,7 +166,7 @@ MISSIONS = {
                                   beat(4, [(0.0, dialogue("c1m1_breath"))]),
                                   beat(3, [(0.0, {"op": "miniboss", "id": "tidebreaker"})]),
                                   fill(1, 10, r, 0.9), beat(4, [(0.0, {"op": "end"})])]),
-    "c1m3": dict(chapter=1, name="stage.c1m3", music="hydrogene_space_shooter", backdrop="ocean", scroll=26,
+    "c1m3": dict(chapter=1, name="stage.c1m3", music="flow_tactical_combat", backdrop="ocean", scroll=26,
                  objective={"type": "chain", "count": 40, "text_key": "objective.chain"},
                  beats=lambda r: [fill(1, 20, r, 1.1), beat(10, [(0.0, {"op": "ocean_shift", "to": "ruins", "warn": 2.0, "duration": 6.0})]),
                                   fill(1, 18, r, 1.2, True), beat(4, [(0.5, {"op": "blessing"})]),
@@ -174,7 +174,7 @@ MISSIONS = {
                                   fill(1, 22, r, 1.25), beat(3, [(0.0, {"op": "log", "x": 0.5})]),
                                   beat(4, [(0.5, {"op": "blessing"})]), fill(1, 24, r, 1.3, True),
                                   beat(4, [(0.0, {"op": "end"})])]),
-    "c2m1": dict(chapter=2, name="stage.c2m1", music="hydrogene_space_shooter", backdrop="atlantis", scroll=20,
+    "c2m1": dict(chapter=2, name="stage.c2m1", music="flow_tactical_combat", backdrop="atlantis", scroll=20,
                  objective={"type": "secret", "text_key": "objective.secret"},
                  secret={"glyphs": 3, "mission": "s1"},
                  beats=lambda r: [beat(2, [(0.5, dialogue("c2_intro"))]), fill(2, 20, r, 0.9),
@@ -186,7 +186,7 @@ MISSIONS = {
                                   fill(2, 18, r, 1.0), beat(8, [(0.0, {"op": "current", "dx": -1, "strength": 38, "duration": 8.0})]),
                                   beat(3, [(0.0, {"op": "log", "x": 0.4})]), beat(4, [(0.5, {"op": "blessing"})]),
                                   fill(2, 20, r, 1.1), beat(4, [(0.0, {"op": "end"})])]),
-    "c2m2": dict(chapter=2, name="stage.c2m2", music="hydrogene_space_shooter", backdrop="atlantis", scroll=22,
+    "c2m2": dict(chapter=2, name="stage.c2m2", music="flow_tactical_combat", backdrop="atlantis", scroll=22,
                  objective={"type": "miniboss_time", "seconds": 55, "text_key": "objective.miniboss_time_coral"},
                  beats=lambda r: [fill(2, 26, r, 1.0), beat(4, [(0.5, {"op": "blessing"})]),
                                   beat(8, [(0.0, {"op": "current", "dx": 1, "strength": 40, "duration": 7.0})]),
@@ -194,14 +194,14 @@ MISSIONS = {
                                   beat(4, [(0.5, {"op": "blessing"})]), fill(2, 12, r, 1.0),
                                   beat(3, [(0.0, {"op": "miniboss", "id": "coral_guardian"})]),
                                   fill(2, 10, r, 1.0), beat(4, [(0.0, {"op": "end"})])]),
-    "c2m3": dict(chapter=2, name="stage.c2m3", music="hydrogene_space_shooter", backdrop="atlantis", scroll=20,
+    "c2m3": dict(chapter=2, name="stage.c2m3", music="flow_tactical_combat", backdrop="atlantis", scroll=20,
                  objective={"type": "no_bomb", "text_key": "objective.no_bomb"},
                  beats=lambda r: [fill(2, 24, r, 1.1), beat(4, [(0.5, {"op": "blessing"})]),
                                   beat(10, [(0.0, {"op": "ocean_shift", "to": "ruins", "warn": 2.0, "duration": 6.0})]),
                                   fill(2, 22, r, 1.2, True), beat(3, [(0.0, {"op": "log", "x": 0.5})]),
                                   beat(4, [(0.5, {"op": "blessing"})]), beat(4, [(0.0, dialogue("c1m1_boss"))]),
                                   beat(2, [(0.0, {"op": "boss", "id": "kraken_engine"})]), beat(2, [(0.0, {"op": "end"})])]),
-    "c3m1": dict(chapter=3, name="stage.c3m1", music="hydrogene_space_shooter", backdrop="storm", scroll=26,
+    "c3m1": dict(chapter=3, name="stage.c3m1", music="flow_tactical_combat", backdrop="storm", scroll=26,
                  objective={"type": "grazes", "count": 80, "text_key": "objective.grazes"},
                  beats=lambda r: [beat(2, [(0.5, dialogue("c3_intro"))]), fill(3, 20, r, 1.0),
                                   beat(10, [(0.0, {"op": "wind", "dx": 1, "strength": 30, "duration": 10.0}),
@@ -213,7 +213,7 @@ MISSIONS = {
                                   beat(4, [(0.5, {"op": "blessing"})]),
                                   beat(10, [(0.0, {"op": "wind", "dx": -1, "strength": 34, "duration": 10.0})]),
                                   fill(3, 16, r, 1.2), beat(4, [(0.0, {"op": "end"})])]),
-    "c3m2": dict(chapter=3, name="stage.c3m2", music="hydrogene_space_shooter", backdrop="storm", scroll=26, stretch=1.1,
+    "c3m2": dict(chapter=3, name="stage.c3m2", music="flow_tactical_combat", backdrop="storm", scroll=26, stretch=1.1,
                  objective={"type": "miniboss_time", "seconds": 55, "text_key": "objective.miniboss_time_storm"},
                  beats=lambda r: [fill(3, 24, r, 1.1), beat(4, [(0.5, {"op": "blessing"})]),
                                   beat(10, [(0.0, {"op": "wind", "dx": 1, "strength": 34, "duration": 9.0}),
@@ -222,21 +222,21 @@ MISSIONS = {
                                   beat(4, [(0.5, {"op": "blessing"})]),
                                   beat(3, [(0.0, {"op": "miniboss", "id": "storm_eye"})]),
                                   fill(3, 10, r, 1.0), beat(4, [(0.0, {"op": "end"})])]),
-    "c3m3s": dict(chapter=3, name="stage.c3m3s", music="hydrogene_space_shooter", backdrop="storm", scroll=28,
+    "c3m3s": dict(chapter=3, name="stage.c3m3s", music="flow_tactical_combat", backdrop="storm", scroll=28,
                   route="surface", objective={"type": "score", "count": 60000, "text_key": "objective.score"},
                   beats=lambda r: [fill(3, 26, r, 1.15), beat(4, [(0.5, {"op": "blessing"})]),
                                    beat(10, [(0.0, {"op": "wind", "dx": 1, "strength": 36, "duration": 10.0})]),
                                    fill(3, 24, r, 1.25), beat(3, [(0.0, {"op": "log", "x": 0.5})]),
                                    beat(4, [(0.5, {"op": "blessing"})]), fill(3, 22, r, 1.3),
                                    beat(4, [(0.0, {"op": "end"})])]),
-    "c3m3a": dict(chapter=3, name="stage.c3m3a", music="hydrogene_space_shooter", backdrop="atlantis", scroll=24,
+    "c3m3a": dict(chapter=3, name="stage.c3m3a", music="flow_tactical_combat", backdrop="atlantis", scroll=24,
                   route="abyss", score_mult=1.5, stretch=1.15, objective={"type": "chain", "count": 50, "text_key": "objective.chain_50"},
                   beats=lambda r: [fill(2, 24, r, 1.3, True), beat(4, [(0.5, {"op": "blessing"})]),
                                    beat(8, [(0.0, {"op": "current", "dx": -1, "strength": 44, "duration": 8.0})]),
                                    fill(3, 24, r, 1.35, True), beat(3, [(0.0, {"op": "log", "x": 0.3})]),
                                    beat(4, [(0.5, {"op": "blessing"})]), fill(2, 22, r, 1.4, True),
                                    beat(4, [(0.0, {"op": "end"})])]),
-    "s1": dict(chapter=2, name="stage.s1", music="hydrogene_space_shooter", backdrop="atlantis", scroll=18,
+    "s1": dict(chapter=2, name="stage.s1", music="flow_tactical_combat", backdrop="atlantis", scroll=18,
                weapon_lock="railgun", secret_mission=True, stretch=1.25, objective={"type": "log", "text_key": "objective.log"},
                beats=lambda r: [beat(2, [(0.5, dialogue("s1_intro"))]), fill(2, 34, r, 1.0, True),
                                 beat(4, [(0.5, {"op": "blessing"})]), beat(3, [(0.0, {"op": "log", "x": 0.5})]),
@@ -285,10 +285,10 @@ def mini_end(ch, boss_id):
 
 ## Trilha por capítulo (redesenho 1.6, .ai/05-pesquisa-redesign-ui-gameplay.md): cada mar com cara própria.
 CHAPTER_MUSIC = {
-    1: "mintodog_ocean_trance", 2: "prosensory_binary_village", 3: "ansimuz_cyber_runner",
-    4: "magnesus_hostile_territory", 5: "hydrogene_space_shooter", 6: "mintodog_ocean_trance",
-    7: "ansimuz_cyber_runner", 8: "magnesus_deadly_contracts", 9: "magnesus_deadly_contracts",
-    10: "prosensory_binary_village",
+    1: "flow_tactical_combat", 2: "fardifferent_temples", 3: "fardifferent_another_step_back",
+    4: "bogart_cyber_power", 5: "bogart_neon_action", 6: "dancramp_cyber_side_scroller",
+    7: "davidkbd_plasma_storm", 8: "davidkbd_orbital_assault", 9: "davidkbd_binary_chaos",
+    10: "fardifferent_ritual",
 }
 BACKDROP = {4: "volcanic", 5: "city", 6: "ice", 7: "stratosphere", 8: "orbit", 9: "core"}
 MOMENT = {
@@ -303,7 +303,7 @@ MOMENT = {
 
 
 def add_chapter(ch, mini_id, boss=None, boss_line="", glyph_secret=""):
-    music = "hydrogene_space_shooter"
+    music = "flow_tactical_combat"
     obj_route = {"type": "rescue", "count": 6, "text_key": "objective.rescue"}
     m1 = dict(chapter=ch, name=f"stage.c{ch}m1", music=music, backdrop=BACKDROP[ch], scroll=24,
               objective={"type": "secret", "text_key": "objective.secret"} if glyph_secret else
@@ -341,18 +341,18 @@ add_chapter(7, "steel_albatross", boss="poseidon_prime", boss_line="poseidon_int
 add_chapter(8, "orbital_gate", glyph_secret="s4")
 add_chapter(9, "orbital_gate", boss="leviathan_protocol", boss_line="protocol_intro")
 # O capítulo 9 não tem mini-chefe próprio: a 9-2 é a travessia do núcleo, com Gravity Breach alternada.
-MISSIONS["c9m2"] = dict(chapter=9, name="stage.c9m2", music="hydrogene_space_shooter", backdrop="core", scroll=26,
+MISSIONS["c9m2"] = dict(chapter=9, name="stage.c9m2", music="flow_tactical_combat", backdrop="core", scroll=26,
                         objective={"type": "grazes", "count": 120, "text_key": "objective.grazes_120"},
                         beats=chapter_mission(9, MOMENT[9], density=1.25,
                                               extra=lambda r: [beat(12, [(0.0, {"op": "gravity_breach", "dx": 1, "dy": 0,
                                                                                  "strength": 36, "duration": 10,
                                                                                  "flip": True})])]))
-MISSIONS["s2"] = dict(chapter=4, name="stage.s2", music="hydrogene_space_shooter", backdrop="volcanic", scroll=20,
+MISSIONS["s2"] = dict(chapter=4, name="stage.s2", music="flow_tactical_combat", backdrop="volcanic", scroll=20,
                       dark=True, secret_mission=True, stretch=1.5, objective={"type": "log", "text_key": "objective.log"},
                       beats=lambda r: [beat(2, [(0.5, dialogue("s2_intro"))]), fill(4, 30, r, 0.9),
                                        beat(4, [(0.5, {"op": "blessing"})]), beat(3, [(0.0, {"op": "log", "x": 0.6})]),
                                        fill(4, 30, r, 1.0), beat(4, [(0.0, {"op": "end"})])])
-MISSIONS["s3"] = dict(chapter=6, name="stage.s3", music="hydrogene_space_shooter", backdrop="ice", scroll=20,
+MISSIONS["s3"] = dict(chapter=6, name="stage.s3", music="flow_tactical_combat", backdrop="ice", scroll=20,
                       secret_mission=True, stretch=1.5, objective={"type": "log", "text_key": "objective.log"},
                       beats=lambda r: [beat(2, [(0.5, dialogue("s3_intro"))]),
                                        beat(1, [(0.0, {"op": "gravity_breach", "dx": 0, "dy": -1, "strength": 24,
@@ -360,7 +360,7 @@ MISSIONS["s3"] = dict(chapter=6, name="stage.s3", music="hydrogene_space_shooter
                                        fill(6, 30, r, 0.9), beat(4, [(0.5, {"op": "blessing"})]),
                                        beat(3, [(0.0, {"op": "log", "x": 0.4})]), fill(6, 30, r, 1.0),
                                        beat(4, [(0.0, {"op": "end"})])])
-MISSIONS["s4"] = dict(chapter=8, name="stage.s4", music="hydrogene_space_shooter", backdrop="atlantis", scroll=20,
+MISSIONS["s4"] = dict(chapter=8, name="stage.s4", music="flow_tactical_combat", backdrop="atlantis", scroll=20,
                       secret_mission=True, stretch=1.2, objective={"type": "log", "text_key": "objective.log"},
                       beats=lambda r: [beat(2, [(0.5, dialogue("s4_intro"))])] + [
                           beat(16, [(0.0, {"op": "ocean_shift", "to": "ruins" if k % 2 == 0 else "flood", "warn": 2.0,
@@ -373,7 +373,7 @@ MISSIONS["s4"] = dict(chapter=8, name="stage.s4", music="hydrogene_space_shooter
 # Matriarca Hadal. Abre depois da 9-3, com qualquer final.
 HADAL = [(0.0, {"op": "current", "dx": 1, "strength": 30, "duration": 8.0}), (2.0, {"op": "lightning", "x": 0.3}),
          (5.0, {"op": "lightning", "x": 0.7}), (8.0, {"op": "lightning", "x": 0.5})]
-MISSIONS["c10m1"] = dict(chapter=10, name="stage.c10m1", music="hydrogene_space_shooter", backdrop="hadal", scroll=20,
+MISSIONS["c10m1"] = dict(chapter=10, name="stage.c10m1", music="flow_tactical_combat", backdrop="hadal", scroll=20,
                          dark=True, objective={"type": "log", "text_key": "objective.log"},
                          beats=lambda r: [beat(2, [(0.5, dialogue("c10_intro"))]), fill(10, 22, r, 0.9),
                                           beat(4, [(0.5, {"op": "blessing"})]),
@@ -383,11 +383,11 @@ MISSIONS["c10m1"] = dict(chapter=10, name="stage.c10m1", music="hydrogene_space_
                                           beat(6, capsules(0.3, 0.7)), fill(10, 16, r, 1.1),
                                           beat(4, [(0.5, {"op": "blessing"})]), fill(10, 16, r, 1.15),
                                           beat(4, [(0.0, {"op": "end"})])])
-MISSIONS["c10m2"] = dict(chapter=10, name="stage.c10m2", music="hydrogene_space_shooter", backdrop="hadal", scroll=22,
+MISSIONS["c10m2"] = dict(chapter=10, name="stage.c10m2", music="flow_tactical_combat", backdrop="hadal", scroll=22,
                          objective={"type": "miniboss_time", "seconds": 60,
                                     "text_key": "objective.miniboss_hadal_angler"},
                          beats=chapter_mission(10, HADAL, density=1.1, end=mini_end(10, "hadal_angler")))
-MISSIONS["c10m3"] = dict(chapter=10, name="stage.c10m3", music="hydrogene_space_shooter", backdrop="hadal", scroll=22,
+MISSIONS["c10m3"] = dict(chapter=10, name="stage.c10m3", music="flow_tactical_combat", backdrop="hadal", scroll=22,
                          objective={"type": "boss_time", "seconds": 150, "text_key": "objective.boss_time"},
                          beats=chapter_mission(10, HADAL, density=1.2, end=boss_end("hadal_matriarch", "hadal_intro")))
 
@@ -535,6 +535,89 @@ def add_weather(mission_id: str, out: dict, length: float) -> None:
     out["events"].sort(key=lambda e: e["t"])
 
 
+# Objetivos de fase (scripts/sim/sim_objectives.gd, revisão 4 da Sim): 2 metas curtas nos capítulos 1 a 3 e 3 do 4 em
+# diante, sempre com um resgate. Ficam em "objectives" (fora de "events": o roteiro e os replays antigos não mudam) e
+# entram só em trechos de ondas: longe de chefes, perigos, falas, bênçãos, registros, cápsulas e glifos.
+# Sem chão (céu e espaço) a jaula vira a cápsula-prisão à deriva.
+GROUNDLESS = {"stratosphere", "orbit", "core"}
+OBJECTIVE_BLOCKERS = {"boss", "miniboss", "lightning", "gravity_breach", "cover", "capsule", "ocean_shift", "current",
+                      "wind", "blessing", "module", "dialogue", "end"}
+# Folga (s de fase) entre um objetivo e qualquer bloqueio, e entre dois objetivos.
+OBJECTIVE_MARGIN = 1.5
+OBJECTIVE_GAP = 4.0
+# Começo mais cedo (o objetivo da missão fica 5 s na tela) e espaço livre antes do fim.
+OBJECTIVE_FIRST = 10.0
+OBJECTIVE_TAIL = 8.0
+# Aviso antes dos alvos (SimObjectives.WARN_FRAMES) e a altura de campo usada na conta da travessia.
+OBJECTIVE_WARN = 1.5
+OBJECTIVE_FIELD = 480.0
+
+
+def objective_spec(kind: str, chapter: int, backdrop: str, rng: random.Random) -> dict:
+    """Parâmetros de um objetivo: tudo sobe com o capítulo (a vida dos alvos já sobe com a curva da Sim)."""
+    step = chapter - 1
+    if kind == "rescue":
+        return {"type": "rescue", "count": 3 + step // 3, "x": rng.choice([0.3, 0.5, 0.7]),
+                "speed": round(40 + 1.5 * chapter, 1), "pod": backdrop in GROUNDLESS}
+    if kind == "sabotage":
+        enemy, formation, count, path, params, extra = max(
+            (w for w in POOLS[chapter] if w[1] != "single" and w[2] >= 3), key=lambda w: (w[1] != "column", w[2]))
+        kw = {k: v for k, v in extra.items() if k not in ("drop_last", "interval", "from_depth", "spacing")}
+        # Reforço: a maior formação do capítulo, numa linha só (a coluna nasceria toda no mesmo ponto), com uma nave a
+        # mais.
+        return {"type": "sabotage", "count": 3, "seconds": round(13 - 0.3 * step, 1),
+                "reinforce": wave(enemy, "v" if formation == "v" else "line", min(count + 1, 6), path, params, 0.5,
+                                  spacing=40, **kw)}
+    return {"type": "intercept", "x": rng.choice([0.25, 0.75]), "speed": 70 + 4 * chapter,
+            "hold": round(3.6 - 0.15 * step, 2)}
+
+
+def objective_seconds(o: dict) -> float:
+    """Quanto tempo de fase o objetivo ocupa, do aviso ao fim (a jaula atravessa o campo; o farol tem prazo)."""
+    if o["type"] == "rescue":
+        return OBJECTIVE_WARN + OBJECTIVE_FIELD / o["speed"]
+    if o["type"] == "sabotage":
+        return OBJECTIVE_WARN + o["seconds"] + 1.0
+    return OBJECTIVE_WARN + 100.0 / o["speed"] + o["hold"] + 280.0 / (1.5 * o["speed"])
+
+
+def _objective_slot(o: dict, busy: list, placed: list, length: float, aim: float):
+    """Começo livre mais perto de `aim`: sem bloqueio no trecho (com folga) e longe dos objetivos já postos."""
+    dur = objective_seconds(o)
+    best = None
+    t = OBJECTIVE_FIRST
+    while t + dur <= length - OBJECTIVE_TAIL:
+        free = all(not (t - OBJECTIVE_MARGIN <= b <= t + dur + OBJECTIVE_MARGIN) for b in busy)
+        apart = all(t + dur + OBJECTIVE_GAP <= p or t >= p + d + OBJECTIVE_GAP for p, d in placed)
+        if free and apart and (best is None or abs(t - aim) < abs(best - aim)):
+            best = t
+        t = round(t + 0.5, 2)
+    return best
+
+
+def add_objectives(mission_id: str, spec: dict, out: dict) -> None:
+    chapter = spec["chapter"]
+    rng = random.Random(f"objectives:{mission_id}")
+    length = out["length_s"]
+    busy = [e["t"] for e in out["events"] if e["op"] in OBJECTIVE_BLOCKERS
+            or e["op"] == "wave" and (e.get("enemy") == "glyph" or e.get("escort"))]
+    kinds = ["rescue"] + rng.sample(["sabotage", "intercept"], 2)
+    want = 3 if chapter >= 4 else 2
+    placed = []
+    # Cada vaga tenta o tipo da vez; se ele não couber em trecho livre, os outros (o mais curto, a interceptação,
+    # pode repetir).
+    for n in range(want):
+        for kind in kinds + ["intercept"]:
+            o = objective_spec(kind, chapter, out["backdrop"], rng)
+            at = _objective_slot(o, busy, placed, length, length * (n + 1) / (want + 1))
+            if at is not None:
+                placed.append((at, objective_seconds(o)))
+                out.setdefault("objectives", []).append(dict(o, t=at))
+                kinds.remove(kind) if kind in kinds else None
+                break
+    out.get("objectives", []).sort(key=lambda o: o["t"])
+
+
 def build(mission_id: str, spec: dict) -> dict:
     events, cuts, t = script(mission_id, spec, 1.0)
     if any(e["op"] in ("boss", "miniboss") for e in events):
@@ -547,6 +630,7 @@ def build(mission_id: str, spec: dict) -> dict:
         if key in spec:
             out[key] = spec[key]
     add_weather(mission_id, out, t)
+    add_objectives(mission_id, spec, out)
     return out
 
 
@@ -557,7 +641,8 @@ def main() -> int:
         target = OUT / f"{mission_id}.json"
         target.write_text(json.dumps(data, ensure_ascii=False, indent="\t") + "\n", encoding="utf-8", newline="\n")
         waves = sum(1 for e in data["events"] if e["op"] == "wave")
-        print(f"{mission_id}: {data['length_s']} s de fase, {waves} ondas, {len(data['events'])} eventos")
+        goals = ", ".join(f"{o['type']}@{o['t']}" for o in data.get("objectives", []))
+        print(f"{mission_id}: {data['length_s']} s de fase, {waves} ondas, {len(data['events'])} eventos; {goals}")
     return 0
 
 

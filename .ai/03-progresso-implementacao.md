@@ -526,3 +526,16 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   quebrada em camadas com cauda de destroços e morte com estouros no tempo da cadeia visual (`fx.later`) e o
   estrondo final; mortes grandes com a explosão grande por baixo. Arrancada da saída (`outro_rise`) com o
   `outro_afterburner` (turbina, ignição e pós-combustor, `tools/mix_power_audio.py`) e vibração em rampa
+- ✅ Objetivos de fase (plano mestre 5.6): 2 metas curtas por missão nos capítulos 1 a 3 e 3 do 4 em diante, sempre
+  com um resgate, de 10 a 25 s, nunca reprovam. **Resgate** (Jaula do Protocolo no chão e no mar, cápsula-prisão
+  à deriva no céu e no espaço; destruída solta 3 a 6 atlantes em bolhas que contam em `Sim.rescued`, final e
+  Cidade de Thalassa), **sabotagem** (3 Faróis do Protocolo com prazo; falha chama a onda de reforço) e
+  **interceptação** (mensageiro com a relíquia roubada; abatido, a relíquia voa até a nave). Acerto: 5.000 pontos,
+  12 pérolas e 2 de oricalco (+1 no resgate perfeito). Regra em `scripts/sim/sim_objectives.gd`, revisão 4 da Sim
+  (`SimRevision`; replay antigo ignora, provado passo a passo em `tests/objective_tests.gd`); alvos sem dano de
+  contato (`data/enemies.json` "contact"). Roteiro em `data/stages/*.json` "objectives" por `tools/gen_missions.py`
+  (os eventos das fases não mudaram). Arte gerada em `tools/gen_sprites.py` (jaula, cápsula-prisão, farol, atlante
+  na bolha, relíquia, mira); desenho em `scripts/view/objective_view.gd`; marcador no HUD em
+  `scripts/game/hud_objective.gd` (testado em todas as resoluções); falas e sons em `game.gd` (sino quente numa
+  escala maior a partir de 0,6 por atlante salvo; nada agudo); linhas no resultado ("Resgate 4/5 ★"). Bot mira os
+  alvos e busca atlantes e relíquia. Textos em `tools/i18n/objectives.py`. Falta conferir no aparelho

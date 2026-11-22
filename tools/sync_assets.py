@@ -1,10 +1,14 @@
 """Copia para res://assets só os arquivos que o jogo usa (docs/policies/licencas.md).
 
-Uso:  python -I tools/sync_assets.py
+Uso:  python -I tools/sync_assets.py [--keep-missing]
 Lê todo tools/*_assets.json. Cada manifesto diz a pasta do pacote baixado (pack_root, dentro de
 D:\\src\\assets-downloaded\\ por padrão, ou em $ATLANTIS_DOWNLOADS), o id da licença no registro e o
 que copiar (pastas e arquivos). Escreve assets/asset_index.json com origem e hash de tudo, usado
 por tools/check_licenses.py para conferir que todo arquivo tem licença registrada.
+
+--keep-missing: numa máquina sem algum pacote baixado, mantém no índice as linhas antigas dos arquivos cuja
+origem falta mas que continuam em assets/ (com o hash atual), em vez de tirá-las. Sem essa opção, origem que
+falta é erro (código 1).
 
 Origem: tools/sync_assets.py do projeto hyakki (mesmo autor, MIT).
 """
@@ -44,7 +48,15 @@ def copy_file(src: pathlib.Path, dst: pathlib.Path, license_id: str, index: list
     })
 
 
-def sync_manifest(manifest_path: pathlib.Path, index: list) -> int:
+def keep_rows(old: list, license_id: str, match, index: list) -> bool:
+    """Reaproveita as linhas antigas (arquivo ainda em assets/) de uma origem que falta nesta máquina."""
+    rows = [r for r in old if r["license_id"] == license_id and match(r["file"]) and (ROOT / r["file"]).is_file()]
+    index.extend({**r, "sha256": sha256(ROOT / r["file"])} for r in rows)
+    return bool(rows)
+
+
+def sync_manifest(manifest_path: pathlib.Path, index: list, old: list | None) -> int:
+    """Copia o que o manifesto pede. Com old (--keep-missing), origem que falta mantém as linhas antigas."""
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
     pack = DOWNLOADS / data["pack_root"]
     license_id = data["license_id"]
@@ -52,6 +64,10 @@ def sync_manifest(manifest_path: pathlib.Path, index: list) -> int:
     for src_rel, dst_rel in data.get("folders", {}).items():
         src_dir = pack / src_rel
         if not src_dir.is_dir():
+            prefix = (ASSETS / dst_rel).relative_to(ROOT).as_posix() + "/"
+            if old is not None and keep_rows(old, license_id, lambda f: f.startswith(prefix), index):
+                print(f"mantida (origem falta): {prefix}")
+                continue
             print(f"FALTA pasta: {src_dir}")
             missing += 1
             continue
@@ -66,6 +82,9 @@ def sync_manifest(manifest_path: pathlib.Path, index: list) -> int:
     for src_rel, dst_rel in data.get("files", {}).items():
         src = pack / src_rel
         if not src.is_file():
+            target = (ASSETS / dst_rel).relative_to(ROOT).as_posix()
+            if old is not None and keep_rows(old, license_id, lambda f: f == target, index):
+                continue
             print(f"FALTA arquivo: {src}")
             missing += 1
             continue
@@ -76,12 +95,14 @@ def sync_manifest(manifest_path: pathlib.Path, index: list) -> int:
 def main() -> int:
     index: list = []
     missing = 0
-    for path in sorted((ROOT / "tools").glob("*_assets.json")):
-        missing += sync_manifest(path, index)
-    # Assets gerados pelo próprio repositório (source começando com "tools/") continuam no índice.
     old_index = ASSETS / "asset_index.json"
-    if old_index.exists():
-        for row in json.loads(old_index.read_text(encoding="utf-8")):
+    old_rows = json.loads(old_index.read_text(encoding="utf-8")) if old_index.exists() else []
+    keep = "--keep-missing" in sys.argv
+    for path in sorted((ROOT / "tools").glob("*_assets.json")):
+        missing += sync_manifest(path, index, old_rows if keep else None)
+    # Assets gerados pelo próprio repositório (source começando com "tools/") continuam no índice.
+    if old_rows:
+        for row in old_rows:
             target = ROOT / row["file"]
             if row.get("source", "").startswith("tools/") and target.exists():
                 index.append({**row, "sha256": sha256(target)})
