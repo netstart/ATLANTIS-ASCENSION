@@ -27,6 +27,7 @@ const StoreTests := preload("res://tests/store_tests.gd")
 const TurboTests := preload("res://tests/turbo_tests.gd")
 const IapTests := preload("res://tests/iap_tests.gd")
 const ScriptGate := preload("res://tests/script_gate.gd")
+const DeathViewTests := preload("res://tests/death_view_tests.gd")
 
 var _count: int = 0
 var _failures: int = 0
@@ -89,6 +90,7 @@ func _ready() -> void:
 		await CreditsScreenTests.new().run(self, _check)
 		await FlowTests.new().run(self, _check)
 		await LiveryTests.new().run_view(self, _check)
+		await DeathViewTests.new().run_view(self, _check)
 		await GloryTests.new().run_view(self, _check)
 		await WeatherViewTests.new().run_view(self, _check)
 		await FocusNavTests.new().run(self, _check)
@@ -248,6 +250,17 @@ func _test_audio(check: Callable) -> void:
 		check.call(AudioServer.get_bus_index(bus) >= 0, "Áudio: bus %s existe" % bus)
 	check.call(not AudioManager.play("som_que_nao_existe"), "Áudio: id sem arquivo é ignorado")
 	check.call(AudioManager.missing.has("som_que_nao_existe"), "Áudio: id sem arquivo é registrado")
+	# Chefe: a rajada de mortes comuns (mesmo arquivo, recarga, limite por id e banco cheio) não cala a
+	# parte quebrada nem a morte do chefe.
+	for k: int in range(AudioManager.POOL_SIZE + 8):
+		AudioManager.play("kenney_explosion_medium", 1.0, 0.0, -60.0)
+		AudioManager.play("kenney_explosion_small", 1.0, 0.0, -60.0)
+	check.call(not AudioManager.play("kenney_explosion_medium", 1.0, 0.0, -60.0),
+			"Áudio: a rajada de mortes esbarra na recarga")
+	var boss_ok := true
+	for id: String in ["kenney_explosion_medium", "kenney_explosion_big", "faxcorp_deathboom"]:
+		boss_ok = AudioManager.play_priority(id, 1.0, 0.0, -60.0) and boss_ok
+	check.call(boss_ok, "Áudio: parte e morte do chefe tocam mesmo depois da rajada de mortes")
 	check.call(AudioManager.variants("kenney_medal") == ["kenney_medal"],
 			"Áudio: id com arquivo próprio não vira variante")
 	# Coletas e acerto (1.14.3, tools/mix_pickup_audio.py): curtos, para não embolar na rajada.

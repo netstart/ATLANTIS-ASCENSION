@@ -586,7 +586,7 @@
     "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
-    "files_count": 40
+    "files_count": 41
   },
   {
     "id": "flow_tide_rising_music",

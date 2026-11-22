@@ -20,6 +20,8 @@ const CAM_EASE := 0.08
 ## Paletas por cenário. deep = abismo, mid = neblina, shoal = chão escuro, lit = chão claro (teto de
 ## brilho), foam = luz (cáusticas, raios, bolhas), accent = brilho próprio (ouro, lava, circuito).
 ## pattern: 0 areia, 1 ruínas, 3 basalto, 4 gelo, 5 circuito, 6 nuvens, 7 espaço.
+## floor: onde cai o inimigo abatido (CombatFx.floor): water (padrão, espirra), solid (explode no chão) ou
+## none (nuvens, espaço, circuito: não há queda, só explosão ou derretimento).
 const PALETTES := {
 	&"ocean": {"deep": Color(0.008, 0.027, 0.047), "mid": Color(0.04, 0.165, 0.227), "shoal": Color(0.05, 0.2, 0.27),
 			"lit": Color(0.111, 0.272, 0.347), "foam": Color(0.7, 0.95, 1.0), "accent": Color(0.38, 0.29, 0.09),
@@ -34,22 +36,22 @@ const PALETTES := {
 	&"volcanic": {"deep": Color(0.04, 0.01, 0.01), "mid": Color(0.14, 0.05, 0.04), "shoal": Color(0.17, 0.07, 0.05),
 			"lit": Color(0.36, 0.2, 0.14), "foam": Color(1.0, 0.55, 0.2), "accent": Color(0.95, 0.38, 0.06),
 			"pattern": 3, "rocks": 0.15, "base_emerge": 0.25, "caustics": 0.0, "rays": 0.0, "ruins": &"basalt",
-			"particles": &"embers"},
+			"particles": &"embers", "floor": &"solid"},
 	&"city": {"deep": Color(0.02, 0.03, 0.07), "mid": Color(0.06, 0.08, 0.16), "shoal": Color(0.09, 0.12, 0.22),
 			"lit": Color(0.194, 0.252, 0.387), "foam": Color(0.6, 0.8, 1.0), "accent": Color(0.3, 0.75, 1.0),
 			"pattern": 1, "tile": 24.0, "rocks": 0.05, "base_emerge": 0.6, "caustics": 0.4, "rays": 0.5,
-			"ruins": &"towers"},
+			"ruins": &"towers", "floor": &"solid"},
 	&"ice": {"deep": Color(0.04, 0.07, 0.11), "mid": Color(0.1, 0.17, 0.24), "shoal": Color(0.15, 0.24, 0.32),
 			"lit": Color(0.173, 0.263, 0.346), "foam": Color(0.95, 1.0, 1.0), "accent": Color(0.6, 0.9, 1.0),
-			"pattern": 4, "base_emerge": 0.3, "caustics": 0.6, "ruins": &"spires", "particles": &"snow"},
+			"pattern": 4, "base_emerge": 0.3, "caustics": 0.6, "ruins": &"spires", "particles": &"snow", "floor": &"solid"},
 	&"stratosphere": {"deep": Color(0.05, 0.08, 0.18), "mid": Color(0.09, 0.14, 0.27), "shoal": Color(0.13, 0.2, 0.35),
 			"lit": Color(0.191, 0.254, 0.382), "foam": Color(0.9, 0.95, 1.0), "accent": Color(1.0, 0.85, 0.6),
 			"pattern": 6, "base_emerge": 0.0, "caustics": 0.0, "rays": 0.6, "trench": 0.0, "bubbles": false,
-			"particles": &"wind"},
+			"particles": &"wind", "floor": &"none"},
 	&"orbit": {"deep": Color(0.01, 0.01, 0.04), "mid": Color(0.03, 0.03, 0.08), "shoal": Color(0.06, 0.05, 0.12),
 			"lit": Color(0.25, 0.18, 0.4), "foam": Color(0.8, 0.8, 1.0), "accent": Color(0.35, 0.15, 0.45),
 			"pattern": 7, "base_emerge": 0.0, "caustics": 0.0, "rays": 0.0, "trench": 0.0, "bubbles": false,
-			"shadows": false, "particles": &"stars"},
+			"shadows": false, "particles": &"stars", "floor": &"none"},
 	&"hadal": {"deep": Color(0.0, 0.03, 0.04), "mid": Color(0.01, 0.07, 0.08), "shoal": Color(0.02, 0.11, 0.11),
 			"lit": Color(0.08, 0.26, 0.26), "foam": Color(0.45, 1.0, 0.85), "accent": Color(0.3, 1.0, 0.85),
 			"pattern": 1, "tile": 16.0, "rocks": 0.3, "base_emerge": 0.15, "caustics": 0.25, "rays": 0.2,
@@ -57,7 +59,7 @@ const PALETTES := {
 	&"core": {"deep": Color(0.06, 0.0, 0.06), "mid": Color(0.12, 0.02, 0.1), "shoal": Color(0.19, 0.04, 0.14),
 			"lit": Color(0.38, 0.12, 0.3), "foam": Color(1.0, 0.5, 0.6), "accent": Color(1.0, 0.35, 0.6),
 			"pattern": 5, "base_emerge": 0.0, "caustics": 0.0, "rays": 0.0, "trench": 0.0, "bubbles": false,
-			"particles": &"sparks"},
+			"particles": &"sparks", "floor": &"none"},
 }
 ## Partículas de primeiro plano: cor, comprimento do risco, velocidade (x rolagem), inclinação, passo.
 const PARTICLES := {

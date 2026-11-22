@@ -1,8 +1,9 @@
 {
 	"pack_root": "atlantis-mix",
 	"license_id": "atlantis_power_sfx",
-	"note": "Misturas de tools/mix_power_audio.py: camadas sintetizadas pelo projeto (MIT) com sons CC0 do Kenney (Sci-fi, Impact, Interface, Digital e RPG Audio), de Juhani Junkala (512 Sound Effects), de rubberduck (100 CC0 SFX, 100 CC0 SFX #2, 80 CC0 creature SFX) e de faxcorp (Electricity Game Sound Pack). 36 sons de poder (power_<nave>_<nível>), 3 tons do medidor (power_charge_1..3) e a recusa sem carga (power_empty).",
+	"note": "Misturas de tools/mix_power_audio.py: camadas sintetizadas pelo projeto (MIT) com sons CC0 do Kenney (Sci-fi, Impact, Interface, Digital e RPG Audio), de Juhani Junkala (512 Sound Effects), de rubberduck (100 CC0 SFX, 100 CC0 SFX #2, 80 CC0 creature SFX) e de faxcorp (Electricity Game Sound Pack). 36 sons de poder (power_<nave>_<nível>), 3 tons do medidor (power_charge_1..3) a recusa sem carga (power_empty) e a arrancada da saída da fase (outro_afterburner, só síntese).",
 	"files": {
+		"powers/outro_afterburner.ogg": "audio/sfx/outro_afterburner.ogg",
 		"powers/power_ascension_1.ogg": "audio/sfx/power_ascension_1.ogg",
 		"powers/power_ascension_2.ogg": "audio/sfx/power_ascension_2.ogg",
 		"powers/power_ascension_3.ogg": "audio/sfx/power_ascension_3.ogg",

@@ -146,6 +146,7 @@ func _ready() -> void:
 	_world.fx_level = GfxQuality.level()
 	_world.reduce_motion = bool(Settings.get_value("reduce_motion"))
 	_world.setup(sim)
+	_world.fx.landed.connect(_on_death_landed)
 	if _ghost_sim != null:
 		_world.ghost_sim = _ghost_sim
 	_clip.add_child(_world)
@@ -533,6 +534,47 @@ func _process(delta: float) -> void:
 			_finish(false)
 
 
+## Parte do chefe quebrando: estalo metálico, explosão média e um corpo grave, por prioridade (a rajada de
+## mortes comuns usa os mesmos arquivos e não pode calar o chefe), e a cauda de destroços logo depois.
+func _boss_part_sound() -> void:
+	AudioManager.play_priority("kenney_part_clamp", 0.6, 0.04, -8.0)
+	AudioManager.play_priority("kenney_explosion_medium", 0.9, 0.05, -2.0)
+	AudioManager.play_priority("kenney_explosion_big", 1.2, 0.05, -9.0)
+	_world.fx.later(0.16, AudioManager.play_priority.bind("kenney_explosion_small", 0.65, 0.05, -12.0))
+
+
+## Morte do chefe (de fase e de meio de fase): estrondo agora, estouros no tempo da cadeia de explosões do
+## WorldView (CombatFx.chain em 1,3 s), o estouro final grande em 1,35 s e a cauda de destroços. Tudo pelo
+## relógio dos efeitos (fx.later): som e imagem andam juntos, mesmo na câmera lenta.
+func _boss_dead_sound() -> void:
+	AudioManager.play_priority("kenney_explosion_big", 1.0, 0.0, -4.0)
+	AudioManager.play_priority("faxcorp_deathboom", 1.0, 0.0, -6.0)
+	for k: int in range(4):
+		_world.fx.later(0.3 + 0.3 * k, AudioManager.play_priority.bind("kenney_explosion_medium", 0.95 - 0.06 * k,
+				0.05, -9.0))
+	_world.fx.later(1.35, AudioManager.play_priority.bind("kenney_explosion_big", 0.8, 0.0, -2.0))
+	_world.fx.later(1.35, AudioManager.play_priority.bind("kenney_bomb", 0.7, 0.0, -7.0))
+	_world.fx.later(1.6, AudioManager.play_priority.bind("kenney_explosion_small", 0.6, 0.05, -11.0))
+	_world.fx.later(1.75, AudioManager.play_priority.bind("kenney_part_clamp", 0.5, 0.05, -14.0))
+
+
+## Fim de uma morte em curso (CombatFx.landed): o som e o tranco do impacto. No mar a explosão sai
+## abafada (tom grave); no chão, cheia; o derretimento acaba num estouro pequeno.
+func _on_death_landed(_at: Vector2, big: bool, kind: StringName) -> void:
+	match kind:
+		CombatFx.WATER:
+			AudioManager.play("kenney_explosion_medium", 0.6, 0.06, -7.0 if big else -11.0)
+			_shake = maxf(_shake, 2.2 if big else 0.8)
+		CombatFx.SOLID:
+			AudioManager.play("kenney_explosion_medium" if big else "kenney_explosion_small", 0.9, 0.08, -6.0)
+			if big:
+				AudioManager.play("kenney_explosion_big", 1.15, 0.06, -14.0)
+			_shake = maxf(_shake, 3.0 if big else 1.0)
+		_:
+			AudioManager.play("kenney_explosion_small", 1.2, 0.08, -9.0)
+			_shake = maxf(_shake, 1.4 if big else 0.5)
+
+
 func _on_event(ev: Dictionary) -> void:
 	_world.on_event(ev)
 	for c: Dictionary in _style.observe(ev, sim):
@@ -541,10 +583,23 @@ func _on_event(ev: Dictionary) -> void:
 		&"shot":
 			AudioManager.play("kenney_shot_pulsar", 1.0, 0.05, -14.0)
 		&"kill":
-			AudioManager.play("kenney_explosion_medium" if bool(ev.get("big", false)) else "kenney_explosion_small",
-					1.0, 0.08, -6.0)
-			_shake = maxf(_shake, 3.0 if bool(ev.get("big", false)) else 0.8)
-			if bool(ev.get("big", false)):
+			var big := bool(ev.get("big", false))
+			match _world.last_death:
+				CombatFx.MELT:
+					# Derrete: chiado agudo e baixo agora, o estouro no fim (_on_death_landed).
+					AudioManager.play("kenney_explosion_small", 1.5, 0.08, -14.0)
+					_shake = maxf(_shake, 1.0 if big else 0.3)
+				CombatFx.FALL:
+					# Pega fogo: estouro curto agora, o impacto quando bate no mar ou no chão.
+					AudioManager.play("kenney_explosion_small", 1.25, 0.08, -10.0)
+					_shake = maxf(_shake, 1.2 if big else 0.4)
+				_:
+					AudioManager.play("kenney_explosion_medium" if big else "kenney_explosion_small", 1.0, 0.08, -6.0)
+					if big:
+						# Grande: o corpo grave da explosão grande por baixo, baixo, para pesar sem embolar.
+						AudioManager.play("kenney_explosion_big", 1.1, 0.06, -13.0)
+					_shake = maxf(_shake, 3.6 if big else 1.1)
+			if big:
 				Settings.vibrate(18, 0.45, 0)
 		&"hit":
 			AudioManager.play("hit", 1.0, 0.1, -16.0)
@@ -573,7 +628,8 @@ func _on_event(ev: Dictionary) -> void:
 			_on_power(ev)
 		&"power_charge":
 			var segments := clampi(int(ev.get("segments", 1)), 1, 3)
-			AudioManager.play("power_charge_%d" % segments, 1.0, 0.0, -4.0)
+			# Uma quarta abaixo (o acorde maior continua, agora Sol-Si-Ré) e mais baixo: no meio dos glifos não fura.
+			AudioManager.play("power_charge_%d" % segments, 0.75, 0.0, -7.0)
 			_hud.power_button().charged(segments)
 			if segments >= 3:
 				Settings.vibrate(20, 0.4, 0)
@@ -607,7 +663,7 @@ func _on_event(ev: Dictionary) -> void:
 			if not String(ev.get("dialogue", "")).is_empty():
 				_hud.show_radio(String(ev["dialogue"]))
 		&"boss_part":
-			AudioManager.play("kenney_explosion_medium")
+			_boss_part_sound()
 			_shake = maxf(_shake, 4.0)
 			_screen.shockwave(ev["pos"], 0.015)
 			_hitstop_for(HITSTOP_PART)
@@ -615,8 +671,7 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_beam")
 			_hud.show_banner(tr("hud.duel"))
 		&"boss_dead":
-			AudioManager.play("kenney_explosion_big")
-			AudioManager.play("faxcorp_deathboom", 1.0, 0.0, -3.0)
+			_boss_dead_sound()
 			if not bool(ev.get("final", false)) and AudioManager.music_id() == MID_BOSS_MUSIC:
 				AudioManager.play_music(String(sim.mission.get("music", "")))
 			Settings.vibrate(150, -1.0, 2)
@@ -630,10 +685,11 @@ func _on_event(ev: Dictionary) -> void:
 		&"dialogue":
 			_hud.show_radio(String(ev.get("id", "")))
 		&"blessing_offer":
-			AudioManager.play("kenney_weapon_up", 0.8)
+			# Oferta de bênção: sino quente (o kenney_weapon_up a 0,8 era agudo demais, mesmo baixo por cima).
+			AudioManager.play("kenney_ascend_bell", 1.0, 0.0, -3.0)
 			_hud.show_offer(sim)
 		&"blessing":
-			AudioManager.play("kenney_ui_confirm")
+			AudioManager.play("kenney_ui_confirm", 0.9, 0.0, -3.0)
 			_hud.hide_offer()
 			var def: Dictionary = (sim.tables["blessings"] as Dictionary).get(StringName(ev["id"]), {})
 			_hud.show_banner(tr(String(def.get("name_key", ""))))
@@ -657,7 +713,10 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_medal", 0.8)
 			_hud.show_radio_text(tr("hud.log_found"), UiTheme.CYAN)
 		&"glyph":
-			AudioManager.play("kenney_orb", 0.7 + 0.15 * float(ev.get("index", 0)))
+			# Glifo: degrau curto que sobe sem passar do tom original, com o sino quente por baixo.
+			var step := float(ev.get("index", 0))
+			AudioManager.play("kenney_orb", 0.6 + 0.05 * step, 0.0, -6.0)
+			AudioManager.play("kenney_ascend_bell", 0.8 + 0.05 * step, 0.0, -9.0)
 			_hud.show_radio_text(tr("hud.glyph") % [int(ev["index"]) + 1, int(ev["of"])], UiTheme.GOLD)
 		&"glyph_reset":
 			AudioManager.play("kenney_hit", 0.6)
@@ -696,9 +755,12 @@ func _on_event(ev: Dictionary) -> void:
 		&"outro":
 			_hud.fade_actions()
 		&"outro_rise":
-			# Arrancada: a investida do Falcon, mais grave (som que já existe; nada novo baixado).
-			AudioManager.play("power_falcon_1", 0.8, 0.0, -2.0)
-			Settings.vibrate(40, 0.4, 0)
+			# Arrancada: o jato liga (turbina, ignição e pós-combustor, tools/mix_power_audio.py) e a mão sente o
+			# empuxo crescer até a ignição.
+			AudioManager.play_priority("outro_afterburner", 1.0, 0.0, -3.0)
+			Settings.vibrate(30, 0.2, 1)
+			_world.fx.later(0.15, Settings.vibrate.bind(40, 0.35, 1))
+			_world.fx.later(0.3, Settings.vibrate.bind(90, 0.55, 1))
 		&"finished":
 			if not bool(ev.get("cleared", false)):
 				AudioManager.play_music("kenney_jingle_defeat", 0.3)

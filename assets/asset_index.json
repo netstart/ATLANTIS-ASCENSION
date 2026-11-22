@@ -1842,6 +1842,12 @@
   "sha256": "27f86c9b5b450c26be139b7af5483fd6c43169fe20d27a2818c72eba07360845"
  },
  {
+  "file": "assets/audio/sfx/outro_afterburner.ogg",
+  "source": "atlantis-mix/powers/outro_afterburner.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "c80409b37cdba95ef2eb0b3a88cff3653ca4abf46c30ce1c5e2cbcdb3c5be79d"
+ },
+ {
   "file": "assets/audio/sfx/power_ascension_1.ogg",
   "source": "atlantis-mix/powers/power_ascension_1.ogg",
   "license_id": "atlantis_power_sfx",

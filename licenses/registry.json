@@ -1282,7 +1282,8 @@
     "ai_generated": false,
     "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada",
     "files": [
-      "assets/audio/sfx/power_*"
+      "assets/audio/sfx/power_*",
+      "assets/audio/sfx/outro_afterburner.ogg"
     ],
     "verified_at": "2026-11-02",
     "verified_by": "Claude (poderes das naves 1.16.0); revisão final por Clayton antes do lançamento",

@@ -2,11 +2,16 @@ class_name CombatFx
 extends RefCounted
 ## Receitas de efeito da partida (.ai/06-pesquisa-efeitos-visuais.md): o que cada acontecimento da Sim
 ## vira na tela. Explosão em camadas (clarão, bolas de fogo, faíscas, fumaça, estilhaços, onda de
-## choque), impacto do tiro, boca do canhão, coleta, splash na água, destroços que caem até o chão
-## (2,5D), cancelamento de balas em ondas e números de pontos. Duas camadas de partículas: `light`
+## choque), impacto do tiro, boca do canhão, coleta, cancelamento de balas em ondas, números de pontos e
+## as mortes dos inimigos (`blast`, e em `wrecks` a queda até o mar ou o chão e o derretimento no lugar).
+## Duas camadas de partículas: `light`
 ## (aditiva, linear: tudo que brilha) e `matter` (normal, pixel art: fumaça e estilhaços).
 ## Só visual: a semente própria dá variedade; qualidade gráfica e "reduzir flashes" mudam a dose,
 ## nunca a partida.
+
+## Uma morte terminou: a queda bateu no mar (`water`) ou no chão (`solid`), ou o derretimento estourou
+## (`pop`). O WorldView põe o anel e a Game toca o som e treme a tela.
+signal landed(at: Vector2, big: bool, kind: StringName)
 
 # Texturas da camada de luz e da de matéria (índices de ParticleField.spawn).
 const FLARE := 0
@@ -24,7 +29,25 @@ const SMOKE_START := Color(0.2, 0.22, 0.26, 0.75)
 const SMOKE_END := Color(0.12, 0.14, 0.18, 0.0)
 const MAX_POPUPS := 14
 const MAX_WRECKS := 24
-const WRECK_TIME := 0.75
+## Morte que cai (pega fogo, gira e encolhe até a sombra, 2,5D) e morte que derrete no lugar (o sprite
+## escorre com a borda em brasa: shaders/sprite_melt.gdshader). Durações em s, pequeno e grande.
+const FALL := &"fall"
+const MELT := &"melt"
+const FALL_TIME := 1.0
+const FALL_TIME_BIG := 1.3
+const MELT_TIME := 0.8
+const MELT_TIME_BIG := 1.1
+## Intervalo (s) entre as levas de fogo da queda e de pingos do derretimento, por qualidade.
+const TRAIL_STEP: Array[float] = [0.1, 0.05, 0.034]
+const WATER := &"water"
+const SOLID := &"solid"
+const NONE := &"none"
+const POP := &"pop"
+## Estilos de morte (WorldView.kill_fx) e pesos (em 100) de explosão, derretimento e queda: os grandes
+## preferem os mais vistosos.
+const EXPLODE := &"explode"
+const DEATH_WEIGHTS_SMALL: Array[int] = [40, 25, 35]
+const DEATH_WEIGHTS_BIG: Array[int] = [45, 10, 45]
 ## Ondas de cancelamento: balas que somem por ordem de distância, até este atraso (s).
 const CANCEL_SPREAD := 0.45
 
@@ -33,13 +56,16 @@ var matter: ParticleField
 ## 0 = mínimo, 1 = normal, 2 = completo (GfxQuality "weapon_fx").
 var level: int = 2
 var reduce_flashes: bool = false
-## Cenário com chão ou água (destroços caem e espirram); falso no espaço.
+## Cenário com chão (há sombra); falso no espaço.
 var ground: bool = true
+## Bolhas de quem sobe do fundo.
 var water: bool = true
+## Onde cai o inimigo abatido: WATER, SOLID ou NONE (sem queda). OceanBackdrop "floor".
+var surface: StringName = WATER
 var foam := Color(0.7, 0.95, 1.0)
 ## Números de pontos: {pos, text, t, color}.
 var popups: Array[Dictionary] = []
-## Destroços caindo para o chão: {tex, size, pos, to, t, spin, scale}.
+## Mortes em curso: {tex, size, pos, from, to, t, time, mode, big, spin, scale, emit}.
 var wrecks: Array[Dictionary] = []
 
 var _rng := RandomNumberGenerator.new()
@@ -172,17 +198,6 @@ func damage_smoke(at: Vector2) -> void:
 		light.spawn(FLARE, at, Vector2(0, 20), 0.12, 0.12, 0.04, Color(1.0, 0.55, 0.2, 0.7), Color(1, 0.2, 0, 0))
 
 
-## Espirro na água (ou poeira no chão) onde um destroço cai.
-func splash(at: Vector2) -> void:
-	var col := foam if water else Color(0.55, 0.5, 0.45)
-	for k: int in range(3 + level * 2):
-		var v := _dir() * _rng.randf_range(20.0, 60.0)
-		if water:
-			light.spawn(SPARKLE, at, v, _rng.randf_range(0.3, 0.5), 1.0, 0.3, Color(col, 0.8), Color(col, 0.0), 3.0)
-		else:
-			matter.spawn(SMOKE, at, v * 0.5, _rng.randf_range(0.4, 0.7), 0.3, 0.8, Color(col, 0.5), Color(col, 0.0), 2.0)
-
-
 ## Bolhas de quem sobe do fundo do mar.
 func bubbles(at: Vector2) -> void:
 	light.spawn(SPARKLE, at + Vector2(_rng.randf_range(-8, 8), _rng.randf_range(-4, 4)),
@@ -213,12 +228,67 @@ func popup(at: Vector2, points: int, tint: Color) -> void:
 	popups.append({"pos": at, "text": "+%d" % points, "t": 0.0, "color": tint})
 
 
-## Destroço: a nave abatida cai girando até a sombra, encolhendo e escurecendo; espirra no fim.
-func wreck(tex: Texture2D, size: int, at: Vector2, to: Vector2, scale: float) -> void:
-	if tex == null or not ground or wrecks.size() >= MAX_WRECKS:
-		return
-	wrecks.append({"tex": tex, "size": size, "pos": at, "from": at, "to": to, "t": 0.0, "scale": scale,
-			"spin": _rng.randf_range(-3.0, 3.0)})
+## Explosão de morte reforçada: a explosão em camadas maior, brasas que ficam no ar, fumaça baixa que
+## demora a sumir (alfa baixo: não esconde bala) e estouros secundários em volta.
+func blast(at: Vector2, big: bool) -> void:
+	var tier := 2.1 if big else 1.3
+	explosion(at, tier)
+	var embers := int((2 + level * 3) * (1.6 if big else 1.0))
+	for k: int in range(embers):
+		light.spawn(SPARKLE, at + _dir() * _rng.randf_range(0.0, 8.0) * tier,
+				_dir() * _rng.randf_range(15.0, 45.0) * tier + Vector2(0, -10), _rng.randf_range(0.7, 1.3),
+				_rng.randf_range(0.8, 1.2), 0.2, Color(1.0, 0.75, 0.35, 0.9), Color(1.0, 0.25, 0.05, 0.0), 1.8,
+				Vector2(0, -12))
+	if level >= 1:
+		for k: int in range(1 + level):
+			matter.spawn(SMOKE, at + _dir() * _rng.randf_range(0.0, 8.0) * tier, _dir() * _rng.randf_range(4.0, 12.0),
+					_rng.randf_range(1.2, 1.8), 0.7 * tier, 1.8 * tier, Color(SMOKE_START, 0.35), SMOKE_END, 1.2,
+					Vector2(0, 10), _rng.randf() * TAU, _rng.randf_range(-0.6, 0.6))
+	if big or level >= 2:
+		later(0.09, explosion.bind(at + _dir() * _rng.randf_range(6.0, 12.0) * tier, tier * 0.45))
+	if big:
+		later(0.2, explosion.bind(at + _dir() * _rng.randf_range(8.0, 16.0) * tier, tier * 0.4))
+
+
+## Estilo de morte pelo sorteio `roll` (do lado do desenho): pesos por tamanho; sem chão nem mar a queda
+## vira explosão (grandes) ou derretimento; os especiais (glifo) só explodem.
+static func death_style(roll: int, big: bool, surface: StringName, special: bool) -> StringName:
+	if special:
+		return EXPLODE
+	var w := DEATH_WEIGHTS_BIG if big else DEATH_WEIGHTS_SMALL
+	var r := posmod(roll, 100)
+	var style := EXPLODE if r < w[0] else (MELT if r < w[0] + w[1] else FALL)
+	if style == FALL and surface == NONE:
+		style = EXPLODE if big or posmod(roll / 100, 2) == 0 else MELT
+	return style
+
+
+## Morte que cai (FALL) ou derrete (MELT). A queda vai de `at` a `to` (a sombra, 2,5D) e só existe com
+## chão ou mar embaixo; o derretimento fica em `at`. Devolve falso se não coube (teto, sem chão, sem
+## textura): quem chamou explode no lugar.
+func wreck(tex: Texture2D, size: int, at: Vector2, to: Vector2, scale: float, mode: StringName = FALL,
+		big: bool = false) -> bool:
+	if tex == null or wrecks.size() >= MAX_WRECKS or (mode == FALL and surface == NONE):
+		return false
+	var time := (FALL_TIME_BIG if big else FALL_TIME) if mode == FALL else (MELT_TIME_BIG if big else MELT_TIME)
+	var spin := _rng.randf_range(3.0, 6.0) * (1.0 if _rng.randf() < 0.5 else -1.0) if mode == FALL else 0.0
+	wrecks.append({"tex": tex, "size": size, "pos": at, "from": at, "to": to, "t": 0.0, "time": time,
+			"mode": mode, "big": big, "scale": scale, "emit": 0.0, "spin": spin})
+	if mode == FALL:
+		# Pega fogo: um estouro curto onde foi atingido, antes de cair.
+		explosion(at, 0.55 if big else 0.4)
+	return true
+
+
+## Fração (0..1) de uma morte em curso.
+static func wreck_progress(w: Dictionary) -> float:
+	return minf(1.0, float(w["t"]) / float(w["time"]))
+
+
+## Raio visual (px) de uma morte em curso, já com o encolhimento da queda.
+static func wreck_radius(w: Dictionary) -> float:
+	var shrink := lerpf(1.0, 0.35, wreck_progress(w)) if StringName(w["mode"]) == FALL else 1.0
+	return float(w["size"]) * float(w["scale"]) * 0.5 * shrink
 
 
 func _age_popups(delta: float) -> void:
@@ -233,16 +303,114 @@ func _age_popups(delta: float) -> void:
 
 
 func _age_wrecks(delta: float) -> void:
+	var done: Array[Dictionary] = []
+	var step := TRAIL_STEP[clampi(level, 0, 2)]
 	var i := wrecks.size() - 1
 	while i >= 0:
 		var w := wrecks[i]
 		w["t"] = float(w["t"]) + delta
-		var u := minf(1.0, float(w["t"]) / WRECK_TIME)
-		w["pos"] = (w["from"] as Vector2).lerp(w["to"], u * u)
+		var u := wreck_progress(w)
+		var fall := StringName(w["mode"]) == FALL
+		if fall:
+			w["pos"] = (w["from"] as Vector2).lerp(w["to"], u * u)
+		w["emit"] = float(w["emit"]) + delta
+		while float(w["emit"]) >= step:
+			w["emit"] = float(w["emit"]) - step
+			if fall:
+				_burn(w, u)
+			else:
+				_drip(w, u)
 		if u >= 1.0:
-			splash(w["pos"])
+			done.append(w)
 			wrecks.remove_at(i)
 		i -= 1
+	# O aviso sai depois do laço: quem ouve pode mexer nos efeitos sem atrapalhar a contagem.
+	for w: Dictionary in done:
+		var at: Vector2 = w["pos"]
+		var big := bool(w["big"])
+		if StringName(w["mode"]) == MELT:
+			explosion(at, 0.9 if big else 0.55, Color(1.0, 0.7, 0.3, 0.9))
+			landed.emit(at, big, POP)
+		elif surface == WATER:
+			_land_water(at, big)
+			landed.emit(at, big, WATER)
+		else:
+			_land_ground(at, big)
+			landed.emit(at, big, SOLID)
+
+
+## Rastro da queda: fogo (luz) e fumaça (matéria, alfa baixo) que ficam para trás.
+func _burn(w: Dictionary, u: float) -> void:
+	var at: Vector2 = w["pos"]
+	var r := wreck_radius(w)
+	var k := r / 14.0
+	for n: int in range(1 + mini(level, 1)):
+		light.spawn(FLARE, at + _dir() * r * 0.35, Vector2(_rng.randf_range(-8, 8), _rng.randf_range(-20, -6)),
+				_rng.randf_range(0.3, 0.45), _rng.randf_range(0.22, 0.32) * k, 0.06, FIRE, EMBER, 2.0)
+	if level >= 1 and _rng.randf() < 0.6:
+		matter.spawn(SMOKE, at + _dir() * r * 0.3, Vector2(_rng.randf_range(-6, 6), _rng.randf_range(-14, -4)),
+				_rng.randf_range(0.6, 0.9), 0.35 * k + 0.2, 0.9 * k + 0.4, Color(SMOKE_START, 0.4 * (1.0 - u * 0.5)),
+				SMOKE_END, 1.0, Vector2.ZERO, _rng.randf() * TAU, _rng.randf_range(-1.0, 1.0))
+	if level >= 2 and _rng.randf() < 0.3:
+		light.spawn(STREAK, at, _dir() * _rng.randf_range(40.0, 90.0), _rng.randf_range(0.15, 0.25), 0.6, 0.2,
+				Color(1.0, 0.85, 0.5), Color(1.0, 0.4, 0.1, 0.0), 5.0, Vector2.ZERO, 0.0, 0.0, true)
+
+
+## Derretimento: o calor sobre o sprite, pingos em brasa que caem da borda de baixo e brasas que sobem.
+func _drip(w: Dictionary, u: float) -> void:
+	var at: Vector2 = w["pos"]
+	var r := wreck_radius(w)
+	var flash := 0.6 if reduce_flashes else 1.0
+	light.spawn(FLARE, at, Vector2.ZERO, 0.1, r / 26.0, r / 30.0, Color(1.0, 0.5, 0.2, 0.3 * u * flash),
+			Color(1.0, 0.3, 0.1, 0.0))
+	var x := _rng.randf_range(-0.7, 0.7) * r * (1.0 - u * 0.4)
+	light.spawn(FLARE, at + Vector2(x, r * (0.5 + 0.3 * u)), Vector2(0, _rng.randf_range(10.0, 30.0)),
+			_rng.randf_range(0.35, 0.55), _rng.randf_range(0.09, 0.13), 0.04, Color(1.0, 0.75, 0.35, 0.95),
+			Color(0.9, 0.2, 0.05, 0.0), 0.5, Vector2(0, 220))
+	if level >= 1 and _rng.randf() < 0.5:
+		light.spawn(SPARKLE, at + Vector2(_rng.randf_range(-0.6, 0.6) * r, _rng.randf_range(-0.2, 0.4) * r),
+				Vector2(_rng.randf_range(-10, 10), _rng.randf_range(-35, -15)), _rng.randf_range(0.5, 0.8), 0.8, 0.2,
+				Color(1.0, 0.8, 0.4), Color(1.0, 0.3, 0.0, 0.0), 1.0)
+
+
+## Queda no mar: coluna d'água, espuma e, logo depois, a explosão abafada lá embaixo com bolhas subindo.
+func _land_water(at: Vector2, big: bool) -> void:
+	var m := 1.5 if big else 1.0
+	for k: int in range(int((5 + level * 4) * m)):
+		light.spawn(SPARKLE, at + Vector2(_rng.randf_range(-4, 4), 0) * m,
+				Vector2(_rng.randf_range(-30, 30), _rng.randf_range(-190, -90)) * sqrt(m), _rng.randf_range(0.5, 0.75),
+				_rng.randf_range(1.4, 2.0), 0.5, Color(foam, 0.95), Color(foam, 0.0), 1.0, Vector2(0, 320))
+	for k: int in range(int((4 + level * 2) * m)):
+		var d := _dir()
+		light.spawn(STREAK, at, Vector2(d.x, d.y * 0.5) * _rng.randf_range(40.0, 90.0) * m, _rng.randf_range(0.2, 0.35),
+				0.6, 0.2, Color(foam, 0.8), Color(foam, 0.0), 4.0, Vector2.ZERO, 0.0, 0.0, true)
+	light.spawn(FLARE, at, Vector2.ZERO, 0.5, 0.4 * m, 1.2 * m, Color(foam, 0.6 if reduce_flashes else 0.8),
+			Color(foam, 0.0))
+	later(0.12, _underwater.bind(at, m))
+
+
+func _underwater(at: Vector2, m: float) -> void:
+	light.spawn(FLARE, at, Vector2.ZERO, 0.35, 0.6 * m, 1.0 * m, Color(1.0, 0.55, 0.25, 0.35), Color(foam, 0.0))
+	for k: int in range(int((4 + level * 3) * m)):
+		light.spawn(SPARKLE, at + _dir() * _rng.randf_range(0.0, 8.0) * m,
+				Vector2(_rng.randf_range(-12, 12), _rng.randf_range(-40, -15)), _rng.randf_range(0.6, 1.0), 0.7, 0.3,
+				Color(foam, 0.6), Color(foam, 0.0), 0.5)
+
+
+## Queda no chão: explosão, marca queimada, estilhaços e poeira em anel achatado (2,5D).
+func _land_ground(at: Vector2, big: bool) -> void:
+	var m := 1.5 if big else 1.0
+	explosion(at, 1.6 if big else 1.0)
+	matter.spawn(SMOKE, at, Vector2.ZERO, 1.0, 1.0 * m, 1.4 * m, Color(0.08, 0.06, 0.05, 0.35),
+			Color(0.08, 0.06, 0.05, 0.0), 0.0, Vector2.ZERO, _rng.randf() * TAU)
+	for k: int in range(int((3 + level * 2) * m)):
+		matter.spawn(DEBRIS, at, _dir() * _rng.randf_range(40.0, 110.0) * m, _rng.randf_range(0.5, 0.8),
+				_rng.randf_range(0.8, 1.3), 0.4, Color(0.6, 0.5, 0.45), Color(0.3, 0.25, 0.2, 0.0), 2.5,
+				Vector2(0, 40), _rng.randf() * TAU, _rng.randf_range(-10.0, 10.0))
+	for k: int in range(int((4 + level * 2) * m)):
+		var d := _dir()
+		matter.spawn(SMOKE, at, Vector2(d.x, d.y * 0.6) * _rng.randf_range(25.0, 45.0) * m, _rng.randf_range(0.5, 0.7),
+				0.3, 0.8, Color(0.55, 0.5, 0.45, 0.4), Color(0.55, 0.5, 0.45, 0.0), 2.0)
 
 
 func _dir() -> Vector2:

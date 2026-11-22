@@ -511,3 +511,18 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   na cadência (±10%) e hangar +3% de dano por nível (era +4%). Replays antigos seguem as regras da revisão deles.
   Meta e medição no plano mestre 4.7; `tests/boss_timing.gd` ganhou `--seeds`, `--diff`, `--hangar` e resumo por
   capítulo
+- ✅ Mortes de inimigo vistosas e variadas (só vista, hash igual): três estilos sorteados no desenho
+  (`CombatFx.death_style`, hash da contagem de mortes, do lugar e do sprite; pesos 40/25/35, e 45/10/45 nos grandes):
+  explosão reforçada (clarão, bola de fogo maior, dois anéis, brasas, fumaça baixa e estouros secundários),
+  derretimento no lugar (`shaders/sprite_melt.gdshader`: colunas escorrem, frente de dissolução com borda em brasa,
+  pingos e brasas, estouro no fim) e queda em chamas girando até a sombra (rastro de fogo e fumaça), que bate no mar
+  (coluna d'água, espuma, explosão abafada com bolhas) ou no chão (explosão, marca, estilhaços, poeira); no espaço
+  (`floor: none` em stratosphere, orbit e core) a queda vira explosão ou derretimento. A queda generaliza o antigo
+  destroço (`CombatFx.wreck`, teto `MAX_WRECKS`); o aviso `landed` dá anel, som e tranco no impacto. Testes em
+  `tests/vfx_tests.gd` e `tests/death_view_tests.gd`; capturas com `game_shots_runner -- --deaths --mission=c1m1`
+- ✅ Som: glifo e bênção mais quentes (glifo `kenney_orb` 0,6 + 0,05 por glifo, -6 dB, com `kenney_ascend_bell`;
+  oferta de bênção com o sino no lugar do `kenney_weapon_up` agudo; tons do medidor uma quarta abaixo, -7 dB).
+  Chefe sempre audível: `AudioManager.play_priority` (sem recarga nem limite por id, toma a voz mais antiga), parte
+  quebrada em camadas com cauda de destroços e morte com estouros no tempo da cadeia visual (`fx.later`) e o
+  estrondo final; mortes grandes com a explosão grande por baixo. Arrancada da saída (`outro_rise`) com o
+  `outro_afterburner` (turbina, ignição e pós-combustor, `tools/mix_power_audio.py`) e vibração em rampa

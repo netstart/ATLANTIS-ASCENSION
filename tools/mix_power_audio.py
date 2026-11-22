@@ -49,8 +49,9 @@ Entrada (fora do repositório, em D:\\src\\assets-downloaded):
   opengameart/electricity-sound-pack/charge.wav                   faxcorp, CC0: carga elétrica
 
 Saída: atlantis-mix/powers/power_<nave>_<nível>.ogg (36 arquivos), power_charge_{1,2,3}.ogg (segmento do medidor
-cheio: cristal em Dó, Mi e Sol, o terceiro com brilho) e power_empty.ogg (recusa suave). Tudo mono a 44,1 kHz, sem
-silêncio no começo, pico em -1 dBFS depois de um limitador com antevisão.
+cheio: cristal em Dó, Mi e Sol, o terceiro com brilho), power_empty.ogg (recusa suave) e outro_afterburner.ogg (a
+arrancada da nave na saída da fase, &"outro_rise": turbina, ignição e pós-combustor, só síntese). Tudo mono a
+44,1 kHz, sem silêncio no começo, pico em -1 dBFS depois de um limitador com antevisão.
 
 Requer numpy e soundfile (python -m pip install numpy soundfile); rode com o Python que os tem:
   python tools/mix_power_audio.py [--src DIR] [--only falcon_1,nova_3]
@@ -113,6 +114,8 @@ Resultado (duração, pico, RMS; nenhum arquivo com amostra cortada nem silênci
   power_charge_2.ogg        500  -1.0  -16.6  sino de cristal Mi6 + glass_005 + chirp
   power_charge_3.ogg        700  -1.2  -16.7  sino de cristal Sol6 + oitava + glass_006 + chirp + brilho
   power_empty.ogg           300  -1.1  -13.9  dois triângulos 392/294 Hz abafados
+  outro_afterburner.ogg    2179  -1.1  -14.1  turbina 160-620 Hz (agudos cortados em 2,4 kHz) + ignição 110-38 Hz +
+                                              pós-combustor (ruído 350-2600-500 Hz, efeito Doppler) + ronco 46 Hz
 """
 import argparse
 import pathlib
@@ -1106,6 +1109,37 @@ def empty(L) -> np.ndarray:
     return mix([(reverb(soft, 0.3, 0.12, 370), 0.0)], 300.0, 60.0, 1.0)
 
 
+# ---------------------------------------------------------------- saída da fase
+
+def afterburner(L) -> np.ndarray:
+    """Jato sendo ligado para ir mais rápido, no tempo da subida da saída (54 passos, 0,9 s, e a nave some no alto).
+
+    Turbina: duas serras que sobem de 160 a 620 Hz em 0,4 s, passa-baixa de 2,4 kHz para não ficar estridente, e
+    caem para 430 Hz enquanto a nave se afasta (Doppler). Ignição em 0,3 s: baque grave. Pós-combustor: ruído com
+    passa-baixa que abre de 350 Hz a 2,6 kHz na ignição e fecha para 500 Hz na saída, ronco de 46 Hz por baixo.
+    """
+    total = 2.2
+    t = times(total)
+    up = np.minimum(t / 0.4, 1.0)
+    away = np.clip((t - 0.8) / (total - 0.8), 0.0, 1.0)
+    pitch = 160.0 * (620.0 / 160.0) ** (up ** 0.7) * (430.0 / 620.0) ** away
+    whine = osc(pitch, total, "saw") + 0.5 * osc(pitch * 1.5, total, "saw", 0.3)
+    whine = svf(whine, 2400.0, 0.9) * (0.05 + 0.95 * up ** 1.5) * (1.0 - away) ** 1.4
+    lit = np.clip((t - 0.3) / 0.12, 0.0, 1.0)
+    cutoff = 350.0 + (2600.0 - 350.0) * lit
+    cutoff = cutoff * (500.0 / 2600.0) ** away
+    roar = svf(noise(total, 401), cutoff, 0.8) * (0.03 + 0.97 * lit) * (1.0 - away) ** 1.8
+    crackle_layer = fft_filter(crackle(total, 40.0, 402), lo=300.0, hi=3000.0) * lit * (1.0 - away) ** 2.5
+    rumble = osc(46.0 + 6.0 * lit, total) * (0.1 + 0.9 * lit) * (1.0 - away) ** 1.5
+    return mix([
+        (whine, -6.0),
+        (boom(0.7, 110.0, 38.0, 0.22, 403), -2.0, 0.3),
+        (roar, 0.0),
+        (crackle_layer, -14.0),
+        (rumble, -8.0),
+    ], total * 1000.0, 300.0, 3.0)
+
+
 # ---------------------------------------------------------------- principal
 
 SOUNDS = {
@@ -1123,7 +1157,10 @@ SOUNDS = {
     "ascension_1": ascension_1, "ascension_2": ascension_2, "ascension_3": ascension_3,
     "charge_1": lambda L: charge(L, 0), "charge_2": lambda L: charge(L, 1), "charge_3": lambda L: charge(L, 2),
     "empty": empty,
+    "afterburner": afterburner,
 }
+# Nome do arquivo de quem não segue power_<nome>.
+FILE_NAMES = {"afterburner": "outro_afterburner"}
 
 
 def main() -> int:
@@ -1138,9 +1175,10 @@ def main() -> int:
     wanted = [w for w in args.only.split(",") if w] or list(SOUNDS)
     failed = 0
     for name in wanted:
-        stats = write(out / f"power_{name}.ogg", SOUNDS[name](lib))
+        file = FILE_NAMES.get(name, f"power_{name}")
+        stats = write(out / f"{file}.ogg", SOUNDS[name](lib))
         if stats["clip"] or stats["onset_ms"] > 5.0 or stats["peak"] > -0.5 or not 250.0 <= stats["ms"] <= 2600.0:
-            print(f"  ERRO: power_{name}.ogg fora do padrão")
+            print(f"  ERRO: {file}.ogg fora do padrão")
             failed += 1
     return 1 if failed else 0
 

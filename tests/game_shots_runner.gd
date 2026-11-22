@@ -14,6 +14,11 @@ extends Node
 ## pedidas) e lança os Poderes I, II e III em CASTS segundos, gravando cada um no auge (PEAKS: passos depois
 ## do lançamento) em <pasta>/power_<id>_<passo>_<res>.png; antes do Poder III grava o medidor cheio
 ## (meter_<nave>_<res>.png). Entre os lançamentos a Corrente fica abaixo de 1 segmento (o bot não gasta).
+##
+## Mortes (CombatFx): `--deaths` no primeiro segundo de --at para a Sim e faz morrer, lado a lado, um inimigo em
+## cada estilo (explosão, derretimento, queda; em cima pequenos, embaixo grandes), gravando o meio de cada um em
+## DEATH_SHOTS segundos: <pasta>/deaths_<missão>_<ms>_<res>.png. Use --mission para o mar (c1m1), o chão (c4m1)
+## e o espaço (c8m1, onde a queda vira outro estilo).
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -37,6 +42,9 @@ const PEAKS := {
 }
 ## Segundos antes do Poder III em que a Corrente enche (o halo do nível III aparece na captura do medidor).
 const METER_LEAD := 1.0
+## Momentos (s depois das mortes) gravados no modo --deaths.
+const DEATH_SHOTS: Array[float] = [0.1, 0.3, 0.55, 0.85, 1.15, 1.45]
+const DEATH_STYLES: Array[StringName] = [CombatFx.EXPLODE, CombatFx.MELT, CombatFx.FALL]
 
 var _shots: Array[float] = []
 var _out: String = ""
@@ -61,6 +69,9 @@ var _cast_frame: int = -1
 var _pending: Array[Array] = []
 var _meter_done := false
 var _busy := false
+## Modo mortes: ligado, mortes já lançadas e o relógio desde elas.
+var _deaths := false
+var _deaths_t: float = -1.0
 
 
 func _ready() -> void:
@@ -101,6 +112,8 @@ func _ready() -> void:
 			_turbo = true
 		elif arg.begins_with("--paint="):
 			_paint = arg.trim_prefix("--paint=")
+		elif arg == "--deaths":
+			_deaths = true
 		elif arg == "--left":
 			Settings.set_value("handedness", "left")
 	if _shots.is_empty():
@@ -145,6 +158,9 @@ func _process(_delta: float) -> void:
 		return
 	if _shots.is_empty():
 		return
+	if _deaths:
+		_process_deaths(_delta)
+		return
 	if not _radio.is_empty() and _radio_at != _shots[0] and _game.sim.frame >= int((_shots[0] - 0.5) * 60.0):
 		_radio_at = _shots[0]
 		_game.hud().show_radio(_radio)
@@ -155,6 +171,34 @@ func _process(_delta: float) -> void:
 		await _capture("%s/game_%s_%s.png" % [_out, tag, _label])
 		if _shots.is_empty() or _game.sim.finished:
 			_quit()
+
+
+## Modo --deaths: no segundo pedido para a Sim (o desenho segue), mata um de cada estilo e grava os momentos.
+func _process_deaths(delta: float) -> void:
+	var world := _game.find_children("*", "WorldView", true, false)[0] as WorldView
+	if _deaths_t < 0.0:
+		if _game.sim.frame < int(_shots[0] * 60.0):
+			return
+		GameClock.paused = true
+		_deaths_t = 0.0
+		for k: int in range(DEATH_STYLES.size()):
+			world.kill_fx(Vector2(50 + 85 * k, 150), &"klaed_fighter", false, 100, DEATH_STYLES[k], 1.0, 0)
+			world.kill_fx(Vector2(50 + 85 * k, 290), &"nairan_frigate", true, 400, DEATH_STYLES[k], 1.0, 1)
+		return
+	_deaths_t += delta
+	var shots: Array[float] = []
+	shots.assign(DEATH_SHOTS)
+	var i := int(world.get_meta(&"death_shot", 0))
+	if i >= shots.size():
+		_quit()
+		return
+	if _deaths_t >= shots[i]:
+		world.set_meta(&"death_shot", i + 1)
+		_busy = true
+		await RenderingServer.frame_post_draw
+		get_viewport().get_texture().get_image().save_png("%s/deaths_%s_%04d_%s.png" % [_out, _mission,
+				int(shots[i] * 1000.0), _label])
+		_busy = false
 
 
 func _next_ship() -> void:

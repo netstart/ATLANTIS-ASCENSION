@@ -10,6 +10,10 @@ extends Node
 ## Variantes: um efeito sem arquivo próprio que tem `id_1`, `id_2`... (ex.: `hit` → hit_1..hit_5) toca uma
 ## delas a cada vez, sem repetir a anterior, para a rajada não soar como uma metralhadora de um som só.
 ## A escolha usa um gerador só do áudio, nunca o RNG da simulação (que é determinística por semente).
+##
+## Prioridade (`play_priority`): os sons do chefe (parte quebrada, morte) não passam pela recarga nem pelo
+## limite por id, e com o banco cheio tomam a voz que toca há mais tempo: a rajada de mortes comuns, que
+## usa os mesmos arquivos, nunca os cala.
 
 const MUSIC_DIR := "res://assets/audio/music/"
 const SFX_DIR := "res://assets/audio/sfx/"
@@ -87,7 +91,16 @@ func _make_player(bus: String) -> AudioStreamPlayer:
 	var player := AudioStreamPlayer.new()
 	player.bus = bus
 	add_child(player)
+	player.finished.connect(_release.bind(player))
 	return player
+
+
+## A voz acabou (ou foi tomada): desconta do id que ela tocava.
+func _release(player: AudioStreamPlayer) -> void:
+	var id := String(player.get_meta(&"id", ""))
+	if not id.is_empty():
+		_playing[id] = maxi(0, int(_playing.get(id, 1)) - 1)
+	player.set_meta(&"id", "")
 
 
 func apply_volumes() -> void:
@@ -145,16 +158,31 @@ func music_id() -> String:
 ## limite ou está em recarga. Limite e recarga contam por `id`, somando as variantes.
 func play(id: String, pitch: float = 1.0, pitch_jitter: float = 0.0, volume_db: float = 0.0,
 		bus: String = "SFX") -> bool:
+	return _play(id, pitch, pitch_jitter, volume_db, bus, false)
+
+
+## Som que não pode faltar (chefe): sem recarga nem limite por id; com o banco cheio, toma a voz mais
+## antiga que não seja outra prioritária.
+func play_priority(id: String, pitch: float = 1.0, pitch_jitter: float = 0.0, volume_db: float = 0.0) -> bool:
+	return _play(id, pitch, pitch_jitter, volume_db, "SFX", true)
+
+
+func _play(id: String, pitch: float, pitch_jitter: float, volume_db: float, bus: String, priority: bool) -> bool:
 	var now := Time.get_ticks_msec()
-	if now - int(_last_play_ms.get(id, -100000)) < SOUND_COOLDOWN_MS:
+	if not priority and now - int(_last_play_ms.get(id, -100000)) < SOUND_COOLDOWN_MS:
 		return false
-	if int(_playing.get(id, 0)) >= MAX_PER_SOUND:
+	if not priority and int(_playing.get(id, 0)) >= MAX_PER_SOUND:
 		return false
 	var ids := variants(id)
 	if ids.is_empty():
 		missing[id] = int(missing.get(id, 0)) + 1
 		return false
 	var player := _free_player()
+	if player == null and priority:
+		player = _oldest_player()
+		if player != null:
+			player.stop()
+			_release(player)
 	if player == null:
 		return false
 	_last_play_ms[id] = now
@@ -165,9 +193,10 @@ func play(id: String, pitch: float = 1.0, pitch_jitter: float = 0.0, volume_db: 
 	player.volume_db = volume_db
 	player.pitch_scale = pitch + randf_range(-pitch_jitter, pitch_jitter)
 	player.play()
+	player.set_meta(&"id", id)
+	player.set_meta(&"priority", priority)
+	player.set_meta(&"started", now)
 	_playing[id] = int(_playing.get(id, 0)) + 1
-	player.finished.connect(func() -> void: _playing[id] = maxi(0, int(_playing.get(id, 1)) - 1),
-			CONNECT_ONE_SHOT)
 	return true
 
 
@@ -295,6 +324,17 @@ func _free_player() -> AudioStreamPlayer:
 		if not player.playing:
 			return player
 	return null
+
+
+## A voz comum que toca há mais tempo (null se todas são prioritárias).
+func _oldest_player() -> AudioStreamPlayer:
+	var best: AudioStreamPlayer
+	for player: AudioStreamPlayer in _pool:
+		if bool(player.get_meta(&"priority", false)):
+			continue
+		if best == null or int(player.get_meta(&"started", 0)) < int(best.get_meta(&"started", 0)):
+			best = player
+	return best
 
 
 ## Trilhas de fase e de menu tocam em laço (o import padrão do Godot não repete); vinhetas não.

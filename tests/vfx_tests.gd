@@ -1,7 +1,7 @@
 extends RefCounted
 ## Testes dos efeitos visuais da partida (ParticleField, CombatFx e o EnergyStream do bico) e da luz dos
 ## menus (UiSpark, AbyssMotes, UiGlint), sem cena e sem autoloads.
-## Chamados por tests/run_tests.gd.
+## Chamados por tests/run_tests.gd (as mortes desenhadas pelo WorldView estão em tests/death_view_tests.gd).
 
 var _check: Callable
 
@@ -13,6 +13,8 @@ func run_unit(check: Callable) -> void:
 	_test_fx_budget()
 	_test_fx_schedule()
 	_test_fx_wrecks_and_popups()
+	_test_death_styles()
+	_test_death_style_pick()
 	_test_fx_repeatable()
 	_test_ui_spark()
 	_test_motes()
@@ -102,14 +104,15 @@ func _test_fx_schedule() -> void:
 func _test_fx_wrecks_and_popups() -> void:
 	var fx := _fx(2, 400, 200)
 	var tex := SpriteBank.generated("fx/drone")
-	fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0)
-	_check.call(fx.wrecks.size() == 1, "CombatFx: destroço cai")
-	fx.light.clear()
-	fx.advance(CombatFx.WRECK_TIME + 0.01)
-	_check.call(fx.wrecks.is_empty() and fx.light.count > 0, "CombatFx: destroço espirra na água ao chegar")
-	fx.ground = false
-	fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0)
-	_check.call(fx.wrecks.is_empty(), "CombatFx: no espaço não há destroço caindo")
+	fx.surface = CombatFx.NONE
+	_check.call(not fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0) and fx.wrecks.is_empty(),
+			"CombatFx: no espaço não há queda")
+	fx.surface = CombatFx.WATER
+	for k: int in range(CombatFx.MAX_WRECKS + 4):
+		fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0, CombatFx.MELT)
+	_check.call(fx.wrecks.size() == CombatFx.MAX_WRECKS, "CombatFx: mortes em curso com teto")
+	_check.call(not fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0), "CombatFx: morte que não cabe é recusada")
+	fx.clear()
 	for k: int in range(CombatFx.MAX_POPUPS + 5):
 		fx.popup(Vector2.ZERO, 100 + k, Color.WHITE)
 	_check.call(fx.popups.size() == CombatFx.MAX_POPUPS, "CombatFx: números de pontos limitados")
@@ -119,6 +122,78 @@ func _test_fx_wrecks_and_popups() -> void:
 	fx.advance(1.0)
 	_check.call(fx.popups.is_empty(), "CombatFx: números somem em 0,75 s")
 	_free(fx)
+
+
+## Cada estilo de morte (explosão, derretimento, queda no mar e no chão) anda, avisa o fim uma vez, no
+## estilo certo, e não deixa nada vivo: entradas, agendados e partículas somem dentro do tempo dele.
+func _test_death_styles() -> void:
+	var tex := SpriteBank.generated("fx/drone")
+	for level: int in range(3):
+		for case: Array in [[CombatFx.FALL, CombatFx.WATER, CombatFx.WATER], [CombatFx.FALL, CombatFx.SOLID, CombatFx.SOLID],
+				[CombatFx.MELT, CombatFx.NONE, CombatFx.POP], [CombatFx.MELT, CombatFx.WATER, CombatFx.POP]]:
+			for big: bool in [false, true]:
+				var fx := _fx(level, 1400, 600)
+				fx.surface = case[1]
+				var heard: Array = []
+				fx.landed.connect(func(at: Vector2, b: bool, kind: StringName) -> void: heard.append([at, b, kind]))
+				var label := "CombatFx: %s em %s (qualidade %d%s)" % [case[0], case[1], level, ", grande" if big else ""]
+				_check.call(fx.wreck(tex, 10, Vector2(100, 100), Vector2(110, 140), 1.0, case[0], big), label + " começa")
+				var time := float(fx.wrecks[0]["time"])
+				var t := 0.0
+				var peak := 0
+				while not fx.wrecks.is_empty() and t < 5.0:
+					fx.advance(1.0 / 60.0)
+					t += 1.0 / 60.0
+					peak = maxi(peak, fx.light.count + fx.matter.count)
+				_check.call(fx.wrecks.is_empty() and absf(t - time) < 0.05, label + " acaba no tempo (%.2f s)" % t)
+				_check.call(peak > 0, label + " tem rastro")
+				_check.call(heard.size() == 1 and heard[0][2] == case[2] and heard[0][1] == big,
+						label + " avisa o fim uma vez (%s)" % [heard])
+				if case[0] == CombatFx.FALL:
+					_check.call((heard[0][0] as Vector2).distance_to(Vector2(110, 140)) < 0.5, label + " bate na sombra")
+				_settle(fx)
+				_check.call(fx.light.count == 0 and fx.matter.count == 0 and fx.pending() == 0, label + " não deixa nada vivo")
+				_free(fx)
+	for level: int in range(3):
+		var fx := _fx(level, 1400, 600)
+		fx.blast(Vector2(100, 100), true)
+		var big_count := fx.light.count + fx.matter.count
+		_check.call(big_count > 0 and fx.pending() > 0,
+				"CombatFx: explosão reforçada com estouros depois (qualidade %d)" % level)
+		_settle(fx)
+		_check.call(fx.light.count == 0 and fx.matter.count == 0 and fx.pending() == 0,
+				"CombatFx: explosão reforçada não deixa nada vivo (qualidade %d)" % level)
+		_free(fx)
+
+
+## Sorteio do estilo: os três aparecem, os grandes preferem os vistosos, sem queda no espaço, glifo só explode.
+func _test_death_style_pick() -> void:
+	var small: Dictionary = {}
+	var big: Dictionary = {}
+	var space: Dictionary = {}
+	for roll: int in range(1000):
+		var a := CombatFx.death_style(roll * 7919, false, CombatFx.WATER, false)
+		small[a] = int(small.get(a, 0)) + 1
+		var b := CombatFx.death_style(roll * 7919, true, CombatFx.SOLID, false)
+		big[b] = int(big.get(b, 0)) + 1
+		var c := CombatFx.death_style(roll * 7919, roll % 2 == 0, CombatFx.NONE, false)
+		space[c] = int(space.get(c, 0)) + 1
+	_check.call(small.size() == 3 and big.size() == 3, "Mortes: os três estilos aparecem %s %s" % [small, big])
+	_check.call(int(big.get(CombatFx.MELT, 0)) < int(small.get(CombatFx.MELT, 0)) and
+			int(big.get(CombatFx.FALL, 0)) > int(small.get(CombatFx.FALL, 0)),
+			"Mortes: os grandes caem mais e derretem menos %s %s" % [small, big])
+	_check.call(not space.has(CombatFx.FALL) and space.has(CombatFx.MELT) and space.has(CombatFx.EXPLODE),
+			"Mortes: no espaço não há queda %s" % [space])
+	_check.call(CombatFx.death_style(42, false, CombatFx.WATER, true) == CombatFx.EXPLODE, "Mortes: o glifo só explode")
+	var first := CombatFx.death_style(1234, true, CombatFx.WATER, false)
+	var again := CombatFx.death_style(1234, true, CombatFx.WATER, false)
+	_check.call(first == again, "Mortes: mesmo sorteio, mesmo estilo")
+
+
+## Deixa os efeitos correrem até tudo apagar (4 s, folga sobre a vida mais longa).
+func _settle(fx: CombatFx) -> void:
+	for k: int in range(240):
+		fx.advance(1.0 / 60.0)
 
 
 ## Mesma sequência de acontecimentos, mesmo resultado (semente própria, nada global).

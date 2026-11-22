@@ -17,6 +17,9 @@ extends Node2D
 ## por inimigo atingido em EnemyPulses, sem tranco nos pequenos), legível mesmo sob tiro contínuo.
 ## A nave veste as peças do nível do hangar (ShipLivery, carga "ship_level"); na Ascendida (nível 10)
 ## deixa um rastro de centelhas de ouro.
+## Morte de inimigo em três estilos (kill_fx), sorteados aqui, nunca pela Sim: explosão reforçada,
+## derretimento no lugar (shaders/sprite_melt.gdshader) e queda girando em chamas até o mar (coluna d'água,
+## espuma, explosão abafada) ou o chão (explosão, marca, estilhaços). No espaço não há queda.
 
 const ANIM_FPS := 12.0
 const EXPLOSION_TIME := 0.6
@@ -55,6 +58,9 @@ const WAKE_LEN := 9
 ## Chefe avariado (fumaça e brasas) abaixo desta fração do HP; ferimentos em raios do corpo.
 const WOUNDED_HP := 0.3
 const WOUNDS: Array[Vector2] = [Vector2(-0.55, 0.1), Vector2(0.45, -0.25), Vector2(0.05, 0.4)]
+## Onde a queda termina: a sombra da nave (2,5D), um pouco mais longe e para o lado do giro.
+const FALL_DROP := Vector2(0, 58)
+const FALL_DRIFT := 10.0
 var dark: bool = false
 ## Paleta de daltonismo das balas inimigas (Settings "colorblind").
 var colorblind: String = "off"
@@ -70,6 +76,8 @@ var reduce_flashes: bool = false
 ## "Reduzir movimento": sem inclinação da nave nas curvas.
 var reduce_motion: bool = false
 var fx_level: int = 2
+## Estilo da última morte (kill_fx): a Game escolhe som e tranco por ele.
+var last_death: StringName = &""
 var explosions: Array[Dictionary] = []
 ## Anéis de choque: {pos, t, duration, radius, color}.
 var rings: Array[Dictionary] = []
@@ -143,11 +151,14 @@ var _sim_frame: int = -1
 ## Retorno de dano dos inimigos: um HitPulse por inimigo atingido, liberado quando ele sai.
 var _enemy_pulses := EnemyPulses.new()
 var _boss_pulse_idle := HitPulse.new()
+## Mortes vistas nesta partida (entra no sorteio do estilo, junto com o lugar e o sprite).
+var _kills: int = 0
 
 
 func setup(p_sim: Sim) -> void:
 	sim = p_sim
 	_enemy_pulses.clear()
+	_kills = 0
 	_glow = SpriteBank.generated("fx/glow_32")
 	_ring = SpriteBank.generated("fx/ring_32")
 	_flare = SpriteBank.generated("fx/flare_64")
@@ -192,12 +203,18 @@ func setup(p_sim: Sim) -> void:
 	fx.ground = bool(scenery.get("shadows", true))
 	fx.water = bool(scenery.get("bubbles", true)) and fx.ground
 	fx.foam = scenery["foam"]
+	fx.surface = StringName(String(scenery.get("floor", CombatFx.WATER))) if fx.ground else CombatFx.NONE
 	fx.setup(int(budget * 0.7), int(budget * 0.3))
+	if not fx.landed.is_connected(_on_landed):
+		fx.landed.connect(_on_landed)
 	_shadows = _Layer.new(self, _draw_shadows)
 	# No espaço não há chão para receber sombra.
 	_shadows.visible = fx.ground
 	add_child(_shadows)
 	_wrecks = _Layer.new(self, _draw_wrecks)
+	var melt := ShaderMaterial.new()
+	melt.shader = load("res://shaders/sprite_melt.gdshader") as Shader
+	_wrecks.material = melt
 	add_child(_wrecks)
 	_entities = _Layer.new(self, _draw_entities)
 	_entities.material = flash
@@ -301,14 +318,13 @@ func on_event(ev: Dictionary) -> void:
 		&"outro_rise":
 			_ring_at(at + Vector2(0, 14), 0.45, 36.0, Color(_exhaust, 0.9))
 		&"kill":
-			var ship := SpriteBank.ship(StringName(ev.get("sprite", "")))
+			var sprite := StringName(String(ev.get("sprite", "")))
 			var big := bool(ev.get("big", false))
-			explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
-					"size": ship["destruction_size"], "pos": at, "t": 0.0, "scale": 1.0, "duration": EXPLOSION_TIME})
-			fx.explosion(at, 1.7 if big else 1.0)
-			fx.wreck(ship["base"], ship["size"], at, at + SHADOW_OFFSET * 1.4, 1.0)
-			fx.popup(at, int(ev.get("points", 0)), UiTheme.GOLD if big else Color(1.0, 0.95, 0.82))
-			_ring_at(at, 0.35, 46.0 if big else 28.0, Color(1.0, 0.7, 0.4))
+			_kills += 1
+			var roll := absi(hash([_kills, int(at.x), int(at.y), String(sprite)]))
+			var style := CombatFx.death_style(roll, big, fx.surface, SpriteBank.SPECIAL.has(sprite))
+			var def: Dictionary = (sim.tables.get("enemies", {}) as Dictionary).get(StringName(String(ev.get("id", ""))), {})
+			kill_fx(at, sprite, big, int(ev.get("points", 0)), style, float(def.get("scale", 1.0)), roll)
 		&"hit":
 			# No ponto fraco do chefe as faíscas saem douradas: o jogador vê onde está acertando.
 			fx.impact(at, UiTheme.GOLD if _on_weak_point(at) else _weapon_tint())
@@ -378,6 +394,41 @@ func on_event(ev: Dictionary) -> void:
 			_on_power(ev, at)
 		&"power_blast":
 			_on_power_blast(ev, at)
+
+
+## Morte de um inimigo no estilo pedido (CombatFx.EXPLODE, MELT ou FALL); `scale` é a do inimigo.
+## Se a morte com sprite não couber (teto de CombatFx.MAX_WRECKS, sem chão), explode.
+func kill_fx(at: Vector2, sprite: StringName, big: bool, points: int, style: StringName, scale: float = 1.0,
+		roll: int = 0) -> void:
+	var ship := SpriteBank.ship(sprite)
+	var drift := FALL_DRIFT * (1.0 if roll % 2 == 0 else -1.0)
+	var to := at + SHADOW_OFFSET + FALL_DROP * (1.3 if big else 1.0) + Vector2(drift, 0)
+	if style != CombatFx.EXPLODE and not fx.wreck(ship["base"], ship["size"], at, to, scale, style, big):
+		style = CombatFx.EXPLODE
+	last_death = style
+	if style == CombatFx.EXPLODE:
+		explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
+				"size": ship["destruction_size"], "pos": at, "t": 0.0, "scale": 1.5 if big else 1.15,
+				"duration": EXPLOSION_TIME})
+		fx.blast(at, big)
+		_ring_at(at, 0.22, 34.0 if big else 20.0, Color(1.0, 0.95, 0.85))
+		_ring_at(at, 0.45, 64.0 if big else 38.0, Color(1.0, 0.65, 0.35))
+	elif style == CombatFx.FALL:
+		_ring_at(at, 0.25, 30.0 if big else 18.0, Color(1.0, 0.7, 0.4))
+	else:
+		_ring_at(at, 0.3, 26.0 if big else 16.0, Color(1.0, 0.5, 0.2))
+	fx.popup(at, points, UiTheme.GOLD if big else Color(1.0, 0.95, 0.82))
+
+
+## Fim de uma morte em curso (CombatFx.landed): o anel do impacto, na cor da água, da poeira ou da brasa.
+func _on_landed(at: Vector2, big: bool, kind: StringName) -> void:
+	match kind:
+		CombatFx.WATER:
+			_ring_at(at, 0.5, 40.0 if big else 26.0, Color(fx.foam, 0.8))
+		CombatFx.SOLID:
+			_ring_at(at, 0.4, 44.0 if big else 28.0, Color(1.0, 0.65, 0.35))
+		_:
+			_ring_at(at, 0.3, 30.0 if big else 20.0, Color(1.0, 0.6, 0.3))
 
 
 ## Poder lançado: clarão e anel na cor da nave, maiores a cada nível.
@@ -1033,16 +1084,23 @@ func _draw_power_add(ci: CanvasItem) -> void:
 	powers.draw_add(ci, sim)
 
 
-## Destroços caindo: a nave abatida gira, encolhe e escurece até a sombra no chão (CombatFx.wreck).
+## Mortes em curso (CombatFx.wreck). Queda: a nave gira, encolhe até a sombra e queima (avermelha e
+## escurece). Derretimento: no lugar, o progresso vai no alfa (2..3) para shaders/sprite_melt.gdshader.
 func _draw_wrecks(ci: CanvasItem) -> void:
 	for w: Dictionary in fx.wrecks:
-		var u := minf(1.0, float(w["t"]) / CombatFx.WRECK_TIME)
+		var u := CombatFx.wreck_progress(w)
 		var size: int = w["size"]
-		var s := float(w["scale"]) * lerpf(0.9, 0.4, u)
-		var shade := lerpf(0.55, 0.12, u)
-		ci.draw_set_transform(w["pos"], PI + float(w["spin"]) * float(w["t"]), Vector2(s, s))
-		ci.draw_texture_rect_region(w["tex"], Rect2(-size * 0.5, -size * 0.5, size, size), Rect2(0, 0, size, size),
-				Color(shade, shade * 1.05, shade * 1.15, 1.0 - u * 0.6))
+		var rect := Rect2(-size * 0.5, -size * 0.5, size, size)
+		if StringName(w["mode"]) == CombatFx.MELT:
+			var ms := float(w["scale"])
+			ci.draw_set_transform(w["pos"], PI, Vector2(ms, ms))
+			ci.draw_texture_rect_region(w["tex"], rect, Rect2(0, 0, size, size), Color(1, 1, 1, 2.0 + u))
+			continue
+		var s := float(w["scale"]) * lerpf(1.0, 0.35, u)
+		var burn := lerpf(1.0, 0.25, u)
+		ci.draw_set_transform(w["pos"], PI + float(w["spin"]) * float(w["t"]) * (0.4 + u), Vector2(s, s))
+		ci.draw_texture_rect_region(w["tex"], rect, Rect2(0, 0, size, size),
+				Color(burn, burn * 0.62, burn * 0.5, 1.0 - u * 0.3))
 	ci.draw_set_transform(Vector2.ZERO)
 
 
