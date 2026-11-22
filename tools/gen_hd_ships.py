@@ -18,15 +18,25 @@ Saída, no mesmo formato da série Void (SpriteBank só troca o caminho e a esca
   bocal (achado sozinho na borda de baixo do casco) para ser desenhada ATRÁS da nave.
 - player/<nome>_engine_boost.png: a mesma chama, mais longa e forte, para a nave acelerando para cima
   (o jogo já troca motor ocioso por motor em potência).
+- player/<nome>_glow.png: silhueta borrada e branca da nave, na METADE da resolução (1 texel por unidade, o
+  desenho é o mesmo: lado da base / 2), para o brilho de acento e o pulso de borda da evolução do hangar
+  (scripts/view/ship_livery.gd). Vem do contorno da arte, então tem a licença da nave.
 Grupos: player (os 12 do hangar, ids de data/ships.json) e klaed, nairan, nautolan (tipos de data/enemies.json).
 Escala: TEXELS_PER_UNIT texels por unidade lógica; a nave é desenhada com tamanho = lado da textura / 2.
 
 Grava em D:\\src\\assets-downloaded\\atlantis-mix\\ships (área de preparo, com sources.json) e em
 assets/art/hd/ (a menos que --staging-only). Determinístico: mesma entrada, mesmos bytes.
+
+Licenças sem manifesto em tools/*_assets.json: como tools/gen_portraits.py, o próprio gerador registra cada arquivo
+em assets/asset_index.json (origem tools/gen_hd_ships.py) com a entrada do autor da nave (LICENSE_IDS), e o
+tools/sync_assets.py preserva essas linhas. Manifesto não serviria: o arquivo final não é cópia do baixado (recorte,
+escala, acabamento e chama própria). Os .import das texturas HD ficam no repositório com mipmaps/generate=true
+(o jogo as desenha com filtro linear com mipmaps); arquivo novo precisa disso também (tests/sprite_bank_tests.gd).
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -96,6 +106,9 @@ class Spec:
     nozzles: list = field(default_factory=list)
     plume: float = 1.0  # multiplica o comprimento da chama
     despeckle: bool = False  # tira traços finos de 1–3 px (riscos de velocidade da Faction 7)
+    ## Clareia os meios-tons (gama) e acende uma borda fina na cor dada: casco quase preto some no mar escuro.
+    lift: float = 0.0
+    rim: tuple | None = None
     license: str = ""
 
 
@@ -123,8 +136,9 @@ PLAYER = [
 
 # Maré Negra (Kla'ed): preto e vermelho da Faction 5, preto e laranja da Faction 10 (aponta para a direita).
 KLAED = [
-    Spec("klaed", "scout", mv("f5", "F5S1.png"), KIND_UNITS["scout"], plume=1.4),
-    Spec("klaed", "fighter", mv("f5", "F5S2.png"), KIND_UNITS["fighter"], plume=1.4),
+    # Os dois menores da Faction 5 são quase pretos: meios-tons mais claros e borda vermelha fina (leitura no mar).
+    Spec("klaed", "scout", mv("f5", "F5S1.png"), KIND_UNITS["scout"], plume=1.4, lift=0.45, rim=(1.0, 0.36, 0.24)),
+    Spec("klaed", "fighter", mv("f5", "F5S2.png"), KIND_UNITS["fighter"], plume=1.4, lift=0.4, rim=(1.0, 0.36, 0.24)),
     Spec("klaed", "bomber", mv("f5", "F5S3.png"), KIND_UNITS["bomber"], plume=1.4),
     Spec("klaed", "support", mv("f10", "shuttlenoweps.png"), KIND_UNITS["support"], rotate=90),
     Spec("klaed", "torpedo", mv("f10", "cruiser.png"), KIND_UNITS["torpedo"], rotate=90),
@@ -165,6 +179,15 @@ LICENSES = {
     "Carlos Alface": "CC-BY-3.0",
     "W_K_Studio": "CC0-1.0",
 }
+## Entrada de licenses/registry.json de cada autor (linhas de assets/asset_index.json).
+LICENSE_IDS = {
+    "MillionthVector": "millionthvector_spaceships",
+    "Carlos Alface": "alface_xenis_spaceships",
+    "W_K_Studio": "wk_studio_alien_bugs",
+}
+SOURCE = "tools/gen_hd_ships.py"
+## Brilho da evolução: raio do borrão em unidades lógicas (o mesmo em texels: a textura tem 1 texel por unidade).
+GLOW_BLUR = 3.0
 
 
 def author_of(spec: Spec) -> str:
@@ -276,6 +299,15 @@ def finish(im: Image.Image, spec: Spec) -> Image.Image:
     edge = np.asarray(Image.fromarray((edge * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.6)))
     edge = edge.astype(np.float32) / 255.0 * a
     rgb = np.clip(rgb + edge[..., None] * np.array([0.55, 0.62, 0.7], np.float32) * 0.55, 0, 1)
+    if spec.lift > 0.0:
+        rgb = np.clip(rgb, 0, 1) ** (1.0 / (1.0 + spec.lift))
+    if spec.rim is not None:
+        # Borda de dentro, toda a volta, na cor do rim (1 texel e meio).
+        inner = np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3)))
+        band = np.clip(a - inner.astype(np.float32) / 255.0, 0, 1)
+        band = np.asarray(Image.fromarray((band * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.5)))
+        band = band.astype(np.float32) / 255.0 * a * 0.75
+        rgb = rgb + (np.array(spec.rim, np.float32) - rgb) * band[..., None]
     out = np.dstack([rgb, a])
     if spec.outline:
         grown = np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)))
@@ -426,6 +458,17 @@ def build(spec: Spec) -> dict:
     return {"spec": spec, "base": base, "strips": strips, "side": side, "ship": (w, h), "nozzles": placed}
 
 
+def glow(base: Image.Image) -> Image.Image:
+    """Silhueta branca borrada, na metade da resolução da base (1 texel por unidade lógica)."""
+    half = base.getchannel("A").resize((base.width // 2, base.height // 2), Image.Resampling.BOX)
+    a = half.filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(GLOW_BLUR))
+    # Reforça o miolo do borrão: o brilho aparece como auréola, não como névoa rala.
+    a = a.point(lambda v: min(255, round(v * 1.6)))
+    out = Image.new("RGBA", half.size, (255, 255, 255, 0))
+    out.putalpha(a)
+    return out
+
+
 def save_png(im: Image.Image, path: pathlib.Path) -> int:
     path.parent.mkdir(parents=True, exist_ok=True)
     im.save(path, optimize=True)
@@ -546,17 +589,23 @@ def main() -> int:
     ap.add_argument("--preview", type=pathlib.Path, help="pasta (fora de assets) para as folhas de revisão")
     ap.add_argument("--staging-only", action="store_true", help="não grava em assets/art/hd")
     args = ap.parse_args()
-    entries, total, table = [], 0, []
+    entries, total, table, rows = [], 0, [], []
     for spec in SPECS:
         e = build(spec)
         entries.append(e)
         files = {"base": e["base"], **e["strips"]}
+        if spec.group == "player":
+            files["glow"] = glow(e["base"])
+        author = author_of(spec)
         for label, im in files.items():
             rel = f"{spec.group}/{spec.name}_{label}.png"
             total += save_png(im, STAGING / rel)
             if not args.staging_only:
-                save_png(im, OUT / rel)
-        author = author_of(spec)
+                target = OUT / rel
+                save_png(im, target)
+                rows.append({"file": target.relative_to(ROOT).as_posix(), "source": SOURCE,
+                             "license_id": LICENSE_IDS[author],
+                             "sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
         table.append({
             "id": spec.name if spec.group == "player" else f"{spec.group}_{spec.name}",
             "group": spec.group, "source": spec.src, "cell": spec.cell, "rotate_ccw": spec.rotate,
@@ -567,6 +616,12 @@ def main() -> int:
         print(f"{table[-1]['id']:24s} {e['side']:4d}px  nave {e['ship'][0]}x{e['ship'][1]}  "
               f"bocais {len(e['nozzles'])}  <- {spec.src}")
     (STAGING / "sources.json").write_text(json.dumps(table, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    if rows:
+        index_path = ROOT / "assets" / "asset_index.json"
+        index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else []
+        index = [r for r in index if r.get("source") != SOURCE] + rows
+        index.sort(key=lambda item: item["file"])
+        index_path.write_text(json.dumps(index, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     print(f"total {total / 1024:.0f} KB em {len(SPECS)} naves")
     if args.preview:
         for p in preview(entries, args.preview):

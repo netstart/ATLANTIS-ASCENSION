@@ -1,0 +1,38 @@
+Alien bug and spider sprites by W_K_Studio (https://whiteknightstudios.itch.io), CC0 1.0
+Usados em Atlantis Ascension (assets/art/hd/nairan) por tools/gen_hd_ships.py.
+
+Title: 8 Top down Alien Bug Spider Sprites
+Author: W_K_Studio (itch.io account: whiteknightstudios)
+URL: https://whiteknightstudios.itch.io/8-alien-bug-spider-sprites
+Downloaded: 2026-11-22
+License (verbatim from the page's "More information" table): Asset license: Creative Commons Zero v1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Page also states: Content: No generative AI was used
+Files: Spiders.rar
+
+Title: Alien Bug Sprites
+Author: W_K_Studio (itch.io account: whiteknightstudios)
+URL: https://whiteknightstudios.itch.io/alien-bug-sprites
+Downloaded: 2026-11-22
+License (verbatim from the page's "More information" table): Asset license: Creative Commons Zero v1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Page also states: Content: No generative AI was used
+Files: My project (3).png
+
+Title: Top-down Alien Bug Sprites #2
+Author: W_K_Studio (itch.io account: whiteknightstudios)
+URL: https://whiteknightstudios.itch.io/top-down-alien-bug-sprites-2
+Downloaded: 2026-11-22
+License (verbatim from the page's "More information" table): Asset license: Creative Commons Zero v1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Page also states: Content: No generative AI was used
+Files: bugz.png, Bug Sheet.png
+
+Title: Top-down Alien Bug Sprites
+Author: W_K_Studio (itch.io account: whiteknightstudios)
+URL: https://whiteknightstudios.itch.io/top-down-bug-sprites
+Downloaded: 2026-11-22
+License (verbatim from the page's "More information" table): Asset license: Creative Commons Zero v1.0 Universal
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Page also states: Content: No generative AI was used
+Files: Bugs topdown.png

@@ -1,191 +1,224 @@
 class_name ShipLivery
 extends RefCounted
-## Evolução visual da aeronave pelo nível do hangar: cada nível acima do 1 acrescenta uma peça, e as
-## peças se acumulam até a nave Ascendida do nível 10. Só desenho: a Sim nunca lê isto, e a mesma
-## função pinta a nave na partida (WorldView) e nos menus (ListScreen.ShipView).
-##
-## A arte é de tools/gen_livery.py: camadas de 48x48 alinhadas pixel a pixel à nave Void, desenhadas
-## em (-24, -24) com o transform da nave já aplicado (inclinação e zoom valem para as peças também).
-## Cada peça tem uma família de cor, para funcionar com qualquer tinta ou pintura da loja:
-##   HULL   estrutura, tingida com a cor da nave (parece ter vindo de fábrica);
-##   ACCENT faixas, runas e lâminas, tingidas com o acento (cor oposta à da nave, sempre legível);
-##   METAL  oricalco, cristal e ouro com cor própria.
-## O que pisca ou brilha (luzes de navegação, cristal, chamas, halo) é desenhado aqui com a textura
-## de brilho; com "reduzir flashes" (`calm`) as luzes ficam acesas sem piscar.
+## Evolução visual da aeronave pelo nível do hangar (1.25, naves HD): luz por cima da arte, nunca peças coladas
+## no casco, então serve para qualquer nave do hangar. Um marco por nível do 2 ao 10 (data/livery.json "levels",
+## nome em livery.<id>), todos cumulativos:
+##   2 tuned_engine  a chama cresce e clareia com o nível (1,0 a 1,3x no nível 10; "flame");
+##   3 accent_glow   brilho da silhueta (player/<id>_glow.png) na cor de acento, mais forte a cada nível ("glow");
+##   4 afterburner   subindo, a nave troca a chama pela pluma de pós-combustão (engine_boost);
+##   5 stripes       divisas do esquadrão nas âncoras "stripe" (espelhadas);
+##   6 nav_lights    luzes de navegação nas pontas das asas ("wing") e estroboscópio na popa;
+##   7 aura          anel de maré respirando sob a nave;
+##   8 sensor        cristal aceso no nariz ("nose");
+##   9 runes         centelha que sobe pela espinha ("spine") e runas pulsando nela;
+##  10 trim          Ascendida: pulso de borda em ouro (o mesmo brilho da silhueta) e aura dourada; o WorldView
+##                  ainda deixa o rastro de centelhas de ouro.
+## Âncoras em fração da caixa opaca da base (SpriteBank.player "used"), por nave. Só desenho: a Sim nunca lê isto.
+## A mesma função pinta a nave na partida (ShipArt, WorldView) e nos menus (ListScreen.ShipView). Com "reduzir
+## flashes" (`calm`) o que pisca fica aceso, sem piscar.
 
-enum Layer { UNDER, OVER }
-enum Paint { HULL, ACCENT, METAL }
-
+const DATA := "res://data/livery.json"
 const PATH := "res://assets/art/generated/livery/%s.png"
-const SIZE := 48.0
-## Uma peça por nível, do 2 ao 10 (Economy.SHIP_MAX_LEVEL).
-const PARTS: Array[Dictionary] = [
-	{"id": &"stripes", "level": 2, "layer": Layer.OVER, "paint": Paint.ACCENT},
-	{"id": &"nav_lights", "level": 3, "layer": Layer.OVER, "paint": Paint.METAL},
-	{"id": &"canards", "level": 4, "layer": Layer.UNDER, "paint": Paint.HULL},
-	{"id": &"sensor", "level": 5, "layer": Layer.OVER, "paint": Paint.METAL},
-	{"id": &"armor", "level": 6, "layer": Layer.OVER, "paint": Paint.METAL},
-	{"id": &"thrusters", "level": 7, "layer": Layer.UNDER, "paint": Paint.HULL},
-	{"id": &"runes", "level": 8, "layer": Layer.OVER, "paint": Paint.ACCENT},
-	{"id": &"blades", "level": 9, "layer": Layer.UNDER, "paint": Paint.ACCENT},
-	{"id": &"trim", "level": 10, "layer": Layer.OVER, "paint": Paint.METAL},
-]
-## Pontos das peças animadas, em coordenadas da nave (centro em 0,0; nariz para cima).
-const NAV_LEFT := Vector2(-13.5, 6.5)
-const NAV_RIGHT := Vector2(13.5, 6.5)
-const STROBE := Vector2(0.0, 12.0)
-const SENSOR := Vector2(0.0, -16.5)
-const NOZZLES: Array[Vector2] = [Vector2(-12.0, 14.5), Vector2(12.0, 14.5)]
 const PORT := Color(1.0, 0.25, 0.3)
 const STARBOARD := Color(0.3, 1.0, 0.55)
 const CRYSTAL := Color(0.35, 0.95, 1.0)
-const FLAME := Color(1.0, 0.55, 0.2)
 const GOLD := Color(1.0, 0.84, 0.4)
-## Acento das naves brancas/pérola (sem matiz para opor): coral.
-const NEUTRAL_ACCENT := Color(1.0, 0.48, 0.43)
+## Acento sem dados (nave fora da tabela): ciano do jogo.
+const DEFAULT_ACCENT := Color(0.44, 0.91, 1.0)
+## Lado da divisa em unidades lógicas.
+const STRIPE := 6.0
 
+static var _data: Dictionary = {}
 static var _tex: Dictionary = {}
 static var _glow: Texture2D
 static var _ring: Texture2D
 
 
-## Peças acesas num nível (cumulativas).
+static func data() -> Dictionary:
+	if _data.is_empty():
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA))
+		_data = parsed if typeof(parsed) == TYPE_DICTIONARY else {"levels": [], "ships": {}}
+	return _data
+
+
+## Marcos em ordem de nível: [{id, level}].
+static func parts() -> Array:
+	return data().get("levels", [])
+
+
+## Marcos acesos num nível (cumulativos).
 static func parts_at(level: int) -> Array[StringName]:
 	var out: Array[StringName] = []
-	for p: Dictionary in PARTS:
+	for p: Dictionary in parts():
 		if int(p["level"]) <= level:
-			out.append(p["id"])
+			out.append(StringName(String(p["id"])))
 	return out
 
 
-## Peça que o próximo nível acrescenta ({} no máximo).
+## Marco que o próximo nível acrescenta ({} no máximo).
 static func next_part(level: int) -> Dictionary:
-	for p: Dictionary in PARTS:
+	for p: Dictionary in parts():
 		if int(p["level"]) > level:
-			return p
+			return {"id": StringName(String(p["id"])), "level": int(p["level"])}
 	return {}
 
 
-## Peça que chega exatamente neste nível (&"" no nível 1).
+## Marco que chega exatamente neste nível (&"" no nível 1).
 static func part_at(level: int) -> StringName:
-	for p: Dictionary in PARTS:
+	for p: Dictionary in parts():
 		if int(p["level"]) == level:
-			return p["id"]
+			return StringName(String(p["id"]))
 	return &""
 
 
-## Acento da nave: o matiz oposto ao da tinta, claro e saturado (lê contra o casco).
+## Nível em que um marco acende (99 se não existe).
+static func level_of(id: StringName) -> int:
+	for p: Dictionary in parts():
+		if StringName(String(p["id"])) == id:
+			return int(p["level"])
+	return 99
+
+
+static func has(level: int, id: StringName) -> bool:
+	return level >= level_of(id)
+
+
+## Âncoras de uma nave ({} fora da tabela).
+static func anchors(ship_id: StringName) -> Dictionary:
+	return (data().get("ships", {}) as Dictionary).get(String(ship_id), {})
+
+
+## Acento: a pintura equipada (clareada) ou a cor da nave na tabela.
+static func accent(ship_id: StringName, paint: Color = Color(0, 0, 0, 0)) -> Color:
+	if paint.a > 0.0:
+		return accent_of(paint)
+	return Color(String(anchors(ship_id).get("accent", DEFAULT_ACCENT.to_html())))
+
+
+## Acento de uma pintura: o matiz dela claro e saturado (as naves brancas/pérola ficam no ciano do jogo).
 static func accent_of(tint: Color) -> Color:
 	if tint.s < 0.15:
-		return NEUTRAL_ACCENT
-	return Color.from_hsv(fposmod(tint.h + 0.5, 1.0), 0.62, 1.0)
+		return DEFAULT_ACCENT
+	return Color.from_hsv(tint.h, 0.55, 1.0)
 
 
-static func texture(id: StringName) -> Texture2D:
+## Escala e brilho da chama no nível (1,0 no nível 1 até o máximo do "flame" no 10).
+static func flame(level: int) -> Vector2:
+	var f: Dictionary = data().get("flame", {})
+	var u := clampf(float(level - 1) / float(Economy.SHIP_MAX_LEVEL - 1), 0.0, 1.0)
+	var s: Array = f.get("scale", [1.0, 1.3])
+	var b: Array = f.get("bright", [1.0, 1.35])
+	return Vector2(lerpf(float(s[0]), float(s[1]), u), lerpf(float(b[0]), float(b[1]), u))
+
+
+## Opacidade do brilho de acento (0 antes do marco).
+static func glow_alpha(level: int) -> float:
+	var at := level_of(&"accent_glow")
+	if level < at:
+		return 0.0
+	var a: Array = (data().get("glow", {}) as Dictionary).get("alpha", [0.22, 0.55])
+	return lerpf(float(a[0]), float(a[1]), clampf(float(level - at) / float(Economy.SHIP_MAX_LEVEL - at), 0.0, 1.0))
+
+
+## Ponto de uma âncora (fração da caixa opaca) em unidades lógicas, com o centro da nave na origem.
+static func point(art: Dictionary, frac: Variant, mirror: bool = false) -> Vector2:
+	var used: Rect2 = art.get("used", Rect2(-12, -12, 24, 24))
+	var f := Vector2(float((frac as Array)[0]), float((frac as Array)[1]))
+	if mirror:
+		f.x = 1.0 - f.x
+	return used.position + used.size * f
+
+
+static func texture(id: String) -> Texture2D:
 	if not _tex.has(id):
 		_tex[id] = SpriteBank.texture(PATH % id)
 	return _tex[id]
 
 
-## Peças por baixo do casco (canards, propulsores e chamas, lâminas, halo). `thrust`: subindo.
-static func draw_under(ci: CanvasItem, level: int, tint: Color, time: float, alpha: float = 1.0,
-		thrust: bool = false, calm: bool = false) -> void:
+## Emblema de um marco (ladrilhos da Oficina).
+static func icon(id: StringName) -> Texture2D:
+	return texture("icon_" + String(id))
+
+
+## Por baixo do casco: aura, brilho de acento e o pulso de borda da Ascendida.
+static func draw_under(ci: CanvasItem, art: Dictionary, level: int, accent_color: Color, time: float,
+		alpha: float = 1.0, calm: bool = false) -> void:
 	if level < 2:
 		return
 	_load()
-	var accent := accent_of(tint)
-	if level >= 10:
-		# Halo de ouro respirando atrás da nave Ascendida.
-		var breathe := 0.5 + 0.5 * sin(time * 2.2)
-		_glow_at(ci, Vector2(0, 2), 2.1, Color(GOLD, (0.16 + 0.08 * breathe) * alpha))
-		_ring_at(ci, Vector2(0, 2), 1.45 + 0.05 * breathe, Color(GOLD, (0.22 + 0.12 * breathe) * alpha))
-	for p: Dictionary in PARTS:
-		if int(p["level"]) > level or p["layer"] != Layer.UNDER:
-			continue
-		var id: StringName = p["id"]
-		if id == &"blades":
-			var shimmer := 0.62 + 0.18 * sin(time * 5.0) if not calm else 0.72
-			ci.draw_texture(texture(id), Vector2(-SIZE, -SIZE) * 0.5, Color(accent, shimmer * alpha))
-			continue
-		if id == &"thrusters":
-			_flames(ci, time, alpha, thrust)
-		ci.draw_texture(texture(id), Vector2(-SIZE, -SIZE) * 0.5, _paint(p, tint, accent, alpha))
+	var used: Rect2 = art.get("used", Rect2(-12, -12, 24, 24))
+	var center := used.get_center()
+	var reach := maxf(used.size.x, used.size.y)
+	var breathe := 0.5 + 0.5 * sin(time * 2.2) if not calm else 0.6
+	var ascended := level >= Economy.SHIP_MAX_LEVEL
+	if has(level, &"aura"):
+		var col := GOLD if ascended else accent_color
+		_ring_at(ci, center, reach * (1.15 + 0.05 * breathe), Color(col, (0.28 + 0.14 * breathe) * alpha))
+		_glow_at(ci, center, reach * 1.2 / 32.0, Color(col, (0.08 + 0.05 * breathe) * alpha))
+	var glow: Texture2D = art.get("glow")
+	if glow == null:
+		return
+	var size := float(art.get("size", 48.0))
+	var rect := Rect2(-size * 0.5, -size * 0.5, size, size)
+	var a := glow_alpha(level)
+	if a > 0.0:
+		ci.draw_texture_rect(glow, rect, false, Color(accent_color, a * alpha))
+	if ascended:
+		# Pulso de borda: a silhueta um pouco maior, em ouro, batendo devagar.
+		var pulse := 0.5 + 0.5 * sin(time * 3.0) if not calm else 0.6
+		var grow := size * (1.06 + 0.04 * pulse)
+		ci.draw_texture_rect(glow, Rect2(-grow * 0.5, -grow * 0.5, grow, grow), false,
+				Color(GOLD, (0.35 + 0.35 * pulse) * alpha))
 
 
-## Peças por cima do casco (faixas, luzes, cristal, blindagem, runas, friso).
-static func draw_over(ci: CanvasItem, level: int, tint: Color, time: float, alpha: float = 1.0,
-		calm: bool = false) -> void:
+## Por cima do casco: divisas, luzes de navegação, cristal e runas.
+static func draw_over(ci: CanvasItem, art: Dictionary, level: int, accent_color: Color, time: float,
+		alpha: float = 1.0, calm: bool = false) -> void:
 	if level < 2:
 		return
 	_load()
-	var accent := accent_of(tint)
-	for p: Dictionary in PARTS:
-		if int(p["level"]) > level or p["layer"] != Layer.OVER:
-			continue
-		var id: StringName = p["id"]
-		var col := _paint(p, tint, accent, alpha)
-		if id == &"runes":
-			# Pulso lento e uma centelha que sobe pela espinha.
-			col.a *= 0.6 + 0.4 * (0.5 + 0.5 * sin(time * 3.0)) if not calm else 0.85
-		ci.draw_texture(texture(id), Vector2(-SIZE, -SIZE) * 0.5, col)
-		match id:
-			&"nav_lights":
-				_nav_lights(ci, time, alpha, calm)
-			&"sensor":
-				var pulse := 0.75 + 0.25 * sin(time * 4.0) if not calm else 0.85
-				_glow_at(ci, SENSOR, 0.32 * pulse, Color(CRYSTAL, 0.85 * alpha))
-			&"runes":
-				var y := lerpf(9.5, -3.5, fposmod(time * 0.8, 1.0))
-				_glow_at(ci, Vector2(0.0, y), 0.18, Color(accent.lightened(0.4), 0.9 * alpha))
-			&"trim":
-				_glints(ci, time, alpha)
+	var a := anchors(StringName(String(art.get("id", ""))))
+	if a.is_empty():
+		return
+	if has(level, &"stripes") and a.has("stripe"):
+		var tex := texture("stripe")
+		var col := Color(GOLD if level >= Economy.SHIP_MAX_LEVEL else accent_color, 0.9 * alpha)
+		for mirror: bool in [false, true]:
+			var at := point(art, a["stripe"], mirror)
+			ci.draw_texture_rect(tex, Rect2(at - Vector2(STRIPE, STRIPE) * 0.5, Vector2(STRIPE, STRIPE)), false, col)
+	if has(level, &"nav_lights") and a.has("wing"):
+		_nav_lights(ci, art, a, time, alpha, calm)
+	if has(level, &"sensor") and a.has("nose"):
+		var pulse := 0.75 + 0.25 * sin(time * 4.0) if not calm else 0.85
+		var nose := point(art, a["nose"])
+		_glow_at(ci, nose, 0.32 * pulse, Color(CRYSTAL, 0.85 * alpha))
+		ci.draw_rect(Rect2(nose - Vector2(0.75, 1.25), Vector2(1.5, 2.5)), Color(0.85, 1.0, 1.0, alpha))
+	if has(level, &"runes") and a.has("spine"):
+		var spine: Array = a["spine"]
+		var top := point(art, spine[0])
+		var tail := point(art, spine[1])
+		var beat := 0.6 + 0.4 * (0.5 + 0.5 * sin(time * 3.0)) if not calm else 0.85
+		for k: int in range(4):
+			var at := tail.lerp(top, (float(k) + 0.5) / 4.0)
+			ci.draw_rect(Rect2(at - Vector2(0.5, 1.0), Vector2(1.0, 2.0)), Color(accent_color.lightened(0.3), beat * alpha))
+		var spark := tail.lerp(top, fposmod(time * 0.8, 1.0))
+		_glow_at(ci, spark, 0.2, Color(accent_color.lightened(0.4), 0.9 * alpha))
 
 
-## Cor de uma peça pela família dela (Paint).
-static func _paint(p: Dictionary, tint: Color, accent: Color, alpha: float) -> Color:
-	match p["paint"]:
-		Paint.HULL:
-			return Color(tint, alpha)
-		Paint.ACCENT:
-			return Color(accent, alpha)
-	return Color(1, 1, 1, alpha)
-
-
-static func _nav_lights(ci: CanvasItem, time: float, alpha: float, calm: bool) -> void:
+static func _nav_lights(ci: CanvasItem, art: Dictionary, a: Dictionary, time: float, alpha: float, calm: bool) -> void:
 	var beat := 0.8 + 0.2 * sin(time * 6.0) if not calm else 0.9
-	for side: Array in [[NAV_LEFT, PORT], [NAV_RIGHT, STARBOARD]]:
-		var at: Vector2 = side[0]
+	for side: Array in [[false, PORT], [true, STARBOARD]]:
+		var at := point(art, a["wing"], bool(side[0]))
 		var c: Color = side[1]
-		_glow_at(ci, at, 0.28 * beat, Color(c, 0.75 * alpha))
-		ci.draw_rect(Rect2(at - Vector2(0.5, 0.5), Vector2(1, 1)), Color(c.lightened(0.5), alpha))
+		_glow_at(ci, at, 0.3 * beat, Color(c, 0.8 * alpha))
+		ci.draw_rect(Rect2(at - Vector2(0.75, 0.75), Vector2(1.5, 1.5)), Color(c.lightened(0.5), alpha))
 	if calm:
 		return
-	# Estroboscópio da cauda: dois lampejos curtos a cada 1,4 s, como nos aviões.
+	# Estroboscópio da popa: dois lampejos curtos a cada 1,4 s, como nos aviões.
 	var t := fposmod(time, 1.4)
 	if t < 0.05 or (t > 0.16 and t < 0.21):
-		_glow_at(ci, STROBE, 0.4, Color(1, 1, 1, 0.9 * alpha))
-
-
-static func _flames(ci: CanvasItem, time: float, alpha: float, thrust: bool) -> void:
-	for i: int in range(NOZZLES.size()):
-		var at := NOZZLES[i]
-		var flicker := 0.85 + 0.15 * sin(time * 40.0 + float(i) * 2.1)
-		var length := (5.0 if thrust else 3.0) * flicker
-		ci.draw_rect(Rect2(at.x - 1.0, at.y, 2.0, length), Color(FLAME, 0.95 * alpha))
-		ci.draw_rect(Rect2(at.x - 0.5, at.y, 1.0, length * 0.6), Color(1.0, 0.95, 0.75, alpha))
-		_glow_at(ci, at + Vector2(0, length * 0.5), 0.22 * flicker, Color(FLAME, 0.7 * alpha))
-
-
-## Brilhos que correm pelo friso de ouro (posições fixas, um acende de cada vez).
-static func _glints(ci: CanvasItem, time: float, alpha: float) -> void:
-	var spots: Array[Vector2] = [Vector2(0, -13), Vector2(-14, 6), Vector2(14, 6), Vector2(-6, 9), Vector2(6, 9)]
-	var k := int(time * 2.5) % spots.size()
-	var f := fposmod(time * 2.5, 1.0)
-	var s := sin(f * PI)
-	var at := spots[k]
-	_glow_at(ci, at, 0.3 * s, Color(1, 0.95, 0.75, 0.9 * alpha))
-	ci.draw_rect(Rect2(at.x - 0.5, at.y - 1.5 * s, 1.0, 3.0 * s), Color(1, 1, 1, alpha * s))
-	ci.draw_rect(Rect2(at.x - 1.5 * s, at.y - 0.5, 3.0 * s, 1.0), Color(1, 1, 1, alpha * s))
+		var used: Rect2 = art.get("used", Rect2(-12, -12, 24, 24))
+		_glow_at(ci, Vector2(used.get_center().x, used.end.y - 3.0), 0.4, Color(1, 1, 1, 0.9 * alpha))
 
 
 static func _glow_at(ci: CanvasItem, at: Vector2, scale: float, color: Color) -> void:
@@ -195,17 +228,18 @@ static func _glow_at(ci: CanvasItem, at: Vector2, scale: float, color: Color) ->
 	ci.draw_texture_rect(_glow, Rect2(at - size * 0.5, size), false, color)
 
 
-static func _ring_at(ci: CanvasItem, at: Vector2, scale: float, color: Color) -> void:
+## Anel liso (fx/ring_128) de diâmetro `diameter` em unidades lógicas.
+static func _ring_at(ci: CanvasItem, at: Vector2, diameter: float, color: Color) -> void:
 	if _ring == null:
 		return
-	var size := _ring.get_size() * scale
+	var size := Vector2(diameter, diameter)
 	ci.draw_texture_rect(_ring, Rect2(at - size * 0.5, size), false, color)
 
 
 static func _load() -> void:
 	if _glow == null:
 		_glow = SpriteBank.generated("fx/glow_32")
-		_ring = SpriteBank.generated("fx/ring_32")
+		_ring = SpriteBank.generated("fx/ring_128")
 
 
 ## Esquece as texturas (junto com SpriteBank.clear()).

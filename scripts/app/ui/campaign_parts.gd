@@ -251,9 +251,16 @@ class Pulse:
 class Marker:
 	extends Control
 
-	var tint := Color.WHITE:
+	## Nave e pintura equipadas (a miniatura HD de ShipIcon).
+	var ship: String = "falcon":
 		set(value):
-			tint = value
+			ship = value
+			_ship = ShipIcon.texture(ship, paint)
+			queue_redraw()
+	var paint := Color(0, 0, 0, 0):
+		set(value):
+			paint = value
+			_ship = ShipIcon.texture(ship, paint)
 			queue_redraw()
 	var _ship: Texture2D
 	var _glow: Texture2D
@@ -261,15 +268,18 @@ class Marker:
 	func _init() -> void:
 		name = "Marker"
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
-		texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		_ship = SpriteBank.texture("res://assets/art/void/main_ship/base_full.png")
+		texture_filter = SpriteBank.HD_FILTER
+		_ship = ShipIcon.texture(ship)
 		_glow = SpriteBank.generated("fx/glow_32")
 		size = Vector2(28, 30)
 
 	func _draw() -> void:
 		draw_texture_rect(_glow, Rect2(Vector2(4, 16), Vector2(20, 16)), false, Color(UiTheme.CYAN, 0.5))
 		if _ship != null:
-			draw_texture_rect(_ship, Rect2(Vector2(2, 0), Vector2(24, 24)), false, tint)
+			# Cabe na caixa de 24 (a miniatura vem recortada na parte opaca), proporção mantida.
+			var k := 24.0 / maxf(1.0, maxf(_ship.get_width(), _ship.get_height()))
+			var s := Vector2(_ship.get_size()) * k
+			draw_texture_rect(_ship, Rect2(Vector2(14.0, 12.0) - s * 0.5, s), false)
 
 
 ## Atalho: ícone grande no alto e rótulo curto embaixo, num vidro chanfrado; bolinha de aviso no canto.

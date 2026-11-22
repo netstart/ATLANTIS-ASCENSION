@@ -200,7 +200,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://foozlecc.itch.io/void-main-ship",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
-    "files_count": 11
+    "files_count": 8
   },
   {
     "id": "foozle_void_fleet_pack_1",
@@ -284,7 +284,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
-    "files_count": 106
+    "files_count": 108
   },
   {
     "id": "exo2_font",
@@ -650,5 +650,49 @@
     "license_file": "res://licenses/texts/LicenseRef-Google-Terms-of-Service.txt",
     "notice_file": "res://licenses/notices/flow_battle_music_NOTICE.txt",
     "files_count": 3
+  },
+  {
+    "id": "millionthvector_spaceships",
+    "name": "Spaceships: Faction 1, 2, 3, 5, 6, 7 e 10, Blue fighter, Fighter e Yellow starship",
+    "author": "MillionthVector (http://millionthvector.blogspot.de)",
+    "license_id": "CC-BY-3.0",
+    "category": "art",
+    "downloaded_at": "2026-11-22",
+    "verified_at": "2026-11-22",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "source_url": "https://opengameart.org/users/millionthvector",
+    "license_file": "res://licenses/texts/CC-BY-3.0.txt",
+    "notice_file": "res://licenses/notices/millionthvector_spaceships_NOTICE.txt",
+    "credit": "Spaceships by MillionthVector (http://millionthvector.blogspot.de), CC BY 3.0. Packs: Set: Faction1, Faction2, Faction3, Faction5, Faction6, Faction7 e Faction10 spaceships; Blue fighter spaceship; Fighter spaceship; Yellow starship (OpenGameArt)",
+    "files_count": 74
+  },
+  {
+    "id": "alface_xenis_spaceships",
+    "name": "Spaceships \"XENIS\" (2D Spaceships Pack 16)",
+    "author": "Carlos Alface (http://carlosalface.blogspot.pt/)",
+    "license_id": "CC-BY-3.0",
+    "category": "art",
+    "downloaded_at": "2026-11-22",
+    "verified_at": "2026-11-22",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "source_url": "https://opengameart.org/content/spaceships-xenis",
+    "license_file": "res://licenses/texts/CC-BY-3.0.txt",
+    "notice_file": "res://licenses/notices/alface_xenis_spaceships_NOTICE.txt",
+    "credit": "Spaceships XENIS by Carlos Alface (http://carlosalface.blogspot.pt/), CC BY 3.0",
+    "files_count": 6
+  },
+  {
+    "id": "wk_studio_alien_bugs",
+    "name": "Alien Bug Sprites, Top-down Alien Bug Sprites 1 e 2, 8 Top down Alien Bug Spider Sprites",
+    "author": "W_K_Studio (whiteknightstudios)",
+    "license_id": "CC0-1.0",
+    "category": "art",
+    "downloaded_at": "2026-11-22",
+    "verified_at": "2026-11-22",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "source_url": "https://whiteknightstudios.itch.io/alien-bug-sprites",
+    "license_file": "res://licenses/texts/CC0-1.0.txt",
+    "notice_file": "res://licenses/notices/wk_studio_alien_bugs_NOTICE.txt",
+    "files_count": 16
   }
 ]

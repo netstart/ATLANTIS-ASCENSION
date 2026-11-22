@@ -266,14 +266,14 @@ static func death_style(roll: int, big: bool, surface: StringName, special: bool
 ## Morte que cai (FALL) ou derrete (MELT). A queda vai de `at` a `to` (a sombra, 2,5D) e só existe com
 ## chão ou mar embaixo; o derretimento fica em `at`. Devolve falso se não coube (teto, sem chão, sem
 ## textura): quem chamou explode no lugar.
-func wreck(tex: Texture2D, size: int, at: Vector2, to: Vector2, scale: float, mode: StringName = FALL,
-		big: bool = false) -> bool:
+func wreck(tex: Texture2D, tex_size: int, size: float, at: Vector2, to: Vector2, scale: float,
+		mode: StringName = FALL, big: bool = false) -> bool:
 	if tex == null or wrecks.size() >= MAX_WRECKS or (mode == FALL and surface == NONE):
 		return false
 	var time := (FALL_TIME_BIG if big else FALL_TIME) if mode == FALL else (MELT_TIME_BIG if big else MELT_TIME)
 	var spin := _rng.randf_range(3.0, 6.0) * (1.0 if _rng.randf() < 0.5 else -1.0) if mode == FALL else 0.0
-	wrecks.append({"tex": tex, "size": size, "pos": at, "from": at, "to": to, "t": 0.0, "time": time,
-			"mode": mode, "big": big, "scale": scale, "emit": 0.0, "spin": spin})
+	wrecks.append({"tex": tex, "tex_size": tex_size, "size": size, "pos": at, "from": at, "to": to, "t": 0.0,
+			"time": time, "mode": mode, "big": big, "scale": scale, "emit": 0.0, "spin": spin})
 	if mode == FALL:
 		# Pega fogo: um estouro curto onde foi atingido, antes de cair.
 		explosion(at, 0.55 if big else 0.4)

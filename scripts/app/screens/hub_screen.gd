@@ -384,8 +384,8 @@ func _rebuild() -> void:
 		s.queue_redraw()
 	_shortcuts[2].set_notice(Notices.season_reward_ready(p, today))
 	_daily_button.set_notice(Notices.daily_event_open(p, today))
-	_marker.tint = ListScreen.ship_tint(String(p["selected"].get("ship", "falcon")),
-			String(p["selected"].get("cosmetic", "")))
+	_marker.ship = String(p["selected"].get("ship", "falcon"))
+	_marker.paint = ListScreen.paint_of(String(p["selected"].get("cosmetic", "")))
 	relayout()
 
 

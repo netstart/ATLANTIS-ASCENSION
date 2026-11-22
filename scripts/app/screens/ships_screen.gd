@@ -143,7 +143,7 @@ func _stage(profile: Dictionary, def: Dictionary, selected: String) -> void:
 	row.add_theme_constant_override("separation", 8)
 	col.add_child(row)
 	var cosmetic := String(profile["selected"].get("cosmetic", "")) if on else ""
-	var view := ship_view(ship_tint(id, cosmetic), 2, not owned, level)
+	var view := ship_view(id, paint_of(cosmetic), 2, not owned, level)
 	view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(view)
 	var info := VBoxContainer.new()
@@ -302,8 +302,9 @@ func _cell(shelf: GridContainer, profile: Dictionary, def: Dictionary, selected:
 	cell.add_theme_constant_override("separation", 2)
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	shelf.add_child(cell)
-	var tile := CommandKit.item_tile(ShipIcon.texture(ship_tint(id) if owned else Color.WHITE),
+	var tile := CommandKit.item_tile(ShipIcon.texture(id),
 			Economy.ship_level(profile, StringName(id)) if owned else 0, ship_rarity(def), _fresh.has(id))
+	tile.pixel_art = false
 	tile.name = "Ship_" + id
 	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	tile.selected = id == _focus_id

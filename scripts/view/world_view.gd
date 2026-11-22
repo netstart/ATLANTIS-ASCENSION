@@ -15,8 +15,11 @@ extends Node2D
 ## curvas (some com "reduzir movimento"). Dano, no chefe e em todo inimigo: nada de branco chapado, um tinte
 ## quente (shaders/sprite_flash.gdshader) que pulsa no máximo a cada 7 passos e um tranco curto (HitPulse; um
 ## por inimigo atingido em EnemyPulses, sem tranco nos pequenos), legível mesmo sob tiro contínuo.
-## A nave veste as peças do nível do hangar (ShipLivery, carga "ship_level"); na Ascendida (nível 10)
-## deixa um rastro de centelhas de ouro.
+## Naves HD (SpriteBank, 2 texels por unidade) em camadas com filtro linear com mipmaps; a pixel art (coletáveis,
+## alvos dos objetivos, mísseis, arte Void de reserva) fica numa camada própria sem filtro (_items).
+## A nave do jogador é a da carga (SpriteBank.player), desenhada por ShipArt: veste a evolução do nível do hangar
+## (ShipLivery, carga "ship_level"), a pintura da loja e as avarias; na Ascendida (nível 10) deixa um rastro de
+## centelhas de ouro. O ponto da hitbox vai por cima de tudo (_fx_above).
 ## Morte de inimigo em três estilos (kill_fx), sorteados aqui, nunca pela Sim: explosão reforçada,
 ## derretimento no lugar (shaders/sprite_melt.gdshader) e queda girando em chamas até o mar (coluna d'água,
 ## espuma, explosão abafada) ou o chão (explosão, marca, estilhaços). No espaço não há queda.
@@ -34,9 +37,8 @@ const BANK_SQUEEZE := 0.22
 const LASER_COLOR := Color(0.55, 0.97, 1.0, 0.95)
 const BEAM_COLOR := Color(1.0, 0.42, 0.45, 0.95)
 const WARN_COLOR := Color(1.0, 0.42, 0.45, 0.7)
-## Luz do motor da nave (bocais em ±7, +17 do centro) e do laser.
-const EXHAUST_COLOR := Color(1.0, 0.55, 0.22)
-const NOZZLES: Array[Vector2] = [Vector2(-7, 17), Vector2(7, 17)]
+## Luz do motor da nave (o azul da chama HD do jogador; a pintura troca) e do laser.
+const EXHAUST_COLOR := Color(0.45, 0.85, 1.0)
 ## Cor da luz de cada arma (impactos, boca do canhão) e dos orbes de arma.
 const WEAPON_TINTS := {&"pulsar": Color(0.55, 0.8, 1.0), &"laser": Color(0.55, 0.97, 1.0),
 		&"plasma": Color(0.8, 0.55, 1.0), &"railgun": Color(1.0, 0.6, 0.45)}
@@ -44,14 +46,12 @@ const ORB_TINTS := {&"pulsar": Color(0.4, 0.65, 1.0), &"laser": Color(1.0, 0.82,
 		&"plasma": Color(0.78, 0.5, 1.0), &"railgun": Color(1.0, 0.45, 0.45)}
 ## Emissores contínuos (motor, fumaça de avaria, bolhas) rodam a 60 Hz, em qualquer taxa de quadros.
 const EMIT_STEP := 1.0 / 60.0
-const LIGHTNING_COLOR := Color(0.85, 0.92, 1.0, 0.95)
 const TIDE_COLOR := Color(0.45, 1.0, 0.95, 0.55)
 ## Colunas de perigo por tipo (lava do cap. 4, gelo do 6, detritos do 8).
 const HAZARD_COLORS := {"lava": Color(1.0, 0.45, 0.15, 0.95), "icefall": Color(0.75, 0.95, 1.0, 0.9),
 		"debris": Color(0.7, 0.7, 0.75, 0.9)}
 const COVER_COLOR := Color(0.16, 0.2, 0.3, 0.95)
 const COVER_TRIM := Color(0.45, 0.85, 1.0, 0.8)
-const BREACH_COLOR := Color(0.75, 0.55, 1.0, 0.22)
 ## Rastro da nave Ascendida: uma centelha a cada WAKE_STEP s, WAKE_LEN delas.
 const WAKE_STEP := 0.05
 const WAKE_LEN := 9
@@ -90,6 +90,7 @@ var stream := EnergyStream.new()
 
 var _shadows: _Layer
 var _entities: _Layer
+var _items: _Layer
 var _player: _Layer
 var _fx_below: _Layer
 var _fx_add: _Layer
@@ -112,9 +113,11 @@ var _tip: Texture2D
 var _orbs: Dictionary = {}
 var _medal: Texture2D
 var _pearl: Texture2D
-var _ship_bases: Array[Texture2D] = []
-var _engine_idle: Texture2D
-var _engine_power: Texture2D
+## Arte da nave, da ala e do Fantasma (SpriteBank.player) e os bocais da nave (popa, unidades lógicas).
+var _art: Dictionary = {}
+var _wing_art: Dictionary = {}
+var _ghost_art: Dictionary = {}
+var _nozzles: Array[Vector2] = []
 var _shield: Texture2D
 var _log: Texture2D
 var _capsule: Texture2D
@@ -122,7 +125,9 @@ var _capsule: Texture2D
 var _objectives := ObjectiveView.new()
 var _drone: Texture2D
 var _rocket: Texture2D
-var _ship_tint := Color(1, 1, 1)
+## Pintura da loja (alfa 0 = a arte como é) e estágio de avaria do casco (ShipArt).
+var _paint := Color(0, 0, 0, 0)
+var _damage: int = 0
 ## Pintura equipada (Store.paint_fx, só desenho): cor do motor e do rastro e cor do estouro da nave.
 var _exhaust := EXHAUST_COLOR
 var _burst := Color(0, 0, 0, 0)
@@ -181,19 +186,15 @@ func setup(p_sim: Sim) -> void:
 	dark = bool(sim.mission.get("dark", false))
 	_drone = SpriteBank.generated("fx/drone")
 	_rocket = SpriteBank.texture("res://assets/art/void/main_ship/proj_rocket.png")
-	_ship_tint = Color(String(sim.player.ship.get("tint", "#ffffff")))
 	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
-	if not paint.is_empty():
-		_ship_tint = Color(paint)
+	_paint = Color(paint) if not paint.is_empty() else Color(0, 0, 0, 0)
+	_art = SpriteBank.player(StringName(String(sim.player.ship.get("id", "falcon"))))
+	_nozzles = ShipArt.nozzles(_art)
 	var paint_fx := Store.paint_fx(String(sim.loadout.get("cosmetic", "")))
 	_exhaust = paint_fx.get("trail", EXHAUST_COLOR)
 	_burst = paint_fx.get("burst", Color(0, 0, 0, 0))
 	_livery = clampi(int(sim.loadout.get("ship_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
 	_wing_livery = clampi(int(sim.loadout.get("coop_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
-	for name: String in ["base_very_damaged", "base_damaged", "base_slight", "base_full"]:
-		_ship_bases.append(SpriteBank.texture("res://assets/art/void/main_ship/%s.png" % name))
-	_engine_idle = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_idle.png")
-	_engine_power = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_powering.png")
 	_shield = SpriteBank.texture("res://assets/art/void/main_ship/shield_invincibility.png")
 	var scenery := OceanBackdrop.palette_of(StringName(String(sim.mission.get("backdrop", "ocean"))))
 	var mid: Color = scenery["mid"]
@@ -211,6 +212,7 @@ func setup(p_sim: Sim) -> void:
 	if not fx.landed.is_connected(_on_landed):
 		fx.landed.connect(_on_landed)
 	_shadows = _Layer.new(self, _draw_shadows)
+	_shadows.texture_filter = SpriteBank.HD_FILTER
 	# No espaço não há chão para receber sombra.
 	_shadows.visible = fx.ground
 	add_child(_shadows)
@@ -218,10 +220,15 @@ func setup(p_sim: Sim) -> void:
 	var melt := ShaderMaterial.new()
 	melt.shader = load("res://shaders/sprite_melt.gdshader") as Shader
 	_wrecks.material = melt
+	_wrecks.texture_filter = SpriteBank.HD_FILTER
 	add_child(_wrecks)
 	_entities = _Layer.new(self, _draw_entities)
 	_entities.material = flash
+	_entities.texture_filter = SpriteBank.HD_FILTER
 	add_child(_entities)
+	_items = _Layer.new(self, _draw_items)
+	_items.material = flash
+	add_child(_items)
 	add_child(fx.matter)
 	_player_bullets = BulletRenderer.new()
 	_player_bullets.halo_alpha = [0.0, 0.6, 0.85][clampi(fx_level, 0, 2)]
@@ -232,12 +239,13 @@ func setup(p_sim: Sim) -> void:
 	add_child(_player_bullets)
 	_player = _Layer.new(self, _draw_player)
 	_player.material = flash
+	_player.texture_filter = SpriteBank.HD_FILTER
 	add_child(_player)
 	_fx_below = _Layer.new(self, _draw_fx_below)
 	add_child(_fx_below)
 	powers.reduce_flashes = reduce_flashes
 	powers.fx_level = fx_level
-	powers.ship_texture = _ship_bases[3]
+	powers.ship_art = _art
 	powers.setup()
 	# Onda e muralha repetem a textura na horizontal (rolagem da espuma e das runas).
 	_power_below = _Layer.new(self, _draw_power_below)
@@ -295,6 +303,7 @@ func refresh(delta: float) -> void:
 	_shadows.queue_redraw()
 	_wrecks.queue_redraw()
 	_entities.queue_redraw()
+	_items.queue_redraw()
 	_player.queue_redraw()
 	_fx_below.queue_redraw()
 	_fx_add.queue_redraw()
@@ -362,6 +371,10 @@ func on_event(ev: Dictionary) -> void:
 					.get("sprite", "")))
 			for k: int in range(5):
 				var off := Vector2(cos(k * 2.4) * 40.0, sin(k * 1.7) * 28.0)
+				if ship["destruction"] == null:
+					# Nave HD: a cadeia é de bolas de fogo em partículas (a Void tinha a tira de destruição própria).
+					fx.later(k * 0.18, fx.explosion.bind(at + off, 1.8))
+					continue
 				explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
 						"size": ship["destruction_size"], "pos": at + off, "t": -k * 0.18, "scale": 1.6,
 						"duration": 0.9})
@@ -411,13 +424,19 @@ func kill_fx(at: Vector2, sprite: StringName, big: bool, points: int, style: Str
 	var ship := SpriteBank.ship(sprite)
 	var drift := FALL_DRIFT * (1.0 if roll % 2 == 0 else -1.0)
 	var to := at + SHADOW_OFFSET + FALL_DROP * (1.3 if big else 1.0) + Vector2(drift, 0)
-	if style != CombatFx.EXPLODE and not fx.wreck(ship["base"], ship["size"], at, to, scale, style, big):
+	if style != CombatFx.EXPLODE and not fx.wreck(ship["base"], ship["tex_size"], ship["size"], at, to, scale, style,
+			big):
 		style = CombatFx.EXPLODE
 	last_death = style
 	if style == CombatFx.EXPLODE:
-		explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
-				"size": ship["destruction_size"], "pos": at, "t": 0.0, "scale": 1.5 if big else 1.15,
-				"duration": EXPLOSION_TIME})
+		if ship["destruction"] != null:
+			explosions.append({"tex": ship["destruction"], "frames": ship["destruction_frames"],
+					"size": ship["destruction_size"], "pos": at, "t": 0.0, "scale": 1.5 if big else 1.15,
+					"duration": EXPLOSION_TIME})
+		else:
+			# Nave HD: bola de fogo em partículas do porte da nave visível, no lugar da tira Void (pixel art).
+			var used: Rect2 = ship["used"]
+			fx.explosion(at, clampf(maxf(used.size.x, used.size.y) * scale / 30.0, 0.8, 2.4))
 		fx.blast(at, big)
 		_ring_at(at, 0.22, 34.0 if big else 20.0, Color(1.0, 0.95, 0.85))
 		_ring_at(at, 0.45, 64.0 if big else 38.0, Color(1.0, 0.65, 0.35))
@@ -491,11 +510,12 @@ func _emit() -> void:
 	if pl.alive and fx_level >= 1:
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
 		_nozzle = 1 - _nozzle
-		fx.exhaust(pl.pos + NOZZLES[_nozzle], _exhaust, thrust)
+		fx.exhaust(pl.pos + _nozzles[_nozzle], _exhaust, thrust)
+		_damage_smoke(pl)
 		if sim.outro.rise >= 0:
 			# Arrancada da saída: os dois bocais a cada passo, com o rastro mais longo quanto mais rápido.
 			for ship: SimPlayer in ([pl, sim.wing] if sim.wing != null else [pl]):
-				for n: Vector2 in NOZZLES:
+				for n: Vector2 in _nozzles:
 					# Também a meio caminho do passo anterior: na subida rápida o rastro sai contínuo, sem contas soltas.
 					fx.exhaust(ship.pos + n, _exhaust, _boost())
 					fx.exhaust(ship.pos + n - ship.last_move * 0.5, _exhaust, _boost())
@@ -636,47 +656,59 @@ func _draw_shadows(ci: CanvasItem) -> void:
 						float(part.get("part_scale", 1.0)), 1.6, PI)
 	var pl := sim.player
 	if pl.alive:
-		_shadow_tex(ci, _ship_bases[3], pl.pos, Vector2(1.0 - BANK_SQUEEZE * absf(_bank), 1.0), 1.0, _bank * BANK_ROT)
+		_shadow(ci, _art, pl.pos, 1.0, 1.0, _bank * BANK_ROT, 1.0 - BANK_SQUEEZE * absf(_bank))
 	if sim.wing != null and sim.wing.alive:
-		_shadow_tex(ci, _ship_bases[3], sim.wing.pos, Vector2(1.0 - BANK_SQUEEZE * absf(_wing_bank), 1.0), 1.0,
-				_wing_bank * BANK_ROT)
+		_shadow(ci, _wing(), sim.wing.pos, 1.0, 1.0, _wing_bank * BANK_ROT, 1.0 - BANK_SQUEEZE * absf(_wing_bank))
 
 
-func _shadow(ci: CanvasItem, ship: Dictionary, pos: Vector2, scale: float, height: float, angle: float) -> void:
+func _shadow(ci: CanvasItem, ship: Dictionary, pos: Vector2, scale: float, height: float, angle: float,
+		squeeze: float = 1.0) -> void:
 	var base: Texture2D = ship.get("base")
 	if base == null:
 		return
-	var size: int = ship["size"]
+	var tex_size: int = ship["tex_size"]
+	var size: float = ship["size"]
 	var s := scale * SHADOW_SCALE
-	ci.draw_set_transform(pos + SHADOW_OFFSET * height, angle, Vector2(s, s))
-	ci.draw_texture_rect_region(base, Rect2(-size * 0.5, -size * 0.5, size, size), Rect2(0, 0, size, size),
+	ci.draw_set_transform(pos + SHADOW_OFFSET * height, angle, Vector2(s * squeeze, s))
+	ci.draw_texture_rect_region(base, Rect2(-size * 0.5, -size * 0.5, size, size), Rect2(0, 0, tex_size, tex_size),
 			Color(SHADOW_COLOR, SHADOW_COLOR.a * clampf(height, 0.25, 1.0)))
-	ci.draw_set_transform(Vector2.ZERO)
-
-
-func _shadow_tex(ci: CanvasItem, tex: Texture2D, pos: Vector2, squeeze: Vector2, height: float, angle: float) -> void:
-	if tex == null:
-		return
-	ci.draw_set_transform(pos + SHADOW_OFFSET * height, angle, squeeze * SHADOW_SCALE)
-	ci.draw_texture(tex, -tex.get_size() * 0.5, SHADOW_COLOR)
 	ci.draw_set_transform(Vector2.ZERO)
 
 
 # --- Entidades -------------------------------------------------------------------------------
 
+## Naves HD (inimigos, chefe, escoltas) com filtro linear; a pixel art vai em _draw_items.
 func _draw_entities(ci: CanvasItem) -> void:
+	_draw_enemies(ci, true)
+	if sim.boss != null:
+		_draw_boss(ci, sim.boss)
+	for esc: Dictionary in sim.escorts:
+		# Escolta capturada: o inimigo dominado, menor e em ciano; pisca no último segundo.
+		var fading := int(esc["frames"]) < 60 and int(time * 10.0) % 2 == 0
+		var col := Color(0.55, 1.0, 1.0, 0.45 if fading else 0.95)
+		_draw_ship(ci, SpriteBank.ship(StringName(String(esc["sprite"]))), esc["pos"], 1.0, 0.6, col, true)
+
+
+## Inimigos de uma camada: `hd` (linear) ou pixel art (alvos dos objetivos, glifos, Void de reserva).
+func _draw_enemies(ci: CanvasItem, hd: bool) -> void:
 	for e: SimEnemy in sim.enemies:
+		var ship := SpriteBank.ship(e.sprite)
+		if bool(ship["hd"]) != hd:
+			continue
 		var pulse := _enemy_pulses.of(e)
 		var tint := _hit_color(Color(String(e.def.get("tint", "#ffffff"))), pulse.intensity(), false)
 		var at := e.pos + pulse.offset() * _shake_scale(e.radius)
-		_draw_ship(ci, SpriteBank.ship(e.sprite), at, e.depth, float(e.def.get("scale", 1.0)), tint)
+		_draw_ship(ci, ship, at, e.depth, float(e.def.get("scale", 1.0)), tint)
 		if e.marked and sim.mods.chart and e.depth >= 1.0:
 			# Carta de Nereu: losango dourado sobre os marcados.
 			var m := e.pos + Vector2(0, -e.radius - 8.0)
 			ci.draw_rect(Rect2(m - Vector2(1, 3), Vector2(2, 6)), UiTheme.GOLD)
 			ci.draw_rect(Rect2(m - Vector2(3, 1), Vector2(6, 2)), UiTheme.GOLD)
-	if sim.boss != null:
-		_draw_boss(ci, sim.boss)
+
+
+## Pixel art sem filtro, por cima das naves: alvos dos objetivos, coletáveis, mísseis e drones.
+func _draw_items(ci: CanvasItem) -> void:
+	_draw_enemies(ci, false)
 	_objectives.draw(ci, sim, time)
 	for pk: Dictionary in sim.pickups:
 		var p: Vector2 = pk["pos"]
@@ -714,11 +746,6 @@ func _draw_entities(ci: CanvasItem) -> void:
 			ci.draw_set_transform(Vector2.ZERO)
 	for d: Vector2 in sim.drones:
 		_tex_centered(ci, _drone, d, 1.0)
-	for esc: Dictionary in sim.escorts:
-		# Escolta capturada: o inimigo dominado, menor e em ciano; pisca no último segundo.
-		var fading := int(esc["frames"]) < 60 and int(time * 10.0) % 2 == 0
-		var col := Color(0.55, 1.0, 1.0, 0.45 if fading else 0.95)
-		_draw_ship(ci, SpriteBank.ship(StringName(String(esc["sprite"]))), esc["pos"], 1.0, 0.6, col, true)
 
 
 ## Tranco do acerto num inimigo, pelo raio: nenhum nos pequenos (tremer 1 px num sprite de 24 só parece
@@ -729,7 +756,8 @@ static func _shake_scale(radius: float) -> float:
 
 func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, scale: float,
 		tint: Color = Color(1, 1, 1), up: bool = false) -> void:
-	var size: int = ship["size"]
+	var tex_size: int = ship["tex_size"]
+	var size: float = ship["size"]
 	var base: Texture2D = ship["base"]
 	if base == null:
 		return
@@ -745,8 +773,8 @@ func _draw_ship(ci: CanvasItem, ship: Dictionary, pos: Vector2, depth: float, sc
 	var engine: Texture2D = ship["engine"]
 	if engine != null:
 		var f := int(time * ANIM_FPS) % int(ship["engine_frames"])
-		ci.draw_texture_rect_region(engine, Rect2(-half, half * 2.0), SpriteBank.frame_rect(f, size), modulate)
-	ci.draw_texture_rect_region(base, Rect2(-half, half * 2.0), Rect2(0, 0, size, size), modulate)
+		ci.draw_texture_rect_region(engine, Rect2(-half, half * 2.0), SpriteBank.frame_rect(f, tex_size), modulate)
+	ci.draw_texture_rect_region(base, Rect2(-half, half * 2.0), Rect2(0, 0, tex_size, tex_size), modulate)
 	ci.draw_set_transform(Vector2.ZERO)
 
 
@@ -828,66 +856,83 @@ static func _hit_color(base: Color, amount: float, gold: bool) -> Color:
 
 # --- Jogador -----------------------------------------------------------------------------------
 
-## Ala do co-op: a mesma nave com a cor dela e, perto da nave 1, o Elo de Maré (linha que apaga balas).
+## Ala do co-op: a nave dela (carga "coop_level" na evolução) e, perto da nave 1, o Elo de Maré (linha que apaga
+## balas).
 func _draw_wing(ci: CanvasItem, w: SimPlayer, blink: bool) -> void:
 	if sim.linked:
 		var a := sim.player.pos
 		var flick := 0.55 + 0.25 * sin(time * 18.0)
 		ci.draw_line(a, w.pos, Color(TIDE_COLOR, flick), 2.0)
 		_tex_centered(ci, _glow, (a + w.pos) * 0.5, 0.6, Color(TIDE_COLOR, 0.6))
-	var col := Color(Color(String(w.ship.get("tint", "#9fe8ff"))), 0.45 if blink else 1.0)
-	var engine := _engine_power if w.last_move.y < -0.3 else _engine_idle
-	var frames := maxi(1, engine.get_width() / 48)
-	var tint := Color(col, 1.0)
+	var art := _wing()
+	var alpha := 0.45 if blink else 1.0
 	_bank_transform(ci, w.pos, _wing_bank)
-	ci.draw_texture_rect_region(engine, Rect2(-24, -24, 48, 48),
-			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
-	ShipLivery.draw_under(ci, _wing_livery, tint, time, col.a, w.last_move.y < -0.3, reduce_flashes)
-	ci.draw_texture(_ship_bases[3], Vector2(-24, -24), col)
-	ShipLivery.draw_over(ci, _wing_livery, tint, time, col.a, reduce_flashes)
+	ShipArt.draw(ci, art, time, _wing_livery, alpha, w.last_move.y < -0.3, Color(0, 0, 0, 0), reduce_flashes)
 	ci.draw_set_transform(Vector2.ZERO)
-	ci.draw_string(Locale.font, w.pos + Vector2(-4, 30), "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, col)
+	var label := w.pos + Vector2(-2.5, (art["used"] as Rect2).end.y + 9.0)
+	ci.draw_string_outline(Locale.font, label, "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0.02, 0.04, 0.08, 0.8))
+	ci.draw_string(Locale.font, label, "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.62, 0.91, 1.0, alpha))
+
+
+func _wing() -> Dictionary:
+	if _wing_art.is_empty() and sim.wing != null:
+		_wing_art = SpriteBank.player(StringName(String(sim.wing.ship.get("id", "falcon"))))
+	return _wing_art
+
 
 func _draw_player(ci: CanvasItem) -> void:
 	var pl := sim.player
 	if not pl.alive:
 		return
 	var p := pl.pos
-	var hull_frac := float(pl.hull) / maxf(1.0, float(pl.max_hull))
-	var base := _ship_bases[clampi(int(ceil(hull_frac * 3.0)), 0, 3)]
 	# Durante um poder a invulnerabilidade é do poder: o escudo aparece, a nave não pisca.
 	var blink := pl.invuln > 0 and int(time * 20.0) % 2 == 0 and sim.power_fx.is_empty()
-	var col := Color(_ship_tint, 0.45 if blink else 1.0)
+	var alpha := 0.45 if blink else 1.0
 	if PowerView.has_active(sim, &"cloak"):
 		# Manto (Umbra, Ascensão): a nave fica translúcida e tremeluz.
-		col.a = 0.38 + 0.14 * sin(time * 23.0)
+		alpha = 0.38 + 0.14 * sin(time * 23.0)
 	if sim.tide_frames > 0:
 		var pulse := 1.0 + 0.15 * sin(time * 12.0)
 		_tex_centered(ci, _ring, p, Sim.TIDE_RADIUS / 14.0 * pulse, TIDE_COLOR)
 	if sim.mods.bubbles > 0:
-		_tex_centered(ci, _ring, p, 1.2, Color(0.7, 0.95, 1.0, 0.45))
+		_tex_centered(ci, _ring, p, 1.2 * _reach() / 40.0, Color(0.7, 0.95, 1.0, 0.45))
 	if sim.wing != null:
 		_draw_wing(ci, sim.wing, blink)
 	if ghost_sim != null and ghost_sim.player.alive:
-		ci.draw_texture(_ship_bases[3], ghost_sim.player.pos - Vector2(24, 24), Color(0.5, 1.0, 1.0, 0.3))
-	_draw_wake(ci, col.a)
-	var thrust := pl.last_move.y < -0.3
-	var engine := _engine_power if thrust else _engine_idle
-	var frames := maxi(1, engine.get_width() / 48)
+		if _ghost_art.is_empty():
+			_ghost_art = SpriteBank.player(StringName(String(ghost_sim.player.ship.get("id", "falcon"))))
+		ci.draw_set_transform(ghost_sim.player.pos)
+		ShipArt.draw(ci, _ghost_art, time, 1, 0.3, false, Color(0.5, 1.0, 1.0), true)
+		ci.draw_set_transform(Vector2.ZERO)
+	_draw_wake(ci, alpha)
+	var boost := _boost() if sim.outro.rise >= 0 else 1.0
 	_bank_transform(ci, p, _bank)
-	ci.draw_texture_rect_region(engine, Rect2(-24, -24, 48, 48),
-			SpriteBank.frame_rect(int(time * ANIM_FPS) % frames, 48), col)
-	ShipLivery.draw_under(ci, _livery, _ship_tint, time, col.a, thrust, reduce_flashes)
-	ci.draw_texture(base, Vector2(-24, -24), col)
-	ShipLivery.draw_over(ci, _livery, _ship_tint, time, col.a, reduce_flashes)
+	ShipArt.draw(ci, _art, time, _livery, alpha, pl.last_move.y < -0.3 or sim.outro.rise >= 0, _paint, reduce_flashes,
+			_damage, boost)
 	ci.draw_set_transform(Vector2.ZERO)
 	if pl.invuln > 0 and _shield != null:
+		# Escudo do tamanho da nave visível (a arte Void de 64 tinha 48 de nave).
+		var side := _reach() * 1.3
 		var sf := int(time * ANIM_FPS) % maxi(1, _shield.get_width() / 64)
-		ci.draw_texture_rect_region(_shield, Rect2(p - Vector2(32, 32), Vector2(64, 64)), SpriteBank.frame_rect(sf, 64),
-				Color(1, 1, 1, 0.7))
-	if touching:
-		ci.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.08, 0.07, 0.09))
-		ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), Color(1, 1, 1))
+		ci.draw_texture_rect_region(_shield, Rect2(p - Vector2(side, side) * 0.5, Vector2(side, side)),
+				SpriteBank.frame_rect(sf, 64), Color(1, 1, 1, 0.7))
+
+
+## Lado maior da nave visível (caixa opaca), em unidades lógicas.
+func _reach() -> float:
+	var used: Rect2 = _art.get("used", Rect2(-24, -24, 48, 48))
+	return maxf(used.size.x, used.size.y)
+
+
+## Fumaça da avaria: sai de um dos pontos de rachadura (ShipArt.damage_spots), um por vez, mais vezes no 1/3.
+func _damage_smoke(pl: SimPlayer) -> void:
+	_damage = ShipArt.damage_stage(pl.hull, pl.max_hull)
+	if _damage == 0 or _ticks % (14 if _damage == 1 else 8) != 0:
+		return
+	var spots := ShipArt.damage_spots(_art)
+	var count := mini(spots.size(), ShipArt.DAMAGE_CRACKS[_damage])
+	if count > 0:
+		fx.damage_smoke(pl.pos + spots[(_ticks / 8) % count])
 
 
 ## Rastro da Ascendida: guarda a posição da nave a cada WAKE_STEP s (só desenho; qualidade Baixa não tem).
@@ -928,7 +973,7 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 		for wy: int in range(int(r.position.y) + 8, int(r.end.y) - 4, 12):
 			ci.draw_rect(Rect2(r.position.x + 5.0, wy, r.size.x - 10.0, 2.0), Color(1.0, 0.85, 0.5, 0.35))
 	if sim.breach_frames > 0:
-		_draw_breach(ci)
+		HazardArt.breach(ci, sim, time)
 	for b: Dictionary in sim.beams:
 		var x := float(b["x"])
 		var y := float(b["y"])
@@ -941,7 +986,7 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 			ci.draw_rect(Rect2(x + w * 0.5 - 1.0, y, 1.0, length), Color(WARN_COLOR, a))
 			ci.draw_rect(Rect2(x - 0.5, y, 1.0, length), Color(WARN_COLOR, a * 0.5))
 		elif String(b.get("kind", "")) == "lightning":
-			_draw_lightning(ci, x, y, w, length, int(b["age"]))
+			HazardArt.lightning(ci, x, y, w, length, int(b["age"]), reduce_flashes, _glow)
 		elif HAZARD_COLORS.has(String(b.get("kind", ""))):
 			var hc: Color = HAZARD_COLORS[String(b["kind"])]
 			var wob := 0.85 + 0.15 * sin(time * 30.0 + x)
@@ -970,39 +1015,6 @@ func _blast(at: Vector2, size: int, delay: float, zoom: float) -> void:
 		return
 	explosions.append({"tex": tex, "frames": maxi(1, tex.get_width() / size), "size": size, "pos": at, "t": delay,
 			"scale": zoom, "duration": 0.05 * tex.get_width() / size, "rot": 0.0})
-
-
-## Gravity Breach: grade que escorre na direção da força e uma seta no centro (aviso de leitura).
-func _draw_breach(ci: CanvasItem) -> void:
-	var dir := sim.breach_dir.normalized()
-	var shift := fposmod(time * 40.0, 24.0)
-	for k: int in range(-1, int(sim.field.x / 24.0) + 2):
-		var gx := k * 24.0 + dir.x * shift
-		ci.draw_rect(Rect2(gx, 0, 1.0, sim.field.y), BREACH_COLOR)
-	for k: int in range(-1, int(sim.field.y / 24.0) + 2):
-		var gy := k * 24.0 + dir.y * shift
-		ci.draw_rect(Rect2(0, gy, sim.field.x, 1.0), BREACH_COLOR)
-	var c := sim.field * 0.5
-	for k: int in range(5):
-		var p := c + dir * (k * 6.0 - 12.0)
-		ci.draw_rect(Rect2(p - Vector2(2, 2), Vector2(4, 4)), Color(0.85, 0.7, 1.0, 0.25 + 0.12 * k))
-
-
-## Raio da tempestade: zigue-zague de segmentos (retângulos) com brilho, sorteado por passo.
-func _draw_lightning(ci: CanvasItem, x: float, y: float, w: float, length: float, age: int) -> void:
-	var seed := age / 3
-	var steps := 14
-	var prev := Vector2(x, y)
-	if not reduce_flashes and age % 6 < 3:
-		ci.draw_rect(Rect2(x - w, y, w * 2.0, length), Color(LIGHTNING_COLOR, 0.12))
-	for i: int in range(1, steps + 1):
-		var jitter := float(absi(hash(seed * 31 + i * 7)) % 100) / 100.0 - 0.5
-		var next := Vector2(x + jitter * w * 0.9, y + length * i / steps)
-		var top := minf(prev.y, next.y)
-		ci.draw_rect(Rect2(minf(prev.x, next.x) - 1.5, top, absf(next.x - prev.x) + 3.0, 3.0), LIGHTNING_COLOR)
-		ci.draw_rect(Rect2(next.x - 1.5, top, 3.0, next.y - top), LIGHTNING_COLOR)
-		prev = next
-	_tex_centered(ci, _glow, Vector2(x, y + 8.0), 1.0, Color(LIGHTNING_COLOR, 0.6))
 
 
 func _draw_duel(ci: CanvasItem, b: SimBoss) -> void:
@@ -1037,13 +1049,14 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 		var thrust := 1.0 if pl.last_move.y < -0.3 else 0.0
 		if sim.outro.rise >= 0:
 			thrust = _boost() * 2.0
-		for n: Vector2 in NOZZLES:
+		for n: Vector2 in _nozzles:
 			_tex_centered(ci, _flare, p + n, (0.28 + 0.12 * thrust) * (0.85 + 0.15 * sin(time * 37.0 + n.x)),
 					Color(_exhaust, 0.75))
 		if _muzzle > 0.0:
 			var tint := _weapon_tint()
-			_tex_centered(ci, _flare, p + Vector2(0, -21), 0.42, Color(tint, 0.9 * _muzzle / 0.06))
-			_tex_centered(ci, _sparkle, p + Vector2(0, -21), 1.6, Color(1, 1, 1, _muzzle / 0.06))
+			var muzzle := p + Vector2(0, (_art["used"] as Rect2).position.y + 2.0)
+			_tex_centered(ci, _flare, muzzle, 0.42, Color(tint, 0.9 * _muzzle / 0.06))
+			_tex_centered(ci, _sparkle, muzzle, 1.6, Color(1, 1, 1, _muzzle / 0.06))
 	if fx_level >= 1:
 		for e: SimEnemy in sim.enemies:
 			if e.depth >= 1.0:
@@ -1098,17 +1111,19 @@ func _draw_power_add(ci: CanvasItem) -> void:
 func _draw_wrecks(ci: CanvasItem) -> void:
 	for w: Dictionary in fx.wrecks:
 		var u := CombatFx.wreck_progress(w)
-		var size: int = w["size"]
+		var size: float = w["size"]
+		var tex_size: int = w["tex_size"]
 		var rect := Rect2(-size * 0.5, -size * 0.5, size, size)
+		var src := Rect2(0, 0, tex_size, tex_size)
 		if StringName(w["mode"]) == CombatFx.MELT:
 			var ms := float(w["scale"])
 			ci.draw_set_transform(w["pos"], PI, Vector2(ms, ms))
-			ci.draw_texture_rect_region(w["tex"], rect, Rect2(0, 0, size, size), Color(1, 1, 1, 2.0 + u))
+			ci.draw_texture_rect_region(w["tex"], rect, src, Color(1, 1, 1, 2.0 + u))
 			continue
 		var s := float(w["scale"]) * lerpf(1.0, 0.35, u)
 		var burn := lerpf(1.0, 0.25, u)
 		ci.draw_set_transform(w["pos"], PI + float(w["spin"]) * float(w["t"]) * (0.4 + u), Vector2(s, s))
-		ci.draw_texture_rect_region(w["tex"], rect, Rect2(0, 0, size, size),
+		ci.draw_texture_rect_region(w["tex"], rect, src,
 				Color(burn, burn * 0.62, burn * 0.5, 1.0 - u * 0.3))
 	ci.draw_set_transform(Vector2.ZERO)
 
@@ -1117,7 +1132,7 @@ func _draw_wrecks(ci: CanvasItem) -> void:
 ## de pontos (pequenos, sobem e somem em 0,75 s).
 func _draw_fx_above(ci: CanvasItem) -> void:
 	if dark and sim.player.alive:
-		_draw_dark(ci)
+		HazardArt.dark(ci, sim, time, _ring)
 	if not sim.power_fx.is_empty():
 		powers.draw_above(ci, sim)
 	for pop: Dictionary in fx.popups:
@@ -1131,20 +1146,16 @@ func _draw_fx_above(ci: CanvasItem) -> void:
 		ci.draw_string_outline(Locale.font, at, text, HORIZONTAL_ALIGNMENT_CENTER, 80, size, 3,
 				Color(0.02, 0.04, 0.08, 0.8 * alpha))
 		ci.draw_string(Locale.font, at, text, HORIZONTAL_ALIGNMENT_CENTER, 80, size, Color(col, alpha))
+	_draw_hitbox(ci)
 
 
-## Escuridão do Registro Abissal: só um halo em volta da nave e o pulso do sonar a cada 2 s.
-func _draw_dark(ci: CanvasItem) -> void:
+## Ponto da hitbox por cima de tudo (inclusive das balas): a nave HD é bem maior que a hitbox da Sim.
+func _draw_hitbox(ci: CanvasItem) -> void:
+	if not touching or not sim.player.alive:
+		return
 	var p := sim.player.pos
-	var halo := 70.0
-	var shade := Color(0.0, 0.01, 0.03, 0.86)
-	var f := sim.field
-	ci.draw_rect(Rect2(0, 0, f.x, maxf(0.0, p.y - halo)), shade)
-	ci.draw_rect(Rect2(0, p.y + halo, f.x, maxf(0.0, f.y - p.y - halo)), shade)
-	ci.draw_rect(Rect2(0, p.y - halo, maxf(0.0, p.x - halo), halo * 2.0), shade)
-	ci.draw_rect(Rect2(p.x + halo, p.y - halo, maxf(0.0, f.x - p.x - halo), halo * 2.0), shade)
-	var ping := fmod(time, 2.0) / 2.0
-	_tex_centered(ci, _ring, p, 1.0 + ping * 9.0, Color(0.4, 1.0, 0.9, 0.5 * (1.0 - ping)))
+	ci.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.08, 0.07, 0.09))
+	ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), Color(1, 1, 1))
 
 
 func _tex_centered(ci: CanvasItem, tex: Texture2D, at: Vector2, scale: float, color: Color = Color(1, 1, 1)) -> void:

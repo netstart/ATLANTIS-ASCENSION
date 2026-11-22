@@ -1,0 +1,32 @@
+Spaceships XENIS by Carlos Alface (http://carlosalface.blogspot.pt/), CC BY 3.0
+Usados em Atlantis Ascension (assets/art/hd/nautolan: scout, fighter, frigate) por tools/gen_hd_ships.py.
+O leia-me pede, por cortesia, um e-mail ao autor com o link do projeto (kalface@gmail.com): fica com o
+mantenedor, no lançamento.
+
+Title: Spaceships "XENIS"
+Author: Carlos Alface
+Submitted by: 
+URL: https://opengameart.org/content/spaceships-xenis
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): (none given)
+Files: 
+  https://opengameart.org/sites/default/files/Spaceships-16.zip
+
+In-archive notice (Spaceships-16\-READ BEFORE-.txt), verbatim:
+*********************************************************
+You can use any image from this pack "XENIS" (2D Spaceships Pack 16) in any project,
+The only condicion is that you thanks me in your project.
+
+If you use any of the images from this pack, please send me a email
+with a link to your project.
+
+Thanks
+
+kalface@gmail.com
+ 
+blog: http://carlosalface.blogspot.pt/
+
+Carlos Alface 2019
+*********************************************************

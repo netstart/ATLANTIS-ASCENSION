@@ -23,7 +23,8 @@ extends RefCounted
 ## &"survivor" {pos, done, total}, &"survivor_lost" {pos}, &"relic" {pos},
 ## &"objective_end" {kind, ok, done, total, pos, released}, &"reinforcements" {}.
 
-## Aviso antes de os alvos entrarem (1,5 s).
+## Aviso antes de os alvos entrarem (1,5 s). O rádio do aviso fica no alto do campo exatamente esse tempo (Game
+## usa WARN_FRAMES como duração dele): os alvos só entram quando ele já saiu da frente, em qualquer layout.
 const WARN_FRAMES := 90
 ## Teto de segurança de um objetivo depois do aviso (alvo sumido por outro caminho): encerra como falha.
 const MAX_FRAMES := 60 * 40

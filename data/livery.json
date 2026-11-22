@@ -1,0 +1,30 @@
+{
+	"note": "Evolução visual da aeronave pelo nível do hangar (scripts/view/ship_livery.gd). levels: um marco por nível do 2 ao 10, nome em livery.<id>. Âncoras em fração da caixa opaca da base HD (x da esquerda, y do nariz); asa e friso são espelhados no lado direito. accent: cor do brilho, da aura e dos frisos sem pintura.",
+	"levels": [
+		{"id": "tuned_engine", "level": 2},
+		{"id": "accent_glow", "level": 3},
+		{"id": "afterburner", "level": 4},
+		{"id": "stripes", "level": 5},
+		{"id": "nav_lights", "level": 6},
+		{"id": "aura", "level": 7},
+		{"id": "sensor", "level": 8},
+		{"id": "runes", "level": 9},
+		{"id": "trim", "level": 10}
+	],
+	"flame": {"scale": [1.0, 1.3], "bright": [1.0, 1.35]},
+	"glow": {"alpha": [0.22, 0.55]},
+	"ships": {
+		"falcon": {"accent": "#6fe8ff", "nose": [0.5, 0.2], "wing": [0.06, 0.72], "stripe": [0.34, 0.38], "spine": [[0.5, 0.3], [0.5, 0.7]]},
+		"manta": {"accent": "#ff8a6a", "nose": [0.5, 0.14], "wing": [0.12, 0.46], "stripe": [0.36, 0.5], "spine": [[0.5, 0.2], [0.5, 0.8]]},
+		"hydra": {"accent": "#9fd0ff", "nose": [0.5, 0.06], "wing": [0.06, 0.4], "stripe": [0.3, 0.62], "spine": [[0.5, 0.15], [0.5, 0.8]]},
+		"tempest": {"accent": "#ffb36a", "nose": [0.5, 0.06], "wing": [0.1, 0.8], "stripe": [0.3, 0.5], "spine": [[0.5, 0.15], [0.5, 0.82]]},
+		"trident": {"accent": "#ffe08a", "nose": [0.5, 0.3], "wing": [0.06, 0.1], "stripe": [0.32, 0.46], "spine": [[0.5, 0.35], [0.5, 0.82]]},
+		"atlas": {"accent": "#8fd6ff", "nose": [0.5, 0.08], "wing": [0.06, 0.55], "stripe": [0.3, 0.66], "spine": [[0.5, 0.15], [0.5, 0.8]]},
+		"ram": {"accent": "#7f9dff", "nose": [0.5, 0.05], "wing": [0.1, 0.5], "stripe": [0.3, 0.4], "spine": [[0.5, 0.12], [0.5, 0.85]]},
+		"swarm": {"accent": "#6fffe0", "nose": [0.5, 0.12], "wing": [0.06, 0.36], "stripe": [0.38, 0.7], "spine": [[0.5, 0.2], [0.5, 0.8]]},
+		"eclipse": {"accent": "#c79bff", "nose": [0.5, 0.05], "wing": [0.12, 0.5], "stripe": [0.32, 0.56], "spine": [[0.5, 0.12], [0.5, 0.85]]},
+		"nova": {"accent": "#ffb06a", "nose": [0.5, 0.05], "wing": [0.08, 0.5], "stripe": [0.3, 0.4], "spine": [[0.5, 0.12], [0.5, 0.85]]},
+		"titan": {"accent": "#ffd36a", "nose": [0.5, 0.06], "wing": [0.05, 0.6], "stripe": [0.3, 0.4], "spine": [[0.5, 0.12], [0.5, 0.85]]},
+		"ascension": {"accent": "#7fe9ff", "nose": [0.5, 0.05], "wing": [0.08, 0.4], "stripe": [0.3, 0.5], "spine": [[0.5, 0.12], [0.5, 0.85]]}
+	}
+}

@@ -49,8 +49,8 @@ var fx_level: int = 2
 ## Quantas vezes cada tipo de efeito passou inteiro pelas duas passadas de desenho (teste de fumaça).
 var drawn: Dictionary = {}
 var time: float = 0.0
-## Nave do jogador (rastro de imagens da investida) e a cor dela.
-var ship_texture: Texture2D
+## Nave do jogador (SpriteBank.player) para o rastro de imagens da investida.
+var ship_art: Dictionary = {}
 
 var _tex: Dictionary = {}
 var _beam: Texture2D
@@ -276,14 +276,18 @@ func _below(ci: CanvasItem, e: Dictionary, k: float) -> void:
 	var waiting := int(e["wait"]) > 0
 	match e["type"]:
 		&"dash":
-			if waiting or ship_texture == null:
+			var base: Texture2D = ship_art.get("base")
+			if waiting or base == null:
 				return
 			var from: Vector2 = e["from"]
-			var half := ship_texture.get_size() * 0.5
+			var tex_size: int = ship_art["tex_size"]
+			var size: float = ship_art["size"]
 			for i: int in range(AFTERIMAGES):
 				var u := float(i + 1) / float(AFTERIMAGES + 1)
 				ci.draw_set_transform(from.lerp(at, u))
-				ci.draw_texture(ship_texture, -half, Color(col.lerp(Color(0.55, 0.9, 1.0), 0.35), (0.25 + 0.55 * u) * k))
+				ci.draw_texture_rect_region(base, Rect2(-size * 0.5, -size * 0.5, size, size),
+						Rect2(0, 0, tex_size, tex_size),
+						Color(col.lerp(Color(0.55, 0.9, 1.0), 0.35), (0.25 + 0.55 * u) * k))
 			ci.draw_set_transform(Vector2.ZERO)
 		&"salvo":
 			var sprite := String(e["sprite"])

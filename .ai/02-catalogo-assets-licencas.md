@@ -29,6 +29,19 @@ preto vulcânico).
 | **Guarda Atlante** | Fleet Pack 2 — Nairan | Caças de cerâmica e ouro da Atlântida desperta |
 | **Bioformas** | Fleet Pack 3 — Nautolan | Criaturas biomecânicas, orgânicas e luminosas |
 
+**Naves HD (1.25, pedido do dono).** Jogador, as três frotas e os chefes trocaram a pixel art Void por naves
+pré-renderizadas, metálicas, com motor brilhante e maiores na tela (`tools/gen_hd_ships.py` → `assets/art/hd/`),
+com filtro linear e mipmaps. A Void continua de reserva e no resto da pixel art (escudo, míssil, coletáveis).
+CC BY 3.0 ratificada pelo mantenedor para os pacotes de MillionthVector e Carlos Alface
+([licencas.md](../docs/policies/licencas.md)); crédito exato no campo `credit` do registro, no `CREDITS.md` e na tela
+Créditos.
+
+| Asset | Autor | URL | Licença | Status | Destino | Uso |
+|---|---|---|---|---|---|---|
+| Set: Faction 1, 2, 3, 5, 6, 7 e 10 spaceships; Blue fighter; Fighter; Yellow starship | MillionthVector | https://opengameart.org/users/millionthvector | CC-BY-3.0 (Credits.txt: 4.0) | ✅ em uso 22/11 (`millionthvector_spaceships`) | `opengameart/set-faction*`, `blue-fighter-spaceship`, `fighter-spaceship`, `yellow-starship` | As 12 aeronaves do hangar, a frota Kla'ed e 5 tipos Nautolan |
+| Spaceships "XENIS" | Carlos Alface | https://opengameart.org/content/spaceships-xenis | CC-BY-3.0 | ✅ em uso 22/11 (`alface_xenis_spaceships`); o leia-me pede um e-mail de cortesia ao autor no lançamento | `opengameart/spaceships-xenis` | Nautolan scout, fighter e frigate |
+| Alien Bug Sprites, Top-down Alien Bug Sprites 1 e 2, 8 Top down Alien Bug Spider Sprites | W_K_Studio (whiteknightstudios) | https://whiteknightstudios.itch.io/alien-bug-sprites | CC0-1.0 | ✅ em uso 22/11 (`wk_studio_alien_bugs`) | `itch/whiteknightstudios-*` | Frota Nairan (insetos e aranhas) |
+
 ## 1. Nave do jogador e aeronaves
 
 | Asset | Autor | URL | Licença | Status | Destino | Uso |

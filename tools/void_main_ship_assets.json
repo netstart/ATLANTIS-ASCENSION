@@ -1,12 +1,9 @@
 {
 	"pack_root": "foozle",
 	"license_id": "foozle_void_main_ship",
-	"note": "Void (Foozle, CC0): só os arquivos usados no Vertical Slice, com nomes limpos.",
+	"note": "Void (Foozle, CC0): só os arquivos usados, com nomes limpos. A nave do jogador é HD (assets/art/hd/player); a Void fica de reserva (base, motores) e para o escudo e o míssil. As bases de avaria saíram na 1.25 (avaria agora é ShipArt).",
 	"files": {
 		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Full health.png": "art/void/main_ship/base_full.png",
-		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Slight damage.png": "art/void/main_ship/base_slight.png",
-		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Damaged.png": "art/void/main_ship/base_damaged.png",
-		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Bases/PNGs/Main Ship - Base - Very damaged.png": "art/void/main_ship/base_very_damaged.png",
 		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engines/PNGs/Main Ship - Engines - Base Engine.png": "art/void/main_ship/engine_base.png",
 		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engine Effects/PNGs/Main Ship - Engines - Base Engine - Idle.png": "art/void/main_ship/engine_base_idle.png",
 		"Foozle_2DS0011_Void_MainShip/Foozle_2DS0011_Void_MainShip/Main Ship/Main Ship - Engine Effects/PNGs/Main Ship - Engines - Base Engine - Powering.png": "art/void/main_ship/engine_base_powering.png",

@@ -1417,5 +1417,104 @@
     },
     "snapshot_file": "docs/licenses/flow_battle_music_2026-11-22.pdf",
     "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "millionthvector_spaceships",
+    "name": "Spaceships: Faction 1, 2, 3, 5, 6, 7 e 10, Blue fighter, Fighter e Yellow starship",
+    "author": "MillionthVector (http://millionthvector.blogspot.de)",
+    "credit": "Spaceships by MillionthVector (http://millionthvector.blogspot.de), CC BY 3.0. Packs: Set: Faction1, Faction2, Faction3, Faction5, Faction6, Faction7 e Faction10 spaceships; Blue fighter spaceship; Fighter spaceship; Yellow starship (OpenGameArt)",
+    "source_url": "https://opengameart.org/users/millionthvector",
+    "license_id": "CC-BY-3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-3.0.txt",
+    "notice_file": "licenses/notices/millionthvector_spaceships_NOTICE.txt",
+    "snapshot_url": "https://opengameart.org/content/set-faction7-spaceships",
+    "attribution_required": true,
+    "decision": "2026-11-22: o mantenedor (Clayton K. N. Passos) aprovou baixar e usar estes pacotes em CC BY 3.0 para uso comercial com crédito (docs/policies/licencas.md, CC BY 3.0 ratificada para estes pacotes)",
+    "files": [
+      "assets/art/hd/player/*",
+      "assets/art/hd/klaed/*",
+      "assets/art/hd/nautolan/bomber_*",
+      "assets/art/hd/nautolan/support_*",
+      "assets/art/hd/nautolan/torpedo_*",
+      "assets/art/hd/nautolan/battlecruiser_*",
+      "assets/art/hd/nautolan/dreadnought_*"
+    ],
+    "category": "art",
+    "version": "",
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (naves HD, fase 2); revisão final por Clayton antes do lançamento",
+    "sha256": {
+      "license_file": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "notice_file": "0374fecf2e757e8fece7f78d338d99d89c0e736d8a01edff606c96d4ffd2ca28",
+      "snapshot_file": "77ec438a715702eef7425dbe26361d15a51abfdf789dc0ae33edcdfcf87fb4b4"
+    },
+    "snapshot_file": "docs/licenses/millionthvector_spaceships_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "alface_xenis_spaceships",
+    "name": "Spaceships \"XENIS\" (2D Spaceships Pack 16)",
+    "author": "Carlos Alface (http://carlosalface.blogspot.pt/)",
+    "credit": "Spaceships XENIS by Carlos Alface (http://carlosalface.blogspot.pt/), CC BY 3.0",
+    "source_url": "https://opengameart.org/content/spaceships-xenis",
+    "license_id": "CC-BY-3.0",
+    "license_url": "https://creativecommons.org/licenses/by/3.0/legalcode.txt",
+    "license_file": "licenses/texts/CC-BY-3.0.txt",
+    "notice_file": "licenses/notices/alface_xenis_spaceships_NOTICE.txt",
+    "snapshot_url": "https://opengameart.org/content/spaceships-xenis",
+    "attribution_required": true,
+    "decision": "2026-11-22: o mantenedor (Clayton K. N. Passos) aprovou baixar e usar estes pacotes em CC BY 3.0 para uso comercial com crédito (docs/policies/licencas.md, CC BY 3.0 ratificada para estes pacotes)",
+    "files": [
+      "assets/art/hd/nautolan/scout_*",
+      "assets/art/hd/nautolan/fighter_*",
+      "assets/art/hd/nautolan/frigate_*"
+    ],
+    "category": "art",
+    "version": "",
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (naves HD, fase 2); revisão final por Clayton antes do lançamento",
+    "sha256": {
+      "license_file": "e6bc9e9c474700b708f568bac9e5a8a9bcb2b1dad53442f5ba449fcb848b8e76",
+      "notice_file": "9e19a9bf0503d867466d55e57593686d912d02c5e6090f6ef47874b4554da04b",
+      "snapshot_file": "37c40aa7a8cb437510a420f138c63ba6bc075a598a6cf2dc63055ebed383782c"
+    },
+    "snapshot_file": "docs/licenses/alface_xenis_spaceships_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "wk_studio_alien_bugs",
+    "name": "Alien Bug Sprites, Top-down Alien Bug Sprites 1 e 2, 8 Top down Alien Bug Spider Sprites",
+    "author": "W_K_Studio (whiteknightstudios)",
+    "source_url": "https://whiteknightstudios.itch.io/alien-bug-sprites",
+    "license_id": "CC0-1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt",
+    "license_file": "licenses/texts/CC0-1.0.txt",
+    "notice_file": "licenses/notices/wk_studio_alien_bugs_NOTICE.txt",
+    "snapshot_url": "https://whiteknightstudios.itch.io/alien-bug-sprites",
+    "attribution_required": false,
+    "files": [
+      "assets/art/hd/nairan/*"
+    ],
+    "category": "art",
+    "version": "",
+    "commercial_use": true,
+    "ai_generated": false,
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "verified_at": "2026-11-22",
+    "verified_by": "Claude (naves HD, fase 2); revisão final por Clayton antes do lançamento",
+    "sha256": {
+      "license_file": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "notice_file": "e05d8fe4b59022e9d1df59f08455f7f671a3876e2bcbe5b1214ab317168e5cbf",
+      "snapshot_file": "435392bbae56ed1c9a2a2c78e007d39e90e2168047a1916f3a008581521db7d3"
+    },
+    "snapshot_file": "docs/licenses/wk_studio_alien_bugs_2026-11-22.pdf",
+    "downloaded_at": "2026-11-22"
   }
 ]

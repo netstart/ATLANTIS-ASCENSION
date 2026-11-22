@@ -28,7 +28,7 @@ func _sim(objectives: Array, rev: int = SimRevision.CURRENT) -> Sim:
 	return sim
 
 
-## Passos até o alvo entrar (aviso de 1,5 s); devolve os eventos vistos.
+## Passos até o alvo entrar (aviso de 1,5 s, o tempo do rádio); devolve os eventos vistos.
 static func _until_start(sim: Sim) -> Array[StringName]:
 	var seen: Array[StringName] = []
 	for k: int in range(SimObjectives.WARN_FRAMES + 2):

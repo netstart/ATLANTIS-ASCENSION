@@ -29,11 +29,26 @@ comercial (NC) ou obras derivadas (ND) **não são aceitas**.
 | CC-BY 4.0 | `CC-BY-4.0` | ✅ | ✅ | ✅ | ✅ Obrigatória | Crédito ao autor |
 | BSD 2/3 cláusulas | `BSD-2-Clause`, `BSD-3-Clause` | ✅ | ✅ | ✅ | ✅ Obrigatória | Código |
 | Zlib | `Zlib` | ✅ | ✅ | ✅ | ✅ Obrigatória | Código |
-| CC-BY 3.0 | `CC-BY-3.0` | ✅ | ✅ | ✅ | ✅ Obrigatória | **A ratificar pelo mantenedor** (comum na OpenGameArt) |
+| CC-BY 3.0 | `CC-BY-3.0` | ✅ | ✅ | ✅ | ✅ Obrigatória | **Ratificada pelo mantenedor** para os pacotes listados abaixo |
 | OGA-BY 3.0 | `LicenseRef-OGA-BY-3.0` | ✅ | ✅ | ✅ | ✅ Obrigatória | **A ratificar pelo mantenedor** (CC-BY sem cláusula anti-DRM) |
 
 As duas últimas linhas ampliam a lista do hyakki. Até o mantenedor ratificar, assets nessas licenças podem ser
 baixados e avaliados, mas não entram em `assets/` nem em build.
+
+**CC-BY 3.0 ratificada (2026-11-22)** pelo mantenedor, que aprovou baixar e usar para uso comercial, com crédito,
+os pacotes das naves HD (`tools/gen_hd_ships.py`):
+
+- MillionthVector (`millionthvector_spaceships`): Set: Faction1, 2, 3, 5, 6, 7 e 10 spaceships, Blue fighter
+  spaceship, Fighter spaceship e Yellow starship, da OpenGameArt. As páginas dizem CC BY 3.0 e o `Credits.txt`
+  de cada zip diz CC BY 4.0; o registro usa a 3.0 (a mais restritiva das duas). Crédito: "Spaceships by
+  MillionthVector (http://millionthvector.blogspot.de), CC BY 3.0", mais a lista dos pacotes.
+- Carlos Alface (`alface_xenis_spaceships`): Spaceships "XENIS". Crédito: "Spaceships XENIS by Carlos Alface
+  (http://carlosalface.blogspot.pt/), CC BY 3.0". O leia-me pede, por cortesia, um e-mail ao autor com o link do
+  jogo; fica com o mantenedor no lançamento.
+
+A linha de crédito exata vai no campo `credit` do registro: sai no `CREDITS.md`, no `licenses/index.json` e na tela
+Créditos, e o `check_licenses.py` reprova se ela faltar no `CREDITS.md`. Outro pacote em CC-BY 3.0 precisa de nova
+ratificação registrada aqui e no campo `decision`. OGA-BY 3.0 continua a ratificar.
 
 Licenças próprias de SDKs obrigatórios das lojas (Google Mobile Ads SDK, Play Billing Library, Steamworks SDK) entram
 como `LicenseRef-<nome>`, com o texto copiado e a confirmação de que permitem distribuição no binário. Cada uma exige

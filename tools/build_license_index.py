@@ -13,7 +13,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 INDEX_FIELDS = ("id", "name", "author", "license_id", "category", "version", "downloaded_at",
-                "verified_at", "modifications", "source_url", "license_file", "notice_file")
+                "verified_at", "modifications", "source_url", "license_file", "notice_file", "credit")
 
 
 def files_count(entry: dict) -> int:
@@ -74,6 +74,9 @@ def render(entries: list) -> dict:
         credits += ["", f"## {title}", ""]
         for e in rows:
             credits.append(f"- **{e['name']}** — {e['author']} ({e['license_id']}) — {e['source_url']}")
+            # Linha de crédito pedida pelo autor (CC BY), copiada como está.
+            if e.get("credit"):
+                credits.append(f"  - {e['credit']}")
     credits += ["", "## Agradecimentos", "",
                 "A todos os autores acima, que liberaram seu trabalho para uso comercial e livre.", ""]
     return {

@@ -95,7 +95,7 @@ func _build() -> void:
 	_paint_icon = TextureRect.new()
 	_paint_icon.custom_minimum_size = Vector2(24, 24)
 	_paint_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_paint_icon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_paint_icon.texture_filter = SpriteBank.HD_FILTER
 	_paint.add_child(_paint_icon)
 	_paint_name = UiTheme.label("", UiTheme.SMALL_SIZE, UiTheme.TEXT)
 	_paint_name.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -290,7 +290,7 @@ func refresh_texts() -> void:
 	var cosmetic := String(SaveManager.data["selected"].get("cosmetic", ""))
 	_paint.visible = not cosmetic.is_empty() and not bool(result.get("replay", false))
 	if _paint.visible:
-		_paint_icon.texture = ShipIcon.texture(Color(Store.tint_of(cosmetic)))
+		_paint_icon.texture = ShipIcon.texture(String(SaveManager.data["selected"]["ship"]), ListScreen.paint_of(cosmetic))
 		_paint_name.text = tr("cosmetic." + cosmetic)
 	_offer.visible = _offer_now and not Iap.owns(SaveManager.data, Iap.STARTER)
 	if _offer.visible:

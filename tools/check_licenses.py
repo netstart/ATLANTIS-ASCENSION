@@ -22,7 +22,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 ALLOWED = {"CC0-1.0", "MIT", "Apache-2.0", "OFL-1.1", "CC-BY-4.0", "BSD-2-Clause", "BSD-3-Clause",
-           "Zlib", "FTL"}
+           "Zlib", "FTL", "CC-BY-3.0"}
 BLOCKED_FLAGS = ("personal_only", "no_monetized_games")
 MAX_AGE_DAYS = 180
 IGNORED = ("*.import", "*.uid", "assets/asset_index.json")
@@ -111,6 +111,8 @@ def main() -> int:
     for e in entries:
         if e.get("attribution_required") and e["name"] not in credits:
             errors.append(f"{e['id']}: exige crédito e não está em CREDITS.md")
+        if e.get("credit") and e["credit"] not in credits:
+            errors.append(f"{e['id']}: a linha de crédito do autor não está em CREDITS.md")
     for message in errors:
         print("ERRO", message)
     if errors:

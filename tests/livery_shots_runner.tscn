@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://tests/livery_shots_runner.gd" id="1"]
+
+[node name="LiveryShotsRunner" type="Node2D"]
+script = ExtResource("1")

@@ -15,6 +15,9 @@ const REDRAW_HZ := 30.0
 const SHIP_SIZE := 48.0
 
 var tilt := Vector2.ZERO
+## Aeronave no pedestal (id de data/ships.json) e nível do hangar dela.
+var ship: StringName = &"falcon"
+var level: int = 1
 var reduce_motion: bool = false
 var ship_center := Vector2.ZERO
 
@@ -24,8 +27,6 @@ var _drag_tilt := Vector2.ZERO
 var _pulse: float = 0.0
 var _wave: float = -1.0
 var _wave_at := Vector2.ZERO
-var _ship: Texture2D
-var _engine: Texture2D
 var _glow: Texture2D
 var _ring: Texture2D
 var _k: float = 2.0
@@ -33,8 +34,8 @@ var _k: float = 2.0
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
-	_ship = SpriteBank.texture("res://assets/art/void/main_ship/base_full.png")
-	_engine = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_powering.png")
+	texture_filter = SpriteBank.HD_FILTER
+	material = ShipArt.material()
 	_glow = SpriteBank.generated("fx/glow_32")
 	_ring = SpriteBank.generated("fx/ring_128")
 
@@ -118,16 +119,15 @@ func _draw() -> void:
 	var shadow_w := 26.0 * k * (1.0 - bob * 0.01)
 	draw_texture_rect(_glow, Rect2(base + Vector2(-shadow_w, -shadow_w * 0.16), Vector2(shadow_w * 2.0, shadow_w * 0.32)),
 			false, Color(0.0, 0.02, 0.05, 0.55))
-	var frames := maxi(1, _engine.get_width() / 48)
-	var frame := SpriteBank.frame_rect(int(_time * 12.0) % frames, 48)
-	draw_set_transform(ship_center, lean, Vector2(k, k))
-	draw_texture_rect_region(_engine, Rect2(-24, -24, 48, 48), frame, Color(1, 1, 1, 0.75 + 0.25 * _pulse))
-	# Luz quente dos bocais (a mesma da partida, WorldView.NOZZLES), pulsando com o toque na nave.
-	for nozzle: Vector2 in WorldView.NOZZLES:
+	var art := SpriteBank.player(ship)
+	var z := k * 48.0 / maxf(1.0, maxf((art["used"] as Rect2).size.x, (art["used"] as Rect2).size.y))
+	draw_set_transform(ship_center, lean, Vector2(z, z))
+	# Luz quente dos bocais (os mesmos da partida, ShipArt.nozzles), pulsando com o toque na nave.
+	for nozzle: Vector2 in ShipArt.nozzles(art):
 		var r := (5.0 + 3.0 * _pulse) * (0.9 + 0.1 * sin(_time * 31.0 + nozzle.x))
 		draw_texture_rect(_glow, Rect2(nozzle + Vector2(-r, -r * 0.6), Vector2(r * 2.0, r * 2.2)), false,
 				Color(WorldView.EXHAUST_COLOR, 0.55 + 0.3 * _pulse))
-	draw_texture(_ship, Vector2(-24, -24))
+	ShipArt.draw(self, art, _time, level, 1.0, true)
 	draw_set_transform(Vector2.ZERO)
 	# Varredura de scanner subindo pela nave (holograma do hangar).
 	var scan := fmod(_time * 0.45, 1.6)

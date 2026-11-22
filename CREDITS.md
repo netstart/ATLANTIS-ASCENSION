@@ -20,6 +20,11 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
 - **Animated Explosions** — Luis Zuno (ansimuz) (CC0-1.0) — https://opengameart.org/content/animated-explosions
 - **Cyberpunk Portraits** — Hyptosis (CC0-1.0) — https://opengameart.org/content/cyberpunk-portraits
+- **Spaceships: Faction 1, 2, 3, 5, 6, 7 e 10, Blue fighter, Fighter e Yellow starship** — MillionthVector (http://millionthvector.blogspot.de) (CC-BY-3.0) — https://opengameart.org/users/millionthvector
+  - Spaceships by MillionthVector (http://millionthvector.blogspot.de), CC BY 3.0. Packs: Set: Faction1, Faction2, Faction3, Faction5, Faction6, Faction7 e Faction10 spaceships; Blue fighter spaceship; Fighter spaceship; Yellow starship (OpenGameArt)
+- **Spaceships "XENIS" (2D Spaceships Pack 16)** — Carlos Alface (http://carlosalface.blogspot.pt/) (CC-BY-3.0) — https://opengameart.org/content/spaceships-xenis
+  - Spaceships XENIS by Carlos Alface (http://carlosalface.blogspot.pt/), CC BY 3.0
+- **Alien Bug Sprites, Top-down Alien Bug Sprites 1 e 2, 8 Top down Alien Bug Spider Sprites** — W_K_Studio (whiteknightstudios) (CC0-1.0) — https://whiteknightstudios.itch.io/alien-bug-sprites
 
 ## Música
 

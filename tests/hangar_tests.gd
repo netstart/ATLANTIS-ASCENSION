@@ -130,7 +130,7 @@ func _flow(host: Node, check: Callable) -> void:
 			"Oficina: Evoluir nave sobe a Falcon")
 	check.call(hangar.find_child("NewPart", true, false) != null, "Oficina: a subida mostra o selo da peça")
 	# Peça da evolução: a próxima abre no cartão com o botão de evoluir.
-	(hangar.find_child("Item_nav_lights", true, false) as Button).pressed.emit()
+	(hangar.find_child("Item_" + String(ShipLivery.part_at(3)), true, false) as Button).pressed.emit()
 	check.call(press.call("UpgradePart") and Economy.ship_level(p, &"falcon") == 3,
 			"Oficina: Evoluir pelo cartão da peça")
 	# Arma: o encaixe abre a sub-aba Armas; comprar equipa; tirar e pôr; evoluir.

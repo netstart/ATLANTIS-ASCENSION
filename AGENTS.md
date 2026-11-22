@@ -132,6 +132,8 @@ python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
+# Folha da evolução do hangar e das avarias (12 naves x níveis 1, 4, 7, 10, pintura e avaria)
+D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/livery_shots_runner.tscn -- --shots=shots
 # Galeria do clima (cada estado de data/weather.json no auge, com relâmpago na tempestade)
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
 # Balanceamento: quanto o bot leva em cada luta de chefe e em cada fase (todas ou -- --only=c1m1,c9m3)
@@ -143,8 +145,10 @@ D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/gam
 python -I tools\gen_sprites.py
 # Retratos dos personagens, a partir do Cyberpunk Portraits (CC0) baixado (precisa de numpy; --preview DIR grava a folha)
 python tools\gen_portraits.py
-# Evolução visual da nave por nível do hangar (peças de 48x48 alinhadas à nave; --preview DIR grava os 10 níveis)
-python -I tools\gen_livery.py
+# Naves HD (jogador e frotas; numpy e Pillow; grava assets\art\hd e registra no asset_index; --preview DIR folhas)
+python tools\gen_hd_ships.py
+# Evolução da nave no hangar: divisa, rachadura e emblemas dos marcos (Pillow; --preview DIR grava os emblemas)
+python tools\gen_livery.py
 # Arte dos poderes (projéteis, efeitos e os 36 ícones; numpy; --preview DIR grava a folha de revisão fora de assets)
 python tools\gen_power_sprites.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)

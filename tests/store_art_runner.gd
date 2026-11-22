@@ -62,14 +62,14 @@ func _compose() -> Control:
 	var engine_strip := load(BootScreen.ENGINE_PATH) as Texture2D
 	var engine_atlas := AtlasTexture.new()
 	engine_atlas.atlas = engine_strip
-	engine_atlas.region = SpriteBank.frame_rect(0, 48)
+	engine_atlas.region = SpriteBank.frame_rect(0, engine_strip.get_height())
 	for tex: Texture2D in [engine_atlas, load(BootScreen.SHIP_PATH) as Texture2D]:
 		var ship := TextureRect.new()
 		ship.texture = tex
-		ship.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		ship.texture_filter = SpriteBank.HD_FILTER
 		ship.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		ship.stretch_mode = TextureRect.STRETCH_SCALE
-		ship.size = Vector2(48, 48) * SHIP_SCALE
+		ship.size = Vector2(96, 96) * SHIP_SCALE * 0.5
 		ship.position = Vector2(618, 40)
 		art.add_child(ship)
 	# Logo à esquerda, como na tela de título (mesma fonte com espaço entre letras e o mesmo brilho).

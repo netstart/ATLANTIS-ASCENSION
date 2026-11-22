@@ -63,6 +63,9 @@ var _label: StringName = &""
 var _rainbow: float = -1.0
 var _emit_clock: float = 0.0
 var _ticks: int = 0
+## Bocais e pontas das asas da nave (relativos ao centro), lidos da arte uma vez.
+var _nozzles: Array[Vector2] = []
+var _tips: Array[Vector2] = []
 var _cap: float = 0.07
 
 
@@ -315,12 +318,18 @@ func _emit_ship(w: Weather) -> void:
 	var fx := world.fx
 	var h := absi(hash(_ticks * 2654435761))
 	var r := float(h % 1000) / 1000.0
-	var tips: Array[Vector2] = [pl.pos + Vector2(-12, 4), pl.pos + Vector2(12, 4)]
+	if _nozzles.is_empty():
+		var art := SpriteBank.player(StringName(String(pl.ship.get("id", "falcon"))))
+		_nozzles = ShipArt.nozzles(art)
+		var used: Rect2 = art["used"]
+		_tips = [Vector2(used.position.x * 0.8, used.get_center().y + 4.0),
+				Vector2(used.end.x * 0.8, used.get_center().y + 4.0)]
+	var tips: Array[Vector2] = [pl.pos + _tips[0], pl.pos + _tips[1]]
 	var tip: Vector2 = tips[_ticks % 2]
 	if w.medium == &"water":
 		# Bolhas do motor, arrastadas pela corrente.
 		if _ticks % 3 == 0:
-			var nozzle: Vector2 = pl.pos + WorldView.NOZZLES[_ticks % 2]
+			var nozzle: Vector2 = pl.pos + _nozzles[_ticks % 2]
 			fx.light.spawn(CombatFx.SPARKLE, nozzle, Vector2(r * 8.0 - 4.0, 18.0) + w.wind * 0.6, 0.6,
 					0.7, 1.2, Color(fx.foam, 0.55), Color(fx.foam, 0.0), 1.5)
 		return

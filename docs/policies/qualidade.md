@@ -55,9 +55,20 @@ Regras herdadas do hyakki, protegidas pelos benchmarks da [política de testes](
 
 ## Arte e technical art
 
-- Um estilo só. A base é a série **Void** (Foozle, CC0). Todo asset de outro pack passa pelo shader de paleta
-  unificada (`shaders/palette_tint.gdshader`) antes de entrar em cena.
-- Pixel art sem filtro (`default_texture_filter=0`), sem escala fracionária na partida, `snap_2d_transforms_to_pixel`.
+- **Naves em alta definição** (pedido do dono, 1.25): jogador, frotas inimigas e chefes são pré-renderizados,
+  metálicos, com motor brilhante, no visual dos shmups modernos de celular (`tools/gen_hd_ships.py`, em
+  `assets/art/hd/`). Uma família só: o gerador normaliza contraste, saturação, luz de borda (de cima à esquerda na
+  tela) e contorno escuro fino de todas, e a chama de motor é desenhada pelo projeto. Texturas a 2 texels por
+  unidade lógica (desenho = lado da textura / 2), com mipmaps no `.import` e filtro **linear com mipmaps** nas
+  camadas que desenham naves (WorldView, vistas dos menus): nunca nearest, que serrilha e cintila em escala
+  fracionária. A Void continua como reserva quando falta a arte HD.
+- Pixel art (balas, coletáveis, efeitos, cenário, ícones da série Void e os gerados por `tools/gen_sprites.py`)
+  continua sem filtro (`default_texture_filter=0`), em escala inteira e com `snap_2d_transforms_to_pixel`; ela não
+  divide camada com as naves HD (cada camada tem um filtro só). Asset de outro pack de pixel art passa pelo shader
+  de paleta unificada (`shaders/palette_tint.gdshader`) antes de entrar em cena.
+- A nave HD não é tingida pela cor de `data/ships.json`: a arte já tem cor. A pintura da loja recolore preservando o
+  sombreado (modo pintura de `shaders/sprite_flash.gdshader`), e a evolução do hangar é luz por cima da arte
+  (chama, brilho, aura, frisos), nunca peças coladas no casco.
 - Interface no guia [docs/design/ui-style.md](../design/ui-style.md) ("neon abissal", redesenho 1.6): stretch
   `canvas_items` (texto e vetores na resolução física, layout na lógica), fonte Exo 2, chanfro 45° como única
   forma, cor = significado, um fundo vivo compartilhado (`AbyssBackdrop`) e uma única ação dourada por tela.
@@ -65,7 +76,8 @@ Regras herdadas do hyakki, protegidas pelos benchmarks da [política de testes](
   contra o fundo da fase é ≥ 4,5:1, medido por `tests/bullet_contrast_tests.gd` em capturas de cada capítulo.
 - A profundidade (parallax, escala, névoa) nunca cobre a camada de jogo. Camadas de primeiro plano ficam abaixo de
   35% de opacidade sobre a área de jogo e somem durante padrões densos.
-- Hitbox do jogador visível (ponto de 3 px) sempre que o dedo está pressionado.
+- Hitbox do jogador visível (ponto de 3 px) sempre que o dedo está pressionado, desenhado por cima de tudo
+  (inclusive das balas inimigas): a nave HD é maior que a hitbox, e o jogador precisa ver o ponto que conta.
 
 ## Áudio
 

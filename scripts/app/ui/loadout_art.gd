@@ -4,10 +4,9 @@ extends RefCounted
 ## ladrilhos das sub-abas. Tudo montado em código a partir da arte que o projeto já tem, sem arte nova
 ## de terceiros, e guardado em cache (uma imagem por figura):
 ##
-## - nave(tinta, nível): a aeronave Void tingida com a pintura e vestida com as peças do nível
-##   (ShipLivery); serve de miniatura da pintura e do núcleo.
-## - peça(id, tinta): a nave apagada como silhueta e só a peça daquele nível acesa, na família de cor
-##   dela (casco, acento ou metal), para o jogador ver ONDE a peça entra.
+## - nave(id, pintura): a miniatura HD da aeronave com a pintura (ShipIcon); serve de miniatura da pintura e do
+##   núcleo.
+## - peça(id): o emblema do marco da evolução (ShipLivery.icon), uma nave apagada com só o efeito aceso.
 ## - secundária: o míssil (proj_rocket da série Void) ou três drones (fx/drone) em formação.
 ## - asa(efeito): emblema desenhado por distância (par de asas apagado e o símbolo do efeito em cor).
 ## - dificuldade: divisas empilhadas (uma a quatro) na cor da ameaça.
@@ -24,7 +23,6 @@ extends RefCounted
 ##   que não se compram com Pérolas, lendárias;
 ## - dificuldade, pela ameaça: Brisa comum, Normal rara, Veterano épica, Abissal lendária.
 
-const SHIP_PATH := "res://assets/art/void/main_ship/base_full.png"
 const ROCKET_PATH := "res://assets/art/void/main_ship/proj_rocket.png"
 const DRONE_PATH := "res://assets/art/generated/fx/drone.png"
 ## Lado mínimo das figuras em pixels (a pixel art sobe em múltiplo inteiro até passar disto).
@@ -93,40 +91,14 @@ static func difficulty_rarity(diff: StringName) -> int:
 
 # --- Figuras ---------------------------------------------------------------------------------------
 
-## A aeronave na `tint`, com as peças estáticas do `level` (sem chamas nem brilhos: é miniatura).
-static func ship(tint: Color, level: int) -> Texture2D:
-	var key := "ship:%s:%d" % [tint.to_html(), level]
-	if _cache.has(key):
-		return _cache[key]
-	var base := _image(SHIP_PATH)
-	if base == null:
-		return null
-	var out := Image.create(base.get_width(), base.get_height(), false, Image.FORMAT_RGBA8)
-	var accent := ShipLivery.accent_of(tint)
-	for layer: int in [ShipLivery.Layer.UNDER, -1, ShipLivery.Layer.OVER]:
-		if layer == -1:
-			_stamp(out, base, tint)
-			continue
-		for p: Dictionary in ShipLivery.PARTS:
-			if int(p["level"]) <= level and int(p["layer"]) == layer:
-				_stamp(out, _image(ShipLivery.PATH % p["id"]), _paint(p, tint, accent))
-	return _store(key, out)
+## A aeronave `ship` com a `paint` da loja (miniatura HD de ShipIcon; a evolução é luz animada, fica nas vistas).
+static func ship(ship_id: String, paint: Color = Color(0, 0, 0, 0)) -> Texture2D:
+	return ShipIcon.texture(ship_id, paint)
 
 
-## A nave como silhueta escura e só a peça `id` acesa (ladrilho da evolução).
-static func part(id: StringName, tint: Color) -> Texture2D:
-	var key := "part:%s:%s" % [id, tint.to_html()]
-	if _cache.has(key):
-		return _cache[key]
-	var base := _image(SHIP_PATH)
-	if base == null:
-		return null
-	var out := Image.create(base.get_width(), base.get_height(), false, Image.FORMAT_RGBA8)
-	_stamp(out, base, Color(0.32, 0.46, 0.6, 0.6))
-	for p: Dictionary in ShipLivery.PARTS:
-		if p["id"] == id:
-			_stamp(out, _image(ShipLivery.PATH % id), _paint(p, tint, ShipLivery.accent_of(tint)))
-	return _store(key, out)
+## Emblema de um marco da evolução (ShipLivery.icon, de tools/gen_livery.py): ladrilho da evolução.
+static func part(id: StringName) -> Texture2D:
+	return ShipLivery.icon(id)
 
 
 static func secondary(kind: StringName) -> Texture2D:
@@ -221,30 +193,6 @@ static func _image(path: String) -> Image:
 		img.decompress()
 	img.convert(Image.FORMAT_RGBA8)
 	return img
-
-
-## Pinta `src` multiplicado por `tint` por cima de `dst` (mesmo tamanho).
-static func _stamp(dst: Image, src: Image, tint: Color) -> void:
-	if src == null:
-		return
-	var w := mini(dst.get_width(), src.get_width())
-	var h := mini(dst.get_height(), src.get_height())
-	for y: int in range(h):
-		for x: int in range(w):
-			var c := src.get_pixel(x, y)
-			if c.a <= 0.0:
-				continue
-			var top := Color(c.r * tint.r, c.g * tint.g, c.b * tint.b, c.a * tint.a)
-			dst.set_pixel(x, y, _over(dst.get_pixel(x, y), Color(top, 1.0), top.a))
-
-
-static func _paint(p: Dictionary, tint: Color, accent: Color) -> Color:
-	match int(p["paint"]):
-		ShipLivery.Paint.HULL:
-			return tint
-		ShipLivery.Paint.ACCENT:
-			return accent
-	return Color.WHITE
 
 
 ## Guarda a imagem como textura com mipmaps; pixel art (`pixel`) sobe antes em múltiplo inteiro.

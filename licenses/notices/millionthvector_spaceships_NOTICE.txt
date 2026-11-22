@@ -1,0 +1,165 @@
+Spaceships by MillionthVector (http://millionthvector.blogspot.de), CC BY 3.0
+Usados em Atlantis Ascension (assets/art/hd/player, klaed e parte de nautolan) por tools/gen_hd_ships.py:
+recorte, giro, escala, acabamento de cor, contorno, chama de motor própria e brilho da silhueta.
+As páginas da OpenGameArt dizem CC BY 3.0; o Credits.txt de cada zip diz CC BY 4.0. O projeto segue a mais
+antiga (3.0, ratificada pelo mantenedor) e dá o crédito pedido pelo autor.
+
+Title: Set: Faction1 spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction1-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction1-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction1-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Set: Faction2 spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction2-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction2-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction2-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Set: Faction3 spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction3-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction3-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction3-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Set: Faction5 spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction5-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction5-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction5-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Set: Faction6 spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction6-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction6-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction6-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Set: Faction7 spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction7-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction7-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction7-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Set: Faction10 Spaceships
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/set-faction10-spaceships
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Faction10-Spaceships-by-MillionthVector.zip
+
+In-archive notice (Faction10-Spaceships-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Blue fighter spaceship
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/blue-fighter-spaceship
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): (none given)
+Files: 
+  https://opengameart.org/sites/default/files/BlueFighterSpaceship-by-MillionthVector.zip
+
+In-archive notice (BlueFighterSpaceship-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Fighter spaceship
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/fighter-spaceship
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): Mention MillionthVector and, if feasible, place a link to his blog http://millionthvector.blogspot.de.
+Files: 
+  https://opengameart.org/sites/default/files/Fighter1-by-MillionthVector.zip
+
+In-archive notice (Fighter1-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)
+
+Title: Yellow starship
+Author: MillionthVector
+Submitted by: Bonsaiheldin
+URL: https://opengameart.org/content/yellow-starship
+Downloaded: 2026-11-22
+License(s) as listed on the page: CC-BY 3.0
+License URL(s): http://creativecommons.org/licenses/by/3.0/
+Attribution Instructions (verbatim from page): (none given)
+Files: 
+  https://opengameart.org/sites/default/files/Starship-by-MillionthVector.zip
+
+In-archive notice (Starship-by-MillionthVector\Credits.txt), verbatim:
+This work has been released under the Creative Commons BY License: https://creativecommons.org/licenses/by/4.0/
+
+By MillionthVector (http://millionthvector.blogspot.de)

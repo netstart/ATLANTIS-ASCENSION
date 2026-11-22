@@ -539,3 +539,19 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `scripts/game/hud_objective.gd` (testado em todas as resoluções); falas e sons em `game.gd` (sino quente numa
   escala maior a partir de 0,6 por atlante salvo; nada agudo); linhas no resultado ("Resgate 4/5 ★"). Bot mira os
   alvos e busca atlantes e relíquia. Textos em `tools/i18n/objectives.py`. Falta conferir no aparelho
+- ✅ Naves HD, fase 2 (pedido do dono: visual dos shmups modernos de celular). `tools/gen_hd_ships.py` gera as 12
+  aeronaves e as 24 naves das três frotas em `assets/art/hd/` (2 texels por unidade, motor de 6 quadros, pós-combustão
+  do jogador, brilho da silhueta; Kla'ed scout e fighter mais claros com borda vermelha) e registra cada arquivo no
+  `asset_index` com a licença do autor (MillionthVector e XENIS em CC BY 3.0, ratificada; W_K_Studio CC0; crédito
+  exato no campo `credit`, no `CREDITS.md` e na tela Créditos). `SpriteBank` prefere a HD (Void de reserva) e separa
+  `tex_size` de `size`; a nave do jogador é a da carga (`SpriteBank.player`), desenhada por `ShipArt` na partida, na
+  ala, no Fantasma e nos menus, sem a tinta de `ships.json`; pintura da loja recolore pelo shader
+  (`sprite_flash.gdshader`, modo pintura) e nas miniaturas (`ShipIcon`). Camadas de naves com filtro linear com
+  mipmaps; pixel art numa camada própria; hitbox por cima de tudo. Avaria genérica a 2/3 e 1/3 (escurece, rachaduras
+  com faísca e fumaça em pontos fixos do casco). Evolução do hangar refeita como luz (`data/livery.json`,
+  `ShipLivery`): chama 1,0→1,3x, brilho de acento, pós-combustão no 4, divisas no 5, luzes de navegação no 6, aura no
+  7, cristal no 8, runas no 9 e pulso de borda em ouro no 10; emblemas e decalques em `tools/gen_livery.py` (as peças
+  48x48 da Void saíram). Explosão das naves HD em partículas (sem tira Void). Objetivos (revisão 4): o rádio do aviso dura
+  exatamente o aviso da Sim (1,5 s), então os alvos entram com o alto do campo livre em todo layout. Testes em
+  `tests/sprite_bank_tests.gd`, `tests/livery_tests.gd`, `tests/layout_tests.gd` e `tests/credits_screen_tests.gd`.
+  Falta conferir no aparelho

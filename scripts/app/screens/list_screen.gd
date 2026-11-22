@@ -531,11 +531,12 @@ func glyph(kind: StringName, color: Color = UiTheme.WHITE, size: int = 12) -> Te
 	return t
 
 
-## Vista da aeronave (herói do hangar, miniatura da coleção e da loja), com as peças do `level` do
-## hangar (ShipLivery).
-func ship_view(tint: Color, zoom: int, dim: bool = false, level: int = 1) -> ShipView:
+## Vista da aeronave `ship` (herói do hangar, miniatura da coleção e da loja), com a `paint` da loja (alfa 0 = a
+## arte como é) e a evolução do `level` do hangar (ShipLivery).
+func ship_view(ship: String, paint: Color, zoom: int, dim: bool = false, level: int = 1) -> ShipView:
 	var view := ShipView.new()
-	view.tint = tint
+	view.ship = StringName(ship)
+	view.paint = paint
 	view.zoom = zoom
 	view.dim = dim
 	view.level = level
@@ -543,7 +544,13 @@ func ship_view(tint: Color, zoom: int, dim: bool = false, level: int = 1) -> Shi
 	return view
 
 
-## Cor da aeronave como aparece na partida: tinta da nave e, por cima, a pintura equipada.
+## Pintura da loja de um cosmético (alfa 0 sem pintura): o que a nave HD veste na partida e nos menus.
+static func paint_of(cosmetic: String) -> Color:
+	var paint := Store.tint_of(cosmetic)
+	return Color(paint) if not paint.is_empty() else Color(0, 0, 0, 0)
+
+
+## Cor de destaque da aeronave (marcador do mapa, emblemas): a pintura equipada ou a tinta de data/ships.json.
 static func ship_tint(ship: String, cosmetic: String = "") -> Color:
 	var paint := Store.tint_of(cosmetic)
 	if not paint.is_empty():
@@ -757,9 +764,9 @@ static func _poly_sd(p: Vector2, pts: PackedVector2Array) -> float:
 
 
 ## Aeronave em destaque: halo ciano em degradê (círculos vetoriais, nítidos em qualquer escala), anel
-## fino, motor animado e a nave em escala inteira com filtro nearest, vestida com as peças do nível
-## (ShipLivery; no nível máximo o halo vira ouro). Flutua 2 pontos devagar; parada em "reduzir
-## movimento". Redesenha a 15 Hz, só enquanto visível (60 Hz durante a revelação).
+## fino e a nave HD (ShipArt: motor, pintura e a evolução do nível, ShipLivery; no nível máximo o halo vira ouro),
+## com filtro linear com mipmaps e ampliada para a caixa opaca dela caber em SIZE * zoom. Flutua 2 pontos devagar;
+## parada em "reduzir movimento". Redesenha a 15 Hz, só enquanto visível (60 Hz durante a revelação).
 ## `reveal()`: a peça nova acabou de ser montada — onda de luz e centelhas que se abrem.
 class ShipView:
 	extends Control
@@ -770,7 +777,8 @@ class ShipView:
 	const ASCEND_TIME := 2.4
 	const FX_LOOP := 2.6
 
-	var tint := Color.WHITE
+	var ship: StringName = &"falcon"
+	var paint := Color(0, 0, 0, 0)
 	var zoom: int = 2
 	var dim: bool = false
 	var level: int = 1
@@ -784,15 +792,14 @@ class ShipView:
 	var _time: float = 0.0
 	var _reveal: float = -1.0
 	var _wait: float = 0.0
-	var _base: Texture2D
-	var _engine: Texture2D
+	var _art: Dictionary = {}
 	var _shot: Texture2D
 	var _glow: Texture2D
 
 	func _ready() -> void:
-		_base = SpriteBank.texture("res://assets/art/void/main_ship/base_full.png")
-		_engine = SpriteBank.texture("res://assets/art/void/main_ship/engine_base_powering.png")
-		texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_art = SpriteBank.player(ship)
+		texture_filter = SpriteBank.HD_FILTER
+		material = ShipArt.material()
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		custom_minimum_size = Vector2(SIZE * float(zoom) + 24.0, SIZE * float(zoom) + 12.0)
 		if not fx.is_empty():
@@ -827,31 +834,30 @@ class ShipView:
 		var radius := SIZE * float(zoom) * 0.62
 		var ascended := level >= Economy.SHIP_MAX_LEVEL and not dim
 		var ring := UiTheme.GOLD if ascended else UiTheme.CYAN
-		var halo := Color(tint.lerp(ring, 0.6), 0.022 if not dim else 0.01)
+		var accent := ShipLivery.accent(ship, paint)
+		var halo := Color(accent.lerp(ring, 0.6), 0.022 if not dim else 0.01)
 		for i: int in range(20):
 			draw_circle(center, radius * (1.0 - float(i) * 0.045), halo, true, -1.0, true)
 		var ring_alpha := (0.3 if ascended else 0.18) if not dim else 0.08
 		draw_arc(center, radius, 0.0, TAU, 64, Color(ring, ring_alpha), 1.0, true)
-		if _base == null:
+		var base: Texture2D = _art.get("base")
+		if base == null:
 			return
-		var col := Color(0.16, 0.24, 0.34, 0.9) if dim else tint
-		var z := float(zoom)
+		var z := float(zoom) * fit(_art)
 		var calm := UiFx.reduced()
 		if _reveal >= 0.0 and level >= Economy.SHIP_MAX_LEVEL:
 			_draw_ascend(center, radius, clampf(_reveal / ASCEND_TIME, 0.0, 1.0))
 		if not dim and fx.has("trail"):
 			_draw_trail(center, z, fx["trail"])
 		draw_set_transform(center.round(), 0.0, Vector2(z, z))
-		var half := Vector2(SIZE, SIZE) * 0.5
-		if _engine != null and not dim:
-			var frames := maxi(1, _engine.get_width() / int(SIZE))
-			draw_texture_rect_region(_engine, Rect2(-half, half * 2.0),
-					SpriteBank.frame_rect(int(_time * 10.0) % frames, int(SIZE)), col)
-		if not dim:
-			ShipLivery.draw_under(self, level, col, _time, 1.0, true, calm)
-		draw_texture(_base, -half, col)
-		if not dim:
-			ShipLivery.draw_over(self, level, col, _time, 1.0, calm)
+		if dim:
+			# Ainda não é sua: a silhueta escura da nave, sem motor nem evolução.
+			var tex_size: int = _art["tex_size"]
+			var side: float = _art["size"]
+			draw_texture_rect_region(base, Rect2(-side * 0.5, -side * 0.5, side, side), Rect2(0, 0, tex_size, tex_size),
+					Color(0.2, 0.28, 0.38, 0.9))
+		else:
+			ShipArt.draw(self, _art, _time, level, 1.0, true, paint, calm)
 		draw_set_transform(Vector2.ZERO)
 		if not dim and fx.has("shot") and fx_room:
 			_draw_shots(center, z, fx["shot"])
@@ -860,19 +866,24 @@ class ShipView:
 		if _reveal >= 0.0:
 			_draw_reveal(center, radius)
 
+	## Escala que faz a caixa opaca da nave caber em SIZE (a HD tem de 52 a 60 unidades).
+	static func fit(art: Dictionary) -> float:
+		var used: Rect2 = art.get("used", Rect2(-24, -24, 48, 48))
+		return SIZE / maxf(1.0, maxf(used.size.x, used.size.y))
+
 	## Rastro: contas de luz que saem dos dois bocais e apagam descendo.
 	func _draw_trail(center: Vector2, z: float, color: Color) -> void:
 		for i: int in range(7):
 			var t := fmod(_time * 1.4 + float(i) / 7.0, 1.0)
-			for side: float in [-7.0, 7.0]:
-				var p := center + Vector2(side * z, (17.0 + t * SIZE * 0.42) * z)
+			for n: Vector2 in ShipArt.nozzles(_art):
+				var p := center + Vector2(n.x * z, (n.y + 6.0 + t * SIZE * 0.42) * z)
 				draw_circle(p, (1.9 - 1.3 * t) * z * 0.7, Color(color, 0.85 * (1.0 - t)), true, -1.0, true)
 
 	## Tiros subindo do bico: o núcleo é o do jogo (contorno e forma de tiro do jogador); a cor é a do halo.
 	func _draw_shots(center: Vector2, z: float, color: Color) -> void:
 		for i: int in range(3):
 			var t := fmod(_time * 1.1 + float(i) / 3.0, 1.0)
-			var p := center + Vector2(0.0, (-22.0 - t * SIZE * 0.42) * z)
+			var p := center + Vector2(0.0, ((_art["used"] as Rect2).position.y - 2.0 - t * SIZE * 0.42) * z)
 			if _glow != null:
 				var g := 12.0 * z
 				draw_texture_rect(_glow, Rect2(p - Vector2(g, g) * 0.5, Vector2(g, g)), false, Color(color, 0.9))
@@ -900,7 +911,7 @@ class ShipView:
 	## Onda de luz que sai da nave, brilho que apaga e oito centelhas que se abrem (ouro e acento).
 	func _draw_reveal(center: Vector2, radius: float) -> void:
 		var t := clampf(_reveal / _reveal_time(), 0.0, 1.0)
-		var accent := ShipLivery.accent_of(tint)
+		var accent := ShipLivery.accent(ship, paint)
 		var fade := 1.0 - t
 		var wave := ease(t, 0.4)
 		draw_arc(center, radius * (0.35 + 0.9 * wave), 0.0, TAU, 64, Color(UiTheme.WHITE, 0.8 * fade), 2.0, true)

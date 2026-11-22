@@ -56,6 +56,9 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Cyberpunk Boss | Arold Valda (aroldv) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://opengameart.org/content/cyberpunk-boss |
 | Space Boss Battle | MintoDog | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/space-boss-battle |
 | Trilhas de batalha: Tactical Combat Loop, Apex Onslaught, Final Onslaught | Clayton K. N. Passos com Google Flow Music | LicenseRef-Google-Terms-of-Service | Tactical Combat Loop, Apex Onslaught, Final Onslaught (gerados em 2026-10-21) | sim | sim | `licenses/texts/LicenseRef-Google-Terms-of-Service.txt` | https://flowmusic.google |
+| Spaceships: Faction 1, 2, 3, 5, 6, 7 e 10, Blue fighter, Fighter e Yellow starship | MillionthVector (http://millionthvector.blogspot.de) | CC-BY-3.0 |  | sim | sim | `licenses/texts/CC-BY-3.0.txt` | https://opengameart.org/users/millionthvector |
+| Spaceships "XENIS" (2D Spaceships Pack 16) | Carlos Alface (http://carlosalface.blogspot.pt/) | CC-BY-3.0 |  | sim | sim | `licenses/texts/CC-BY-3.0.txt` | https://opengameart.org/content/spaceships-xenis |
+| Alien Bug Sprites, Top-down Alien Bug Sprites 1 e 2, 8 Top down Alien Bug Spider Sprites | W_K_Studio (whiteknightstudios) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://whiteknightstudios.itch.io/alien-bug-sprites |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

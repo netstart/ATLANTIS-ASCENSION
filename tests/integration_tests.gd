@@ -14,6 +14,7 @@ const BetaTests := preload("res://tests/beta_tests.gd")
 const LaunchTests := preload("res://tests/launch_tests.gd")
 const PostTests := preload("res://tests/post_tests.gd")
 const LiveryTests := preload("res://tests/livery_tests.gd")
+const SpriteBankTests := preload("res://tests/sprite_bank_tests.gd")
 const GloryTests := preload("res://tests/glory_tests.gd")
 const WeatherViewTests := preload("res://tests/weather_view_tests.gd")
 const FocusNavTests := preload("res://tests/focus_nav_tests.gd")
@@ -75,6 +76,8 @@ func _ready() -> void:
 		{"name": "Pós-lançamento", "weight": 24.0, "run": func() -> void: PostTests.new().run(_check)},
 		{"name": "prefixo 2", "weight": 0.0, "prefix": true, "run": func() -> void:
 			LiveryTests.new().run(prefix)
+			LiveryTests.new().run_damage(prefix)
+			SpriteBankTests.new().run(prefix)
 			GloryTests.new().run(prefix)
 			DeviceProfiles.check_scaler(self, prefix)},
 	]

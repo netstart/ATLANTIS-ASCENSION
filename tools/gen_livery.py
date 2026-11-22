@@ -1,343 +1,186 @@
-"""Gera a evolução visual da aeronave por nível do hangar (scripts/view/ship_livery.gd) em
+"""Arte própria da evolução visual da aeronave (scripts/view/ship_livery.gd) e das avarias, em
 assets/art/generated/livery/.
 
-Cada peça é uma camada de 48x48 alinhada pixel a pixel à nave do jogador (Void main_ship/base_full),
-lida aqui só para tirar a máscara: faixas, blindagem, runas e friso seguem o contorno real do casco,
-e as peças novas (canards, sensor, propulsores, lâminas) encaixam nas juntas dele. A nave é simétrica
-em torno de x = 23,5, então cada peça é desenhada no lado esquerdo e espelhada (x → 47 − x).
+Desde as naves HD (1.25) a evolução é luz por cima da arte, guiada por data/livery.json, não peças coladas no casco:
+cada nave tem só o brilho da silhueta (player/<id>_glow.png, de tools/gen_hd_ships.py, licença da nave). Aqui sai o
+que é do projeto (MIT, licença "atlantis_generated"):
+  - stripe.png  divisa branca 16x16 (friso do esquadrão, tingida com o acento na hora de desenhar);
+  - crack.png   rachadura 24x24 escura com fio quente (avaria a 2/3 e 1/3 do casco);
+  - icon_<marco>.png  emblema 96x96 de cada marco de data/livery.json (ladrilhos da Oficina): uma silhueta de nave
+    genérica apagada e só o efeito do marco aceso, na cor dele.
 
-Três famílias de cor, para a peça funcionar com qualquer tinta ou pintura da loja:
-  - estrutura (canards, propulsores): tons do casco original; o jogo tinge com a cor da nave;
-  - acento (faixas, runas, lâminas): branco com alfa; o jogo tinge com o acento da nave;
-  - metal (blindagem, friso, sensor): cores próprias (oricalco e cristal), nunca tingidas.
-
-Também registra cada arquivo em assets/asset_index.json (licença "atlantis_generated", origem
-tools/gen_livery.py), que o tools/sync_assets.py preserva.
-Uso: python -I tools/gen_livery.py [--preview DIR]  (--preview grava a nave em cada nível, 8x)
+Registra cada arquivo em assets/asset_index.json (origem tools/gen_livery.py), que o tools/sync_assets.py preserva,
+e apaga as camadas antigas de 48x48 (alinhadas à nave Void) que sobraram na pasta.
+Uso: python tools/gen_livery.py [--preview DIR]   (Pillow; --preview grava a folha dos emblemas)
 """
+from __future__ import annotations
+
 import hashlib
-import importlib.util
 import json
+import math
 import pathlib
-import struct
 import sys
-import zlib
+
+from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "art" / "generated" / "livery"
-BASE = ROOT / "assets" / "art" / "void" / "main_ship" / "base_full.png"
+DATA = ROOT / "data" / "livery.json"
 LICENSE_ID = "atlantis_generated"
 SOURCE = "tools/gen_livery.py"
-N = 48
+ICON = 96
+SS = 4  # superamostragem dos desenhos (bordas macias)
 
-OUTLINE = (0, 0, 0, 255)
-HULL = (199, 220, 208, 255)
-HULL_LIGHT = (255, 255, 255, 255)
-HULL_SHADE = (155, 171, 178, 255)
-HULL_DARK = (72, 74, 119, 255)
-GOLD_LIGHT = (255, 226, 140, 255)
-GOLD = (232, 184, 74, 255)
-GOLD_DARK = (150, 104, 36, 255)
-CRYSTAL = (63, 243, 255, 255)
-CRYSTAL_DARK = (22, 140, 170, 255)
-WHITE = (255, 255, 255, 255)
+CYAN = (111, 232, 255)
+GOLD = (255, 214, 110)
+FLAME = (120, 220, 255)
+HOT = (235, 252, 255)
+PORT = (255, 70, 80)
+STARBOARD = (80, 255, 140)
+DIM = (52, 78, 104)
 
 
-def _gen_sprites():
-    spec = importlib.util.spec_from_file_location("gen_sprites", ROOT / "tools" / "gen_sprites.py")
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module
+def canvas(size: int) -> tuple[Image.Image, ImageDraw.ImageDraw]:
+    im = Image.new("RGBA", (size * SS, size * SS), (0, 0, 0, 0))
+    return im, ImageDraw.Draw(im)
 
 
-def read_png(path: pathlib.Path) -> list:
-    """RGBA 8 bits sem entrelaçamento (o formato dos sprites Void): devolve a lista de pixels."""
-    data = path.read_bytes()
-    i = 8
-    idat = b""
-    width = height = 0
-    while i < len(data):
-        n = struct.unpack(">I", data[i:i + 4])[0]
-        kind = data[i + 4:i + 8]
-        body = data[i + 8:i + 8 + n]
-        i += 12 + n
-        if kind == b"IHDR":
-            width, height, depth, color = struct.unpack(">IIBB", body[:10])
-            assert depth == 8 and color == 6, "base da nave precisa ser RGBA 8 bits"
-        elif kind == b"IDAT":
-            idat += body
-    raw = zlib.decompress(idat)
-    stride = width * 4
-    prev = bytearray(stride)
-    pixels = []
-    p = 0
-    for _ in range(height):
-        f = raw[p]
-        line = bytearray(raw[p + 1:p + 1 + stride])
-        p += 1 + stride
-        for x in range(stride):
-            a = line[x - 4] if x >= 4 else 0
-            b = prev[x]
-            c = prev[x - 4] if x >= 4 else 0
-            if f == 1:
-                line[x] = (line[x] + a) & 255
-            elif f == 2:
-                line[x] = (line[x] + b) & 255
-            elif f == 3:
-                line[x] = (line[x] + (a + b) // 2) & 255
-            elif f == 4:
-                pp = a + b - c
-                pa, pb, pc = abs(pp - a), abs(pp - b), abs(pp - c)
-                line[x] = (line[x] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
-        pixels.extend(tuple(line[x:x + 4]) for x in range(0, stride, 4))
-        prev = line
-    return pixels
+def done(im: Image.Image, size: int) -> Image.Image:
+    return im.resize((size, size), Image.Resampling.LANCZOS)
 
 
-class Hull:
-    """Máscara da nave: dentro (alfa), contorno (preto) e miolo (o resto)."""
-
-    def __init__(self, pixels: list):
-        self.px = pixels
-
-    def inside(self, x: int, y: int) -> bool:
-        return 0 <= x < N and 0 <= y < N and self.px[y * N + x][3] > 40
-
-    def outline(self, x: int, y: int) -> bool:
-        return self.inside(x, y) and sum(self.px[y * N + x][:3]) < 60
-
-    def fill(self, x: int, y: int) -> bool:
-        return self.inside(x, y) and not self.outline(x, y)
-
-    def edge(self, x: int, y: int) -> bool:
-        """Contorno que encosta no vazio (silhueta externa)."""
-        return self.outline(x, y) and any(not self.inside(x + dx, y + dy)
-                                          for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+def p(*xy: float) -> list:
+    """Pontos em fração do ícone -> pixels da superamostragem."""
+    return [(xy[i] * ICON * SS, xy[i + 1] * ICON * SS) for i in range(0, len(xy), 2)]
 
 
-class Layer:
-    def __init__(self):
-        self.px = [(0, 0, 0, 0)] * (N * N)
-
-    def put(self, x: int, y: int, c: tuple, mirror: bool = True) -> None:
-        for xx in ((x, N - 1 - x) if mirror else (x,)):
-            if 0 <= xx < N and 0 <= y < N:
-                self.px[y * N + xx] = c
-
-    def get(self, x: int, y: int) -> tuple:
-        return self.px[y * N + x]
-
-    def outlined(self) -> "Layer":
-        """Contorno preto de 1 px em volta do que foi pintado (onde ainda está vazio)."""
-        out = Layer()
-        out.px = list(self.px)
-        for y in range(N):
-            for x in range(N):
-                if self.px[y * N + x][3] > 0:
-                    continue
-                if any(0 <= x + dx < N and 0 <= y + dy < N and self.px[(y + dy) * N + x + dx][3] > 0
-                       and self.px[(y + dy) * N + x + dx] != OUTLINE
-                       for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                    out.px[y * N + x] = OUTLINE
-        return out
+def glow(im: Image.Image, color: tuple, at: tuple, r: float, strength: float = 1.0) -> None:
+    layer = Image.new("RGBA", im.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    cx, cy = at[0] * ICON * SS, at[1] * ICON * SS
+    rr = r * ICON * SS
+    d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), fill=color + (round(200 * strength),))
+    layer = layer.filter(ImageFilter.GaussianBlur(rr * 0.6))
+    im.alpha_composite(layer)
 
 
-def left_wing(hull: Hull, x: int, y: int) -> bool:
-    return x <= 18 and 20 <= y and hull.fill(x, y)
+def hull(d: ImageDraw.ImageDraw, color: tuple = DIM) -> None:
+    """Silhueta genérica de nave (nariz para cima), apagada: o marco acende por cima dela."""
+    d.polygon(p(0.5, 0.12, 0.62, 0.42, 0.88, 0.66, 0.86, 0.74, 0.6, 0.68, 0.56, 0.8, 0.44, 0.8, 0.4, 0.68,
+                0.14, 0.74, 0.12, 0.66, 0.38, 0.42), fill=color + (255,))
 
 
-# --- Peças, na ordem dos níveis ---------------------------------------------------------------
-
-def stripes(hull: Hull) -> Layer:
-    """Nível 2: faixa de esquadrão, larga e paralela ao bordo de ataque de cada asa."""
-    out = Layer()
-    for y in range(N):
-        for x in range(24):
-            if left_wing(hull, x, y) and (x + y) in (44, 45) and y <= 32:
-                out.put(x, y, WHITE)
-    return out
+def flame(d: ImageDraw.ImageDraw, x: float, length: float, color: tuple) -> None:
+    d.polygon(p(x - 0.045, 0.79, x + 0.045, 0.79, x, 0.79 + length), fill=color + (255,))
+    d.polygon(p(x - 0.02, 0.79, x + 0.02, 0.79, x, 0.79 + length * 0.55), fill=HOT + (255,))
 
 
-def nav_lights(_hull: Hull) -> Layer:
-    """Nível 3: as luzes são desenhadas pelo jogo (piscam); a camada só marca as lentes nas pontas."""
-    out = Layer()
-    out.put(10, 30, (90, 96, 110, 255))
-    return out
+def chevron(d: ImageDraw.ImageDraw, x: float, y: float, w: float, color: tuple) -> None:
+    d.polygon(p(x - w, y, x, y - w * 0.7, x + w, y, x + w, y + w * 0.45, x, y - w * 0.25, x - w, y + w * 0.45),
+              fill=color + (255,))
 
 
-def canards(_hull: Hull) -> Layer:
-    """Nível 4: aletas dianteiras junto ao nariz (estrutura, tingida com a nave; vai por baixo)."""
-    out = Layer()
-    shape = {14: (19, 19), 15: (17, 19), 16: (16, 19), 17: (15, 17)}
-    for y, (x0, x1) in shape.items():
-        for x in range(x0, x1 + 1):
-            out.put(x, y, HULL_LIGHT if y == 15 and x < 19 else HULL)
-    out.put(16, 17, HULL_SHADE)
-    out.put(17, 17, HULL_SHADE)
-    return out.outlined()
+def icon(kind: str) -> Image.Image:
+    im, d = canvas(ICON)
+    if kind == "aura":
+        d.ellipse(p(0.08, 0.1, 0.92, 0.94), outline=CYAN + (230,), width=3 * SS)
+        glow(im, CYAN, (0.5, 0.52), 0.42, 0.35)
+        d = ImageDraw.Draw(im)
+    if kind == "trim":
+        glow(im, GOLD, (0.5, 0.5), 0.46, 0.8)
+        d = ImageDraw.Draw(im)
+    if kind == "accent_glow":
+        glow(im, CYAN, (0.5, 0.5), 0.44, 1.0)
+        d = ImageDraw.Draw(im)
+    hull(d, (150, 120, 60) if kind == "trim" else DIM)
+    if kind == "trim":
+        outline = p(0.5, 0.12, 0.62, 0.42, 0.88, 0.66, 0.86, 0.74, 0.6, 0.68, 0.56, 0.8, 0.44, 0.8, 0.4, 0.68,
+                    0.14, 0.74, 0.12, 0.66, 0.38, 0.42, 0.5, 0.12)
+        d.line(outline, fill=GOLD + (255,), width=3 * SS, joint="curve")
+    if kind in ("tuned_engine", "afterburner"):
+        length = 0.16 if kind == "tuned_engine" else 0.2
+        for x in (0.45, 0.55):
+            flame(d, x, length, FLAME)
+        if kind == "afterburner":
+            glow(im, FLAME, (0.5, 0.9), 0.12, 0.9)
+    if kind == "stripes":
+        for x in (0.3, 0.7):
+            chevron(d, x, 0.62, 0.08, CYAN)
+    if kind == "nav_lights":
+        glow(im, PORT, (0.15, 0.7), 0.08)
+        glow(im, STARBOARD, (0.85, 0.7), 0.08)
+    if kind == "sensor":
+        d.polygon(p(0.5, 0.16, 0.56, 0.27, 0.5, 0.38, 0.44, 0.27), fill=(150, 250, 255, 255))
+        glow(im, CYAN, (0.5, 0.27), 0.1, 0.9)
+    if kind == "runes":
+        for k in range(4):
+            y = 0.36 + k * 0.1
+            d.rectangle(p(0.485, y, 0.515, y + 0.05), fill=CYAN + (230,))
+        glow(im, HOT, (0.5, 0.36), 0.07, 1.0)
+    return done(im, ICON)
 
 
-def sensor(_hull: Hull) -> Layer:
-    """Nível 5: cristal sensor na ponta do nariz, numa haste curta."""
-    out = Layer()
-    out.put(23, 10, HULL_SHADE)
-    out.put(23, 9, CRYSTAL_DARK)
-    out.put(23, 8, CRYSTAL)
-    out.put(23, 7, WHITE)
-    out.put(23, 6, CRYSTAL)
-    out.put(22, 8, CRYSTAL_DARK)
-    return out.outlined()
+def stripe() -> Image.Image:
+    im, d = canvas(16)
+    w = 16 * SS
+    d.polygon([(w * 0.1, w * 0.72), (w * 0.5, w * 0.3), (w * 0.9, w * 0.72), (w * 0.9, w * 0.92), (w * 0.5, w * 0.52),
+               (w * 0.1, w * 0.92)], fill=(255, 255, 255, 255))
+    return done(im, 16)
 
 
-def armor(hull: Hull) -> Layer:
-    """Nível 6 (+1 de casco): placas de oricalco no bordo de ataque, com rebites."""
-    out = Layer()
-    for y in range(20, 31):
-        for x in range(24):
-            if not left_wing(hull, x, y):
-                continue
-            # Distância ao bordo de ataque (diagonal de cima, à esquerda): faixa de 2 px, sem tapar a asa.
-            if not hull.fill(x - 1, y - 1):
-                out.put(x, y, GOLD_LIGHT)
-            elif not hull.fill(x - 2, y - 2):
-                out.put(x, y, GOLD_DARK)
-    for x, y in ((15, 24), (12, 27), (18, 21)):
-        if out.get(x, y)[3] > 0:
-            out.put(x, y, WHITE)
-    return out
+def crack() -> Image.Image:
+    """Rachadura em zigue-zague: borda escura larga e fio quente fino no meio (determinística)."""
+    im, d = canvas(24)
+    w = 24 * SS
+    pts = [(0.12, 0.2), (0.34, 0.4), (0.3, 0.55), (0.52, 0.62), (0.6, 0.82), (0.86, 0.88)]
+    branch = [(0.52, 0.62), (0.74, 0.46), (0.88, 0.4)]
+    for line, width, color in ((pts, 2.6, (10, 8, 8, 230)), (branch, 2.0, (10, 8, 8, 210)),
+                               (pts, 0.9, (255, 150, 70, 255)), (branch, 0.7, (255, 150, 70, 220))):
+        d.line([(x * w, y * w) for x, y in line], fill=color, width=round(width * SS), joint="curve")
+    return done(im, 24)
 
 
-def thrusters(_hull: Hull) -> Layer:
-    """Nível 7: naceles de propulsão sob as pontas das asas (estrutura; a chama é do jogo)."""
-    out = Layer()
-    rows = {31: (11, 12), 32: (10, 13), 33: (10, 13), 34: (10, 13), 35: (10, 13), 36: (10, 13), 37: (11, 12)}
-    for y, (x0, x1) in rows.items():
-        for x in range(x0, x1 + 1):
-            if y == 37:
-                c = HULL_DARK
-            elif x == x0:
-                c = HULL_LIGHT
-            elif x == x1:
-                c = HULL_SHADE
-            else:
-                c = HULL
-            out.put(x, y, c)
-    out.put(11, 33, HULL_DARK)
-    out.put(12, 33, HULL_DARK)
-    return out.outlined()
-
-
-def runes(hull: Hull) -> Layer:
-    """Nível 8: runas atlantes na espinha e um circuito que corre para as asas (acento, pulsa)."""
-    out = Layer()
-    spine = [21, 22, 24, 26, 27, 29, 31, 32]
-    for y in spine:
-        if hull.fill(23, y):
-            out.put(23, y, WHITE)
-    for y in (24, 29):
-        out.put(22, y, WHITE)
-    for x in range(14, 19):
-        if hull.fill(x, 27) and x != 16:
-            out.put(x, 27, (255, 255, 255, 200))
-    out.put(14, 26, WHITE)
-    out.put(14, 28, WHITE)
-    return out
-
-
-def blades(_hull: Hull) -> Layer:
-    """Nível 9: lâminas de luz sólida que continuam o bordo de ataque além das pontas (por baixo)."""
-    out = Layer()
-    for y in range(27, 40):
-        lead = 38 - y
-        trail = 9 if y < 34 else 9 - (y - 33) // 2
-        for x in range(max(1, lead), trail + 1):
-            if x > 9:
-                continue
-            edge = x == max(1, lead) or y == 39
-            alpha = 255 if edge else 110 + 10 * (x - lead)
-            out.put(x, y, (255, 255, 255, max(60, min(255, alpha))))
-    return out
-
-
-def trim(hull: Hull) -> Layer:
-    """Nível 10: friso de ouro na silhueta (o halo e o rastro são do jogo)."""
-    out = Layer()
-    for y in range(N):
-        for x in range(24):
-            if hull.edge(x, y):
-                out.put(x, y, GOLD if y > 24 else GOLD_LIGHT)
-    return out
-
-
-PARTS = {
-    "stripes": stripes, "nav_lights": nav_lights, "canards": canards, "sensor": sensor, "armor": armor,
-    "thrusters": thrusters, "runes": runes, "blades": blades, "trim": trim,
-}
-
-
-def preview(layers: dict, base: list, out_dir: pathlib.Path, png) -> None:
-    """Nave em cada nível (camadas por baixo e por cima, como o jogo desenha), ampliada 8x."""
-    under = ("canards", "thrusters", "blades")
-    order = ["stripes", "nav_lights", "canards", "sensor", "armor", "thrusters", "runes", "blades", "trim"]
-    accent = (255, 120, 110)
-    out_dir.mkdir(parents=True, exist_ok=True)
-    strip = []
-    for level in range(1, 11):
-        parts = order[:level - 1]
-        canvas = [(10, 22, 38, 255)] * (N * N)
-
-        def blend(px, tint=None):
-            for i, c in enumerate(px):
-                if c[3] == 0:
-                    continue
-                r, g, b = c[:3]
-                if tint:
-                    r, g, b = r * tint[0] // 255, g * tint[1] // 255, b * tint[2] // 255
-                a = c[3] / 255
-                d = canvas[i]
-                canvas[i] = (int(d[0] + (r - d[0]) * a), int(d[1] + (g - d[1]) * a), int(d[2] + (b - d[2]) * a), 255)
-        for p in parts:
-            if p in under:
-                blend(layers[p], accent if p == "blades" else None)
-        blend(base)
-        for p in parts:
-            if p not in under:
-                blend(layers[p], accent if p in ("stripes", "runes") else None)
-        strip.append(canvas)
-    k = 8
-    w = N * k * len(strip)
-    rows = []
-    for y in range(N * k):
-        row = []
-        for canvas in strip:
-            for x in range(N * k):
-                row.append(canvas[(y // k) * N + x // k])
-        rows.extend(row)
-    (out_dir / "livery_levels.png").write_bytes(png(w, N * k, rows))
+def png(im: Image.Image, path: pathlib.Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    im.save(path, optimize=True)
 
 
 def main() -> int:
-    gs = _gen_sprites()
-    base = read_png(BASE)
-    hull = Hull(base)
-    OUT.mkdir(parents=True, exist_ok=True)
+    levels = json.loads(DATA.read_text(encoding="utf-8"))["levels"]
+    files = {"stripe": stripe(), "crack": crack()}
+    for lv in levels:
+        files["icon_" + lv["id"]] = icon(lv["id"])
+    keep = set()
     rows = []
-    layers = {}
-    for name, make in PARTS.items():
-        layer = make(hull)
-        layers[name] = layer.px
+    for name, im in files.items():
         target = OUT / f"{name}.png"
-        target.write_bytes(gs.png(N, N, layer.px))
+        png(im, target)
+        keep.add(target.name)
         rows.append({"file": target.relative_to(ROOT).as_posix(), "source": SOURCE, "license_id": LICENSE_ID,
                      "sha256": hashlib.sha256(target.read_bytes()).hexdigest()})
+    # Camadas antigas (48x48 da nave Void) que não saem mais.
+    for old in OUT.glob("*.png"):
+        if old.name not in keep:
+            old.unlink()
+            imp = old.with_name(old.name + ".import")
+            if imp.exists():
+                imp.unlink()
     index_path = ROOT / "assets" / "asset_index.json"
     index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else []
     index = [r for r in index if r.get("source") != SOURCE] + rows
     index.sort(key=lambda item: item["file"])
     index_path.write_text(json.dumps(index, indent=1, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     if "--preview" in sys.argv:
-        preview(layers, base, pathlib.Path(sys.argv[sys.argv.index("--preview") + 1]), gs.png)
-    print(f"{len(rows)} peças da evolução geradas em {OUT.relative_to(ROOT)}")
+        folder = pathlib.Path(sys.argv[sys.argv.index("--preview") + 1])
+        folder.mkdir(parents=True, exist_ok=True)
+        icons = [files["icon_" + lv["id"]] for lv in levels]
+        sheet = Image.new("RGBA", (ICON * len(icons), ICON), (10, 30, 44, 255))
+        for i, ic in enumerate(icons):
+            sheet.alpha_composite(ic, (i * ICON, 0))
+        sheet.alpha_composite(files["crack"].resize((72, 72)), (0, 0))
+        sheet.save(folder / "livery_icons.png")
+        print("prévia:", folder / "livery_icons.png")
+    print(f"{len(rows)} arquivos da evolução gerados em {OUT.relative_to(ROOT)}")
     return 0
 
 

@@ -785,7 +785,8 @@ func _on_objective(ev: Dictionary) -> void:
 				text = tr("mini.pod_warn") if bool(ev.get("pod", false)) else tr("mini.rescue_warn")
 			elif kind == &"sabotage":
 				text = tr("mini.sabotage_warn") % int(ev.get("total", 3))
-			_hud.show_radio_text(text, UiTheme.GOLD)
+			# O aviso sai do alto do campo quando os alvos entram (SimObjectives.WARN_FRAMES): não os cobre.
+			_hud.show_radio_text(text, UiTheme.GOLD, SimObjectives.WARN_FRAMES / 60.0)
 		&"objective_progress":
 			AudioManager.play("kenney_orb", 0.6 + 0.05 * float(ev.get("done", 0)), 0.0, -6.0)
 		&"objective_release":

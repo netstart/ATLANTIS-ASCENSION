@@ -57,7 +57,6 @@ const CHARGE_STEPS := 48
 ## Título do Poder III: segundos na tela (os níveis I e II usam o PowerChip).
 const SUPREME_BANNER_SECONDS := 1.1
 ## Nave do jogador (Void) recortada para os ícones de casco.
-const SHIP_ICON := "res://assets/art/void/main_ship/base_full.png"
 ## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
 const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint.orbs"], [1500, "hint.special"],
 		[2100, "hint.tide"], [2700, "hint.marked"], [3300, "hint.capture"]]
@@ -88,7 +87,6 @@ var _mult_boxes: Array[StyleBoxFlat] = []
 var _lives_box: HBoxContainer
 var _life_icons: Array[TextureRect] = []
 var _life_count: Label
-var _life_texture: Texture2D
 var _hull_shown: int = -1
 var _hull_max: int = -1
 var _side_panel: Panel
@@ -255,7 +253,6 @@ func _build_top() -> void:
 	_life_count = UiTheme.heading("", UiTheme.SMALL_SIZE, UiTheme.TEXT)
 	_life_count.visible = false
 	_lives_box.add_child(_life_count)
-	_life_texture = HudKit.trimmed_texture(SHIP_ICON)
 	_pressure_track = HudKit.ignore(ColorRect.new()) as ColorRect
 	_pressure_track.color = Color(UiTheme.ABYSS, 0.75)
 	add_child(_pressure_track)
@@ -831,9 +828,12 @@ func show_radio(dialogue_id: String) -> void:
 	_open_radio(text if _portrait.texture != null else "%s: %s" % [_radio_name.text, text], color)
 
 
-func show_radio_text(text: String, color: Color) -> void:
+## Texto no rádio sem retrato. `seconds` > 0 fixa quanto tempo ele fica (a digitação cabe dentro).
+func show_radio_text(text: String, color: Color, seconds: float = -1.0) -> void:
 	_portrait.texture = null
 	_open_radio(text, color)
+	if seconds > 0.0:
+		_radio_left = seconds
 
 
 func _open_radio(text: String, color: Color) -> void:
@@ -1047,7 +1047,7 @@ func _rebuild_lives() -> void:
 	_life_icons.clear()
 	var n := _hull_max if _hull_max <= LIFE_MAX_ICONS else 1
 	for i: int in range(n):
-		var icon := HudKit.life_icon(_life_texture, LIFE_ICON)
+		var icon := HudKit.life_icon(ShipIcon.texture(String(_sim.player.ship.get("id", "falcon"))), LIFE_ICON)
 		_lives_box.add_child(icon)
 		_life_icons.append(icon)
 	_life_count.visible = _hull_max > LIFE_MAX_ICONS

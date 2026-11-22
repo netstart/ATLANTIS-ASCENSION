@@ -105,13 +105,14 @@ func _test_fx_wrecks_and_popups() -> void:
 	var fx := _fx(2, 400, 200)
 	var tex := SpriteBank.generated("fx/drone")
 	fx.surface = CombatFx.NONE
-	_check.call(not fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0) and fx.wrecks.is_empty(),
+	_check.call(not fx.wreck(tex, 10, 10.0, Vector2(50, 50), Vector2(58, 64), 1.0) and fx.wrecks.is_empty(),
 			"CombatFx: no espaço não há queda")
 	fx.surface = CombatFx.WATER
 	for k: int in range(CombatFx.MAX_WRECKS + 4):
-		fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0, CombatFx.MELT)
+		fx.wreck(tex, 10, 10.0, Vector2(50, 50), Vector2(58, 64), 1.0, CombatFx.MELT)
 	_check.call(fx.wrecks.size() == CombatFx.MAX_WRECKS, "CombatFx: mortes em curso com teto")
-	_check.call(not fx.wreck(tex, 10, Vector2(50, 50), Vector2(58, 64), 1.0), "CombatFx: morte que não cabe é recusada")
+	_check.call(not fx.wreck(tex, 10, 10.0, Vector2(50, 50), Vector2(58, 64), 1.0),
+			"CombatFx: morte que não cabe é recusada")
 	fx.clear()
 	for k: int in range(CombatFx.MAX_POPUPS + 5):
 		fx.popup(Vector2.ZERO, 100 + k, Color.WHITE)
@@ -137,7 +138,7 @@ func _test_death_styles() -> void:
 				var heard: Array = []
 				fx.landed.connect(func(at: Vector2, b: bool, kind: StringName) -> void: heard.append([at, b, kind]))
 				var label := "CombatFx: %s em %s (qualidade %d%s)" % [case[0], case[1], level, ", grande" if big else ""]
-				_check.call(fx.wreck(tex, 10, Vector2(100, 100), Vector2(110, 140), 1.0, case[0], big), label + " começa")
+				_check.call(fx.wreck(tex, 10, 10.0, Vector2(100, 100), Vector2(110, 140), 1.0, case[0], big), label + " começa")
 				var time := float(fx.wrecks[0]["time"])
 				var t := 0.0
 				var peak := 0

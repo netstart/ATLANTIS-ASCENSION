@@ -8,8 +8,9 @@ extends Screen
 ## SHINE_PERIOD s); a nave flutua por código a 60 Hz, sem redesenhar nada além dela.
 
 const CONTENT_MAX_WIDTH := 300.0
-const SHIP_PATH := "res://assets/art/void/main_ship/base_full.png"
-const ENGINE_PATH := "res://assets/art/void/main_ship/engine_base_powering.png"
+## A Falcon HD (tools/gen_hd_ships.py): quadro quadrado de lado = altura da tira, 2 texels por unidade.
+const SHIP_PATH := "res://assets/art/hd/player/falcon_base.png"
+const ENGINE_PATH := "res://assets/art/hd/player/falcon_engine_boost.png"
 const SHINE_PERIOD := 5.0
 const LOGO_SPACING := 8
 ## Avanço médio das maiúsculas da Exo 2 em negrito, em fração do tamanho (para o logo caber na largura).
@@ -41,6 +42,7 @@ var _version: Label
 var _time: float = 0.0
 var _ship_base := Vector2.ZERO
 var _engine_frames: int = 1
+var _frame: int = 1
 
 
 func _build() -> void:
@@ -53,13 +55,14 @@ func _build() -> void:
 	_halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_halo)
 	_engine = _sprite(ENGINE_PATH)
-	# O motor é uma tira de quadros 48x48: mostra um quadro por vez (chama animada).
+	# O motor é uma tira de quadros quadrados: mostra um quadro por vez (chama animada).
 	var strip := _engine.texture
+	_frame = strip.get_height() if strip != null else 1
 	var atlas := AtlasTexture.new()
 	atlas.atlas = strip
-	atlas.region = SpriteBank.frame_rect(0, 48)
+	atlas.region = SpriteBank.frame_rect(0, _frame)
 	_engine.texture = atlas
-	_engine_frames = maxi(1, strip.get_width() / 48) if strip != null else 1
+	_engine_frames = maxi(1, strip.get_width() / _frame) if strip != null else 1
 	_ship = _sprite(SHIP_PATH)
 	_logo = UiTheme.heading("ATLANTIS", 38, UiTheme.WHITE)
 	_logo.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -103,7 +106,7 @@ func _sprite(path: String) -> TextureRect:
 	rect.texture = SpriteBank.texture(path)
 	rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	rect.stretch_mode = TextureRect.STRETCH_SCALE
-	rect.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	rect.texture_filter = SpriteBank.HD_FILTER
 	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(rect)
 	return rect
@@ -153,7 +156,7 @@ func _process(delta: float) -> void:
 	var bob := Vector2(0.0, roundf(sin(_time * 1.6) * 3.0))
 	_ship.position = _ship_base + bob
 	_engine.position = _ship.position
-	(_engine.texture as AtlasTexture).region = SpriteBank.frame_rect(int(_time * 12.0) % _engine_frames, 48)
+	(_engine.texture as AtlasTexture).region = SpriteBank.frame_rect(int(_time * 12.0) % _engine_frames, _frame)
 	var pulse := 1.0 + 0.04 * sin(_time * 1.6)
 	_halo.scale = Vector2(pulse, pulse)
 	_halo.modulate.a = 0.3 + 0.08 * sin(_time * 1.6)
@@ -183,11 +186,11 @@ func _layout() -> void:
 	_credits.size = Vector2(minf(play_w * 0.6, 180.0), UiTheme.TOUCH_MIN)
 	_credits.position = Vector2(floorf(cx - _credits.size.x * 0.5), _version.position.y - _credits.size.y - 14.0)
 	_play.position = Vector2(floorf(cx - play_w * 0.5), _credits.position.y - _play.size.y - 12.0)
-	# Nave no espaço entre o texto e os botões, em escala inteira (pixel art nítido).
+	# Nave no espaço entre o texto e os botões (o quadro HD tem a chama: a nave ocupa pouco mais da metade).
 	var gap_top := _tagline.position.y + _tagline.size.y + 8.0
 	var gap := maxf(0.0, _play.position.y - gap_top - 8.0)
 	var k := clampi(floori(minf(gap * 0.6, width) / 96.0), 1, 3)
-	var ship_size := Vector2(48, 48) * k
+	var ship_size := Vector2(96, 96) * k
 	_ship_base = Vector2(floorf(cx - ship_size.x * 0.5), floorf(gap_top + (gap - ship_size.y) * 0.5))
 	for rect: TextureRect in [_ship, _engine]:
 		rect.size = ship_size

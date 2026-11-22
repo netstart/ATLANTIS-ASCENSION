@@ -128,6 +128,10 @@ func refresh_texts() -> void:
 			item.add_child(UiTheme.label(String(entry.get("name", "")), UiTheme.FONT_SIZE, UiTheme.TEXT, true))
 			var line := tr("credits.license") % [String(entry.get("author", "")), String(entry.get("license_id", ""))]
 			item.add_child(UiTheme.label(line, UiTheme.SMALL_SIZE, UiTheme.TEXT_DIM, true))
+			# Linha de crédito pedida pelo autor (CC BY): como ele escreveu, sem tradução.
+			var credit := String(entry.get("credit", ""))
+			if not credit.is_empty():
+				item.add_child(UiTheme.label(credit, UiTheme.SMALL_SIZE, UiTheme.TEXT_DIM, true))
 			box.add_child(item)
 	relayout()
 

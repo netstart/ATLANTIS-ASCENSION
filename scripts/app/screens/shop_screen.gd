@@ -224,6 +224,7 @@ func _paints(profile: Dictionary) -> Array[Dictionary]:
 	var equipped := String(profile["selected"].get("cosmetic", ""))
 	var ship := String(profile["selected"]["ship"])
 	var out: Array[Dictionary] = [{"id": "", "name": tr("shop.default_paint"), "tint": ship_tint(ship),
+			"paint": Color(0, 0, 0, 0),
 			"rarity": CommandKit.COMMON, "owned": true, "equipped": equipped.is_empty(), "rare": false, "price": 0,
 			"how": ""}]
 	for c: Variant in Store.cosmetics():
@@ -234,6 +235,7 @@ func _paints(profile: Dictionary) -> Array[Dictionary]:
 		if rare and not owned and not Store.purchases_enabled():
 			continue  # Sem compra com dinheiro (release sem Play Billing): pintura impossível de obter não aparece.
 		out.append({"id": id, "name": tr("cosmetic." + id), "tint": Color(String(def.get("color", "#ffffff"))),
+				"paint": Color(String(def.get("color", "#ffffff"))),
 				"rarity": paint_rarity(def), "owned": owned, "equipped": owned and equipped == id, "rare": rare,
 				"price": int(def.get("pearls", 0)), "how": tr("shop.supporter_only")
 						if bool(def.get("supporter", false)) else tr("shop.season_only")})
@@ -258,7 +260,9 @@ func _paint_cell(shelf: GridContainer, p: Dictionary, profile: Dictionary) -> vo
 	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	shelf.add_child(cell)
 	var id := String(p["id"])
-	var tile := CommandKit.item_tile(ShipIcon.texture(p["tint"]), 0, int(p["rarity"]))
+	var tile := CommandKit.item_tile(ShipIcon.texture(String(profile["selected"]["ship"]), p["paint"]), 0,
+			int(p["rarity"]))
+	tile.pixel_art = false
 	tile.name = "Paint_" + (id if not id.is_empty() else "default")
 	tile.custom_minimum_size = Vector2(CommandKit.TILE, 64.0)
 	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -342,7 +346,7 @@ func _show_sheet() -> void:
 	head.add_child(badge(_rarity_name(int(p["rarity"])), accent, &"diamond"))
 	box.add_child(head)
 	var ship := StringName(String(profile["selected"]["ship"]))
-	var view := ship_view(p["tint"], 2, false, Economy.ship_level(profile, ship))
+	var view := ship_view(String(ship), p["paint"], 2, false, Economy.ship_level(profile, ship))
 	view.name = "PaintPreview"
 	view.fx = Store.paint_fx(_sheet_id)
 	box.add_child(view)
@@ -536,14 +540,15 @@ func _ship_card(profile: Dictionary) -> void:
 	_product_card(profile, {"id": Iap.SHIP_SHORTCUT, "node": "Ship", "color": UiTheme.TURQUOISE,
 			"title": tr("store.ship_shortcut") % tr("ship." + ship), "speaker": "mare",
 			"desc": tr("store.ship_desc"), "extra": func(body: VBoxContainer) -> void:
-				_gift_row(body, ShipIcon.texture(ship_tint(ship)), tr("ship." + ship), UiTheme.TURQUOISE).name = "ShipGift"
+				_gift_row(body, ShipIcon.texture(ship), tr("ship." + ship), UiTheme.TURQUOISE).name = "ShipGift"
 				text(body, tr("store.ship_fragments") % [have, need], UiTheme.TEXT, UiTheme.SMALL_SIZE)})
 
 
 ## Ladrilho do que a compra dá (a pintura na própria nave) com o nome em ouro.
 func _gift(body: VBoxContainer, cosmetic: String) -> void:
-	var tint := ship_tint(String(SaveManager.data["selected"]["ship"]), cosmetic)
-	_gift_row(body, ShipIcon.texture(tint), tr("cosmetic." + cosmetic), UiTheme.GOLD).name = "Gift_" + cosmetic
+	var ship := String(SaveManager.data["selected"]["ship"])
+	var row := _gift_row(body, ShipIcon.texture(ship, paint_of(cosmetic)), tr("cosmetic." + cosmetic), UiTheme.GOLD)
+	row.name = "Gift_" + cosmetic
 
 
 func _gift_row(body: VBoxContainer, texture: Texture2D, value: String, color: Color) -> HBoxContainer:
@@ -551,6 +556,7 @@ func _gift_row(body: VBoxContainer, texture: Texture2D, value: String, color: Co
 	gift.add_theme_constant_override("separation", 6)
 	var swatch := CommandKit.item_tile(texture, 0, CommandKit.LEGENDARY)
 	swatch.focus_mode = Control.FOCUS_NONE
+	swatch.pixel_art = false
 	swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	swatch.custom_minimum_size = Vector2(44, 44)
 	gift.add_child(swatch)

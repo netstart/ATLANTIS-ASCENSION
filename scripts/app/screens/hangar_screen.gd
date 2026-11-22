@@ -18,7 +18,7 @@ extends ListScreen
 ## - Telas largas (NavShell.wide): palco à esquerda, sub-abas e grade à direita.
 ## Controle: o foco anda pela geometria (encaixes → sub-abas → grade → cartão); B fecha o cartão.
 ##
-## Cada nível monta uma peça nova na nave (ShipLivery): a subida revela a peça com uma onda de luz e um
+## Cada nível acende um marco novo da evolução (ShipLivery): a subida o revela com uma onda de luz e um
 ## selo dourado. Som: a trava metálica na compra e o brilho de vidro na revelação; a Ascendida (nível
 ## máximo) tem celebração própria — raios de ouro, título "Nave Ascendida", sino e vinheta de tambor.
 
@@ -189,7 +189,7 @@ func _layout() -> void:
 func _fill_stage(parent: Container, profile: Dictionary) -> void:
 	var ship := StringName(String(profile["selected"]["ship"]))
 	var level := Economy.ship_level(profile, ship)
-	var tint := ship_tint(String(ship), String(profile["selected"].get("cosmetic", "")))
+	var paint := paint_of(String(profile["selected"].get("cosmetic", "")))
 	var column := _stage_width()
 	var captions := not _compact()
 	# Encaixes do maior lado (até 54) que ainda deixa a nave em 2x inteira entre as duas colunas.
@@ -219,7 +219,7 @@ func _fill_stage(parent: Container, profile: Dictionary) -> void:
 	var right := _slot_column(row)
 	for info: Dictionary in _left_slots(profile):
 		_slot(left, info, side, captions)
-	for info: Dictionary in _right_slots(profile, level, tint):
+	for info: Dictionary in _right_slots(profile, level, String(ship), paint):
 		_slot(right, info, side, captions)
 	# Nome e nível em cima, a nave no meio (selos da subida por cima dela) e as barras de nível embaixo.
 	var center_width := column - STAGE_CHROME - (side + extra) * 2.0
@@ -242,7 +242,7 @@ func _fill_stage(parent: Container, profile: Dictionary) -> void:
 	holder.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	center.add_child(holder)
-	var view := ship_view(tint, zoom, false, level)
+	var view := ship_view(String(ship), paint, zoom, false, level)
 	view.name = "HeroShip"
 	# Pintura equipada com efeitos: rastro, tiro e estouro em volta da nave (a altura do palco não muda).
 	view.fx = Store.paint_fx(String(profile["selected"].get("cosmetic", "")))
@@ -304,15 +304,15 @@ func _left_slots(profile: Dictionary) -> Array[Dictionary]:
 
 
 ## Encaixes da direita: pintura, núcleo (nível da nave) e dificuldade.
-func _right_slots(profile: Dictionary, level: int, tint: Color) -> Array[Dictionary]:
+func _right_slots(profile: Dictionary, level: int, ship: String, paint: Color) -> Array[Dictionary]:
 	var cosmetic := String(profile["selected"].get("cosmetic", ""))
 	var difficulty := StringName(String(profile["selected"]["difficulty"]))
 	return [
 		{"key": "paint", "tab": &"paints", "caption": tr("workshop.slot_paint"),
-				"texture": LoadoutArt.ship(tint, 1), "level": 0, "rarity": LoadoutArt.paint_rarity(_cosmetic(cosmetic)),
+				"texture": LoadoutArt.ship(ship, paint), "level": 0, "rarity": LoadoutArt.paint_rarity(_cosmetic(cosmetic)),
 				"tip": tr("cosmetic." + cosmetic) if not cosmetic.is_empty() else tr("shop.default_paint"),
 				"notice": false},
-		{"key": "core", "tab": &"ship", "caption": tr("workshop.slot_core"), "texture": LoadoutArt.ship(tint, level),
+		{"key": "core", "tab": &"ship", "caption": tr("workshop.slot_core"), "texture": LoadoutArt.ship(ship, paint),
 				"level": level, "rarity": LoadoutArt.level_rarity(level), "tip": tr("hangar.level") % level,
 				"notice": Notices.can_upgrade_ship(profile)},
 		{"key": "mode", "tab": &"mode", "caption": tr("workshop.tab_mode"),
@@ -412,7 +412,7 @@ func _fill_strip(parent: Container, profile: Dictionary) -> void:
 	# Peças só onde cabem na mesma linha (as barras de nível do palco já mostram o progresso).
 	if _stage_width() >= 300.0:
 		chips.add_child(CommandKit.stat_chip(&"star", tr("workshop.parts"),
-				"%d/%d" % [ShipLivery.parts_at(level).size(), ShipLivery.PARTS.size()], UiTheme.GOLD))
+				"%d/%d" % [ShipLivery.parts_at(level).size(), ShipLivery.parts().size()], UiTheme.GOLD))
 	if level >= Economy.SHIP_MAX_LEVEL:
 		var done := badge(tr("hangar.ascended") + " · " + tr("hangar.max"), UiTheme.GOLD, &"star")
 		done.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
@@ -518,7 +518,7 @@ func _tab_tip(tab: StringName, profile: Dictionary) -> String:
 	match tab:
 		&"ship":
 			var level := Economy.ship_level(profile, StringName(String(profile["selected"]["ship"])))
-			return tr("hangar.livery") % [ShipLivery.parts_at(level).size(), ShipLivery.PARTS.size()]
+			return tr("hangar.livery") % [ShipLivery.parts_at(level).size(), ShipLivery.parts().size()]
 		&"weapons":
 			return tr("hangar.secondary")
 		&"wings":
@@ -645,13 +645,12 @@ func _entries(profile: Dictionary) -> Array[Dictionary]:
 func _part_entries(profile: Dictionary) -> Array[Dictionary]:
 	var ship := StringName(String(profile["selected"]["ship"]))
 	var level := Economy.ship_level(profile, ship)
-	var tint := ship_tint(String(ship), String(profile["selected"].get("cosmetic", "")))
 	var next := int(ShipLivery.next_part(level).get("level", 0))
 	var out: Array[Dictionary] = []
-	for p: Dictionary in ShipLivery.PARTS:
+	for p: Dictionary in ShipLivery.parts():
 		var at := int(p["level"])
 		out.append({"kind": &"part", "id": String(p["id"]), "name": tr("livery." + String(p["id"])),
-				"texture": LoadoutArt.part(p["id"], tint), "level": at, "rarity": LoadoutArt.level_rarity(at),
+				"texture": LoadoutArt.part(StringName(String(p["id"]))), "level": at, "rarity": LoadoutArt.level_rarity(at),
 				"notice": at == next and Notices.can_upgrade_ship(profile), "selected": false,
 				"locked": at > level and at != next, "done": at <= level})
 	return out
@@ -693,7 +692,7 @@ func _paint_entries(profile: Dictionary) -> Array[Dictionary]:
 	var level := Economy.ship_level(profile, StringName(ship))
 	var equipped := String(profile["selected"].get("cosmetic", ""))
 	var out: Array[Dictionary] = [{"kind": &"paint", "id": "", "name": tr("shop.default_paint"),
-			"texture": LoadoutArt.ship(ship_tint(ship), level), "level": 0, "rarity": CommandKit.COMMON,
+			"texture": LoadoutArt.ship(ship), "level": 0, "rarity": CommandKit.COMMON,
 			"notice": false, "selected": equipped.is_empty(), "locked": false}]
 	for c: Variant in Store.cosmetics():
 		var def := c as Dictionary
@@ -703,7 +702,7 @@ func _paint_entries(profile: Dictionary) -> Array[Dictionary]:
 		if not owned and rare and not Store.purchases_enabled():
 			continue  # Mesma regra da Loja: pintura que não dá para obter não aparece.
 		out.append({"kind": &"paint", "id": id, "name": tr("cosmetic." + id),
-				"texture": LoadoutArt.ship(Color(String(def.get("color", "#ffffff"))), level), "level": 0,
+				"texture": LoadoutArt.ship(ship, Color(String(def.get("color", "#ffffff")))), "level": 0,
 				"rarity": LoadoutArt.paint_rarity(def), "notice": false, "selected": owned and equipped == id,
 				"locked": false, "buy": not owned})
 	return out
@@ -914,7 +913,8 @@ func _detail_paint(box: VBoxContainer, profile: Dictionary, entry: Dictionary) -
 	if not fx.is_empty():
 		# Prévia da pintura com rastro, tiro e estouro, e o que ela dá (só visual).
 		var ship := StringName(String(profile["selected"]["ship"]))
-		var view := ship_view(Color(String(def.get("color", "#ffffff"))), 2, false, Economy.ship_level(profile, ship))
+		var view := ship_view(String(ship), Color(String(def.get("color", "#ffffff"))), 2, false,
+				Economy.ship_level(profile, ship))
 		view.name = "PaintPreview"
 		view.fx = fx
 		box.add_child(view)

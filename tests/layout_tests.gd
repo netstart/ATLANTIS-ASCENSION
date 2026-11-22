@@ -112,6 +112,12 @@ func run_hud_case(host: Node, check: Callable, c: Dictionary) -> void:
 		game.hud().set_turbo(false, 1.0)
 		Settings.set_value("handedness", "right")
 		game.relayout_for(view)
+		# Aviso do objetivo no rádio (no alto do campo): fica só o aviso da Sim e sai antes de os alvos entrarem.
+		var warn := SimObjectives.WARN_FRAMES / 60.0
+		game.hud().show_radio_text(tr("mini.sabotage_warn") % 3, UiTheme.GOLD, warn)
+		check.call(is_equal_approx(float(game.hud().get("_radio_left")), warn), "%s: aviso do objetivo dura o aviso" % tag)
+		game.hud().refresh(game.sim, warn + 0.02)
+		check.call(not (game.hud().get("_radio_panel") as Control).visible, "%s: o rádio sai quando os alvos entram" % tag)
 		# Objetivo de fase em curso (SimObjectives): o marcador de cada tipo cabe e não encosta em nada.
 		var goals := game.sim.objectives
 		for kind: String in ["rescue", "sabotage", "intercept"]:

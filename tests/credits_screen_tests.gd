@@ -27,8 +27,13 @@ func run(host: Node, check: Callable) -> void:
 			var author := String(entry.get("author", ""))
 			check.call(shown.contains(name), "Créditos %s: '%s' na tela" % [lang, name])
 			check.call(shown.contains(author), "Créditos %s: autor '%s' na tela" % [lang, author])
+			var credit := String(entry.get("credit", ""))
+			if not credit.is_empty():
+				check.call(shown.contains(credit), "Créditos %s: linha do autor de '%s' na tela" % [lang, name])
 			if lang == "pt_BR":
 				check.call(credits_md.contains(name), "Créditos: '%s' no CREDITS.md" % name)
+				check.call(credit.is_empty() or credits_md.contains(credit),
+						"Créditos: linha do autor de '%s' no CREDITS.md" % name)
 		var sections: Dictionary = {}
 		for row: Variant in entries:
 			sections[CreditsScreen.section_of(row as Dictionary)] = true
