@@ -135,7 +135,10 @@ func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_v
 	var beam_y := PackedFloat64Array()
 	var beam_half := PackedFloat64Array()
 	var beam_base := PackedFloat64Array()
+	# Direção do feixe de padrão (revisão 6, EnemyBeam: inclinado, seguindo o emissor); ZERO = vertical, como antes.
+	var beam_dir := PackedVector2Array()
 	for b: Dictionary in sim.beams:
+		beam_dir.append(Vector2.from_angle(float(b["angle"])) if b.has("angle") else Vector2.ZERO)
 		beam_x.append(float(b["x"]))
 		beam_y.append(float(b["y"]))
 		beam_half.append(float(b["width"]) * 0.5 + hb + 8.0)
@@ -158,7 +161,7 @@ func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_v
 	for s: Dictionary in sim.objectives.survivors + sim.objectives.relics:
 		prize.append(s["pos"])
 	return {"hb": hb, "off": off, "shot_pos": shot_pos, "shot_r": shot_r, "beam_x": beam_x, "beam_y": beam_y,
-			"beam_half": beam_half, "beam_base": beam_base, "foe_pos": foe_pos, "foe_reach": foe_reach,
+			"beam_dir": beam_dir, "beam_half": beam_half, "beam_base": beam_base, "foe_pos": foe_pos, "foe_reach": foe_reach,
 			"boss_on": boss_on, "boss_pos": sim.boss.hurt_pos() if boss_on else Vector2.ZERO,
 			"boss_reach": _boss_reach(sim) if boss_on else 0.0, "loot": loot, "prize": prize}
 
@@ -195,10 +198,16 @@ func _danger(at: Vector2, view: Dictionary) -> float:
 	var beam_y: PackedFloat64Array = view["beam_y"]
 	var beam_half: PackedFloat64Array = view["beam_half"]
 	var beam_base: PackedFloat64Array = view["beam_base"]
+	var beam_dir: PackedVector2Array = view["beam_dir"]
 	for k: int in range(beam_x.size()):
 		var half := beam_half[k]
 		var dx := absf(c.x - beam_x[k])
-		if c.y > beam_y[k] and dx <= half:
+		var ahead := c.y > beam_y[k]
+		if beam_dir[k] != Vector2.ZERO:
+			var rel := c - Vector2(beam_x[k], beam_y[k])
+			dx = absf(beam_dir[k].cross(rel))
+			ahead = rel.dot(beam_dir[k]) > 0.0
+		if ahead and dx <= half:
 			cost += beam_base[k] * (0.5 + (half - dx) / half)
 	var foe_pos: PackedVector2Array = view["foe_pos"]
 	var foe_reach: PackedFloat64Array = view["foe_reach"]

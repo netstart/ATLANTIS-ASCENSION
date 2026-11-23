@@ -24,8 +24,9 @@ PATTERNS = [
     {"id": "architect_wall", "bullet": "orb_gold_m", "steps": [
         {"op": "fan", "count": 13, "spread_deg": 150, "speed": 46}, {"op": "wait", "frames": 70}]},
     {"id": "architect_pillars", "steps": [
-        {"op": "beam", "warn_frames": 50, "frames": 40, "width": 18, "ox": -90, "oy": 20},
-        {"op": "beam", "warn_frames": 50, "frames": 40, "width": 18, "ox": 90, "oy": 20}, {"op": "wait", "frames": 170}]},
+        {"op": "beam", "aim": False, "warn_frames": 50, "frames": 40, "width": 18, "ox": -90, "oy": 20},
+        {"op": "beam", "aim": False, "warn_frames": 50, "frames": 40, "width": 18, "ox": 90, "oy": 20},
+        {"op": "wait", "frames": 170}]},
     {"id": "architect_grid", "bullet": "needle_gold", "steps": [
         {"op": "line", "count": 4, "speed": 80, "speed_step": 18, "aim": True}, {"op": "wait", "frames": 20},
         {"op": "repeat", "from": 0, "times": 2}, {"op": "wait", "frames": 80}]},
@@ -42,24 +43,26 @@ PATTERNS = [
         {"op": "aimed_fan", "count": 3, "spread_deg": 18, "speed": 90, "ox": 60}, {"op": "wait", "frames": 60}]},
     {"id": "albatross_dive", "bullet": "needle_gold", "steps": [
         {"op": "aimed_fan", "count": 7, "spread_deg": 50, "speed": 120}, {"op": "wait", "frames": 90}]},
-    # Portão Orbital (cap. 8): anéis defasados e feixes.
+    # Portão Orbital (cap. 8): anéis defasados e feixes (colunas dos pilares do portão, sem mira).
     {"id": "gate_rings", "bullet": "orb_violet_m", "steps": [
         {"op": "ring", "count": 14, "speed": 48}, {"op": "wait", "frames": 30},
         {"op": "ring", "count": 14, "speed": 48, "offset_deg": 12.857}, {"op": "wait", "frames": 100}]},
     {"id": "gate_beams", "steps": [
-        {"op": "beam", "warn_frames": 55, "frames": 45, "width": 22, "ox": -60, "oy": 24},
+        {"op": "beam", "aim": False, "warn_frames": 55, "frames": 45, "width": 22, "ox": -60, "oy": 24},
         {"op": "wait", "frames": 60},
-        {"op": "beam", "warn_frames": 55, "frames": 45, "width": 22, "ox": 60, "oy": 24}, {"op": "wait", "frames": 160}]},
+        {"op": "beam", "aim": False, "warn_frames": 55, "frames": 45, "width": 22, "ox": 60, "oy": 24}, {"op": "wait", "frames": 160}]},
     # Sky Leviathan (Ato II): segmentos soltam pares; investida; faixas.
     {"id": "leviathan_pellets", "bullet": "orb_cyan_m", "steps": [
         {"op": "aimed_fan", "count": 2, "spread_deg": 24, "speed": 70}, {"op": "wait", "frames": 150}]},
     {"id": "leviathan_lunge", "steps": [
         {"op": "beam", "warn_frames": 60, "frames": 40, "width": 30, "oy": 30}, {"op": "wait", "frames": 200}]},
     {"id": "leviathan_lanes", "steps": [
-        {"op": "beam", "warn_frames": 60, "frames": 50, "width": 60, "ox": -95, "oy": 10},
-        {"op": "beam", "warn_frames": 60, "frames": 50, "width": 60, "ox": 0, "oy": 10}, {"op": "wait", "frames": 140},
-        {"op": "beam", "warn_frames": 60, "frames": 50, "width": 60, "ox": 0, "oy": 10},
-        {"op": "beam", "warn_frames": 60, "frames": 50, "width": 60, "ox": 95, "oy": 10}, {"op": "wait", "frames": 140}]},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "ox": -95, "oy": 10},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "ox": 0, "oy": 10},
+        {"op": "wait", "frames": 140},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "ox": 0, "oy": 10},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "ox": 95, "oy": 10},
+        {"op": "wait", "frames": 140}]},
     {"id": "leviathan_head_fans", "bullet": "orb_violet_m", "steps": [
         {"op": "fan", "count": 7, "spread_deg": 80, "speed": 70}, {"op": "rotate", "deg": 9}, {"op": "wait", "frames": 24},
         {"op": "repeat", "from": 0, "times": 3}, {"op": "wait", "frames": 70}]},
@@ -70,9 +73,10 @@ PATTERNS = [
         {"op": "ring", "count": 8, "speed": 62, "turn": 18}, {"op": "wait", "frames": 30},
         {"op": "ring", "count": 8, "speed": 62, "turn": -18, "offset_deg": 22.5}, {"op": "wait", "frames": 90}]},
     {"id": "poseidon_trident", "steps": [
-        {"op": "beam", "warn_frames": 60, "frames": 45, "width": 20, "ox": -70, "oy": 30},
-        {"op": "beam", "warn_frames": 60, "frames": 45, "width": 20, "oy": 30},
-        {"op": "beam", "warn_frames": 60, "frames": 45, "width": 20, "ox": 70, "oy": 30}, {"op": "wait", "frames": 180}]},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 45, "width": 20, "ox": -70, "oy": 30},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 45, "width": 20, "oy": 30},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 45, "width": 20, "ox": 70, "oy": 30},
+        {"op": "wait", "frames": 180}]},
     {"id": "poseidon_waves", "bullet": "orb_gold_m", "steps": [
         {"op": "fan", "count": 11, "spread_deg": 120, "speed": 52}, {"op": "wait", "frames": 45},
         {"op": "fan", "count": 10, "spread_deg": 110, "speed": 52}, {"op": "wait", "frames": 70}]},

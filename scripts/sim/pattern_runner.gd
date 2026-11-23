@@ -9,7 +9,8 @@ extends RefCounted
 ##   aimed     {speed}                              uma bala no jogador
 ##   aimed_fan {count, spread_deg, speed}           leque centrado no jogador
 ##   line      {count, speed, speed_step, angle_deg} fila de balas na mesma direção, velocidades crescentes
-##   beam      {warn_frames, frames, width}         feixe vertical; avisa antes de ferir
+##   beam      {warn_frames, frames, width, track, aim} feixe; avisa antes de ferir (revisão 6: sai da boca e
+##             segue o emissor, mira o jogador e gira até `track` graus/s; `aim: false` = coluna vertical: EnemyBeam)
 ##   wait      {frames}
 ##   rotate    {deg}                                gira as próximas emissões (espirais)
 ##   repeat    {from, times}                        volta à operação `from` mais `times` vezes
@@ -41,6 +42,10 @@ var angle: float = 0.0
 var done: bool = false
 ## Raio da boca (ver muzzle_for); 0 = nasce no centro.
 var muzzle: float = 0.0
+## Centro do emissor no último passo e o quadro da Sim dele: o feixe (EnemyBeam) segue a boca e acaba quando o
+## emissor para de rodar o runner (morto, fora da tela, troca de etapa).
+var last_origin := Vector2.ZERO
+var seen: int = -1
 var _counters: Dictionary = {}
 
 
@@ -58,7 +63,9 @@ static func muzzle_for(emitter_radius: float) -> float:
 
 
 ## Um passo de simulação. `can_fire` falso (Ocean Shift, entrada do fundo) avança sem atirar.
-func step(sim: Sim, origin: Vector2, can_fire: bool) -> void:
+func step(sim: Sim, from: Vector2, can_fire: bool) -> void:
+	last_origin = from
+	seen = sim.frame
 	if done or steps.is_empty():
 		return
 	if wait > 0:
@@ -93,12 +100,14 @@ func step(sim: Sim, origin: Vector2, can_fire: bool) -> void:
 				else:
 					_counters.erase(key)
 			&"beam":
-				if can_fire:
-					sim.add_beam(origin + _offset(s), float(s.get("width", 16.0)), int(s.get("warn_frames", 30)),
+				if can_fire and SimRevision.of(sim.loadout) >= EnemyBeam.REVISION:
+					EnemyBeam.add(sim, self, from, s)
+				elif can_fire:
+					sim.add_beam(from + _offset(s), float(s.get("width", 16.0)), int(s.get("warn_frames", 30)),
 							int(s.get("frames", 60)))
 			_:
 				if can_fire:
-					_emit(sim, origin + _offset(s), s)
+					_emit(sim, from + _offset(s), s)
 
 
 func _offset(s: Dictionary) -> Vector2:

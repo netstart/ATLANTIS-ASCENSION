@@ -2,9 +2,9 @@ class_name WorldView
 extends Node2D
 ## Desenho do campo de jogo a partir da Sim (só leitura). Camadas, de baixo para cima:
 ##   sombras no chão → destroços caindo → entidades (inimigos, chefe, coletáveis) → fumaça e estilhaços →
-##   tiros do jogador (com halo) → nave → efeitos de baixo (feixes, explosões, duelo) →
+##   tiros do jogador (com halo) → nave → efeitos de baixo (avisos e feixes do cenário, explosões, duelo) →
 ##   luz aditiva (bocal do laser, motores, clarões, anéis de choque) → laser e fluxo solar (EnergyStream) →
-##   poderes aditivos → faíscas e brilhos (CombatFx) →
+##   feixes inimigos (HostileBeams) → poderes aditivos → faíscas e brilhos (CombatFx) →
 ##   balas inimigas (sempre por cima: leitura) → efeitos de cima (escuridão, números de pontos).
 ## Só texturas e retângulos por quadro (docs/policies/qualidade.md); partículas em MultiMesh
 ## (ParticleField). Efeitos vivem aqui, não na Sim: qualidade gráfica e "reduzir flashes" nunca
@@ -89,6 +89,8 @@ var fx := CombatFx.new()
 var powers := PowerView.new()
 ## Laser e fluxo do Mergulho Solar saindo do bico (shader aditivo, um quad).
 var stream := EnergyStream.new()
+## Feixes inimigos dos padrões (corpo em shader, luz da boca e do respingo); os do cenário ficam aqui.
+var beams := HostileBeams.new()
 
 var _shadows: _Layer
 var _entities: _Layer
@@ -262,6 +264,9 @@ func setup(p_sim: Sim) -> void:
 	stream.reduce_flashes = reduce_flashes
 	stream.setup(sim)
 	add_child(stream)
+	beams.reduce_flashes = reduce_flashes
+	beams.setup(sim, fx, _flare)
+	add_child(beams)
 	_power_add =_Layer.new(self, _draw_power_add)
 	_power_add.material = add
 	_power_add.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -295,6 +300,7 @@ func refresh(delta: float) -> void:
 	fx.advance(delta)
 	powers.advance(sim, delta)
 	stream.refresh(delta, time)
+	beams.refresh(delta, time)
 	_player_bullets.render(sim.player_bullets)
 	_enemy_bullets.render(sim.enemy_bullets)
 	var ease := 1.0 - exp(-delta * 12.0)
@@ -982,18 +988,14 @@ func _draw_fx_below(ci: CanvasItem) -> void:
 		var w := float(b["width"])
 		var length := sim.field.y + 40.0 - y
 		if int(b["age"]) < int(b["warn"]):
-			var on := floori(int(b["age"]) / 4.0) % 2 == 0
-			var a := WARN_COLOR.a * (1.0 if on else 0.35)
-			ci.draw_rect(Rect2(x - w * 0.5, y, 1.0, length), Color(WARN_COLOR, a))
-			ci.draw_rect(Rect2(x + w * 0.5 - 1.0, y, 1.0, length), Color(WARN_COLOR, a))
-			ci.draw_rect(Rect2(x - 0.5, y, 1.0, length), Color(WARN_COLOR, a * 0.5))
+			HostileBeams.warning(ci, b, sim.field, HostileBeams.WARN if HostileBeams.pattern(b) else WARN_COLOR)
 		elif String(b.get("kind", "")) == "lightning":
 			HazardArt.lightning(ci, x, y, w, length, int(b["age"]), reduce_flashes, _glow)
 		elif HAZARD_COLORS.has(String(b.get("kind", ""))):
 			var hc: Color = HAZARD_COLORS[String(b["kind"])]
 			var wob := 0.85 + 0.15 * sin(time * 30.0 + x)
 			ci.draw_texture_rect(_beam, Rect2(x - w * 0.6, y, w * 1.2, length), false, Color(hc, hc.a * wob))
-		else:
+		elif not HostileBeams.pattern(b):
 			ci.draw_texture_rect(_beam, Rect2(x - w * 0.6, y, w * 1.2, length), false, BEAM_COLOR)
 	if sim.boss != null and sim.boss.state == SimBoss.State.DUEL:
 		_draw_duel(ci, sim.boss)
@@ -1086,7 +1088,8 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 			var u := t / float(e["duration"])
 			_tex_centered(ci, _flare, e["pos"], float(e["scale"]) * (1.2 + u), Color(1.0, 0.55, 0.2, 0.5 * (1.0 - u)))
 	for b: Dictionary in sim.beams:
-		if int(b["age"]) >= int(b["warn"]) and String(b.get("kind", "")) != "lightning":
+		# Feixe dos padrões: o brilho é do HostileBeams; aqui só o do cenário (fora o raio).
+		if int(b["age"]) >= int(b["warn"]) and not HostileBeams.pattern(b) and String(b["kind"]) != "lightning":
 			var hc: Color = HAZARD_COLORS.get(String(b.get("kind", "")), BEAM_COLOR)
 			var bw := float(b["width"])
 			var by := float(b["y"])

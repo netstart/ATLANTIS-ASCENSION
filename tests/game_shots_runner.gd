@@ -30,6 +30,9 @@ extends Node
 ## sem --at, no segundo 4 grava as galerias: todos os inimigos em grade
 ## (<pasta>/hitbox_enemies_<n>_<res>.png), cada chefe diferente no meio do campo (hitbox_boss_<id>_<res>.png) e cada
 ## nave do jogador (hitbox_ship_<id>_<res>.png). Use --zoom=4 para ver de perto.
+##
+## Feixes inimigos (HostileBeams, EnemyBeam): `--beams[=N]` joga a missão e grava os N primeiros feixes de padrão
+## (padrão 4) no meio do aviso e aceso: <pasta>/beam_<missão>_<n>_<warn|lit>_<res>.png.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -92,6 +95,10 @@ var _objectives := false
 ## Modo caixas de colisão (--hitboxes) e se as galerias (sem --at) já começaram.
 var _hitboxes := false
 var _gallery := false
+## Modo --beams: quantos feixes ainda gravar (0 = desligado) e quantos já gravou.
+var _beams := 0
+var _beam_n := 0
+var _beam_seen := {}
 var _obj_taken: Dictionary = {}
 var _obj_end_frame: int = -1
 var _obj_results: int = 0
@@ -145,6 +152,9 @@ func _ready() -> void:
 			_objectives = true
 		elif arg == "--hitboxes":
 			_hitboxes = true
+		elif arg == "--beams" or arg.begins_with("--beams="):
+			_beams = maxi(1, int(arg.trim_prefix("--beams").trim_prefix("="))) if "=" in arg else 4
+			_shots = [9999.0]
 		elif arg == "--left":
 			Settings.set_value("handedness", "left")
 	_gallery = _hitboxes and _shots.is_empty()
@@ -197,6 +207,9 @@ func _process(_delta: float) -> void:
 		return
 	if _shots.is_empty():
 		return
+	if _beams > 0:
+		_process_beams()
+		return
 	if _deaths:
 		_process_deaths(_delta)
 		return
@@ -218,6 +231,37 @@ func _process(_delta: float) -> void:
 		await _capture("%s/game_%s_%s.png" % [_out, tag, _label])
 		if _shots.is_empty() or _game.sim.finished:
 			_quit()
+
+
+## Modo --beams: grava cada feixe de padrão no meio do aviso e 10 passos depois de acender.
+func _process_beams() -> void:
+	for b: Dictionary in _game.sim.beams:
+		if not HostileBeams.pattern(b):
+			continue
+		var age := int(b["age"])
+		var warn := int(b["warn"])
+		# O bot joga acelerado (vários passos por quadro): grava na primeira vez que passa de cada momento.
+		var key := "%d:%s" % [_game.sim.frame - age, str(b.get("off", b["x"]))]
+		var moment := ""
+		if age >= warn + 10 and not _beam_seen.has(key + "lit"):
+			moment = "lit"
+		elif age >= warn * 0.5 and age < warn and not _beam_seen.has(key + "warn"):
+			moment = "warn"
+		if moment.is_empty():
+			continue
+		_beam_seen[key + moment] = true
+		_busy = true
+		GameClock.paused = true
+		await _capture("%s/beam_%s_%d_%s_%s.png" % [_out, _mission, _beam_n, moment, _label])
+		GameClock.paused = false
+		_busy = false
+		if moment == "lit":
+			_beam_n += 1
+			if _beam_n >= _beams:
+				_quit()
+		return
+	if _game.sim.finished:
+		_quit()
 
 
 ## Modo --deaths: no segundo pedido para a Sim (o desenho segue), mata um de cada estilo e grava os momentos.

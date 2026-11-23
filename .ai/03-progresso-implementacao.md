@@ -598,3 +598,20 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   casco "orangeship" pela meia-lua RD2 da Faction 6 (girada 180°, turquesa e ouro). Testes em
   `tests/livery_tests.gd`; folha em `tests/livery_shots_runner.tscn` (15 naves x níveis 1 a 10). Falta: o WorldView
   passar `firing` ao `ShipArt.draw` para a boca dos canhões lampejar a cada tiro
+- ✅ Feixe dos chefes saindo da boca e mirando (pedido do dono, Aríete de Coral: "feixe desalinhado e gráfico muito
+  ruim"). Antes o feixe ficava parado na vertical onde nasceu e o chefe saía de baixo dele. `EnemyBeam` (revisão 6 da
+  Sim): o feixe do op `beam` sai da boca do emissor (centro + `ox`/`oy`) e a segue a cada passo; no aviso mira o
+  jogador (as linhas mostram a mira real) e trava nos últimos 24 passos; aceso, gira para o jogador no máximo
+  `track` graus/s (padrão 12: a 300 u do chefe a ponta anda ~63 u/s, a nave 163 a 192 u/s, então quem anda escapa).
+  `aim: false` deixa colunas verticais que só seguem a boca (pilares do Arquiteto, faixas do Leviatã, tridente de
+  Poseidon, pilares do Portão Orbital). Dano no segmento inclinado (distância ao segmento, da boca à borda do campo).
+  Emissor que some (morto, fora da tela, parte destruída, troca de etapa) leva o feixe: no aviso some, aceso fecha em
+  8 passos sem ferir. Feixes do cenário (raio, gêiser) e replays até a revisão 5 seguem iguais, passo a passo
+  (conferido contra o código da 1.26.0 em c2m3, c3m1 e c5m2). Desenho novo em `HostileBeams` +
+  `shaders/hostile_beam.gdshader` (um quad por feixe, girado): núcleo branco-quente, corpo vermelho-magenta, halo,
+  contorno escuro (alfa pré-multiplicado) para ler em fundo claro, pulsos correndo para fora, abre e fecha em rampa;
+  carga na boca durante o aviso, clarão na boca e respingo com faíscas na borda; "menos clarões" acalma tudo. O bot
+  desvia do feixe inclinado. Balanceamento (bot, 3 sementes, 12 missões com feixe): danos 11 → 22, nenhuma perdida
+  (com o Portão mirando, c8m2 perdia 2 de 3: virou coluna), 2 golpes de feixe em 36 partidas; o resto vem do
+  desvio extra empurrando o bot para balas. Testes em `tests/beam_tests.gd`; capturas com
+  `game_shots_runner.tscn -- --mission=c3m1 --beams`. Falta conferir no aparelho

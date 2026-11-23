@@ -863,8 +863,8 @@ func _collide_ship(ship: SimPlayer) -> void:
 				break
 	if not hit:
 		for b: Dictionary in beams:
-			if int(b["age"]) >= int(b["warn"]) and pp.y > float(b["y"]) \
-					and absf(pp.x - float(b["x"])) <= float(b["width"]) * 0.5 + hb:
+			if int(b["age"]) >= int(b["warn"]) and (EnemyBeam.hits(b, pp, hb, field) if b.has("src") else \
+					pp.y > float(b["y"]) and absf(pp.x - float(b["x"])) <= float(b["width"]) * 0.5 + hb):
 				hit = true
 				cause = &"beam"
 				break
@@ -987,7 +987,10 @@ func _beams_step() -> void:
 	while i >= 0:
 		var b := beams[i]
 		b["age"] = int(b["age"]) + 1
-		if int(b["age"]) >= int(b["warn"]) + int(b["frames"]):
+		# Feixe de padrão da revisão 6: segue a boca do emissor e acaba com ele (EnemyBeam).
+		if b.has("src") and not EnemyBeam.follow(self, b):
+			beams.remove_at(i)
+		elif int(b["age"]) >= int(b["warn"]) + int(b["frames"]):
 			beams.remove_at(i)
 		i -= 1
 

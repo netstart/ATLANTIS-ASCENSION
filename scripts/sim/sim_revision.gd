@@ -8,9 +8,10 @@ extends RefCounted
 ##   3: rebalanceamento da dificuldade: curva por capítulo (balas, cadência, vida; Sim.CURVE_*) e rank na cadência.
 ##   4: objetivos de fase (SimObjectives: resgate, sabotagem, interceptação) e alvos sem dano de contato.
 ##   5: caixas de colisão medidas na arte HD (Hitboxes, data/hitboxes.json): dano, contato e ponto da nave.
+##   6: feixe dos padrões sai da boca do emissor e o segue, mira o jogador e gira devagar (EnemyBeam).
 ## A saída da fase continua na marca "outro" da carga, anterior a este número (SimOutro).
 
-const CURRENT := 5
+const CURRENT := 6
 
 
 ## Revisão das regras de uma partida com esta carga.

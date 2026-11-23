@@ -881,6 +881,13 @@ Padrões em JSON interpretados pelo `PatternRunner`, sem código por padrão.
 Operações: `ring`, `fan`, `aimed`, `aimed_fan`, `spiral`, `line`, `beam` (com `warn_frames`), `spawn` (filhos),
 `wait`, `rotate`, `accel`, `curve`, `split_on_hit`, `repeat`, `random_jitter` (sempre do fluxo de RNG da missão).
 Todo padrão com `beam` ou primeiro uso numa luta exige `warn_frames ≥ 30` (0,5 s); o teste de chefes confere.
+O `beam` (revisão 6 da Sim, `EnemyBeam`) sai da boca do emissor (centro + `ox`/`oy`) e a segue a cada passo; no
+aviso mira o jogador e trava nos últimos 24 passos; aceso, gira para o jogador no máximo `track` graus/s (padrão 12,
+mais devagar que a nave: quem anda escapa). `aim: false` faz coluna vertical que só segue a boca (pilares do
+Arquiteto, faixas do Leviatã, tridente de Poseidon, pilares do Portão Orbital). Emissor que some leva o feixe
+junto (fecha em 8 passos sem ferir). Dano no segmento inclinado, da boca à borda do campo. Desenho: `HostileBeams` (um quad por feixe com
+`shaders/hostile_beam.gdshader`, núcleo branco-quente, corpo vermelho-magenta, halo e contorno escuro), carga na
+boca durante o aviso, clarão na boca e respingo na borda; linhas do aviso inclinadas na mira real.
 
 ### 10.6 Roteiro de fase
 
