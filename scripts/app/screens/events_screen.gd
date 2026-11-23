@@ -56,7 +56,7 @@ func _fill() -> void:
 	var ready := LiveOps.core_ready(profile)
 	button(core_box, tr("events.core_open"), func() -> void:
 		if not LiveOps.open_core(SaveManager.data).is_empty():
-			AudioManager.play_ui("kenney_weapon_up")
+			AudioManager.play_ui("fx_power_up")
 			SaveManager.save_profile(), ready, "OpenCore", ready)
 	if Notices.core_ready(profile):
 		_dot_on(core_box.get_parent() as Control)

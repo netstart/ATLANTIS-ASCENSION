@@ -2256,6 +2256,60 @@
   "sha256": "fa7943c117f367b205bf808486d249c22e894f19e5641608a1a25c25d6d7ad39"
  },
  {
+  "file": "assets/audio/sfx/fx_alarm.ogg",
+  "source": "atlantis-mix/alerts/fx_alarm.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "2b2e7f7dce2662666ee1cdb7822af667aaac92ba6bad45569771797ac2f2e5f3"
+ },
+ {
+  "file": "assets/audio/sfx/fx_beam_fire.ogg",
+  "source": "atlantis-mix/alerts/fx_beam_fire.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "890700e141ff9fda867da354977e81005e031a881407100827730e5a9c118cf8"
+ },
+ {
+  "file": "assets/audio/sfx/fx_beam_warn.ogg",
+  "source": "atlantis-mix/alerts/fx_beam_warn.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "d6b3b9ad70319dedcc10a8e736ed4c5e920f170e049260ebcb24c92ce40138a3"
+ },
+ {
+  "file": "assets/audio/sfx/fx_duel.ogg",
+  "source": "atlantis-mix/alerts/fx_duel.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "836611da87e9d09ba744ebd3963545fd1f52dd47955245339194b197169c3644"
+ },
+ {
+  "file": "assets/audio/sfx/fx_graze.ogg",
+  "source": "atlantis-mix/alerts/fx_graze.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "20475ca6b1ee0cda80bca310d3cf73b005fd851a405294f3db4f023c6feb9bcb"
+ },
+ {
+  "file": "assets/audio/sfx/fx_horn.ogg",
+  "source": "atlantis-mix/alerts/fx_horn.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "f94444c501902340b539b9df3083eba300d525c1405e2eb7574227d587c17579"
+ },
+ {
+  "file": "assets/audio/sfx/fx_orb.ogg",
+  "source": "atlantis-mix/alerts/fx_orb.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "cf0e0d3dd613308bbf182d08b5674a75edd745561668fb9c0b75b0fcbb2ab232"
+ },
+ {
+  "file": "assets/audio/sfx/fx_power_up.ogg",
+  "source": "atlantis-mix/alerts/fx_power_up.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "bbbcbd072dbf5b16ec32a33e2cc560c13f3db3bf4619ae5501d1db1ddc2b78b3"
+ },
+ {
+  "file": "assets/audio/sfx/fx_sonar.ogg",
+  "source": "atlantis-mix/alerts/fx_sonar.ogg",
+  "license_id": "atlantis_power_sfx",
+  "sha256": "44071d376a88fa9ef679f1e22f70c6d22ce01cd3260e08f2b88cd69959026625"
+ },
+ {
   "file": "assets/audio/sfx/hit_1.ogg",
   "source": "atlantis-mix/pickups/hit_1.ogg",
   "license_id": "kenney_audio",
@@ -2298,18 +2352,6 @@
   "sha256": "9df61e3ae9a83dc65e5a1fd3ed19d480876f3b22b963a1b9ef6fa293592dcec4"
  },
  {
-  "file": "assets/audio/sfx/kenney_beam.ogg",
-  "source": "kenney/sci-fi-sounds/Audio/laserLarge_000.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "a56d95794cd732d6c2d66ce488c14cf557fe526c282897c9a77675c2bd9b77e6"
- },
- {
-  "file": "assets/audio/sfx/kenney_beam_warn.ogg",
-  "source": "kenney/sci-fi-sounds/Audio/computerNoise_000.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "1527944e16eb14b48ee03fe3e7ce6aae94262833a4e1f83928d451a7414fe4e1"
- },
- {
   "file": "assets/audio/sfx/kenney_bomb.ogg",
   "source": "kenney/sci-fi-sounds/Audio/lowFrequency_explosion_001.ogg",
   "license_id": "kenney_audio",
@@ -2340,12 +2382,6 @@
   "sha256": "4b597d658d0ae101f0a030fbeea5fc3a4292ab85f017470a8254a8e7959cbd69"
  },
  {
-  "file": "assets/audio/sfx/kenney_graze.ogg",
-  "source": "kenney/digital-audio/Audio/highUp.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "cbc1c3c7ccf5d7903818144a4c3f5b2ed2385095792f29d8d7c76360ba4fa559"
- },
- {
   "file": "assets/audio/sfx/kenney_hit.ogg",
   "source": "kenney/impact-sounds/Audio/impactMetal_light_000.ogg",
   "license_id": "kenney_audio",
@@ -2362,12 +2398,6 @@
   "source": "kenney/digital-audio/Audio/phaseJump1.ogg",
   "license_id": "kenney_audio",
   "sha256": "c60069ed7108678dd6a1306404d168a93cc2575cda37b06add9dd6c4d46352a3"
- },
- {
-  "file": "assets/audio/sfx/kenney_orb.ogg",
-  "source": "kenney/digital-audio/Audio/powerUp1.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "8c361b624b560c0bc30ea3063b71212bc30caebf425c9df2481c13b25561485c"
  },
  {
   "file": "assets/audio/sfx/kenney_part_clamp.ogg",
@@ -2394,28 +2424,10 @@
   "sha256": "9c3a1c73cadf0de5d5a578b31a264f20b1ac7cb6ec9bbd34a203f58402ea5390"
  },
  {
-  "file": "assets/audio/sfx/kenney_shield.ogg",
-  "source": "kenney/sci-fi-sounds/Audio/forceField_000.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "c2916f2a062c8ddd1aca2826d134fe90847037db31342726ffb0f9097afe339c"
- },
- {
-  "file": "assets/audio/sfx/kenney_shot_laser.ogg",
-  "source": "kenney/sci-fi-sounds/Audio/laserRetro_002.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "df6112dc4eba5444bc28a1c8b80f6ce942bb2696beb466ac8e736b2ebf3e15b9"
- },
- {
   "file": "assets/audio/sfx/kenney_shot_pulsar.ogg",
   "source": "kenney/sci-fi-sounds/Audio/laserSmall_000.ogg",
   "license_id": "kenney_audio",
   "sha256": "72b589eadd41781257ac859e4f4d030222e623390e4a1a83f6d05329a6e026f1"
- },
- {
-  "file": "assets/audio/sfx/kenney_special_ready.ogg",
-  "source": "kenney/digital-audio/Audio/phaserUp3.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "d6edcbde2c7190e275ef3eba08a8886129153a361cd0e16dc0fb58206deb5e53"
  },
  {
   "file": "assets/audio/sfx/kenney_ui_back.ogg",
@@ -2440,12 +2452,6 @@
   "source": "kenney/interface-sounds/Audio/drop_001.ogg",
   "license_id": "kenney_audio",
   "sha256": "692ee3a6f1821402ca649ff735bee9591dc4846c8098fc7d6a90fd15fa57c1af"
- },
- {
-  "file": "assets/audio/sfx/kenney_weapon_up.ogg",
-  "source": "kenney/digital-audio/Audio/powerUp10.ogg",
-  "license_id": "kenney_audio",
-  "sha256": "e4d2c7707655361678ccd358048b7956753e4f333e99545b4ae25e07a9b2ef9b"
  },
  {
   "file": "assets/audio/sfx/kindland_storm_bed.ogg",
@@ -2716,12 +2722,6 @@
   "source": "atlantis-mix/powers/power_trident_3.ogg",
   "license_id": "atlantis_power_sfx",
   "sha256": "dfbdae8446ab58639309f6780ce978c58019372219ac4f24a7cb4a031d60b810"
- },
- {
-  "file": "assets/audio/sfx/rubberduck_alarm.ogg",
-  "source": "opengameart/30-cc0-sfx-loops/x/alarm_02.ogg",
-  "license_id": "rubberduck_sfx_loops",
-  "sha256": "26f1a445657e35c2639a0fecb2535c19a890cf3d70f65606d5729429efa95c1f"
  },
  {
   "file": "assets/audio/sfx/rubberduck_growl.ogg",

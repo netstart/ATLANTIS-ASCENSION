@@ -56,7 +56,7 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **100 CC0 SFX** — rubberduck (CC0-1.0) — https://opengameart.org/content/100-cc0-sfx
 - **512 Sound Effects (8-bit style)** — Juhani Junkala (SubspaceAudio) (CC0-1.0) — https://opengameart.org/content/512-sound-effects-8-bit-style
 - **100 CC0 SFX #2** — rubberduck (CC0-1.0) — https://opengameart.org/content/100-cc0-sfx-2
-- **Atlantis Ascension — sons dos poderes das naves (mistura e síntese)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
+- **Atlantis Ascension — sons dos poderes das naves e de alerta (mistura e síntese)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
 
 ## Fontes
 

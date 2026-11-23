@@ -275,6 +275,23 @@ func _test_audio(check: Callable) -> void:
 			var stream := load(AudioManager.SFX_DIR + variant + ".ogg") as AudioStream
 			check.call(stream != null and stream.get_length() > 0.05 and stream.get_length() <= float(limits[id][1]),
 					"Áudio: %s carrega e dura até %.2f s" % [variant, limits[id][1]])
+	# Alertas e coletas sintetizados (1.25.1, tools/mix_alert_audio.py): o aviso do feixe era um zumbido de 5 s que
+	# tocava por cima de si mesmo; agora cabe no aviso (40 a 60 quadros) e o feixe tem som próprio ao acender.
+	var alerts := {"fx_beam_warn": 1.1, "fx_beam_fire": 1.0, "fx_duel": 1.5, "fx_sonar": 1.1, "fx_horn": 1.25,
+			"fx_alarm": 1.3, "fx_orb": 0.5, "fx_power_up": 0.9, "fx_graze": 0.25}
+	for id: String in alerts:
+		var stream := load(AudioManager.SFX_DIR + id + ".ogg") as AudioStream
+		check.call(stream != null and stream.get_length() > 0.1 and stream.get_length() <= float(alerts[id]),
+				"Áudio: %s carrega e dura até %.2f s" % [id, alerts[id]])
+	for old: String in ["kenney_beam_warn", "kenney_beam", "kenney_orb", "kenney_weapon_up", "kenney_graze",
+			"rubberduck_alarm"]:
+		check.call(AudioManager.variants(old).is_empty(), "Áudio: %s (agudo ou zumbido) saiu do jogo" % old)
+	var beams: Array[Dictionary] = [{"age": 44, "warn": 45}, {"age": 45, "warn": 45, "kind": "lightning"}]
+	check.call(not Game.beam_lit_now(beams), "Áudio: feixe ainda no aviso e raio do clima não tocam o disparo")
+	beams.append({"age": 50, "warn": 50})
+	check.call(Game.beam_lit_now(beams), "Áudio: o feixe toca o disparo no quadro em que acende")
+	beams[2]["age"] = 51
+	check.call(not Game.beam_lit_now(beams), "Áudio: o disparo do feixe toca uma vez só")
 	var last := -1
 	var seen := {}
 	var repeats := 0

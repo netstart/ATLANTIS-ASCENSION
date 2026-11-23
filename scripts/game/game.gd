@@ -439,6 +439,23 @@ func _on_tick(_dt: float) -> void:
 	if stress > 0:
 		_stress()
 	sim.step(input, input2)
+	_beam_fire_sound()
+
+
+## O feixe acende no quadro em que o aviso acaba (idade == aviso): baque grave com rugido que fecha, o fim da carga
+## de fx_beam_warn (tools/mix_alert_audio.py). O raio do clima não entra: o trovão dele vem do WeatherAudio. Só lê a
+## Sim; vários feixes no mesmo quadro tocam um som só.
+func _beam_fire_sound() -> void:
+	if beam_lit_now(sim.beams):
+		AudioManager.play("fx_beam_fire", 1.0, 0.03, 0.0)
+
+
+## Algum feixe (fora o raio do clima) acendeu neste quadro.
+static func beam_lit_now(beams: Array[Dictionary]) -> bool:
+	for b: Dictionary in beams:
+		if int(b["age"]) == int(b["warn"]) and String(b.get("kind", "")) != "lightning":
+			return true
+	return false
 
 
 ## Turbo do HUD: próxima velocidade (1x → 1,5x → 2x), guardada no perfil pelo Turbo e aplicada na hora.
@@ -607,12 +624,16 @@ func _on_event(ev: Dictionary) -> void:
 		&"hit":
 			AudioManager.play("hit", 1.0, 0.1, -16.0)
 		&"graze":
-			AudioManager.play("kenney_graze", 1.0, 0.05, -12.0)
+			# Sopro de ar curto (o highUp em quadrada de 8 bits era agudo e repetitivo).
+			AudioManager.play("fx_graze", 1.0, 0.06, -8.0)
 			Settings.vibrate(8, 0.25, 0)
 		&"orb":
-			AudioManager.play("kenney_weapon_up" if bool(ev.get("up", false)) else "kenney_orb")
+			AudioManager.play("fx_power_up" if bool(ev.get("up", false)) else "fx_orb", 1.0, 0.0,
+					0.0 if bool(ev.get("up", false)) else -3.0)
 		&"medal":
-			AudioManager.play("coin_medal", 1.0 + minf(0.6, float(ev.get("value", 100)) / 20000.0), 0.0, -3.0)
+			# O tom sobe com o valor só até +30% (a +60% a moeda em quadrada chegava a ~4 kHz de centro) e mais baixo:
+			# era a coleta mais alta da partida.
+			AudioManager.play("coin_medal", 0.95 + minf(0.3, float(ev.get("value", 100)) / 20000.0), 0.0, -6.0)
 		&"pearl":
 			AudioManager.play("coin_pearl", 1.0, 0.1, -1.0)
 		&"player_hit":
@@ -649,12 +670,18 @@ func _on_event(ev: Dictionary) -> void:
 				_screen.flash(0.6, Color(1.0, 0.97, 0.9))
 				Settings.vibrate(90, 0.8, 1)
 		&"beam_warn":
-			AudioManager.play("kenney_beam_warn", 1.0, 0.0, -6.0)
+			# Carga grave que sobe uma quinta no ritmo do pisca da faixa, 1 s (tools/mix_alert_audio.py). O antigo
+			# (computerNoise do Kenney) era um zumbido de 1 kHz de 5 s que tocava por cima de si mesmo.
+			AudioManager.play("fx_beam_warn")
 		&"boss_intro":
 			var boss_def: Dictionary = (sim.tables["bosses"] as Dictionary).get(StringName(ev["id"]), {})
 			var tier := String(boss_def.get("tier", ""))
 			# Chefes de meio de fase: alarme; criaturas (frota Nautolan) rugem; o intermediário tem tema próprio.
-			AudioManager.play("rubberduck_alarm" if not tier.is_empty() else "kenney_boss_alert")
+			# Meio de fase: sirene grave de dois tons (o alarme do rubberduck tinha 98% da energia acima de 4 kHz).
+			if tier.is_empty():
+				AudioManager.play("kenney_boss_alert")
+			else:
+				AudioManager.play("fx_alarm", 1.0, 0.0, -8.0)
 			if String(boss_def.get("sprite", "")).begins_with("nautolan"):
 				AudioManager.play("rubberduck_roar" if tier == "mid" else "rubberduck_growl", 1.0, 0.05, -4.0)
 			_hud.show_banner(tr(String(ev.get("name_key", ""))))
@@ -671,7 +698,7 @@ func _on_event(ev: Dictionary) -> void:
 			_screen.shockwave(ev["pos"], 0.015)
 			_hitstop_for(HITSTOP_PART)
 		&"duel_start":
-			AudioManager.play("kenney_beam")
+			AudioManager.play("fx_duel")
 			_hud.show_banner(tr("hud.duel"))
 		&"boss_dead":
 			_boss_dead_sound()
@@ -709,7 +736,7 @@ func _on_event(ev: Dictionary) -> void:
 		&"weather":
 			_on_weather(ev)
 		&"weather_mastered":
-			AudioManager.play("kenney_weapon_up", 0.9)
+			AudioManager.play("fx_power_up", 0.9)
 			Settings.vibrate(40, 0.5, 1)
 			_world.fx.popup(ev["pos"], int(ev.get("points", 0)), UiTheme.GOLD)
 		&"log":
@@ -718,7 +745,7 @@ func _on_event(ev: Dictionary) -> void:
 		&"glyph":
 			# Glifo: degrau curto que sobe sem passar do tom original, com o sino quente por baixo.
 			var step := float(ev.get("index", 0))
-			AudioManager.play("kenney_orb", 0.6 + 0.05 * step, 0.0, -6.0)
+			AudioManager.play("fx_orb", 0.75 + 0.05 * step, 0.0, -6.0)
 			AudioManager.play("kenney_ascend_bell", 0.8 + 0.05 * step, 0.0, -9.0)
 			_hud.show_radio_text(tr("hud.glyph") % [int(ev["index"]) + 1, int(ev["of"])], UiTheme.GOLD)
 		&"glyph_reset":
@@ -740,7 +767,7 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("kenney_ocean_shift", 0.5 + 0.01 * float(ev["depth"]), 0.0, -6.0)
 			_hud.show_banner(tr("hud.depth") % int(ev["depth"]))
 		&"capture":
-			AudioManager.play("kenney_weapon_up", 1.3)
+			AudioManager.play("fx_power_up", 1.3)
 			Settings.vibrate(30)
 			_hud.show_radio_text(tr("hud.capture"), UiTheme.CYAN)
 		&"boss_remember":
@@ -778,7 +805,7 @@ func _on_objective(ev: Dictionary) -> void:
 	var kind := StringName(String(ev.get("kind", "")))
 	match StringName(ev["type"]):
 		&"objective_warn":
-			AudioManager.play("kenney_beam_warn", 0.7, 0.0, -10.0)
+			AudioManager.play("fx_sonar", 1.0, 0.0, -6.0)
 			AudioManager.play("kenney_ascend_bell", 0.6, 0.0, -9.0)
 			var text := tr("mini.intercept_warn")
 			if kind == &"rescue":
@@ -788,7 +815,7 @@ func _on_objective(ev: Dictionary) -> void:
 			# O aviso sai do alto do campo quando os alvos entram (SimObjectives.WARN_FRAMES): não os cobre.
 			_hud.show_radio_text(text, UiTheme.GOLD, SimObjectives.WARN_FRAMES / 60.0)
 		&"objective_progress":
-			AudioManager.play("kenney_orb", 0.6 + 0.05 * float(ev.get("done", 0)), 0.0, -6.0)
+			AudioManager.play("fx_orb", 0.75 + 0.05 * float(ev.get("done", 0)), 0.0, -6.0)
 		&"objective_release":
 			AudioManager.play("kenney_ocean_shift", 1.2, 0.0, -9.0)
 		&"survivor":
@@ -799,7 +826,7 @@ func _on_objective(ev: Dictionary) -> void:
 		&"relic":
 			AudioManager.play("kenney_medal", 0.8, 0.0, -4.0)
 		&"reinforcements":
-			AudioManager.play("kenney_beam_warn", 0.55, 0.0, -6.0)
+			AudioManager.play("fx_horn", 1.0, 0.0, -2.0)
 		&"objective_end":
 			var ok := bool(ev.get("ok", false))
 			var text := tr("mini.intercept_ok") if ok else tr("mini.intercept_fail")
@@ -862,7 +889,7 @@ func _show_style(c: Dictionary) -> void:
 	if int(c.get("arg", 0)) > 0:
 		text = text % int(c["arg"])
 	_callouts.pop(text, tier)
-	AudioManager.play("kenney_weapon_up" if tier >= 3 else "kenney_medal", 1.15 + 0.12 * tier, 0.0, -9.0 + 2.0 * tier)
+	AudioManager.play("fx_power_up" if tier >= 3 else "kenney_medal", 1.15 + 0.12 * tier, 0.0, -9.0 + 2.0 * tier)
 	Settings.vibrate(12 + 10 * tier, 0.3 + 0.2 * tier, 0 if tier < 3 else 1)
 
 
@@ -922,7 +949,7 @@ func _on_revive_choice(accept: bool) -> void:
 func _revived() -> void:
 	_done = -1.0
 	sim.revive()
-	AudioManager.play("kenney_weapon_up")
+	AudioManager.play("fx_power_up")
 	_hud.show_banner(tr("hud.revived"))
 
 

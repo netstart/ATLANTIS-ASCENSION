@@ -120,7 +120,7 @@ func _land() -> void:
 	_prize.modulate.a = 0.0
 	t.tween_property(_prize, "modulate:a", 1.0, 0.25).set_delay(0.12)
 	if bool(chest.get("jackpot", false)):
-		AudioManager.play_ui("kenney_weapon_up")
+		AudioManager.play_ui("fx_power_up")
 		AudioManager.play("kenney_medal", 1.5, 0.0, 0.0, "UI")
 		if UiSpark.instance != null and is_inside_tree():
 			UiSpark.instance.ripple(get_global_transform_with_canvas() * (size * 0.5), UiTheme.GOLD)

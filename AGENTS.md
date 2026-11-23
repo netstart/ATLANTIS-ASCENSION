@@ -118,6 +118,8 @@ python tools\cut_weather_audio.py
 python tools\mix_pickup_audio.py
 # Sons dos poderes das naves (36 poderes, tons do medidor, recusa): síntese + camadas CC0 (numpy e soundfile; antes do sync)
 python tools\mix_power_audio.py
+# Sons de alerta e coleta (aviso e disparo do feixe, duelo, sonar, trompa, sirene, esfera, melhora, raspão): só síntese (numpy e ffmpeg; antes do sync; --measure mede)
+python tools\mix_alert_audio.py
 # Tema do menu: laço sem emenda do WAV gerado no Google Flow Music (numpy e soundfile; antes do sync)
 python tools\prepare_menu_music.py
 # Trilhas das fases e chefes: laço sem emenda, -14 LUFS e pico real até -1 dBTP, OGG q5 (numpy e ffmpeg; antes do sync)

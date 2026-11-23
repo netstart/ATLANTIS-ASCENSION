@@ -388,7 +388,7 @@ func _on_double() -> void:
 			refresh_texts()
 			if is_inside_tree():
 				_stamp(_credits_pill, 1.25)
-				AudioManager.play_ui("kenney_weapon_up"), not _declined.has("credits"))
+				AudioManager.play_ui("fx_power_up"), not _declined.has("credits"))
 
 
 ## Dobrar as Pérolas do Diário: o mesmo anúncio opcional, 1 vez por dia (Modes.double_daily_pearls).
@@ -399,7 +399,7 @@ func _on_double_pearls() -> void:
 			SaveManager.save_profile()
 			refresh_texts()
 			if is_inside_tree():
-				AudioManager.play_ui("kenney_weapon_up"), not _declined.has("pearls"))
+				AudioManager.play_ui("fx_power_up"), not _declined.has("pearls"))
 
 
 static func _t(key: String) -> String:
@@ -620,7 +620,7 @@ func _step_chest() -> void:
 
 func _step_record() -> void:
 	_stamp(_record, 1.8)
-	AudioManager.play_ui("kenney_weapon_up")
+	AudioManager.play_ui("fx_power_up")
 
 
 ## Recompensas caem uma a uma (crédito primeiro, em ouro), com o "confirm" subindo de tom.

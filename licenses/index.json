@@ -176,7 +176,7 @@
     "modifications": "coin_medal (fichas do Casino Audio a -9 dB), coin_pearl_1..3 (glass_006/005/002) e hit_1..5 (impactGeneric_light_000..004 + click4 do UI Audio a -4 dB) misturados, recortados e com pico em -1 dBFS por tools/mix_pickup_audio.py; sons dos poderes (power_*: forceField, laserLarge/Small/Retro, explosões, impactMetal/Plate/Soft/Mining, zaps do Digital Audio, glass e tick/select do Interface Sounds, drawKnife1 e knifeSlice2 do RPG Audio) misturados por tools/mix_power_audio.py",
     "source_url": "https://kenney.nl/assets/sci-fi-sounds",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
-    "files_count": 34
+    "files_count": 26
   },
   {
     "id": "kenney_music_jingles",
@@ -336,7 +336,7 @@
     "modifications": "rain, noise_01 e water_flowing normalizados (RMS -22 dBFS, mono 44,1 kHz) por tools/cut_weather_audio.py",
     "source_url": "https://opengameart.org/content/30-cc0-sfx-loops",
     "license_file": "res://licenses/texts/CC0-1.0.txt",
-    "files_count": 4
+    "files_count": 3
   },
   {
     "id": "kindland_rain_thunders",
@@ -456,17 +456,17 @@
   },
   {
     "id": "atlantis_power_sfx",
-    "name": "Atlantis Ascension — sons dos poderes das naves (mistura e síntese)",
+    "name": "Atlantis Ascension — sons dos poderes das naves e de alerta (mistura e síntese)",
     "author": "Clayton K. N. Passos",
     "license_id": "MIT",
     "category": "audio",
-    "version": "tools/mix_power_audio.py",
+    "version": "tools/mix_power_audio.py, tools/mix_alert_audio.py",
     "downloaded_at": "2026-11-02",
     "verified_at": "2026-11-02",
-    "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada",
+    "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada; sons de alerta e de coleta fx_* (aviso e disparo do feixe, duelo, sonar, trompa, sirene, esfera, melhora de arma, raspão) só sintetizados por tools/mix_alert_audio.py",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
-    "files_count": 41
+    "files_count": 50
   },
   {
     "id": "flow_tide_rising_music",

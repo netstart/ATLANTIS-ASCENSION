@@ -723,7 +723,6 @@
     "category": "audio",
     "commercial_use": true,
     "files": [
-      "assets/audio/sfx/rubberduck_alarm*",
       "assets/audio/sfx/rubberduck_rain*",
       "assets/audio/sfx/rubberduck_wind*",
       "assets/audio/sfx/rubberduck_water*"
@@ -998,10 +997,10 @@
   },
   {
     "id": "atlantis_power_sfx",
-    "name": "Atlantis Ascension — sons dos poderes das naves (mistura e síntese)",
+    "name": "Atlantis Ascension — sons dos poderes das naves e de alerta (mistura e síntese)",
     "category": "audio",
     "author": "Clayton K. N. Passos",
-    "version": "tools/mix_power_audio.py",
+    "version": "tools/mix_power_audio.py, tools/mix_alert_audio.py",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_id": "MIT",
     "license_url": "https://raw.githubusercontent.com/netstart/ATLANTIS-ASCENSION/main/LICENSE",
@@ -1010,10 +1009,11 @@
     "attribution_required": false,
     "commercial_use": true,
     "ai_generated": false,
-    "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada",
+    "modifications": "Camadas sintetizadas pelo projeto (varreduras de ruído, sub-graves, sinos, metais, coro, zumbido, estalos, bolhas, reverberação) misturadas por tools/mix_power_audio.py com sons CC0 de kenney_audio, junkala_512_sfx, rubberduck_100_cc0_sfx, rubberduck_100_cc0_sfx_2, rubberduck_creature_sfx e faxcorp_electricity_sfx; cada fonte está creditada na própria entrada; sons de alerta e de coleta fx_* (aviso e disparo do feixe, duelo, sonar, trompa, sirene, esfera, melhora de arma, raspão) só sintetizados por tools/mix_alert_audio.py",
     "files": [
       "assets/audio/sfx/power_*",
-      "assets/audio/sfx/outro_afterburner.ogg"
+      "assets/audio/sfx/outro_afterburner.ogg",
+      "assets/audio/sfx/fx_*"
     ],
     "verified_at": "2026-11-02",
     "verified_by": "Claude (poderes das naves 1.16.0); revisão final por Clayton antes do lançamento",

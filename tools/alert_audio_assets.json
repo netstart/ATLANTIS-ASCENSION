@@ -1,0 +1,16 @@
+{
+	"pack_root": "atlantis-mix",
+	"license_id": "atlantis_power_sfx",
+	"note": "Síntese de tools/mix_alert_audio.py (obra do projeto, MIT): aviso e disparo do feixe do chefe, início do duelo, sonar do objetivo, trompa dos reforços, sirene do chefe de meio de fase, esfera, melhora de arma e raspão. Trocam os Kenney agudos, zumbidos ou de 8 bits (1.25.1).",
+	"files": {
+		"alerts/fx_alarm.ogg": "audio/sfx/fx_alarm.ogg",
+		"alerts/fx_beam_fire.ogg": "audio/sfx/fx_beam_fire.ogg",
+		"alerts/fx_beam_warn.ogg": "audio/sfx/fx_beam_warn.ogg",
+		"alerts/fx_duel.ogg": "audio/sfx/fx_duel.ogg",
+		"alerts/fx_graze.ogg": "audio/sfx/fx_graze.ogg",
+		"alerts/fx_horn.ogg": "audio/sfx/fx_horn.ogg",
+		"alerts/fx_orb.ogg": "audio/sfx/fx_orb.ogg",
+		"alerts/fx_power_up.ogg": "audio/sfx/fx_power_up.ogg",
+		"alerts/fx_sonar.ogg": "audio/sfx/fx_sonar.ogg"
+	}
+}

@@ -59,7 +59,7 @@ func seal() -> Control:
 func celebrate() -> void:
 	AudioManager.play("kenney_medal", 0.9 + 0.12 * maxi(0, grade), 0.0, 0.0, "UI")
 	if grade >= Grade.S:
-		AudioManager.play_ui("kenney_weapon_up")
+		AudioManager.play_ui("fx_power_up")
 		if UiSpark.instance != null and is_inside_tree():
 			UiSpark.instance.ripple(_seal.get_global_transform_with_canvas() * (_seal.size * 0.5), Grade.color(grade))
 

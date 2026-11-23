@@ -122,7 +122,10 @@ import pathlib
 import sys
 
 import numpy as np
-import soundfile as sf
+try:
+    import soundfile as sf
+except ModuleNotFoundError:  # só load() e write() precisam; tools/mix_alert_audio.py importa só a síntese
+    sf = None
 
 SR = 44100
 PEAK_DB = -1.0

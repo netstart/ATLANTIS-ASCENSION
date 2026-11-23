@@ -42,7 +42,7 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Cyberpunk Portraits | Hyptosis | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/cyberpunk-portraits |
 | 512 Sound Effects (8-bit style) | Juhani Junkala (SubspaceAudio) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/512-sound-effects-8-bit-style |
 | 100 CC0 SFX #2 | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/100-cc0-sfx-2 |
-| Atlantis Ascension — sons dos poderes das naves (mistura e síntese) | Clayton K. N. Passos | MIT | tools/mix_power_audio.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
+| Atlantis Ascension — sons dos poderes das naves e de alerta (mistura e síntese) | Clayton K. N. Passos | MIT | tools/mix_power_audio.py, tools/mix_alert_audio.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
 | Tema do menu | Clayton K. N. Passos com Google Flow Music | LicenseRef-Google-Terms-of-Service | Atlantis Ascension - Main Theme (Alt Take), 2026-11-01 | sim | sim | `licenses/texts/LicenseRef-Google-Terms-of-Service.txt` | https://flowmusic.google |
 | Music from 'ESCAPE': Temples | Of Far Different Nature (https://fardifferent.carrd.co/) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://fardifferent.itch.io/escape |
 | Music: 'Another Step Back' and 'Ritual' (album Another Step Back) | Of Far Different Nature (https://fardifferent.bandcamp.com/) | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://fardifferent.itch.io/another-step-back |
