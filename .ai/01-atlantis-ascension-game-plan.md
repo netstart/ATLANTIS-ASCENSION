@@ -1171,6 +1171,16 @@ Metas de retenção (D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 6%) e as referências de me
     missão; sem anúncio para mostrar (apoiador, anúncio que não carregou) a vez não gasta carga. Credita 3 cargas
     (`iap.revive_charges`), grava e só então consome na Play, com o token guardado para nunca creditar duas vezes;
     pendente não credita. Some para quem apoia; não existe na Steam (o reviver lá não tem anúncio).
+  - **Naves premium** (`ship_premium_hippocampus`, `ship_premium_nereid`, `ship_premium_amphitrite` a US$ 2,99;
+    `premium_fleet`, as três, a US$ 5,99, 33% a menos): a única venda que não sai jogando, e por isso só visual. Cada
+    uma é um *sidegrade* com o kit de uma nave do hangar (`kit` em `data/ships.json`: Hipocampo = Tempest, Nereida =
+    Manta, Anfitrite = Hydra): mesmos atributos, arma, especial, traço e os três poderes (mesmos efeitos, textos,
+    ícones e sons; `Powers.validate` reprova diferença), então o mesmo Poder. O exclusivo é a arte (as naves mais
+    vistosas do jogo: casco XENIS dourado e violeta e a meia-lua "RD2" da Faction 6 em turquesa, com madrepérola,
+    ouro nos realces, luz de borda cheia, chama de cor própria e um brilho que varre o casco), rastro, tiro (pastel)
+    e estouro próprios. Ficam fora da contagem da coleção e da conquista de frota. Loja: seção "Naves premium" em
+    Extras, pacote em destaque com a economia; coleção: grade "Naves premium" que leva à Loja. Steam: inclusas.
+    Produtos criados pela API com `tools/play_products.py`.
   - **Ficou de fora: Expansão de modos.** Abismo Infinito e Boss Rush já existem e abrem jogando (c7m1; os 4 chefes
     de ato). Vender a abertura antecipada seria vender progresso: o Abismo paga créditos (upgrades) e o Boss Rush
     sem os chefes vencidos é spoiler e frustração. Continuam grátis por jogo.

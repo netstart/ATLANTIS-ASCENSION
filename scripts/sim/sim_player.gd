@@ -21,6 +21,8 @@ var pos := START
 var hull: int = 3
 var max_hull: int = 3
 var hitbox: float = 3.0
+## Ponto da hitbox em relação a `pos` (o centro do desenho): a cabine da nave HD (Hitboxes, revisão 5).
+var hit_offset := Vector2.ZERO
 var speed_mult: float = 1.0
 var weapon: StringName = &"pulsar"
 var level: int = 1
@@ -55,6 +57,19 @@ func setup(p_ship: Dictionary, sensitivity: float) -> void:
 	speed_mult = float(ship.get("speed", 1.0)) * sensitivity
 	signature = StringName(String(ship.get("signature", "pulsar")))
 	weapon = signature
+
+
+## Caixa medida na arte HD (Hitboxes.find "ships"); vazio = a hitbox de data/ships.json no centro.
+func fit(box: Dictionary) -> void:
+	if box.is_empty():
+		return
+	hitbox = float(box.get("radius", hitbox))
+	hit_offset = Hitboxes.vec(box.get("offset"))
+
+
+## Ponto que leva o tiro (colisão, raspão e o ponto desenhado na nave).
+func hit_pos() -> Vector2:
+	return pos + hit_offset
 
 
 func max_level() -> int:

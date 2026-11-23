@@ -22,6 +22,10 @@ const CRACK := 8.0
 const SPOT_FRACTIONS: Array[Vector2] = [Vector2(0.32, 0.42), Vector2(0.66, 0.58), Vector2(0.45, 0.72),
 		Vector2(0.58, 0.3), Vector2(0.38, 0.6), Vector2(0.62, 0.45), Vector2(0.5, 0.5), Vector2(0.5, 0.35)]
 
+## Brilho das naves premium: uma passada de SHEEN_SWEEP s a cada SHEEN_PERIOD s pela tira <id>_sheen.png.
+const SHEEN_PERIOD := 3.2
+const SHEEN_SWEEP := 0.9
+
 static var _spots: Dictionary = {}
 static var _material: ShaderMaterial
 
@@ -51,24 +55,24 @@ static func material() -> ShaderMaterial:
 	return _material
 
 
-## Uma nave inteira no transform atual. `thrust`: subindo (pós-combustão a partir do marco afterburner);
-## `boost`: alongamento extra da chama (arrancada da saída); `damage`: estágio de avaria.
+## Uma nave inteira no transform atual. `level`: nível do hangar (casco montado com as peças da ShipLivery);
+## `thrust`: subindo (pós-combustão a partir da luz afterburner); `boost`: alongamento extra da chama (arrancada
+## da saída); `damage`: estágio de avaria; `firing`: a nave está atirando (a boca dos canhões de asa lampeja).
 static func draw(ci: CanvasItem, art: Dictionary, time: float, level: int, alpha: float = 1.0,
 		thrust: bool = false, paint: Color = Color(0, 0, 0, 0), calm: bool = false, damage: int = 0,
-		boost: float = 1.0) -> void:
-	var base: Texture2D = art.get("base")
-	if base == null:
+		boost: float = 1.0, firing: bool = false) -> void:
+	if art.get("base") == null:
 		return
-	var tex_size: int = art["tex_size"]
 	var size: float = art["size"]
 	var half := Vector2(size, size) * 0.5
 	var accent := ShipLivery.accent(StringName(String(art.get("id", ""))), paint)
-	ShipLivery.draw_under(ci, art, level, accent, time, alpha, calm)
+	ShipLivery.draw_under(ci, art, level, accent, time, alpha, calm, thrust, boost)
 	_engine(ci, art, time, level, alpha, thrust, boost)
 	var dark := DAMAGE_DARK[clampi(damage, 0, 2)]
-	ci.draw_texture_rect_region(base, Rect2(-half, half * 2.0), Rect2(0, 0, tex_size, tex_size),
-			paint_color(paint, alpha, dark))
-	ShipLivery.draw_over(ci, art, level, accent, time, alpha, calm)
+	var hull := ShipLivery.hull(art, level)
+	ci.draw_texture_rect_region(hull[0], Rect2(-half, half * 2.0), hull[1], paint_color(paint, alpha, dark))
+	ShipLivery.draw_over(ci, art, level, accent, time, alpha, calm, firing)
+	_sheen(ci, art, time, alpha * dark)
 	if damage > 0:
 		_cracks(ci, art, time, damage, alpha, calm)
 
@@ -82,7 +86,7 @@ static func nozzles(art: Dictionary) -> Array[Vector2]:
 
 
 ## Chama: a tira do motor esticada a partir da popa pelo nível (ShipLivery.flame) e mais clara; subindo, a pluma
-## de pós-combustão (Void: sempre; HD: a partir do marco afterburner, antes só um pouco mais longa).
+## de pós-combustão (Void: sempre; HD: a partir da luz afterburner, antes só um pouco mais longa).
 static func _engine(ci: CanvasItem, art: Dictionary, time: float, level: int, alpha: float, thrust: bool,
 		boost: float) -> void:
 	var tex: Texture2D = art.get("engine")
@@ -106,6 +110,23 @@ static func _engine(ci: CanvasItem, art: Dictionary, time: float, level: int, al
 	var frames := maxi(1, tex.get_width() / tex_size)
 	var f := int(time * ANIM_FPS) % frames
 	ci.draw_texture_rect_region(tex, rect, SpriteBank.frame_rect(f, tex_size), Color(fb.y, fb.y, fb.y, alpha))
+
+
+## Nave premium: a faixa de luz varre o casco do nariz à popa e some até a próxima passada. Uma textura por
+## quadro (nada de shader novo); fora da passada não desenha nada.
+static func _sheen(ci: CanvasItem, art: Dictionary, time: float, alpha: float) -> void:
+	var tex: Texture2D = art.get("sheen")
+	if tex == null:
+		return
+	var phase := fmod(time, SHEEN_PERIOD)
+	if phase >= SHEEN_SWEEP:
+		return
+	var tex_size: int = art["tex_size"]
+	var frames := maxi(1, tex.get_width() / tex_size)
+	var f := mini(frames - 1, int(phase / SHEEN_SWEEP * float(frames)))
+	var half := Vector2(art["size"], art["size"]) * 0.5
+	ci.draw_texture_rect_region(tex, Rect2(-half, half * 2.0), SpriteBank.frame_rect(f, tex_size),
+			Color(1, 1, 1, alpha))
 
 
 ## Rachaduras com faísca nos pontos de avaria (determinísticos por nave).

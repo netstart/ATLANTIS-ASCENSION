@@ -64,12 +64,15 @@ func _data(check: Callable) -> void:
 	var powers: Dictionary = _tables.get("powers", {})
 	var errors := Powers.validate(powers, _tables["ships"])
 	check.call(errors.is_empty(), "Poderes: data/powers.json válido (%s)" % [errors])
-	check.call(powers.size() == 36, "Poderes: 36 poderes (%d)" % powers.size())
+	check.call(powers.size() == 45, "Poderes: 36 poderes e os 9 repetidos das 3 premium (%d)" % powers.size())
 	var types := {}
 	for id: StringName in powers:
 		var def: Dictionary = powers[id]
-		check.call(String(def.get("icon", "")) == "res://assets/art/generated/powers/icons/power_%s.png" % id
-				and String(def.get("sfx", "")) == "power_%s" % id, "Poderes: ícone e som de %s no contrato" % id)
+		# Nave premium repete o poder da nave de origem (kit): o ícone e o som são os dela.
+		var kit := String((_tables["ships"][StringName(String(def.get("ship", "")))] as Dictionary).get("kit", ""))
+		var own := id if kit.is_empty() else StringName("%s_%d" % [kit, int(def.get("tier", 0))])
+		check.call(String(def.get("icon", "")) == "res://assets/art/generated/powers/icons/power_%s.png" % own
+				and String(def.get("sfx", "")) == "power_%s" % own, "Poderes: ícone e som de %s no contrato" % id)
 		for fx: Variant in def.get("effects", []):
 			types[StringName(String((fx as Dictionary).get("type", "")))] = true
 	check.call(types.size() == Powers.TYPES.size(), "Poderes: as 20 primitivas são usadas (%d)" % types.size())

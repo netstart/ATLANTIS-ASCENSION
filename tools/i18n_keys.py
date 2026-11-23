@@ -49,8 +49,8 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"trait.{t}" for t in ("artillery", "drones", "pierce", "crit", "blast", "hybrid")] + ["special.rotation"] + [
     "mode.abyss", "mode.abyss_desc", "deity.abyss", "hud.module_title", "results.depth"] + [
     f"options.window_{w}" for w in ("portrait", "landscape", "fullscreen")] + ["hub.banner_c10", "map.chapter10"] + ["mode.coop", "mode.coop_desc"] + [
-    f"livery.{p}" for p in ("tuned_engine", "accent_glow", "afterburner", "stripes", "nav_lights", "aura", "sensor",
-                            "runes", "trim")] + [
+    f"livery.{p}" for p in ("armor", "wing_guns", "boosters", "fins", "canards", "missile_pods", "sensor", "coils",
+                            "crown")] + [
     f"style.{k}" for k in ("chain", "chain_max", "graze_dance", "point_blank", "pearl_rain", "medal_max", "flawless",
                            "close_call")] + [f"chest.{t}" for t in ("bronze", "silver", "gold")] + [
     f"tip.{t}" for t in ("boss_close", "bombs_left", "beam", "contact", "precise", "tide", "hangar", "blessing",
@@ -59,7 +59,8 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"power.{s}_{n}{x}" for s in ("falcon", "manta", "hydra", "tempest", "trident", "atlas", "ram", "swarm", "eclipse",
                                   "nova", "titan", "ascension") for n in (1, 2, 3) for x in ("", ".desc")] + [
     "hud.power", "hint.power", "power.tier", "power.ready", "power.meter"] + [
-    f"mini.{t}" for t in ("rescue", "sabotage", "intercept")]
+    f"mini.{t}" for t in ("rescue", "sabotage", "intercept")] + [
+    f"store.premium_lore_{s}" for s in ("hippocampus", "nereid", "amphitrite")]
 
 
 def _json_keys(value, out: set) -> None:

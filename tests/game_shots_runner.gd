@@ -3,7 +3,8 @@ extends Node
 ##   godot --path . res://tests/game_shots_runner.tscn -- --shots=<pasta> [--at=12,50,100] [--res=305x678]
 ##     [--mission=c1m1] [--speed=3] [--zoom=4] [--lang=de] [--radio=thalassa_hello] [--cutout] [--turbo] [--left]
 ## --cutout simula o furo da câmera da resolução em cima (área segura); --turbo mostra o botão Turbo (1,5x);
-## --left põe os botões na mão esquerda. --paint=paint_solar voa com essa pintura (rastro, tiro e estouro).
+## --left põe os botões na mão esquerda. --paint=paint_solar voa com essa pintura (rastro, tiro e estouro); --ship=<id>
+## voa com essa nave (as premium, por exemplo); --level=<1..10> veste a nave com as peças desse nível do hangar.
 ## --rev=1 joga com as regras de uma revisão antiga da Sim (SimRevision), para
 ## comparar antes e depois. --window=1102x874 usa uma janela física qualquer (fora da tabela), com a
 ## tela lógica que o PixelScaler der para ela.
@@ -23,6 +24,12 @@ extends Node
 ## Objetivos de fase (SimObjectives): `--objectives` joga a missão inteira e grava cada objetivo no aviso, com os alvos
 ## marcados, com os atlantes nas bolhas (resgate) e na fala do fim:
 ## <pasta>/objective_<missão>_<n>_<tipo>_<momento>_<res>.png.
+##
+## Caixas de colisão (Hitboxes, revisão 5): `--hitboxes` liga o desenho dos círculos da Sim (WorldView.debug_hitboxes:
+## dano em ciano, contato em laranja, partes em verde, ponto da nave em branco). Com --at grava a partida com eles;
+## sem --at, no segundo 4 grava as galerias: todos os inimigos em grade
+## (<pasta>/hitbox_enemies_<n>_<res>.png), cada chefe diferente no meio do campo (hitbox_boss_<id>_<res>.png) e cada
+## nave do jogador (hitbox_ship_<id>_<res>.png). Use --zoom=4 para ver de perto.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -68,6 +75,10 @@ var _paint: String = ""
 var _powers := false
 var _ships: Array[StringName] = []
 var _ship: StringName = &""
+## Nave da partida das capturas (--ship=<id>).
+var _play_ship: StringName = &"falcon"
+## Nível do hangar da nave (--level=1..10: peças da evolução, ShipLivery); 0 = o da carga padrão.
+var _level: int = 0
 var _cast: int = 0
 var _cast_frame: int = -1
 var _pending: Array[Array] = []
@@ -78,6 +89,9 @@ var _deaths := false
 var _deaths_t: float = -1.0
 ## Modo objetivos: ligado, momentos já gravados ("<n>_<momento>") e o passo em que o último objetivo terminou.
 var _objectives := false
+## Modo caixas de colisão (--hitboxes) e se as galerias (sem --at) já começaram.
+var _hitboxes := false
+var _gallery := false
 var _obj_taken: Dictionary = {}
 var _obj_end_frame: int = -1
 var _obj_results: int = 0
@@ -119,14 +133,21 @@ func _ready() -> void:
 			cutout = true
 		elif arg == "--turbo":
 			_turbo = true
+		elif arg.begins_with("--ship="):
+			_play_ship = StringName(arg.trim_prefix("--ship="))
 		elif arg.begins_with("--paint="):
 			_paint = arg.trim_prefix("--paint=")
+		elif arg.begins_with("--level="):
+			_level = int(arg.trim_prefix("--level="))
 		elif arg == "--deaths":
 			_deaths = true
 		elif arg == "--objectives":
 			_objectives = true
+		elif arg == "--hitboxes":
+			_hitboxes = true
 		elif arg == "--left":
 			Settings.set_value("handedness", "left")
+	_gallery = _hitboxes and _shots.is_empty()
 	if _shots.is_empty():
 		_shots = [6.0, 30.0, 52.0, 70.0, 110.0, 150.0]
 	if _objectives:
@@ -150,9 +171,11 @@ func _ready() -> void:
 		_next_ship()
 		return
 	_game = GAME.instantiate() as Game
-	var load: Variant = &"falcon"
-	if _rev > 0 or not _paint.is_empty():
-		load = Sim.default_loadout(&"falcon")
+	var load: Variant = _play_ship
+	if _rev > 0 or not _paint.is_empty() or _level > 0:
+		load = Sim.default_loadout(_play_ship)
+		if _level > 0:
+			load["ship_level"] = _level
 		if _rev > 0:
 			load["rev"] = _rev
 		load["cosmetic"] = _paint
@@ -177,6 +200,14 @@ func _process(_delta: float) -> void:
 	if _deaths:
 		_process_deaths(_delta)
 		return
+	if _hitboxes:
+		(_game.find_children("*", "WorldView", true, false)[0] as WorldView).debug_hitboxes = true
+		if _gallery:
+			if _game.sim.frame >= 4 * 60:
+				_busy = true
+				await _hitbox_gallery()
+				_quit()
+			return
 	if not _radio.is_empty() and _radio_at != _shots[0] and _game.sim.frame >= int((_shots[0] - 0.5) * 60.0):
 		_radio_at = _shots[0]
 		_game.hud().show_radio(_radio)
@@ -215,6 +246,80 @@ func _process_deaths(delta: float) -> void:
 		get_viewport().get_texture().get_image().save_png("%s/deaths_%s_%04d_%s.png" % [_out, _mission,
 				int(shots[i] * 1000.0), _label])
 		_busy = false
+
+
+## Galerias do modo --hitboxes: o campo limpo e cada nave posta à mão no campo, com os círculos (_hitbox_shot).
+func _hitbox_gallery() -> void:
+	var sim := _game.sim
+	var world := _game.find_children("*", "WorldView", true, false)[0] as WorldView
+	var tables := sim.tables
+	var enemies: Array = (tables["enemies"] as Dictionary).keys()
+	var per_page := 15
+	for page: int in range(ceili(enemies.size() / float(per_page))):
+		var placed: Array[SimEnemy] = []
+		for k: int in range(per_page):
+			var i := page * per_page + k
+			if i >= enemies.size():
+				break
+			var e := SimEnemy.new()
+			var at := Vector2(45.0 + 90.0 * (k % 3), 70.0 + 110.0 * (k / 3))
+			e.setup(tables["enemies"][enemies[i]], at, &"straight", {}, tables["patterns"], false)
+			e.fit(Hitboxes.find(tables, sim.loadout, "enemies", e.id))
+			e.runner = null
+			e.max_hp = 1.0e9
+			e.hp = e.max_hp
+			placed.append(e)
+		await _hitbox_shot("%s/hitbox_enemies_%d_%s.png" % [_out, page + 1, _label], placed, null)
+	var seen := {}
+	for id: StringName in tables["bosses"]:
+		var def: Dictionary = tables["bosses"][id]
+		var sig := "%s|%s|%s" % [def.get("sprite", ""), def.get("scale", 1.0), (def.get("parts", []) as Array).size()]
+		if seen.has(sig):
+			continue
+		seen[sig] = true
+		var b := SimBoss.new()
+		b.setup(def, tables["patterns"], 1.0e6)
+		b.fit(Hitboxes.find(tables, sim.loadout, "bosses", id))
+		await _hitbox_shot("%s/hitbox_boss_%s_%s.png" % [_out, id, _label], [], b)
+	for id: StringName in tables["ships"]:
+		sim.player.ship = tables["ships"][id]
+		sim.player.hitbox = float(sim.player.ship.get("hitbox", 3.0))
+		sim.player.hit_offset = Vector2.ZERO
+		sim.player.fit(Hitboxes.find(tables, sim.loadout, "ships", id))
+		world.set("_art", SpriteBank.player(id))
+		world.touching = true
+		await _hitbox_shot("%s/hitbox_ship_%s_%s.png" % [_out, id, _label], [], null)
+
+
+## Segura a cena por alguns quadros com a Sim andando (o desenho só acompanha a Sim viva): a cada quadro tira balas e
+## coletáveis, devolve os inimigos e o chefe ao lugar e a nave ao meio, e então grava.
+func _hitbox_shot(path: String, placed: Array, boss: SimBoss) -> void:
+	var sim := _game.sim
+	for k: int in range(12):
+		sim.enemies.assign(placed)
+		for e: SimEnemy in placed:
+			e.pos = e.origin
+			e.frames = 0
+			e.alive = true
+		sim.boss = boss
+		if boss != null:
+			boss.pos = Vector2(sim.field.x * 0.5, sim.field.y * 0.38)
+			boss.state = SimBoss.State.FIGHT
+			boss.hp = boss.max_hp
+		sim.enemy_bullets.clear()
+		sim.player_bullets.clear()
+		sim.pickups.clear()
+		sim.beams.clear()
+		sim.missiles.clear()
+		sim.power_fx.clear()
+		sim.player.pos = Vector2(sim.field.x * 0.5, sim.field.y * (0.5 if placed.is_empty() and boss == null else 0.9))
+		sim.player.invuln = 1 << 20
+		await RenderingServer.frame_post_draw
+	sim.player.invuln = 0
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	# O quadro da própria partida (o SubViewport do aparelho), não o da janela.
+	_game.get_viewport().get_texture().get_image().save_png(path)
 
 
 ## Modo --objectives: grava os momentos de cada objetivo de fase; sai quando a missão acaba.

@@ -14,6 +14,12 @@ var sprite: StringName
 var hp: float = 1.0
 var max_hp: float = 1.0
 var radius: float = 12.0
+## Colisão (Hitboxes, revisão 5): círculo de dano das armas da nave (`hurt`, centro em hit_pos()) e raio de contato
+## com a nave (`contact_radius`). Antes da revisão 5: o `radius` da tabela, centrado, e o contato a 0,6 dele.
+## `radius` continua o tamanho de tabela (boca das balas, inimigo grande, elite dos poderes).
+var hurt: float = 12.0
+var hit_offset := Vector2.ZERO
+var contact_radius: float = 7.2
 var points: int = 100
 var marked: bool = false
 var drop: StringName = &""
@@ -44,6 +50,8 @@ func setup(p_def: Dictionary, p_origin: Vector2, p_path: StringName, p_params: D
 	max_hp = float(def.get("hp", 1.0))
 	hp = max_hp
 	radius = float(def.get("radius", 12.0))
+	hurt = radius
+	contact_radius = radius * Sim.CONTACT_FACTOR
 	points = int(def.get("points", 100))
 	origin = p_origin
 	pos = p_origin
@@ -55,6 +63,20 @@ func setup(p_def: Dictionary, p_origin: Vector2, p_path: StringName, p_params: D
 	var pattern_id := String(def.get("pattern", ""))
 	if not pattern_id.is_empty() and patterns.has(StringName(pattern_id)):
 		runner = PatternRunner.new(patterns[StringName(pattern_id)], int(def.get("pattern_delay", 30)), radius)
+
+
+## Caixa medida na arte HD (Hitboxes.enemy); vazio = fica a da tabela.
+func fit(box: Dictionary) -> void:
+	if box.is_empty():
+		return
+	hurt = float(box.get("radius", hurt))
+	hit_offset = Hitboxes.vec(box.get("offset"))
+	contact_radius = float(box.get("contact", contact_radius))
+
+
+## Centro do círculo de dano e de contato.
+func hit_pos() -> Vector2:
+	return pos + hit_offset
 
 
 func active() -> bool:

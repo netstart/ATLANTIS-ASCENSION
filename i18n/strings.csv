@@ -300,7 +300,7 @@ hangar.equipped,Equipada,Equipped,Equipada,Ausgerüstet,Équipée,Установ
 hangar.level,Nível %d,Level %d,Nivel %d,Stufe %d,Niveau %d,Уровень %d,Level %d,Lv.%d,레벨 %d,等級 %d,等级 %d
 hangar.livery,Evolução da nave (%d de %d),Ship evolution (%d of %d),Evolución de la nave (%d de %d),Schiffsentwicklung (%d von %d),Évolution du vaisseau (%d sur %d),Эволюция корабля (%d из %d),Evolusi pesawat (%d dari %d),機体の進化（%d/%d）,기체 진화 (%d/%d),機體進化（%d/%d）,机体进化（%d/%d）
 hangar.livery_new,Evolução nova: %s,Upgrade unlocked: %s,Evolución nueva: %s,Neue Stufe: %s,Évolution débloquée : %s,Новое улучшение: %s,Evolusi baru: %s,進化解放：%s,진화 해금: %s,進化解鎖：%s,进化解锁：%s
-hangar.livery_next,Visual novo: %s,New look: %s,Nuevo aspecto: %s,Neuer Look: %s,Nouveau look : %s,Новый облик: %s,Tampilan baru: %s,新パーツ：%s,새 외형: %s,新外觀：%s,新外观：%s
+hangar.livery_next,Peça nova: %s,New part: %s,Pieza nueva: %s,Neues Teil: %s,Nouvelle pièce : %s,Новая деталь: %s,Komponen baru: %s,新パーツ：%s,새 부품: %s,新零件：%s,新部件：%s
 hangar.max,Nível máximo,Max level,Nivel máximo,Maximalstufe,Niveau max,Максимальный уровень,Level maksimum,最大レベル,최대 레벨,最高等級,最高等级
 hangar.secondary,Arma secundária,Secondary weapon,Arma secundaria,Sekundärwaffe,Arme secondaire,Доп. оружие,Senjata sekunder,サブウェポン,보조 무기,副武器,副武器
 hangar.title,Oficina,Workshop,Taller,Werkstatt,Atelier,Мастерская,Bengkel,工房,정비소,工坊,工坊
@@ -366,15 +366,15 @@ hud.tide,MARÉ ALTA!,HIGH TIDE!,¡MAREA ALTA!,SPRINGFLUT!,GRANDE MARÉE !,ВЫС
 hud.tide_button,MARÉ,TIDE,MAREA,FLUT,MARÉE,ПРИЛИВ,PASANG,満潮,만조,滿潮,满潮
 hud.turbo_rates,"1x|1,5x|2x",1x|1.5x|2x,"1x|1,5x|2x","1x|1,5x|2x","1x|1,5x|2x","1x|1,5x|2x","1x|1,5x|2x",1x|1.5x|2x,1x|1.5x|2x,1x|1.5x|2x,1x|1.5x|2x
 hud.wind,VENTANIA!,GALE!,¡VENDAVAL!,STURMBÖE!,BOURRASQUE !,ШКВАЛ!,ANGIN KENCANG!,突風！,돌풍!,強風！,强风！
-livery.accent_glow,Brilho de acento,Accent glow,Brillo de acento,Akzentleuchten,Halo d'accent,Акцентное свечение,Cahaya aksen,アクセントの輝き,강조 광채,點綴光暈,点缀光晕
-livery.afterburner,Pós-combustor,Afterburner,Posquemador,Nachbrenner,Postcombustion,Форсаж,Afterburner,アフターバーナー,애프터버너,後燃器,加力燃烧室
-livery.aura,Aura de maré,Tide aura,Aura de marea,Gezeitenaura,Aura de marée,Аура прилива,Aura pasang,潮のオーラ,조수의 오라,潮汐光環,潮汐光环
-livery.nav_lights,Luzes de navegação,Navigation lights,Luces de navegación,Positionslichter,Feux de navigation,Навигационные огни,Lampu navigasi,航法灯,항법등,航行燈,航行灯
-livery.runes,Runas atlantes,Atlantean runes,Runas atlantes,Atlantische Runen,Runes atlantes,Атлантские руны,Rune Atlantis,アトランティスのルーン,아틀란티스 룬,亞特蘭提斯符文,亚特兰蒂斯符文
-livery.sensor,Cristal sensor,Sensor crystal,Cristal sensor,Sensorkristall,Cristal capteur,Кристалл-сенсор,Kristal sensor,センサー結晶,센서 수정,感測水晶,传感水晶
-livery.stripes,Faixas de esquadrão,Squadron stripes,Franjas de escuadrón,Staffelstreifen,Bandes d'escadrille,Полосы эскадрильи,Garis skuadron,部隊ストライプ,편대 줄무늬,中隊條紋,中队条纹
-livery.trim,Brilho Ascendido,Ascended glow,Brillo Ascendido,Aufgestiegenes Leuchten,Éclat ascendant,Сияние Вознесения,Cahaya Kenaikan,昇華の輝き,승천의 광채,昇華光輝,升华光辉
-livery.tuned_engine,Motor afinado,Tuned engine,Motor afinado,Getuntes Triebwerk,Moteur réglé,Настроенный двигатель,Mesin disetel,チューン済みエンジン,튜닝 엔진,調校引擎,调校引擎
+livery.armor,Blindagem,Armor plating,Blindaje,Panzerplatten,Blindage,Броня,Pelat baja,装甲プレート,장갑판,裝甲板,装甲板
+livery.boosters,Propulsores extras,Twin boosters,Propulsores extra,Zusatztriebwerke,Propulseurs d'appoint,Доп. ускорители,Pendorong tambahan,補助ブースター,보조 부스터,輔助推進器,辅助推进器
+livery.canards,Estabilizadores,Canards,Estabilizadores,Canards,Plans canard,Передние стабилизаторы,Stabilisator depan,カナード翼,카나드,前翼,前翼
+livery.coils,Bobinas de energia,Energy coils,Bobinas de energía,Energiespulen,Bobines d'énergie,Энергокатушки,Kumparan energi,エネルギーコイル,에너지 코일,能量線圈,能量线圈
+livery.crown,Coroa Ascendida,Ascended crown,Corona Ascendida,Aufgestiegene Krone,Couronne ascendante,Корона Вознесения,Mahkota Kenaikan,昇華の冠,승천의 왕관,昇華之冠,升华之冠
+livery.fins,Aletas de asa,Wing fins,Aletas de ala,Flügelfinnen,Ailerons,Крыльевые кили,Sirip sayap,翼フィン,날개 핀,翼鰭,翼鳍
+livery.missile_pods,Casulos de mísseis,Missile pods,Contenedores de misiles,Raketenkapseln,Nacelles de missiles,Ракетные блоки,Pod misil,ミサイルポッド,미사일 포드,飛彈莢艙,导弹吊舱
+livery.sensor,Domo sensor,Sensor dome,Cúpula sensora,Sensorkuppel,Dôme capteur,Сенсорный купол,Kubah sensor,センサードーム,센서 돔,感測圓頂,传感圆顶
+livery.wing_guns,Canhões de asa,Wing cannons,Cañones de ala,Flügelkanonen,Canons d'aile,Крыльевые пушки,Meriam sayap,翼部キャノン,날개 캐논,翼砲,翼炮
 log.c10m1_text,A 10.900 m o casco geme. O sonar mostra um pulso que não é nosso.,"At 10,900 m the hull groans. The sonar shows a pulse that isn't ours.",A 10.900 m el casco gime. El sonar muestra un pulso que no es nuestro.,In 10.900 m ächzt die Hülle. Das Sonar zeigt einen fremden Puls.,À 10 900 m la coque gémit. Le sonar montre une pulsation qui n'est pas la nôtre.,На 10 900 м корпус стонет. Сонар ловит чужой пульс.,Di 10.900 m lambung mengerang. Sonar menunjukkan denyut yang bukan milik kita.,"水深10,900m、船体がきしむ。ソナーに我々のものではない脈動。","수심 10,900m, 선체가 신음한다. 소나에 우리 것이 아닌 맥동이 잡힌다.","在10,900公尺，船體呻吟。聲納顯示一個不屬於我們的脈動。","在10,900米，船体呻吟。声呐显示一个不属于我们的脉动。"
 log.c10m1_title,Sonar da Fossa,Trench Sonar,Sonar de la Fosa,Graben-Sonar,Sonar de la fosse,Сонар впадины,Sonar Palung,海溝のソナー,해구 소나,海溝聲納,海沟声呐
 log.c10m2_text,As fontes alimentam um jardim vivo. Cada flor é um sensor do Protocolo.,The vents feed a living garden. Every flower is a Protocol sensor.,Las fuentes alimentan un jardín vivo. Cada flor es un sensor del Protocolo.,Die Quellen nähren einen lebenden Garten. Jede Blume ist ein Sensor des Protokolls.,Les sources nourrissent un jardin vivant. Chaque fleur est un capteur du Protocole.,Источники питают живой сад. Каждый цветок — датчик Протокола.,Ventilasi memberi makan taman hidup. Setiap bunga adalah sensor Protokol.,噴出孔が生きた庭を育てる。花の一輪一輪がプロトコルのセンサー。,분출구가 살아 있는 정원을 키운다. 꽃 하나하나가 프로토콜의 센서다.,噴口滋養著一座活的花園。每朵花都是協議的感測器。,喷口滋养着一座活的花园。每朵花都是协议的传感器。
@@ -704,12 +704,15 @@ secondary.drones,Drones,Drones,Drones,Drohnen,Drones,Дроны,Drone,ドロー�
 secondary.drones_desc,Orbitam e atiram junto,Orbit and fire with you,Orbitan y disparan contigo,Kreisen und feuern mit,Orbitent et tirent avec toi,Кружат и стреляют,Mengorbit dan ikut menembak,周回して一緒に撃つ,주위를 돌며 함께 사격,環繞並一同射擊,环绕并一同射击
 secondary.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミサイル,미사일,飛彈,导弹
 secondary.missiles_desc,"Teleguiados, buscam o alvo","Homing, seek the target","Teledirigidos, buscan el blanco",Zielsuchend,Guidés vers la cible,Самонаводящиеся,Pelacak target,追尾して狙う,유도 추적,追蹤目標,追踪目标
+ship.amphitrite,Anfitrite,Amphitrite,Anfitrite,Amphitrite,Amphitrite,Амфитрита,Amphitrite,アムピトリーテー,암피트리테,安菲特里忒,安菲特里忒
 ship.ascension,Ascensão,Ascension,Ascensión,Aufstieg,Ascension,Вознесение,Kenaikan,アセンション,어센션,昇天,升天
 ship.atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas,Atlas
 ship.eclipse,Eclipse,Eclipse,Eclipse,Eclipse,Éclipse,Затмение,Gerhana,エクリプス,이클립스,日蝕,日蚀
 ship.falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon,Falcon
+ship.hippocampus,Hipocampo,Hippocampus,Hipocampo,Hippokamp,Hippocampe,Гиппокамп,Hippocampus,ヒッポカムポス,히포캄포스,海馬神駒,海马神驹
 ship.hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra,Hydra
 ship.manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta,Manta
+ship.nereid,Nereida,Nereid,Nereida,Nereide,Néréide,Нереида,Nereid,ネレイス,네레이드,涅瑞伊得,涅瑞伊得
 ship.nova,Nova,Nova,Nova,Nova,Nova,Нова,Nova,ノヴァ,노바,新星,新星
 ship.ram,Ariete,Ram,Ariete,Rammbock,Bélier,Таран,Pendobrak,ラム,램,衝角,冲角
 ship.swarm,Enxame,Swarm,Enjambre,Schwarm,Essaim,Рой,Kawanan,スウォーム,스웜,蜂群,蜂群
@@ -719,6 +722,8 @@ ship.trident,Tridente,Trident,Tridente,Dreizack,Trident,Трезубец,Trisula
 ships.collection,Coleção · %d de %d,Collection · %d of %d,Colección · %d de %d,Sammlung · %d von %d,Collection · %d sur %d,Коллекция · %d из %d,Koleksi · %d dari %d,コレクション · %d/%d,컬렉션 · %d/%d,收藏 · %d/%d,收藏 · %d/%d
 ships.ending_unlock,Abre com o %s,Unlocked by %s,Se abre con %s,Freigeschaltet durch %s,Débloqué par %s,Открывается: %s,Terbuka lewat %s,%sで解放,%s 달성 시 해금,達成%s後解鎖,达成%s后解锁
 ships.fragments,Fragmentos %d de %d · em %s,Fragments %d of %d · from %s,Fragmentos %d de %d · en %s,Fragmente %d von %d · in %s,Fragments %d sur %d · dans %s,Фрагменты %d из %d · в %s,Fragmen %d dari %d · di %s,欠片 %d/%d・入手: %s,조각 %d/%d · 획득처 %s,碎片 %d/%d・取得：%s,碎片 %d/%d・获取：%s
+ships.premium_lock,Nave premium: à venda na Loja.,Premium ship: sold in the Shop.,Nave premium: a la venta en la Tienda.,Premium-Schiff: im Shop erhältlich.,Vaisseau premium : en vente dans la Boutique.,Премиум-корабль: продаётся в магазине.,Kapal premium: dijual di Toko.,プレミアム機：ショップで販売中。,프리미엄 기체: 상점에서 판매 중.,高級戰機：商店販售中。,高级战机：商店有售。
+ships.see_shop,Ver na Loja,See in the Shop,Ver en la Tienda,Im Shop ansehen,Voir dans la Boutique,Открыть в магазине,Lihat di Toko,ショップで見る,상점에서 보기,到商店查看,去商店查看
 ships.select,Escolher,Select,Elegir,Wählen,Choisir,Выбрать,Pilih,選ぶ,선택,選擇,选择
 ships.selected,Na missão,In use,En uso,Im Einsatz,En service,В строю,Dipakai,出撃中,출격 중,出擊中,出击中
 ships.special,Especial,Special,Especial,Spezial,Spéciale,Спецприём,Jurus,必殺,필살,特技,特技
@@ -807,6 +812,17 @@ store.or_pearls,ou com Pérolas ganhas jogando:,or with Pearls earned by playing
 store.owned,Possuída,Owned,Tuya,Im Besitz,Possédée,Есть,Dimiliki,所持,보유,已擁有,已拥有
 store.paint_gives,"Pinta a nave e muda o rastro, a cor do tiro e o estouro. Só visual.","Paints the ship and changes its trail, shot color and burst. Looks only.","Pinta la nave y cambia la estela, el color del disparo y el estallido. Solo visual.","Lackiert das Schiff, ändert Spur, Schussfarbe und Explosion. Nur Optik.","Peint le vaisseau et change la traînée, la couleur du tir et l'explosion. Visuel seulement.","Красит корабль, меняет след, цвет выстрела и взрыв. Только внешний вид.","Mengecat kapal, mengubah jejak, warna tembakan, dan ledakan. Hanya tampilan.",機体を塗装し、航跡・弾の色・爆発を変えます。見た目だけです。,"기체를 도색하고 궤적, 탄 색, 폭발을 바꿉니다. 외형만 바뀝니다.",為機體塗裝，並改變尾跡、子彈顏色與爆炸。僅限外觀。,为机体涂装，并改变尾迹、子弹颜色与爆炸。仅限外观。
 store.pending,Pagamento pendente. A compra é liberada quando a Google Play confirmar.,Payment pending. It unlocks once Google Play confirms it.,Pago pendiente. Se desbloquea cuando Google Play lo confirme.,"Zahlung ausstehend. Wird freigeschaltet, sobald Google Play bestätigt.",Paiement en attente. Débloqué dès que Google Play le confirmera.,Платёж ожидает подтверждения. Откроется после подтверждения Google Play.,Pembayaran tertunda. Terbuka setelah Google Play mengonfirmasi.,支払い保留中です。Google Play の確認後に解放されます。,결제 대기 중입니다. Google Play가 확인하면 열립니다.,付款待處理。Google Play 確認後即解鎖。,付款待处理。Google Play 确认后即解锁。
+store.premium_badge,Premium,Premium,Premium,Premium,Premium,Премиум,Premium,プレミアム,프리미엄,高級,高级
+store.premium_fleet,Frota premium,Premium fleet,Flota premium,Premium-Flotte,Flotte premium,Премиум-флот,Armada premium,プレミアム艦隊,프리미엄 함대,高級艦隊,高级舰队
+store.premium_fleet_desc,"As três naves premium juntas, por menos.","All three premium ships together, for less.","Las tres naves premium juntas, por menos.","Alle drei Premium-Schiffe zusammen, günstiger.","Les trois vaisseaux premium ensemble, pour moins cher.",Все три премиум-корабля вместе и дешевле.,"Ketiga kapal premium sekaligus, lebih hemat.",プレミアム機3機をまとめてお得に。,"프리미엄 기체 세 대를 한 번에, 더 저렴하게.",三架高級戰機一次入手，更划算。,三架高级战机一次入手，更划算。
+store.premium_kit,"Joga como a %s: mesmo casco, arma, especial e poderes.","Plays like the %s: same hull, weapon, special and powers.","Juega como la %s: mismo casco, arma, especial y poderes.","Spielt wie die %s: gleiche Hülle, Waffe, Spezial und Kräfte.","Joue comme le %s : même coque, arme, spécial et pouvoirs.","Играет как %s: тот же корпус, оружие, спецприём и силы.","Bermain seperti %s: lambung, senjata, spesial, dan kekuatan sama.",%sと同じ性能：機体、武器、必殺、パワーも同じ。,"%s와 같은 성능: 선체, 무기, 특수기, 능력 동일.",性能同%s：機體、武器、特技與能力相同。,性能同%s：机体、武器、特技与能力相同。
+store.premium_lore_amphitrite,"A nau da rainha dos mares, em turquesa e ouro.","The sea queen's flagship, in turquoise and gold.","La nave de la reina de los mares, en turquesa y oro.","Das Flaggschiff der Meereskönigin, in Türkis und Gold.","Le vaisseau de la reine des mers, turquoise et or.",Флагман царицы морей в бирюзе и золоте.,"Kapal sang ratu lautan, berwarna pirus dan emas.",海の女王の旗艦、ターコイズと金。,청록과 금빛의 바다 여왕의 기함.,海之女王的旗艦，綠松與金。,海之女王的旗舰，绿松与金。
+store.premium_lore_hippocampus,"O corcel de Poseidon, refeito em oricalco e luz.","Poseidon's steed, reforged in orichalcum and light.","El corcel de Poseidón, forjado en oricalco y luz.","Poseidons Ross, neu geschmiedet aus Orichalkum und Licht.","Le coursier de Poséidon, reforgé d'orichalque et de lumière.","Скакун Посейдона, перекованный из орихалка и света.","Kuda Poseidon, ditempa ulang dari orikalkum dan cahaya.",オリハルコンと光で鍛え直したポセイドンの駿馬。,오리할콘과 빛으로 다시 벼린 포세이돈의 준마.,以山銅與光重鑄的波賽頓神駒。,以山铜与光重铸的波塞冬神驹。
+store.premium_lore_nereid,Asa de madrepérola das ninfas do mar.,A mother-of-pearl wing of the sea nymphs.,Ala de nácar de las ninfas del mar.,Perlmuttschwinge der Meeresnymphen.,Aile de nacre des nymphes marines.,Перламутровое крыло морских нимф.,Sayap mutiara para peri laut.,海のニンフの真珠層の翼。,바다 님프의 자개 날개.,海仙女的珍珠母之翼。,海仙女的珍珠母之翼。
+store.premium_note,"Visual exclusivo, não é mais forte.","Exclusive look, not stronger.","Aspecto exclusivo, no es más fuerte.","Exklusiver Look, nicht stärker.","Look exclusif, pas plus fort.","Эксклюзивный облик, не сильнее.","Tampilan eksklusif, tidak lebih kuat.",限定の見た目。強さは同じです。,"한정 외형, 더 강하지 않습니다.",獨家外觀，不會更強。,独家外观，不会更强。
+store.premium_owned,Na sua frota,In your fleet,En tu flota,In deiner Flotte,Dans votre flotte,В вашем флоте,Di armadamu,保有中,보유 중,已在艦隊中,已在舰队中
+store.premium_save,Economize %d%% em vez de comprar separadas,Save %d%% versus buying them separately,Ahorra un %d%% frente a comprarlas por separado,Spare %d%% gegenüber dem Einzelkauf,Économisez %d%% par rapport à l'achat séparé,Экономия %d%% по сравнению с покупкой по отдельности,Hemat %d%% dibanding beli terpisah,別々に買うより%d%%お得,따로 사는 것보다 %d%% 절약,比分開購買省 %d%%,比分开购买省 %d%%
+store.premium_section,Naves premium,Premium ships,Naves premium,Premium-Schiffe,Vaisseaux premium,Премиум-корабли,Kapal premium,プレミアム機,프리미엄 기체,高級戰機,高级战机
 store.preview,Prévia na sua nave,Preview on your ship,Vista previa en tu nave,Vorschau auf deinem Schiff,Aperçu sur ton vaisseau,Так выглядит ваш корабль,Pratinjau di kapalmu,あなたの機体でプレビュー,내 기체로 미리 보기,在你的機體上預覽,在你的机体上预览
 store.rarity_common,Comum,Common,Común,Gewöhnlich,Commun,Обычный,Biasa,コモン,일반,普通,普通
 store.rarity_epic,Épica,Epic,Épica,Episch,Épique,Эпический,Epik,エピック,에픽,史詩,史诗

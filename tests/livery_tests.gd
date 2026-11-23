@@ -1,7 +1,8 @@
 extends RefCounted
-## Evolução visual da nave pelo nível do hangar (ShipLivery, data/livery.json): um marco novo por nível, chama e
-## brilho crescendo, arte HD e âncoras de toda nave, acento legível em toda pintura, nível levado à partida em todo
-## modo, partida igual em qualquer nível (só desenho) e a nave vestida desenhada na partida em cada nível.
+## Evolução da nave pelo nível do hangar (ShipLivery, data/livery.json): uma peça física nova por nível, cumulativa,
+## montada na arte HD de toda nave (tools/gen_livery.py: cada quadro muda o casco, nada cobre o ponto de acerto,
+## âncoras dentro da caixa), chama e brilho crescendo, acento legível em toda pintura, nível levado à partida em todo
+## modo, partida igual em qualquer nível (só desenho) e a nave montada desenhada na partida em cada nível.
 ## Chamado por tests/integration_tests.gd (precisa dos autoloads).
 
 const SaveManagerScript := preload("res://scripts/autoload/save_manager.gd")
@@ -10,6 +11,7 @@ const SaveManagerScript := preload("res://scripts/autoload/save_manager.gd")
 func run(check: Callable) -> void:
 	_parts(check)
 	_art(check)
+	_assembled(check)
 	_accent(check)
 	_loadout(check)
 	_determinism(check)
@@ -29,9 +31,11 @@ func _parts(check: Callable) -> void:
 		seen.append(fresh)
 	check.call(ShipLivery.next_part(Economy.SHIP_MAX_LEVEL).is_empty(), "Evolução: nada depois do nível máximo")
 	check.call(ShipLivery.part_at(1) == &"", "Evolução: nível 1 sem marco")
-	# Os marcos pedidos, nos níveis pedidos.
-	for want: Array in [[&"afterburner", 4], [&"stripes", 5], [&"aura", 7], [&"trim", 10]]:
-		check.call(ShipLivery.level_of(want[0]) == int(want[1]), "Evolução: %s acende no nível %d" % want)
+	# As peças pedidas, nos níveis pedidos, e as luzes que as reforçam.
+	for want: Array in [[&"armor", 2], [&"wing_guns", 3], [&"boosters", 4], [&"fins", 5], [&"missile_pods", 7],
+			[&"crown", 10], [&"accent_glow", 3], [&"afterburner", 4], [&"nav_lights", 6], [&"aura", 7],
+			[&"ascended", 10]]:
+		check.call(ShipLivery.level_of(want[0]) == int(want[1]), "Evolução: %s chega no nível %d" % want)
 	# Chama: 1,0 no nível 1, cresce a cada nível e chega a 1,3 no máximo; brilho de acento só a partir do marco.
 	var last := 0.0
 	for level: int in range(1, Economy.SHIP_MAX_LEVEL + 1):
@@ -44,7 +48,7 @@ func _parts(check: Callable) -> void:
 			and ShipLivery.glow_alpha(10) > ShipLivery.glow_alpha(5), "Evolução: brilho de acento sobe com o nível")
 
 
-## Cada nave do hangar tem arte HD, brilho da silhueta e âncoras dentro da caixa opaca.
+## Cada nave do hangar tem arte HD, brilho da silhueta e uma âncora por peça dentro da caixa opaca.
 func _art(check: Callable) -> void:
 	for row: Variant in DB.rows("ships"):
 		var id := StringName(String((row as Dictionary)["id"]))
@@ -52,19 +56,65 @@ func _art(check: Callable) -> void:
 		check.call(bool(art["hd"]) and art["glow"] != null and art["engine_boost"] != null,
 				"Evolução: %s tem base, motor, pós-combustão e brilho HD" % id)
 		var a := ShipLivery.anchors(id)
-		check.call(a.has("accent") and a.has("nose") and a.has("wing") and a.has("stripe") and a.has("spine"),
-				"Evolução: âncoras de %s em data/livery.json" % id)
-		var ok := true
-		for key: String in ["nose", "wing", "stripe"]:
-			var f: Array = a.get(key, [-1, -1])
+		var ok := a.has("accent") and a.has("spine")
+		for p: Dictionary in ShipLivery.parts():
+			var f: Array = a.get(String(p["id"]), [-1.0, -1.0])
 			ok = ok and float(f[0]) >= 0.0 and float(f[0]) <= 1.0 and float(f[1]) >= 0.0 and float(f[1]) <= 1.0
 		for f: Variant in a.get("spine", []):
 			ok = ok and float((f as Array)[0]) >= 0.0 and float((f as Array)[1]) <= 1.0
-		check.call(ok, "Evolução: âncoras de %s em fração da caixa (0..1)" % id)
-		var used: Rect2 = art["used"]
-		check.call(used.grow(0.01).has_point(ShipLivery.point(art, a["nose"]))
-				and used.grow(0.01).has_point(ShipLivery.point(art, a["wing"], true)),
-				"Evolução: pontos de %s dentro da nave" % id)
+		check.call(ok, "Evolução: âncora de cada peça de %s em data/livery.json, em fração da caixa (0..1)" % id)
+		# Boca dos canhões, jatos e pontas das aletas: em par, espelhados, dentro do quadro desenhado.
+		var frame := Rect2(-Vector2.ONE * float(art["size"]) * 0.5, Vector2.ONE * float(art["size"]))
+		var mid := (art["used"] as Rect2).get_center().x
+		var inside := true
+		for spec: Array in [[&"wing_guns", "muzzle"], [&"boosters", "jet"], [&"fins", "fin_tip"]]:
+			var pts := ShipLivery.part_points(art, spec[0], spec[1])
+			inside = inside and pts.size() == 2 and absf(pts[0].x + pts[1].x - 2.0 * mid) < 0.01
+			inside = inside and is_equal_approx(pts[0].y, pts[1].y) and frame.has_point(pts[0]) and frame.has_point(pts[1])
+		check.call(inside, "Evolução: canhões, jatos e aletas de %s em par, dentro do quadro" % id)
+
+
+## A arte montada (tools/gen_livery.py): um quadro por nível do 2 ao 10 do tamanho da base, cada um com algo novo
+## desenhado no casco (cumulativo), o brilho de cada quadro, o jato dos propulsores, e o ponto de acerto (a cabine,
+## data/hitboxes.json) sem peça nem sombra por cima.
+func _assembled(check: Callable) -> void:
+	var ships: Dictionary = Hitboxes.load_table().get("ships", {})
+	for row: Variant in DB.rows("ships"):
+		var id := StringName(String((row as Dictionary)["id"]))
+		var art := SpriteBank.player(id)
+		var evo := ShipLivery.evo(art)
+		var tex: Texture2D = evo["evo"]
+		var side: int = art["tex_size"]
+		var frames := Economy.SHIP_MAX_LEVEL - 1
+		check.call(tex != null and tex.get_width() == side * frames and tex.get_height() == side
+				and evo["glow"] != null and evo["jet"] != null,
+				"Evolução: %s tem os %d quadros montados, o brilho deles e o jato" % [id, frames])
+		if tex == null:
+			continue
+		var strip := tex.get_image()
+		var base := (art["base"] as Texture2D).get_image()
+		for img: Image in [strip, base]:
+			if img.is_compressed():
+				img.decompress()
+		var prev := base
+		var grows := true
+		for level: int in range(2, Economy.SHIP_MAX_LEVEL + 1):
+			var now := strip.get_region(SpriteBank.frame_rect(level - 2, side))
+			var diff: Dictionary = now.compute_image_metrics(prev, false)
+			grows = grows and float(diff.get("mean", 0.0)) > 0.2
+			prev = now
+		check.call(grows, "Evolução: cada nível do 2 ao 10 desenha peça nova no casco de %s" % id)
+		var hit: Dictionary = (ships.get(String(id), {}) as Dictionary)
+		var at := Vector2.ONE * float(side) * 0.5 + Hitboxes.vec(hit.get("offset")) * 2.0
+		var top := strip.get_region(SpriteBank.frame_rect(frames - 1, side))
+		var clean := true
+		for y: int in range(-4, 5):
+			for x: int in range(-4, 5):
+				var px := Vector2i(at) + Vector2i(x, y)
+				var a := top.get_pixelv(px)
+				var b := base.get_pixelv(px)
+				clean = clean and absf(a.r - b.r) + absf(a.g - b.g) + absf(a.b - b.b) + absf(a.a - b.a) < 0.1
+		check.call(clean, "Evolução: nenhuma peça cobre o ponto de acerto de %s no nível 10" % id)
 
 
 ## O acento da pintura tem de destacar do casco: claro e saturado em toda pintura da loja.

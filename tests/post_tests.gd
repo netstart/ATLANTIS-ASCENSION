@@ -38,7 +38,7 @@ func _fire(sim: Sim, steps: int, special: bool = false) -> void:
 
 func _data(check: Callable, tables: Dictionary) -> void:
 	var ships: Dictionary = tables["ships"]
-	check.call(ships.size() == 12, "Frota: 12 aeronaves (%d)" % ships.size())
+	check.call(ships.size() == 15, "Frota: 12 aeronaves do hangar e 3 premium (%d)" % ships.size())
 	var traits := {}
 	for id: StringName in NEW_SHIPS:
 		var def: Dictionary = ships.get(id, {})

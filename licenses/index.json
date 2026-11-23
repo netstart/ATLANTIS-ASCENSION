@@ -284,7 +284,7 @@
     "verified_at": "2026-10-30",
     "source_url": "https://github.com/netstart/ATLANTIS-ASCENSION",
     "license_file": "res://licenses/texts/MIT-AtlantisAscension.txt",
-    "files_count": 108
+    "files_count": 122
   },
   {
     "id": "exo2_font",
@@ -659,12 +659,12 @@
     "category": "art",
     "downloaded_at": "2026-11-22",
     "verified_at": "2026-11-22",
-    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar; nas naves premium da loja (Hipocampo e Nereida da XENIS, Anfitrite da meia-lua RD2 da Faction 6), acabamento premium: matiz girado, filme iridescente, realces em ouro, luz de borda cheia, chama de cor própria e a tira do brilho que varre o casco",
     "source_url": "https://opengameart.org/users/millionthvector",
     "license_file": "res://licenses/texts/CC-BY-3.0.txt",
     "notice_file": "res://licenses/notices/millionthvector_spaceships_NOTICE.txt",
     "credit": "Spaceships by MillionthVector (http://millionthvector.blogspot.de), CC BY 3.0. Packs: Set: Faction1, Faction2, Faction3, Faction5, Faction6, Faction7 e Faction10 spaceships; Blue fighter spaceship; Fighter spaceship; Yellow starship (OpenGameArt)",
-    "files_count": 74
+    "files_count": 105
   },
   {
     "id": "alface_xenis_spaceships",
@@ -674,12 +674,12 @@
     "category": "art",
     "downloaded_at": "2026-11-22",
     "verified_at": "2026-11-22",
-    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar; nas naves premium da loja (Hipocampo e Nereida da XENIS, Anfitrite da meia-lua RD2 da Faction 6), acabamento premium: matiz girado, filme iridescente, realces em ouro, luz de borda cheia, chama de cor própria e a tira do brilho que varre o casco",
     "source_url": "https://opengameart.org/content/spaceships-xenis",
     "license_file": "res://licenses/texts/CC-BY-3.0.txt",
     "notice_file": "res://licenses/notices/alface_xenis_spaceships_NOTICE.txt",
     "credit": "Spaceships XENIS by Carlos Alface (http://carlosalface.blogspot.pt/), CC BY 3.0",
-    "files_count": 6
+    "files_count": 20
   },
   {
     "id": "wk_studio_alien_bugs",

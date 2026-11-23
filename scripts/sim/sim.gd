@@ -164,6 +164,7 @@ static func load_tables() -> Dictionary:
 			for row: Variant in parsed:
 				table[StringName(String((row as Dictionary).get("id", "")))] = row
 		out[name] = table
+	out["hitboxes"] = Hitboxes.load_table()
 	return out
 
 
@@ -202,6 +203,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 			mods.apply(StringName(String(wing.get("effect", ""))), float(wing.get("value", 0.0)))
 	var ship_id := StringName(String(loadout.get("ship", "falcon")))
 	player.setup((tables["ships"] as Dictionary).get(ship_id, {}), sensitivity * mods.speed_mult)
+	player.fit(Hitboxes.find(tables, loadout, "ships", ship_id))
 	player.place(field)
 	var diff: Dictionary = DIFFICULTY[difficulty]
 	curve = SimCurve.position(loadout, mission, float(diff["curve"]))
@@ -239,6 +241,7 @@ func _setup_wing(ship_id: StringName) -> void:
 	wing = SimPlayer.new()
 	wing.setup((tables["ships"] as Dictionary).get(ship_id, {}), player.speed_mult / maxf(0.01,
 			float(player.ship.get("speed", 1.0))))
+	wing.fit(Hitboxes.find(tables, loadout, "ships", ship_id))
 	# O feixe do Laser é resolvido só para a nave 1; a ala usa Pulsar no lugar.
 	if wing.signature == &"laser":
 		wing.signature = &"pulsar"
@@ -534,6 +537,7 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 		params["side"] = -float(params.get("side", 1.0))
 	e.setup(def, Vector2(x, y), StringName(String(spec.get("path", "straight"))), params,
 			tables["patterns"], bool(spec.get("from_depth", false)))
+	e.fit(Hitboxes.find(tables, loadout, "enemies", e.id))
 	SimCurve.apply_enemy(e, curve)
 	e.marked = bool(spec.get("marked", def.get("marked", false)))
 	if e.marked:
@@ -555,6 +559,7 @@ func spawn_boss(boss_id: StringName, final: bool) -> void:
 		return
 	boss = SimBoss.new()
 	boss.setup(def, tables["patterns"], SimCurve.boss_hp_mult(curve, def))
+	boss.fit(Hitboxes.find(tables, loadout, "bosses", boss_id))
 	if not final:
 		_miniboss_start = frame
 	else:
@@ -695,8 +700,9 @@ func _collide_player_bullets() -> void:
 	for e: SimEnemy in enemies:
 		if not e.active():
 			continue
-		var c0 := clampi(floori((e.pos.x - e.radius) / width), 0, COLUMNS - 1)
-		var c1 := clampi(floori((e.pos.x + e.radius) / width), 0, COLUMNS - 1)
+		var hx := e.hit_pos().x
+		var c0 := clampi(floori((hx - e.hurt) / width), 0, COLUMNS - 1)
+		var c1 := clampi(floori((hx + e.hurt) / width), 0, COLUMNS - 1)
 		for c: int in range(c0, c1 + 1):
 			(_columns[c] as Array).append(e)
 	# Os alvos do chefe só mudam quando alguma bala acerta (dano, parte destruída, troca de etapa): são
@@ -712,7 +718,7 @@ func _collide_player_bullets() -> void:
 		# cada parte) só leva dano dela uma vez; os já acertados ficam no anel da bala e são pulados.
 		var target := 0
 		for e: SimEnemy in _columns[clampi(floori(p.x / width), 0, COLUMNS - 1)]:
-			if e.alive and p.distance_squared_to(e.pos) <= (r + e.radius) * (r + e.radius):
+			if e.alive and p.distance_squared_to(e.hit_pos()) <= (r + e.hurt) * (r + e.hurt):
 				var id := e.get_instance_id()
 				if player_bullets.has_hit(i, id):
 					continue
@@ -742,9 +748,9 @@ func _collide_player_bullets() -> void:
 ## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio.
 func splash(at: Vector2, radius: float, dmg: float) -> void:
 	for e: SimEnemy in enemies:
-		if e.active() and at.distance_to(e.pos) <= radius + e.radius and e.damage(dmg * 0.5):
+		if e.active() and at.distance_to(e.hit_pos()) <= radius + e.hurt and e.damage(dmg * 0.5):
 			_kill_enemy(e)
-	if boss != null and boss.fighting() and at.distance_to(boss.body_pos()) <= radius + boss.body_radius():
+	if boss != null and boss.fighting() and at.distance_to(boss.hurt_pos()) <= radius + boss.hurt_radius():
 		boss.damage_body(dmg * 0.5, self)
 	emit(&"splash", {"pos": at, "radius": radius})
 
@@ -759,11 +765,11 @@ func _gather_boss_targets() -> void:
 		var part: Dictionary = boss.parts[k]
 		if boss.part_active(part):
 			_boss_parts.append(part)
-			_boss_part_pos.append(boss.part_pos(part))
-			_boss_part_radius.append(float(part.get("radius", 10.0)))
+			_boss_part_pos.append(boss.part_hit_pos(part))
+			_boss_part_radius.append(boss.part_radius(part))
 			_boss_part_ids.append(BOSS_PART_ID + k)
-	_boss_body_pos = boss.body_pos()
-	_boss_body_radius = boss.body_radius()
+	_boss_body_pos = boss.hurt_pos()
+	_boss_body_radius = boss.hurt_radius()
 
 
 ## _hit_boss sobre a fotografia de _gather_boss_targets (válida até o próximo acerto), pulando os alvos
@@ -790,7 +796,7 @@ func _hit_boss_targets(bullet: int, p: Vector2, r: float, dmg: float) -> int:
 func hit_at_id(p: Vector2, r: float, dmg: float, skip: int = 0) -> int:
 	for e: SimEnemy in enemies:
 		if e.active() and e.get_instance_id() != skip \
-				and p.distance_squared_to(e.pos) <= (r + e.radius) * (r + e.radius):
+				and p.distance_squared_to(e.hit_pos()) <= (r + e.hurt) * (r + e.hurt):
 			if e.damage(dmg):
 				_kill_enemy(e)
 			return e.get_instance_id()
@@ -798,13 +804,13 @@ func hit_at_id(p: Vector2, r: float, dmg: float, skip: int = 0) -> int:
 		return 0
 	for k: int in range(boss.parts.size()):
 		var part: Dictionary = boss.parts[k]
-		var pr := float(part.get("radius", 10.0))
+		var pr := boss.part_radius(part)
 		if boss.part_active(part) and BOSS_PART_ID + k != skip \
-				and p.distance_squared_to(boss.part_pos(part)) <= (r + pr) * (r + pr):
+				and p.distance_squared_to(boss.part_hit_pos(part)) <= (r + pr) * (r + pr):
 			boss.damage_part(part, dmg, self)
 			return BOSS_PART_ID + k
-	var br := boss.body_radius()
-	if skip != BOSS_BODY_ID and p.distance_squared_to(boss.body_pos()) <= (r + br) * (r + br):
+	var br := boss.hurt_radius()
+	if skip != BOSS_BODY_ID and p.distance_squared_to(boss.hurt_pos()) <= (r + br) * (r + br):
 		boss.damage_body(dmg, self)
 		return BOSS_BODY_ID
 	return 0
@@ -827,49 +833,15 @@ func nearest_target(from: Vector2) -> Vector2:
 	return best
 
 
-## Feixe vertical (Laser e Rajada): acerta o alvo mais próximo acima da nave.
+## Feixe vertical (Laser e Rajada): acerta o alvo mais próximo acima da nave (SimBeam).
 func _beam_attack(width: float, dps_value: float) -> void:
-	if not player.alive:
-		return
-	laser_width = width
-	var half := width * 0.5
-	var dmg := dps_value * STEP
-	var best_y := -BOUNDS.size.y
-	var target: SimEnemy = null
-	for e: SimEnemy in enemies:
-		if e.active() and absf(e.pos.x - player.pos.x) <= half + e.radius and e.pos.y < player.pos.y and e.pos.y > best_y:
-			best_y = e.pos.y
-			target = e
-	var boss_part: Dictionary = {}
-	var boss_body := false
-	if boss != null and boss.fighting():
-		for part: Dictionary in boss.parts:
-			var pp := boss.part_pos(part)
-			if boss.part_active(part) and absf(pp.x - player.pos.x) <= half + float(part.get("radius", 10.0)) \
-					and pp.y < player.pos.y and pp.y > best_y:
-				best_y = pp.y
-				boss_part = part
-				target = null
-		var bp := boss.body_pos()
-		if absf(bp.x - player.pos.x) <= half + boss.body_radius() and bp.y < player.pos.y and bp.y > best_y:
-			best_y = bp.y
-			boss_body = true
-			boss_part = {}
-			target = null
-	laser_to_y = best_y
-	if target != null:
-		if target.damage(dmg):
-			_kill_enemy(target)
-	elif not boss_part.is_empty():
-		boss.damage_part(boss_part, dmg, self)
-	elif boss_body:
-		boss.damage_body(dmg, self)
+	SimBeam.attack(self, width, dps_value)
 
 
 func _collide_ship(ship: SimPlayer) -> void:
 	if not player.alive:
 		return
-	var pp := ship.pos
+	var pp := ship.hit_pos()
 	var hb := ship.hitbox
 	var hit := false
 	var cause := &"bullet"
@@ -885,7 +857,7 @@ func _collide_ship(ship: SimPlayer) -> void:
 			_graze(p, ship)
 	if not hit:
 		for e: SimEnemy in enemies:
-			if e.active() and e.contact and pp.distance_to(e.pos) <= e.radius * CONTACT_FACTOR + hb:
+			if e.active() and e.contact and pp.distance_to(e.hit_pos()) <= e.contact_radius + hb:
 				hit = true
 				cause = &"contact"
 				break
@@ -897,7 +869,7 @@ func _collide_ship(ship: SimPlayer) -> void:
 				cause = &"beam"
 				break
 	if not hit and boss != null and boss.fighting():
-		hit = pp.distance_to(boss.body_pos()) <= boss.body_radius() * CONTACT_FACTOR + hb
+		hit = pp.distance_to(boss.hurt_pos()) <= boss.contact_radius() + hb
 		if hit:
 			cause = &"boss"
 	if hit and ship.vulnerable():

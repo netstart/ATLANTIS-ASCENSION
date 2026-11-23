@@ -134,7 +134,7 @@ python -I tools\build_i18n.py
 # Capturas das telas e da partida para revisão visual (com janela)
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/screens_runner.tscn -- --shots=shots
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/game_shots_runner.tscn -- --shots=shots --at=30,60,140
-# Folha da evolução do hangar e das avarias (12 naves x níveis 1, 4, 7, 10, pintura e avaria)
+# Folha da evolução do hangar e das avarias (15 naves x níveis 1 a 10, subindo, atirando, pintura e avaria)
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/livery_shots_runner.tscn -- --shots=shots
 # Galeria do clima (cada estado de data/weather.json no auge, com relâmpago na tempestade)
 D:\Programs\godot\Godot_v4.7.2-stable_win64_console.exe --path . res://tests/weather_shots_runner.tscn -- --shots=shots
@@ -149,14 +149,21 @@ python -I tools\gen_sprites.py
 python tools\gen_portraits.py
 # Naves HD (jogador e frotas; numpy e Pillow; grava assets\art\hd e registra no asset_index; --preview DIR folhas)
 python tools\gen_hd_ships.py
-# Evolução da nave no hangar: divisa, rachadura e emblemas dos marcos (Pillow; --preview DIR grava os emblemas)
+# Evolução da nave no hangar: uma peça HD por nível montada em cada nave, jatos, emblemas e rachadura (numpy e
+# Pillow; rode depois do gen_hd_ships e do fit_hitboxes; --preview DIR grava as folhas)
 python tools\gen_livery.py
+# Caixas de colisão medidas na arte HD (data/hitboxes.json; numpy e Pillow; rode depois de mudar naves, inimigos ou chefes;
+# --preview DIR grava as folhas com os círculos). Conferir no jogo: game_shots_runner.tscn -- --shots=shots --hitboxes
+python tools\fit_hitboxes.py
 # Arte dos poderes (projéteis, efeitos e os 36 ícones; numpy; --preview DIR grava a folha de revisão fora de assets)
 python tools\gen_power_sprites.py
 # Todos os builds (APK debug, AAB assinado com a chave de upload fora do repo, Windows, Linux)
 powershell -ExecutionPolicy Bypass -File tools\build_release.ps1
 # CI/CD (.github/workflows/android-play.yml): grava os secrets do GitHub a partir da chave de upload e do JSON da Play
 powershell -ExecutionPolicy Bypass -File tools\setup_ci_secrets.ps1 -ServiceAccountJson D:\src\keys\atlantis-play-publisher.json
+# Google Play: produtos das naves premium (cria/atualiza e ativa pela API; --dry-run só imprime; list lista)
+python -I tools\play_products.py --dry-run
+python tools\play_products.py apply --key D:\src\keys\atlantis-play-publisher.json
 # Google Play: arte da ficha (capturas e destaque nos 11 idiomas) e página da política de privacidade
 powershell -ExecutionPolicy Bypass -File tools\build_store_art.ps1
 python -I tools\build_privacy_page.py

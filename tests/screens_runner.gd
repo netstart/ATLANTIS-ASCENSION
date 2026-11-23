@@ -6,7 +6,8 @@ extends Node
 ## mostra o quadro reduzido para caber no monitor, tests/device_window.gd).
 ## Save e opções usam os arquivos dos testes. --showcase troca o perfil novo por um jogador no meio da
 ## campanha (capturas da ficha da loja, tools/build_store_art.ps1). --paint=<id> equipa a pintura; na Loja,
-## --shop-tab=support abre a sub-aba Extras e --sheet=<id> abre o painel da pintura.
+## --shop-tab=support abre a sub-aba Extras e --sheet=<id> abre o painel da pintura. --ship=<id> abre e escolhe a
+## nave (Hangar e Naves com uma premium, por exemplo).
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -27,6 +28,7 @@ func _ready() -> void:
 	var paint := ""
 	var sheet := ""
 	var shop_tab := ""
+	var ship := ""
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--shots="):
 			out = arg.trim_prefix("--shots=")
@@ -40,6 +42,8 @@ func _ready() -> void:
 			paint = arg.trim_prefix("--paint=")
 		elif arg.begins_with("--sheet="):
 			sheet = arg.trim_prefix("--sheet=")
+		elif arg.begins_with("--ship="):
+			ship = arg.trim_prefix("--ship=")
 		elif arg.begins_with("--shop-tab="):
 			shop_tab = arg.trim_prefix("--shop-tab=")
 		elif arg.begins_with("--zoom="):
@@ -53,6 +57,10 @@ func _ready() -> void:
 	DirAccess.make_dir_recursive_absolute(out)
 	if showcase:
 		_fill_showcase(SaveManager.data)
+	if not ship.is_empty():
+		(SaveManager.data["unlocked"]["ships"] as Array).append(ship)
+		SaveManager.data["hangar"]["ship_levels"][ship] = 4
+		SaveManager.data["selected"]["ship"] = ship
 	if not paint.is_empty():
 		(SaveManager.data["unlocked"]["cosmetics"] as Array).append(paint)
 		SaveManager.data["selected"]["cosmetic"] = paint

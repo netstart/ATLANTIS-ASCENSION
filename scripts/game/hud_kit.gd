@@ -137,6 +137,13 @@ static func caption(parent: Control) -> Label:
 
 
 ## Ícone de casco: a nave do jogador pequena, com filtro linear (reduzida, não ampliada).
+## A nave que está voando, com a pintura equipada (como na WorldView), para os ícones de vida.
+static func life_texture(sim: Sim) -> Texture2D:
+	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
+	return ShipIcon.texture(String(sim.player.ship.get("id", "falcon")),
+			Color(paint) if not paint.is_empty() else Color(0, 0, 0, 0))
+
+
 static func life_icon(tex: Texture2D, height: float) -> TextureRect:
 	var aspect := 1.0
 	if tex != null and tex.get_height() > 0:

@@ -65,6 +65,19 @@ static func paint_fx(id: String) -> Dictionary:
 	return out
 
 
+## Efeitos de desenho da nave: os próprios da nave premium (data/ships.json "fx": rastro, halo do tiro e estouro)
+## e, por cima, os da pintura equipada. Também pastel no tiro (tests/iap_tests.gd).
+static func ship_fx(ship: String, cosmetic_id: String) -> Dictionary:
+	var out := {}
+	for row: Variant in Economy.data_rows("ships"):
+		var def := row as Dictionary
+		if String(def["id"]) == ship:
+			for key: Variant in def.get("fx", {}):
+				out[String(key)] = Color(String((def["fx"] as Dictionary)[key]))
+	out.merge(paint_fx(cosmetic_id), true)
+	return out
+
+
 static func is_steam() -> bool:
 	return OS.has_feature("steam")
 

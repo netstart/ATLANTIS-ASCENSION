@@ -76,6 +76,7 @@ func load_profile() -> void:
 		loaded = _read(backup_path)
 		recovered_from_backup = not loaded.is_empty()
 	data = migrate(loaded) if not loaded.is_empty() else default_profile()
+	Iap.include_premium(data, Store.is_steam())
 
 
 ## Leva saves antigos para a versão atual e completa campos que faltam (idempotente).
@@ -119,6 +120,7 @@ func save_profile() -> void:
 
 func reset_profile() -> void:
 	data = default_profile()
+	Iap.include_premium(data, Store.is_steam())
 	save_profile()
 
 

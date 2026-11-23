@@ -67,8 +67,10 @@ Regras herdadas do hyakki, protegidas pelos benchmarks da [política de testes](
   divide camada com as naves HD (cada camada tem um filtro só). Asset de outro pack de pixel art passa pelo shader
   de paleta unificada (`shaders/palette_tint.gdshader`) antes de entrar em cena.
 - A nave HD não é tingida pela cor de `data/ships.json`: a arte já tem cor. A pintura da loja recolore preservando o
-  sombreado (modo pintura de `shaders/sprite_flash.gdshader`), e a evolução do hangar é luz por cima da arte
-  (chama, brilho, aura, frisos), nunca peças coladas no casco.
+  sombreado (modo pintura de `shaders/sprite_flash.gdshader`). A evolução do hangar (pedido do dono, 1.26) monta
+  uma peça física por nível no casco (`tools/gen_livery.py`), no mesmo acabamento metálico e na cor da própria
+  nave, presa à silhueta pelas âncoras de `data/livery.json` e nunca sobre o ponto de acerto; a luz (chama, brilho,
+  aura, luzes de navegação) só reforça as peças.
 - Interface no guia [docs/design/ui-style.md](../design/ui-style.md) ("neon abissal", redesenho 1.6): stretch
   `canvas_items` (texto e vetores na resolução física, layout na lógica), fonte Exo 2, chanfro 45° como única
   forma, cor = significado, um fundo vivo compartilhado (`AbyssBackdrop`) e uma única ação dourada por tela.

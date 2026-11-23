@@ -17,6 +17,9 @@ const HOME_Y := 380.0
 const FAR_D := 26.0
 ## Folga do descarte de balas distantes em _view (bem acima do erro de arredondamento das distâncias).
 const CULL_SLACK := 1.0
+## Faixa junto às bordas onde ficar custa (_cornered) e o custo por unidade dentro dela.
+const WALL := 30.0
+const WALL_COST := 0.6
 ## PODER: perigo que dispara o Poder I e balas perto que pedem o Poder III.
 const POWER_DANGER := 30.0
 const POWER_CROWD := 40
@@ -75,12 +78,21 @@ func decide(sim: Sim) -> SimInput:
 	var view := _view(sim, me, reach, near, near_vel, near_r)
 	var target_x := _target_x(sim)
 	var home_y := HOME_Y + sim.field.y - Playfield.FIELD.y
+	# Acima do chefe (subiu atrás de um prêmio antes de ele chegar) o tiro não pega e a zona de contato tranca a
+	# volta: contorna pelo lado mais perto e desce com mais vontade.
+	var climb := 0.012
+	if bool(view["boss_on"]) and me.y < (view["boss_pos"] as Vector2).y + 10.0:
+		var bx: float = (view["boss_pos"] as Vector2).x
+		var side := float(view["boss_reach"]) + 16.0
+		target_x = clampf(bx - side if me.x < bx else bx + side, WALL, sim.field.x - WALL)
+		climb = 0.05
 	var best := INF
 	var best_dir := Vector2.ZERO
 	for c: Vector2 in spots:
 		var cost := _danger(c, view)
-		cost += absf(c.x - target_x) * 0.02 + absf(c.y - home_y) * 0.012
+		cost += absf(c.x - target_x) * 0.02 + absf(c.y - home_y) * climb
 		cost -= _pickup_pull(c, view)
+		cost += _cornered(c, sim.field)
 		if cost < best - 0.0001:
 			best = cost
 			best_dir = c - me
@@ -108,12 +120,15 @@ func decide(sim: Sim) -> SimInput:
 func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_vel: PackedVector2Array,
 		near_r: PackedFloat32Array) -> Dictionary:
 	var hb := sim.player.hitbox
+	# Ponto da hitbox fora do centro (Hitboxes, revisão 5): o custo é medido nele e o corte ganha a folga.
+	var off := sim.player.hit_offset
+	var slack := CULL_SLACK + off.length()
 	var shot_pos := PackedVector2Array()
 	var shot_r := PackedFloat32Array()
 	for i: int in range(near.size()):
 		for ahead: int in LOOKAHEAD:
 			var p: Vector2 = near[i] + near_vel[i] * (ahead * Sim.STEP)
-			if me.distance_to(p) - reach - near_r[i] - hb < FAR_D + CULL_SLACK:
+			if me.distance_to(p) - reach - near_r[i] - hb < FAR_D + slack:
 				shot_pos.append(p)
 				shot_r.append(near_r[i])
 	var beam_x := PackedFloat64Array()
@@ -129,8 +144,8 @@ func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_v
 	var foe_reach := PackedFloat64Array()
 	for e: SimEnemy in sim.enemies:
 		if e.active() and e.contact:
-			foe_pos.append(e.pos)
-			foe_reach.append(e.radius + 18.0)
+			foe_pos.append(e.hit_pos())
+			foe_reach.append(e.hurt + 18.0)
 	var boss_on := sim.boss != null and sim.boss.fighting()
 	var loot := PackedVector2Array()
 	var prize := PackedVector2Array()
@@ -142,13 +157,28 @@ func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_v
 			loot.append(pk["pos"])
 	for s: Dictionary in sim.objectives.survivors + sim.objectives.relics:
 		prize.append(s["pos"])
-	return {"hb": hb, "shot_pos": shot_pos, "shot_r": shot_r, "beam_x": beam_x, "beam_y": beam_y,
+	return {"hb": hb, "off": off, "shot_pos": shot_pos, "shot_r": shot_r, "beam_x": beam_x, "beam_y": beam_y,
 			"beam_half": beam_half, "beam_base": beam_base, "foe_pos": foe_pos, "foe_reach": foe_reach,
-			"boss_on": boss_on, "boss_pos": sim.boss.body_pos() if boss_on else Vector2.ZERO,
-			"boss_reach": sim.boss.body_radius() + 30.0 if boss_on else 0.0, "loot": loot, "prize": prize}
+			"boss_on": boss_on, "boss_pos": sim.boss.hurt_pos() if boss_on else Vector2.ZERO,
+			"boss_reach": _boss_reach(sim) if boss_on else 0.0, "loot": loot, "prize": prize}
 
 
-func _danger(c: Vector2, view: Dictionary) -> float:
+## Parede: custo leve que cresce perto das bordas do campo (lados e fundo). Encostado na parede o bot só desvia
+## para um lado e acaba encurralado no canto por uma cortina de balas (c8m3a, Hidra Satélite).
+static func _cornered(c: Vector2, field: Vector2) -> float:
+	var side := minf(c.x, field.x - c.x)
+	var bottom := field.y - c.y
+	return maxf(0.0, WALL - side) * WALL_COST + maxf(0.0, WALL - bottom) * WALL_COST
+
+
+## Distância do chefe que o bot evita: o raio do corpo + 30 (antes da revisão 5) ou o contato medido + 30 (o círculo
+## de dano da HD cobre o casco inteiro e afastaria o bot demais).
+static func _boss_reach(sim: Sim) -> float:
+	return (sim.boss.contact_radius() if Hitboxes.enabled(sim.loadout) else sim.boss.body_radius()) + 30.0
+
+
+func _danger(at: Vector2, view: Dictionary) -> float:
+	var c: Vector2 = at + (view["off"] as Vector2)
 	var cost := 0.0
 	var hb: float = view["hb"]
 	var shot_pos: PackedVector2Array = view["shot_pos"]

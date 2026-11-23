@@ -11,6 +11,7 @@ const VfxTests := preload("res://tests/vfx_tests.gd")
 const WeatherTests := preload("res://tests/weather_tests.gd")
 const PowerTests := preload("res://tests/power_tests.gd")
 const ObjectiveTests := preload("res://tests/objective_tests.gd")
+const HitboxTests := preload("res://tests/hitbox_tests.gd")
 const ScriptGate := preload("res://tests/script_gate.gd")
 const SEMVER := "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
 
@@ -67,6 +68,7 @@ func _rules(_unit_check: Callable, sim: SimTests) -> void:
 	WeatherTests.new().run_unit(_check)
 	PowerTests.new().run_unit(_check)
 	ObjectiveTests.new().run_unit(_check)
+	HitboxTests.new().run_unit(_check)
 
 
 func _check(condition: bool, label: String) -> void:

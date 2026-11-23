@@ -55,6 +55,8 @@ const UNAVAILABLE_CODES: Array[int] = [
 
 ## product -> formatted_price (só os que a Play já respondeu).
 var prices: Dictionary = {}
+## product -> price_amount_micros (para a Loja comparar o pacote com as compras avulsas, na moeda da conta).
+var micros: Dictionary = {}
 ## Prazos (os testes encurtam).
 var purchase_timeout: float = PURCHASE_TIMEOUT
 var resume_grace: float = RESUME_GRACE
@@ -277,6 +279,9 @@ func _on_product_details(response: Dictionary) -> void:
 			var price := find_formatted_price(details)
 			if not price.is_empty():
 				prices[product] = price
+				var amount: Variant = find_key(details, "price_amount_micros")
+				if amount != null:
+					micros[product] = int(amount)
 				product_price_changed.emit(product, price)
 	else:
 		push_warning("Billing: sem os detalhes dos produtos (%d) %s" % [code, response.get("debug_message", "")])
@@ -289,6 +294,24 @@ func _on_product_details(response: Dictionary) -> void:
 	else:
 		_finish("unavailable", code, "produto fora da resposta da Play (unfetched_products: %s)" %
 				str(response.get("unfetched_products", [])))
+
+
+## Primeiro valor da chave `key` em qualquer nível do dicionário (null se não há).
+static func find_key(value: Variant, key: String) -> Variant:
+	if value is Dictionary:
+		var dict: Dictionary = value
+		if dict.has(key):
+			return dict[key]
+		for k: Variant in dict:
+			var found: Variant = find_key(dict[k], key)
+			if found != null:
+				return found
+	elif value is Array:
+		for item: Variant in value:
+			var found: Variant = find_key(item, key)
+			if found != null:
+				return found
+	return null
 
 
 ## O preço vem aninhado (one_time_purchase_offer_details.formatted_price); procura a chave.

@@ -95,7 +95,7 @@ ficha. Declarar errado é violação de política.
 | Apostas / jogos de azar simulados | Não (o baú grátis dá recompensa fixa sem compra; não há loot box paga) |
 | Interação entre usuários, chat, conteúdo gerado | Não |
 | Compartilha localização | Não |
-| Compras digitais | **Sim** (compras opcionais pela Google Play: Turbo, Apoiar, pinturas, atalho de nave, pacotes; nenhuma é loot box, moeda ou vantagem de força) |
+| Compras digitais | **Sim** (compras opcionais pela Google Play: Turbo, Apoiar, pinturas, atalho de nave, naves premium, pacotes; nenhuma é loot box, moeda ou vantagem de força) |
 | Navegador / acesso irrestrito à internet | Não |
 
 Resultado esperado: classificação baixa (ex.: PEGI 7, ESRB E10+, ClassInd 10). A Play mostra o resultado antes de
@@ -238,8 +238,11 @@ O código está pronto: plugin `GodotGooglePlayBilling` 3.3.0 em `addons/GodotGo
 `project.godot`), `scripts/core/play_billing_provider.gd` (portado do hyakki), o catálogo em
 `scripts/core/iap.gd` e o Turbo em `scripts/core/turbo.gd`. **Nada vende força**: nada de créditos, upgrades,
 vidas ou vantagem. Tudo o que é vendido também sai jogando (pinturas por Pérolas, a Tridente por fragmentos), exceto
-o "Apoiar" e o pacote inicial, que são só conforto (sem anúncio) e visual. Na Steam (premium) tudo vem incluído ou
-sai jogando: Turbo e pinturas inclusos, sem anúncio, sem pacote de revives.
+o "Apoiar" e o pacote inicial, que são só conforto (sem anúncio) e visual, e as **naves premium**, que são só visual:
+cada uma repete casco, velocidade, alvo, cadência, arma, especial e os três poderes de uma nave do hangar (campo
+`kit` em `data/ships.json`, conferido por `Powers.validate` e `tests/premium_tests.gd`); o exclusivo é a arte, o
+rastro, o tiro e o estouro. Na Steam (premium) tudo vem incluído ou sai jogando: Turbo, pinturas e as naves premium
+inclusos, sem anúncio, sem pacote de revives.
 
 Fluxo no aparelho: ao abrir, o jogo conecta à Play, busca os preços e consulta as compras (`queryPurchases`): quem
 reinstala ou troca de aparelho recupera tudo sozinho (e a Loja tem "Restaurar compras"). Comprar abre a tela da
@@ -249,7 +252,7 @@ Play; compra concluída libera e é confirmada (`acknowledge`, sem isso a Play e
 então é consumido (`consume`); o token fica guardado para nunca creditar duas vezes. **Produto sem preço da Play
 (ainda não criado ou inativo no Console) não aparece na Loja**: dá para ativar um por vez.
 
-### Produtos no Play Console (criados e ativos em 2026-11-21)
+### Produtos no Play Console (criados e ativos em 2026-11-21; os quatro premium: a criar com `tools/play_products.py`)
 
 Cada produto tem uma opção de compra "Comprar" com ID `<id>-compra` (hífens no lugar de `_`, ex.: `starter-pack-compra`),
 compatível com versões anteriores (a Billing Library do plugin usa essa), preço em USD aplicado a todas as 174 regiões.
@@ -266,7 +269,31 @@ Preço padrão em dólar (a Play converte para cada país; revise o preço em re
 | `paint_reef` | Produto no app (não consumível) | US$ 0,99 | Pintura Recife / Reef paint | (a mesma descrição da Aurora) |
 | `paint_abyssal` | Produto no app (não consumível) | US$ 1,99 | Pintura Abissal / Abyssal paint | (a mesma descrição da Aurora) |
 | `paint_solar` | Produto no app (não consumível) | US$ 1,99 | Pintura Solar / Solar paint | (a mesma descrição da Aurora) |
+| `ship_premium_hippocampus` | Produto no app (não consumível) | US$ 2,99 | Nave premium: Hipocampo / Premium ship: Hippocampus | O corcel de Poseidon, refeito em oricalco e luz. Joga como a Tempest: mesmo casco, arma, especial e poderes. Visual exclusivo, não é mais forte. / (en no `--dry-run`) |
+| `ship_premium_nereid` | Produto no app (não consumível) | US$ 2,99 | Nave premium: Nereida / Premium ship: Nereid | Asa de madrepérola das ninfas do mar. Joga como a Manta: (…) Visual exclusivo, não é mais forte. |
+| `ship_premium_amphitrite` | Produto no app (não consumível) | US$ 2,99 | Nave premium: Anfitrite / Premium ship: Amphitrite | A nau da rainha dos mares, em turquesa e ouro. Joga como a Hydra: (…) Visual exclusivo, não é mais forte. |
+| `premium_fleet` | Produto no app (não consumível) | US$ 5,99 | Frota premium: 3 naves / Premium fleet: 3 ships | As três naves premium juntas, por menos (33% a menos que US$ 8,97). Inclui Hipocampo, Nereida e Anfitrite. Visual exclusivo, não é mais forte. |
 | `revive_pack_3` | Produto no app (**consumível**: o jogo consome) | US$ 0,99 | 3 revives sem anúncio / 3 ad-free revives | Na tela "Casco perdido", reviva sem ver anúncio. Continua 1 reviver por missão. / On the "Hull lost" screen, revive without an ad. Still 1 revive per mission. |
+
+### Naves premium: criar pela API (`tools/play_products.py`)
+
+As quatro linhas premium acima (títulos e descrições nos 11 idiomas, a partir de `tools/i18n/command_premium.py` e
+`tools/i18n/play_products.py`) são criadas e ativadas pela ferramenta, sem digitar no Console:
+
+```powershell
+python -I tools\play_products.py --dry-run          # mostra os corpos das requisições, sem rede
+python tools\play_products.py apply --key D:\src\keys\atlantis-play-publisher.json
+python tools\play_products.py list --key D:\src\keys\atlantis-play-publisher.json
+```
+
+`apply` converte o preço em USD para cada região (`pricing:convertRegionPrices`), grava o produto
+(`onetimeproducts.patch`, `allowMissing=true`, `regionsVersion` da conversão) com uma opção de compra
+`<id-com-hífens>-compra` compatível com versões anteriores e ativa a opção (`purchaseOptions:batchUpdateStates`).
+Rodar de novo só reaplica o mesmo estado; os produtos antigos não são tocados (a ferramenta recusa ids fora do
+catálogo dela). A conta de serviço precisa da permissão "Gerenciar pedidos e assinaturas" (ou "Gerenciar produtos").
+Produto sem preço da Play continua escondido na Loja, então dá para criar antes de o AAB com as naves chegar.
+Na Loja, a seção "Naves premium" (sub-aba Extras) mostra o pacote em destaque com a economia calculada pelos preços
+que a Play responde (`price_amount_micros`), e cada nave com a vitrine animada e o preço da Play.
 
 Na Play os produtos no app são todos do mesmo tipo: "consumível" é só o jeito como o jogo trata a compra (o
 `consume`), não um campo do Console. Pérolas das pinturas: Aurora e Recife 250, Abissal e Solar 400.

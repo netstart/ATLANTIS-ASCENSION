@@ -1444,7 +1444,7 @@
     "version": "",
     "commercial_use": true,
     "ai_generated": false,
-    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar; nas naves premium da loja (Hipocampo e Nereida da XENIS, Anfitrite da meia-lua RD2 da Faction 6), acabamento premium: matiz girado, filme iridescente, realces em ouro, luz de borda cheia, chama de cor própria e a tira do brilho que varre o casco",
     "verified_at": "2026-11-22",
     "verified_by": "Claude (naves HD, fase 2); revisão final por Clayton antes do lançamento",
     "sha256": {
@@ -1471,13 +1471,15 @@
     "files": [
       "assets/art/hd/nautolan/scout_*",
       "assets/art/hd/nautolan/fighter_*",
-      "assets/art/hd/nautolan/frigate_*"
+      "assets/art/hd/nautolan/frigate_*",
+      "assets/art/hd/player/hippocampus_*",
+      "assets/art/hd/player/nereid_*"
     ],
     "category": "art",
     "version": "",
     "commercial_use": true,
     "ai_generated": false,
-    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar",
+    "modifications": "Naves HD por tools/gen_hd_ships.py: recorte, giro, escala com alfa pré-multiplicado, acabamento comum (contraste, saturação, nitidez, luz de borda, contorno), chama de motor animada desenhada pelo projeto e, nas naves do jogador, silhueta borrada para o brilho da evolução do hangar; nas naves premium da loja (Hipocampo e Nereida da XENIS, Anfitrite da meia-lua RD2 da Faction 6), acabamento premium: matiz girado, filme iridescente, realces em ouro, luz de borda cheia, chama de cor própria e a tira do brilho que varre o casco",
     "verified_at": "2026-11-22",
     "verified_by": "Claude (naves HD, fase 2); revisão final por Clayton antes do lançamento",
     "sha256": {

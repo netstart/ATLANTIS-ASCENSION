@@ -245,7 +245,7 @@ func _fill_stage(parent: Container, profile: Dictionary) -> void:
 	var view := ship_view(String(ship), paint, zoom, false, level)
 	view.name = "HeroShip"
 	# Pintura equipada com efeitos: rastro, tiro e estouro em volta da nave (a altura do palco não muda).
-	view.fx = Store.paint_fx(String(profile["selected"].get("cosmetic", "")))
+	view.fx = Store.ship_fx(String(ship), String(profile["selected"].get("cosmetic", "")))
 	view.fx_room = false
 	view.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	holder.add_child(view)

@@ -21,7 +21,7 @@ Saída, no mesmo formato da série Void (SpriteBank só troca o caminho e a esca
 - player/<nome>_glow.png: silhueta borrada e branca da nave, na METADE da resolução (1 texel por unidade, o
   desenho é o mesmo: lado da base / 2), para o brilho de acento e o pulso de borda da evolução do hangar
   (scripts/view/ship_livery.gd). Vem do contorno da arte, então tem a licença da nave.
-Grupos: player (os 12 do hangar, ids de data/ships.json) e klaed, nairan, nautolan (tipos de data/enemies.json).
+Grupos: player (os 12 do hangar e as 3 premium, ids de data/ships.json) e klaed, nairan, nautolan (tipos de data/enemies.json).
 Escala: TEXELS_PER_UNIT texels por unidade lógica; a nave é desenhada com tamanho = lado da textura / 2.
 
 Grava em D:\\src\\assets-downloaded\\atlantis-mix\\ships (área de preparo, com sources.json) e em
@@ -93,6 +93,27 @@ KIND_UNITS = {
 
 
 @dataclass
+class Premium:
+    """Acabamento das naves premium: as mais vistosas do jogo, sem mudar a silhueta (só luz e cor).
+
+    hue: giro do matiz do casco em graus (casco laranja vira turquesa); só nos pixels saturados.
+    iris: três cores do filme iridescente que corre em faixas pelos meios-tons (madrepérola).
+    gold: cor dos realces especulares (o metal mais claro vira ouro polido).
+    rim: luz de borda cheia, forte em cima à esquerda (a luz do jogo) e fina no resto do contorno.
+    sheen: cor do brilho que varre o casco (tira <nome>_sheen.png).
+    flame: cores da chama (núcleo, meio, borda, halo da boca), no lugar da chama ciano do hangar.
+    trim: quanto do metal sem cor (canos, frisos, bocais) vira ouro, mantendo o sombreado (0 = nada).
+    """
+    hue: float = 0.0
+    iris: tuple = ((1.0, 0.85, 0.55), (0.55, 0.95, 1.0), (1.0, 0.6, 0.95))
+    gold: tuple = (1.0, 0.83, 0.42)
+    rim: tuple = (1.0, 0.93, 0.7)
+    sheen: tuple = (1.0, 0.97, 0.86)
+    flame: dict = field(default_factory=dict)
+    trim: float = 0.0
+
+
+@dataclass
 class Spec:
     group: str
     name: str
@@ -110,6 +131,8 @@ class Spec:
     lift: float = 0.0
     rim: tuple | None = None
     license: str = ""
+    ## Nave premium (loja, compra com dinheiro real): acabamento extra (Premium) e a tira do brilho que corre.
+    premium: Premium | None = None
 
 
 def mv(pack: str, file: str) -> str:
@@ -132,6 +155,29 @@ PLAYER = [
     Spec("player", "nova", mv("f2", "blueship3.png"), 54),
     Spec("player", "titan", mv("f1", "smallorange.png"), 56),
     Spec("player", "ascension", mv("f2", "blueship1.png"), 58),
+]
+
+# Naves premium da loja (compra única na Play, inclusas na Steam): as três mais vistosas do jogo. Cascos que
+# nenhuma outra nave usa: XENIS dourada e violeta, giradas 180° (delta de nariz fino; a frota Nautolan usa só a
+# azul, com as pontas para baixo na tela) e a meia-lua "RD2" da Faction 6 (nenhuma nave ou inimigo usa), girada
+# 180° (os braços avançam como uma coroa em volta do disco), com o casco vermelho girado para o turquesa atlante,
+# meios-tons clareados e realces de ouro. Um pouco maiores que o hangar comum (vitrine), com a mesma área de acerto.
+PREMIUM = [
+    Spec("player", "hippocampus", f"{XENIS}/xenis-yellow-a-3.png", 62, rotate=180, outline=False, premium=Premium(
+        trim=0.4, iris=((1.0, 0.86, 0.5), (1.0, 0.62, 0.38), (0.75, 1.0, 0.92)), gold=(1.0, 0.84, 0.4),
+        rim=(1.0, 0.95, 0.72), sheen=(1.0, 0.96, 0.8),
+        flame={"core": (1.0, 1.0, 0.9), "mid": (1.0, 0.8, 0.3), "edge": (1.0, 0.36, 0.12), "style": "jet",
+               "halo": 0.75})),
+    Spec("player", "nereid", f"{XENIS}/xenis-purple-a-3.png", 62, rotate=180, outline=False, premium=Premium(
+        trim=0.35, iris=((0.85, 0.7, 1.0), (0.55, 0.95, 1.0), (1.0, 0.62, 0.9)), gold=(1.0, 0.86, 0.95),
+        rim=(0.95, 0.88, 1.0), sheen=(0.96, 0.92, 1.0),
+        flame={"core": (1.0, 0.95, 1.0), "mid": (0.95, 0.45, 1.0), "edge": (0.45, 0.12, 1.0), "style": "jet",
+               "halo": 0.75})),
+    Spec("player", "amphitrite", mv("f6", "RD2.png"), 60, rotate=180, lift=0.45, premium=Premium(
+        hue=170.0, trim=0.85, iris=((0.45, 1.0, 0.9), (0.55, 0.8, 1.0), (1.0, 0.88, 0.55)), gold=(1.0, 0.84, 0.42),
+        rim=(0.8, 1.0, 0.96), sheen=(0.9, 1.0, 0.97),
+        flame={"core": (0.92, 1.0, 0.96), "mid": (0.3, 1.0, 0.8), "edge": (1.0, 0.78, 0.25), "style": "jet",
+               "halo": 0.75})),
 ]
 
 # Maré Negra (Kla'ed): preto e vermelho da Faction 5, preto e laranja da Faction 10 (aponta para a direita).
@@ -172,7 +218,7 @@ NAUTOLAN = [
     Spec("nautolan", "dreadnought", mv("f6", "redship4.png"), KIND_UNITS["dreadnought"]),
 ]
 
-SPECS = PLAYER + KLAED + NAIRAN + NAUTOLAN
+SPECS = PLAYER + PREMIUM + KLAED + NAIRAN + NAUTOLAN
 
 LICENSES = {
     "MillionthVector": "CC-BY-3.0",
@@ -188,6 +234,8 @@ LICENSE_IDS = {
 SOURCE = "tools/gen_hd_ships.py"
 ## Brilho da evolução: raio do borrão em unidades lógicas (o mesmo em texels: a textura tem 1 texel por unidade).
 GLOW_BLUR = 3.0
+## Quadros da varredura de brilho das naves premium (a vista toca a tira e espera entre uma passada e outra).
+SHEEN_FRAMES = 12
 
 
 def author_of(spec: Spec) -> str:
@@ -308,6 +356,8 @@ def finish(im: Image.Image, spec: Spec) -> Image.Image:
         band = np.asarray(Image.fromarray((band * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.5)))
         band = band.astype(np.float32) / 255.0 * a * 0.75
         rgb = rgb + (np.array(spec.rim, np.float32) - rgb) * band[..., None]
+    if spec.premium is not None:
+        rgb = premium_finish(rgb, a, spec.premium)
     out = np.dstack([rgb, a])
     if spec.outline:
         grown = np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)))
@@ -317,6 +367,84 @@ def finish(im: Image.Image, spec: Spec) -> Image.Image:
         col = (rgb * a[..., None] + dark * (ring * (1 - a))[..., None]) / np.maximum(alpha, 1e-4)[..., None]
         out = np.dstack([col, alpha])
     return Image.fromarray((np.clip(out, 0, 1) * 255 + 0.5).astype(np.uint8), "RGBA")
+
+
+LUMA = np.array([0.299, 0.587, 0.114], np.float32)
+
+
+def hue_rotate(rgb: np.ndarray, degrees: float) -> np.ndarray:
+    """Gira o matiz no plano de crominância (YIQ), mantendo a luminância: o sombreado do casco fica."""
+    yiq = np.array([[0.299, 0.587, 0.114], [0.596, -0.274, -0.322], [0.211, -0.523, 0.312]], np.float32)
+    t = math.radians(degrees)
+    rot = np.array([[1, 0, 0], [0, math.cos(t), -math.sin(t)], [0, math.sin(t), math.cos(t)]], np.float32)
+    m = (np.linalg.inv(yiq) @ rot @ yiq).astype(np.float32)
+    return np.clip(rgb @ m.T, 0, 1)
+
+
+def premium_finish(rgb: np.ndarray, a: np.ndarray, p: Premium) -> np.ndarray:
+    """Casco girado de cor, madrepérola nos meios-tons, ouro nos realces e luz de borda cheia."""
+    h, w = a.shape
+    if p.hue:
+        lum = rgb @ LUMA
+        sat = np.abs(rgb - lum[..., None]).max(-1)
+        k = smooth((sat - 0.06) / 0.14)[..., None]
+        rgb = rgb + (hue_rotate(rgb, p.hue) - rgb) * k
+    if p.trim:
+        # Metal sem cor vira ouro escovado: a luminância fica, a cor vem do ouro.
+        lum = rgb @ LUMA
+        grey = 1 - smooth((np.abs(rgb - lum[..., None]).max(-1) - 0.04) / 0.12)
+        gilt = np.clip(np.array(p.gold, np.float32) * (lum * 1.35)[..., None], 0, 1)
+        rgb = rgb + (gilt - rgb) * (grey * p.trim)[..., None]
+    lum = rgb @ LUMA
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    # Filme iridescente: faixas diagonais que mudam de cor com a posição e o tom (madrepérola, não arco-íris).
+    phase = (xx / w * 1.4 + yy / h * 0.8) * math.tau + lum * 7.0
+    c0, c1, c2 = (np.array(c, np.float32) for c in p.iris)
+    t1 = (0.5 + 0.5 * np.cos(phase))[..., None]
+    t2 = (0.5 + 0.5 * np.cos(phase * 0.6 + 2.1))[..., None]
+    iri = (c0 * t1 + c1 * (1 - t1)) * (1 - t2 * 0.45) + c2 * t2 * 0.45
+    mid = np.clip(4 * lum * (1 - lum), 0, 1)[..., None] * 0.3
+    rgb = rgb + (iri * np.clip(lum * 1.25 + 0.1, 0, 1)[..., None] - rgb) * mid
+    # Realces especulares em ouro polido (o metal mais claro).
+    lum = rgb @ LUMA
+    spec = smooth((lum - 0.5) / 0.4)[..., None]
+    gold = np.array(p.gold, np.float32)
+    rgb = rgb + (gold * np.clip(lum * 1.15, 0.75, 1.0)[..., None] - rgb) * spec * 0.55
+    # Luz de borda: forte onde o vizinho de cima à esquerda é vazio (a luz do jogo), fina em todo o contorno.
+    d = max(1, round(max(h, w) / 70))
+    lit = np.clip(a - shift(a, d, d), 0, 1)
+    inner = np.asarray(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3)))
+    ring = np.clip(a - inner.astype(np.float32) / 255.0, 0, 1)
+    band = np.clip(lit * 0.95 + ring * 0.4, 0, 1)
+    band = np.asarray(Image.fromarray((band * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7)))
+    band = band.astype(np.float32) / 255.0 * a
+    rim = np.array(p.rim, np.float32)
+    return np.clip(rgb + (rim - rgb) * band[..., None] * 0.85, 0, 1)
+
+
+def sheen_strip(base: Image.Image, p: Premium) -> Image.Image:
+    """Tira de SHEEN_FRAMES quadros: uma faixa de luz que varre o casco na diagonal, do nariz à popa.
+
+    Só a luz (cor do brilho com alfa), desenhada por cima da base: forte no metal claro, fraca no escuro e
+    nada fora do casco. A vista toca a tira de tempos em tempos (scripts/view/ship_art.gd).
+    """
+    rgba = np.asarray(base).astype(np.float32) / 255.0
+    a = rgba[..., 3]
+    lum = rgba[..., :3] @ LUMA
+    side = base.width
+    ys, xs = np.nonzero(a > 0.5)
+    x0, x1, y0, y1 = xs.min(), xs.max() + 1, ys.min(), ys.max() + 1
+    yy, xx = np.mgrid[0:side, 0:side].astype(np.float32)
+    u = (xx - x0) / max(1, x1 - x0) * 0.55 + (yy - y0) / max(1, y1 - y0) * 0.45
+    body = np.clip((a - 0.5) * 2, 0, 1) * (0.3 + 0.7 * np.clip(lum * 1.4, 0, 1))
+    col = np.broadcast_to(np.array(p.sheen, np.float32), (side, side, 3))
+    strip = Image.new("RGBA", (side * SHEEN_FRAMES, side))
+    for f in range(SHEEN_FRAMES):
+        pos = -0.2 + 1.4 * f / (SHEEN_FRAMES - 1)
+        band = np.exp(-((u - pos) / 0.085) ** 2) + 0.6 * np.exp(-((u - pos + 0.16) / 0.03) ** 2)
+        frame = np.dstack([col, np.clip(band * body * 0.8, 0, 1)])
+        strip.paste(Image.fromarray((frame * 255 + 0.5).astype(np.uint8), "RGBA"), (f * side, 0))
+    return strip
 
 
 # ---------------------------------------------------------------- bocais e chama
@@ -403,7 +531,7 @@ def flame_frame(size: int, nozzles: list, colors: dict, frame: int, boost: bool)
         cor = np.where((v >= 0) & (vc <= 1), np.clip(1 - uc * uc, 0, 1) * np.clip(1 - vc, 0, 1) ** 0.8, 0)
         # Brilho na boca do bocal (bloom falso).
         hr = dia * 0.9
-        halo = np.exp(-(((xx - cx) / hr) ** 2 + ((yy - cy) / (hr * 0.8)) ** 2) * 2.2) * 0.45
+        halo = np.exp(-(((xx - cx) / hr) ** 2 + ((yy - cy) / (hr * 0.8)) ** 2) * 2.2) * colors.get("halo", 0.45)
         inten = np.maximum(inten, np.maximum(body, halo) * bright)
         core = np.maximum(core, cor * bright)
     total = np.clip(inten * 0.85 + core * 0.55, 0, 1)
@@ -423,7 +551,7 @@ def build(spec: Spec) -> dict:
     long_px = round(spec.units * TEXELS_PER_UNIT)
     ship = finish(downscale(src, long_px), spec)
     w, h = ship.size
-    flame = FLAMES[spec.group]
+    flame = spec.premium.flame if spec.premium is not None and spec.premium.flame else FLAMES[spec.group]
     alpha = np.asarray(ship.getchannel("A")).astype(np.float32) / 255.0
     if spec.nozzles:
         nozzles = [(fx * w, fy * h, fd * w) for fx, fy, fd in spec.nozzles]
@@ -596,6 +724,8 @@ def main() -> int:
         files = {"base": e["base"], **e["strips"]}
         if spec.group == "player":
             files["glow"] = glow(e["base"])
+        if spec.premium is not None:
+            files["sheen"] = sheen_strip(e["base"], spec.premium)
         author = author_of(spec)
         for label, im in files.items():
             rel = f"{spec.group}/{spec.name}_{label}.png"
@@ -612,6 +742,7 @@ def main() -> int:
             "author": author, "license": LICENSES[author], "texture": e["side"],
             "draw_size": e["side"] / TEXELS_PER_UNIT, "ship_px": list(e["ship"]),
             "nozzles": [[round(v, 1) for v in n[:3]] for n in e["nozzles"]],
+            "premium": spec.premium is not None,
         })
         print(f"{table[-1]['id']:24s} {e['side']:4d}px  nave {e['ship'][0]}x{e['ship'][1]}  "
               f"bocais {len(e['nozzles'])}  <- {spec.src}")

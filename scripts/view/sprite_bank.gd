@@ -59,7 +59,8 @@ static func ship(id: StringName) -> Dictionary:
 
 
 ## Aeronave do jogador pelo id de data/ships.json: a mesma entrada, mais `engine_boost` (motor em potência, nave
-## subindo) e `glow` (silhueta borrada da evolução do hangar, null na Void).
+## subindo), `glow` (silhueta borrada da evolução do hangar, null na Void) e `sheen` (tira do brilho que varre o
+## casco, só nas naves premium; null nas outras).
 static func player(ship_id: StringName) -> Dictionary:
 	var key := StringName("player/" + String(ship_id))
 	if _cache.has(key):
@@ -70,6 +71,7 @@ static func player(ship_id: StringName) -> Dictionary:
 		entry = _entry(base, texture(HD_PATH % ["player", ship_id, "engine"]),
 				texture(HD_PATH % ["player", ship_id, "engine_boost"]), texture(HD_PATH % ["player", ship_id, "glow"]),
 				1.0 / HD_TEXELS)
+		entry["sheen"] = texture(HD_PATH % ["player", ship_id, "sheen"])
 	else:
 		entry = _entry(texture(VOID_PLAYER % "base_full"), texture(VOID_PLAYER % "engine_base_idle"),
 				texture(VOID_PLAYER % "engine_base_powering"), null, 1.0)

@@ -9,11 +9,16 @@ extends ListScreen
 ## fragmentos e onde caem, ou o final que abre). Embaixo, a grade de ladrilhos (CommandKit.item_tile) com
 ## raridade por cor, nível, cadeado nas fechadas e a bolinha "!" nas que abriram desde a última visita.
 ## Tocar num ladrilho só troca o palco; escolher continua sendo um toque explícito.
+## Naves premium (Iap): grade própria embaixo ("Naves premium"), fora da contagem da coleção (não saem jogando);
+## aparecem quando são da conta ou estão à venda, e a fechada leva à Loja.
 ## O palco lista também os três poderes da aeronave (Corrente, .ai/08-poderes-das-naves.md): ícone, nome,
 ## nível e a frase do que fazem; o supremo (nível III) em ouro. Só leitura: o foco segue nos ladrilhos e botões.
 
 ## Largura mínima de cada coluna da grade (pontos lógicos).
 const CELL := 60.0
+
+## Nave a pôr no palco na próxima abertura ("" = a nova ou a escolhida).
+static var next_focus: String = ""
 
 var _focus_id: String = ""
 var _fresh: Array[String] = []
@@ -40,6 +45,9 @@ func on_show(app: Node) -> void:
 	if Notices.mark_ships_seen(SaveManager.data):
 		SaveManager.save_profile()
 	_focus_id = _fresh[0] if not _fresh.is_empty() else ""
+	if not next_focus.is_empty():
+		_focus_id = next_focus
+		next_focus = ""
 	super(app)
 
 
@@ -63,23 +71,33 @@ func _fill() -> void:
 	var profile := SaveManager.data
 	var selected := String(profile["selected"]["ship"])
 	var defs: Array[Dictionary] = []
+	var premium: Array[Dictionary] = []
 	var owned_count := 0
 	for row: Variant in DB.rows("ships"):
 		var def := row as Dictionary
-		if Economy.released(def):
+		if def.has("premium"):
+			if _premium_shown(profile, def):
+				premium.append(def)
+		elif Economy.released(def):
 			defs.append(def)
 			if _owned(profile, String(def["id"])):
 				owned_count += 1
-	if defs.filter(func(d: Dictionary) -> bool: return String(d["id"]) == _focus_id).is_empty():
+	if (defs + premium).filter(func(d: Dictionary) -> bool: return String(d["id"]) == _focus_id).is_empty():
 		_focus_id = selected
-	for def: Dictionary in defs:
+	for def: Dictionary in defs + premium:
 		if String(def["id"]) == _focus_id:
 			_stage(profile, def, selected)
-	var ribbon := CommandKit.ribbon(tr("ships.collection") % [owned_count, defs.size()])
+	_shelf("Collection", tr("ships.collection") % [owned_count, defs.size()], defs, profile, selected)
+	if not premium.is_empty():
+		_shelf("Premium", tr("store.premium_section"), premium, profile, selected)
+
+
+func _shelf(shelf_name: String, title: String, defs: Array[Dictionary], profile: Dictionary, selected: String) -> void:
+	var ribbon := CommandKit.ribbon(title)
 	ribbon.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_list.add_child(ribbon)
 	var shelf := GridContainer.new()
-	shelf.name = "Collection"
+	shelf.name = shelf_name
 	shelf.columns = _columns()
 	shelf.add_theme_constant_override("h_separation", 6)
 	shelf.add_theme_constant_override("v_separation", 8)
@@ -90,10 +108,16 @@ func _fill() -> void:
 		_cell(shelf, profile, def, selected)
 
 
+## Nave premium na coleção: já é da conta ou dá para comprar agora (ela mesma ou o pacote).
+static func _premium_shown(profile: Dictionary, def: Dictionary) -> bool:
+	return (_owned(profile, String(def["id"])) or Iap.visible(profile, String(def["premium"]))
+			or Iap.visible(profile, Iap.PREMIUM_FLEET))
+
+
 ## Raridade pela origem: as da primeira leva são comuns, as de fragmento caro raras, as do
 ## pós-lançamento épicas e a do final verdadeiro lendária.
 static func ship_rarity(def: Dictionary) -> int:
-	if def.has("ending"):
+	if def.has("ending") or def.has("premium"):
 		return CommandKit.LEGENDARY
 	if String(def.get("release", "")) == "post":
 		return CommandKit.EPIC
@@ -151,7 +175,7 @@ func _stage(profile: Dictionary, def: Dictionary, selected: String) -> void:
 	info.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_child(info)
-	var tag := badge(_rarity_name(rarity), accent, &"diamond")
+	var tag := badge(tr("store.premium_badge") if def.has("premium") else _rarity_name(rarity), accent, &"diamond")
 	tag.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	info.add_child(tag)
 	text(info, tr("role." + String(def["role"])), UiTheme.CYAN if owned else UiTheme.TEXT, 13)
@@ -277,6 +301,14 @@ func _stage_action(col: VBoxContainer, profile: Dictionary, def: Dictionary, own
 				AudioManager.play_ui("kenney_ui_confirm")
 				SaveManager.save_profile(), true, "Select_" + id, true)
 			pick.custom_minimum_size.y = 42.0
+		return
+	if def.has("premium"):
+		var locked := title_row(col, tr("ships.premium_lock"), UiTheme.GOLD, UiTheme.FONT_SIZE, &"lock", UiTheme.GOLD)
+		locked.name = "Requirement"
+		var go := button(col, tr("ships.see_shop"), func() -> void:
+			ShopScreen.next_tab = ShopScreen.TAB_SUPPORT
+			navigate.emit(&"shop"), true, "SeeShop", true)
+		go.custom_minimum_size.y = 42.0
 		return
 	if def.has("ending"):
 		var lock := title_row(col, tr("ships.ending_unlock") % tr("ending." + String(def["ending"])), UiTheme.VIOLET,

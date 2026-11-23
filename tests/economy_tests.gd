@@ -110,11 +110,12 @@ func _campaign(check: Callable) -> void:
 	check.call(act1_level >= 3 and act1_level <= 7, "Economia: aeronave no nível 3 a 7 ao fim do Ato I (%d)" % act1_level)
 	check.call(level >= 6, "Economia: aeronave no nível 6+ ao fim da campanha (%d)" % level)
 	check.call(Economy.total_stars(p) >= 60, "Economia: o bot junta ≥ 60 estrelas (%d)" % Economy.total_stars(p))
-	# Toda aeronave com fontes só na campanha principal abre (as de missões secretas e de final dependem do jogador).
+	# Toda aeronave com fontes só na campanha principal abre (as de missões secretas e de final dependem do jogador;
+	# as premium só saem compradas).
 	var expected := 0
 	for row: Variant in DB.rows("ships"):
 		var srcs: Array = (row as Dictionary).get("sources", [])
-		var main := not (row as Dictionary).has("ending")
+		var main := not (row as Dictionary).has("ending") and not (row as Dictionary).has("premium")
 		for m: Variant in srcs:
 			main = main and Economy.node(StringName(String(m)))["kind"] != &"secret"
 		if main:

@@ -204,64 +204,58 @@
   "sha256": "e959fc7da1396fa98a6a704d752ab01561d3ac592c1580c577d231c4d92fd537"
  },
  {
-  "file": "assets/art/generated/livery/icon_accent_glow.png",
+  "file": "assets/art/generated/livery/icon_armor.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "4046a788647b57ac69e4bf2bacf07364eb6f99eed071153e3b2ac0727119071e"
+  "sha256": "01d2d497c20d3b125b1c0a44c8d4aaf1a29e58c205a13c0a6b91cfed84475436"
  },
  {
-  "file": "assets/art/generated/livery/icon_afterburner.png",
+  "file": "assets/art/generated/livery/icon_boosters.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "59bc13f1e3eef483e6fe2e81aa701a28d2a3726bc220ee9027a5afef21bc39df"
+  "sha256": "8e9689cb4658f80d39adf1fcf6740e05d4b0d9b27f1209ce4c07773082df64ee"
  },
  {
-  "file": "assets/art/generated/livery/icon_aura.png",
+  "file": "assets/art/generated/livery/icon_canards.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "40f1a8d8045213f9cc0a32f273aa778a71a8784a211631310c15931935eff75b"
+  "sha256": "2c757ec496c572a9ea7cffdef3a02253c4c1527af68bdfcd292399b30d5e1ded"
  },
  {
-  "file": "assets/art/generated/livery/icon_nav_lights.png",
+  "file": "assets/art/generated/livery/icon_coils.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "8529e4a5a104aa9b33109e6afee0291d64985ce873646f254bc0eed8cf16accb"
+  "sha256": "26337884ed8e83c06c4957c3df6c201e9bec2ca3bb6575686fd5b583fd0a35a2"
  },
  {
-  "file": "assets/art/generated/livery/icon_runes.png",
+  "file": "assets/art/generated/livery/icon_crown.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "9cd46d3b571758750c8bd40ca0b5de721f9c06c84378468a190351fc35bb8e36"
+  "sha256": "17d724f0c0dffbebab17787995b388cea14f410afba7a4827b60a21213d629ff"
+ },
+ {
+  "file": "assets/art/generated/livery/icon_fins.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "df8fa8dd14584b83eb15d7ee68025be5aee0697b5c945b9128eef1fdad6b1899"
+ },
+ {
+  "file": "assets/art/generated/livery/icon_missile_pods.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "0fd76343dcff23a3bd76b9280ca4d16113ea6a47c7ac98ca361234187bf4915a"
  },
  {
   "file": "assets/art/generated/livery/icon_sensor.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "a9d02a7772ab903ac63128bfa172bdb02fca0efd6da4f8e17eea475ff363b6ae"
+  "sha256": "1adf5b40dd176ab826e4c27415612d162edd0763f82fe8120021017bedc364ec"
  },
  {
-  "file": "assets/art/generated/livery/icon_stripes.png",
+  "file": "assets/art/generated/livery/icon_wing_guns.png",
   "source": "tools/gen_livery.py",
   "license_id": "atlantis_generated",
-  "sha256": "041e9ad3b2f5b2a3f4aa724e2ea9399539decd275a122f0ba9f7f2b733149137"
- },
- {
-  "file": "assets/art/generated/livery/icon_trim.png",
-  "source": "tools/gen_livery.py",
-  "license_id": "atlantis_generated",
-  "sha256": "45d63683eea96f5123b16a9f7497e0b7e6fe08af8fd91021445172e817bf7e1f"
- },
- {
-  "file": "assets/art/generated/livery/icon_tuned_engine.png",
-  "source": "tools/gen_livery.py",
-  "license_id": "atlantis_generated",
-  "sha256": "5d1aa98922424e3e009a8595f2c0029673305e2db0e80ab3e5e15184d5cd3039"
- },
- {
-  "file": "assets/art/generated/livery/stripe.png",
-  "source": "tools/gen_livery.py",
-  "license_id": "atlantis_generated",
-  "sha256": "87433d50abf91f2ad47fbde55eea6db54bb318fcc38e746ab39bec5ad7f5d788"
+  "sha256": "8464189de8c8c893ada01b36ad44a6a013889948ec828f0b71841dc5b5139268"
  },
  {
   "file": "assets/art/generated/pickups/capsule.png",
@@ -1026,6 +1020,54 @@
   "sha256": "5238d024aaaad13eb47541b236cb7250fe4a753e391ac4e0098513d2f5a1454d"
  },
  {
+  "file": "assets/art/hd/player/amphitrite_base.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "b8a4892fed3126fb2a64234f7ffdb0777a651913a196aea7d8f25ae0eb2af4b7"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_engine.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "31c28dadcf2f498354dab7ba6596111d3c93dac7fdc90a21857058fee24ac8d4"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_engine_boost.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "5175bc6632e6e7fcbcce5735936d17452c7d6fb957da7285cad5fddbe96695ff"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "9c7ca1f6bd498a9059f9f15ae01a612d766bb0e69558570cb5aa38979d7b6644"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "84ee62f6781d282ae9dccb5d9b3281407a4e06644946037e60f8a876d5861877"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_glow.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "0fbcb065cc3820a510a8d65715fb9170adf07819c2dc8ebbd35bb8833e84b2df"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "965f8230a2904120b10ecb6bb2f0e2ca653273f85eb612bda2df7d05fa2eab9a"
+ },
+ {
+  "file": "assets/art/hd/player/amphitrite_sheen.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "8789f143d0de53bfc5fa9fe0f5559231eca9f1c58f76adffd41547b263316975"
+ },
+ {
   "file": "assets/art/hd/player/ascension_base.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
@@ -1044,10 +1086,28 @@
   "sha256": "febaed65403a481f6bb04e9ca0e5c46bc8e902f86ddf6ae9d9b6482f99e39a8a"
  },
  {
+  "file": "assets/art/hd/player/ascension_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "06ca37b620a209289d0b6f5c805a19ea7c2e128527b60ff244f4eb728ce67a8f"
+ },
+ {
+  "file": "assets/art/hd/player/ascension_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "98dfa6217791f4667a8af934a5ec707bf09e6cca392993a195b5baff4c746fc2"
+ },
+ {
   "file": "assets/art/hd/player/ascension_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "78f7276aa6d1184abc69365a7afe799220e9ab77cb0925e1af87e8da31077a86"
+ },
+ {
+  "file": "assets/art/hd/player/ascension_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/atlas_base.png",
@@ -1068,10 +1128,28 @@
   "sha256": "47e4845365ddf3c6f34842b0e8baadb13dbc9f895f472d56143aa3b25b743c1e"
  },
  {
+  "file": "assets/art/hd/player/atlas_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "18ecd7d1319ebff377742fbb206b280c94e34bc5d1dcd8d75a26684add1ace5b"
+ },
+ {
+  "file": "assets/art/hd/player/atlas_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "1a69e508e50cb5d6790918ef6974c80d6b971839428644201e88a6a7292b5fd9"
+ },
+ {
   "file": "assets/art/hd/player/atlas_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "739342df0bb2d013bacca2b0c776b151673ca66b25c3a63292b05ab63060bf3d"
+ },
+ {
+  "file": "assets/art/hd/player/atlas_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/eclipse_base.png",
@@ -1092,10 +1170,28 @@
   "sha256": "49e83da4e165085ae0b083e3bfb5a9bae2567c42ce2a91d5938d2e1f31c8e71f"
  },
  {
+  "file": "assets/art/hd/player/eclipse_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "cdbde92258dbc88b83859a7f601ab0ec89586f47f8543362c7989fd83470bc60"
+ },
+ {
+  "file": "assets/art/hd/player/eclipse_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "85d4b0b04c492e1b5ac9ab9f0edb8a9f7fa450b630e8e306b83eb3c625fc9580"
+ },
+ {
   "file": "assets/art/hd/player/eclipse_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "96289374d2fdbb5e7f80b346ed945636fc55952fe73ff88a43ca5e9b3ef54ca0"
+ },
+ {
+  "file": "assets/art/hd/player/eclipse_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/falcon_base.png",
@@ -1116,10 +1212,76 @@
   "sha256": "2f06914a01593aefb2cf7e242cd1cad0f45ef22ea782b2c8dca151c251295e04"
  },
  {
+  "file": "assets/art/hd/player/falcon_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "400f9c61baa26affd7e05ade78db70295c68e53f201599642bfc7aeda9ed024b"
+ },
+ {
+  "file": "assets/art/hd/player/falcon_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "73ed0b0f37a32fb8c07f112f3bc5be1a88d0ff20a3a35f3f64797ae4ba476ff9"
+ },
+ {
   "file": "assets/art/hd/player/falcon_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "9166a8a486d5d7134b80d8e1ef075e0c01262220a6d01e3dcee409105b90b6dc"
+ },
+ {
+  "file": "assets/art/hd/player/falcon_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_base.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "6e10cea553bbb3e0763c079cd46b764cc4dd1326d95e3d40b52d85ee98478e5e"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_engine.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "d06e9fd159d26abf99eb24e134d11123bd0ec5b171e68bcef3d6a1a7961d37f0"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_engine_boost.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "0b33870fb0f150b00e744cf302ce15814e15b61e4db88a9122805a2e42441277"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "3953e5a98df1ea9a82ee99eecb044320747074bf56292e2eefdcd25adf59e882"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "2fc5bc371e3c84a5ac063465ce48adacf80789279d37175f322112a5bcd5c451"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_glow.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "f9d47b15645713ced5261b760b3d6a6a48e5fa082695b90f390f5be93d5d661d"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "129c4ba5f984d9c7d2101ec01f5fdabd6cb87489c4612bf24e61c8be102b7f30"
+ },
+ {
+  "file": "assets/art/hd/player/hippocampus_sheen.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "0a3c3e8a1c69ee025a5fc1252cb6e30c9a97a93d97c06bd51fa8c421e44c246b"
  },
  {
   "file": "assets/art/hd/player/hydra_base.png",
@@ -1140,10 +1302,28 @@
   "sha256": "c569bb5d9c535b88d97db501e8858ca97289725bf2c0f48c36be1200ff42cb39"
  },
  {
+  "file": "assets/art/hd/player/hydra_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "834af2d1de937bf043fd0e9756935ecd24941a3eddd272eaa6fd17f44b9737f3"
+ },
+ {
+  "file": "assets/art/hd/player/hydra_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "c7c3741f7338f044894d47480f748f8c15a2aa21a053e792ee50a2ec89871d93"
+ },
+ {
   "file": "assets/art/hd/player/hydra_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "d02ccbe3520c2cbb60f83adb19193a85b3998f8dd97349a9b5b2f92a09c05026"
+ },
+ {
+  "file": "assets/art/hd/player/hydra_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/manta_base.png",
@@ -1164,10 +1344,76 @@
   "sha256": "90be6f7fa63d565fca58f4453951aeb8f8bddb185de6b5ab1324c5cfaa1d05e7"
  },
  {
+  "file": "assets/art/hd/player/manta_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "0193e4b788f9b29f27ba1483e1f6d8b5a27be20df28b96a4aab865ba702ba173"
+ },
+ {
+  "file": "assets/art/hd/player/manta_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "4bebe809748b77a5a6767ee4fb88897a29340cc919e4d1493885e702bc454820"
+ },
+ {
   "file": "assets/art/hd/player/manta_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "2a67a5a9e33ba7d09659e43f2609ef81aefb8c1dde37ddd016c69856691a643c"
+ },
+ {
+  "file": "assets/art/hd/player/manta_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_base.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "2f16c46953245bf97cd9661c473caf25951bc0691087b884136be39fe8bb5c19"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_engine.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "eafe081fcbb497deb40a11b7c840dc572f2c2f705da36a6845b80f41a14c1ce6"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_engine_boost.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "9a41594b4bbc348b94baf484a863641ef862ebfba61237affd9e24160434074e"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "c929b20109c39699caeee6ca51122543d017011ed0fa78fff610fcdb93892094"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "2fc5bc371e3c84a5ac063465ce48adacf80789279d37175f322112a5bcd5c451"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_glow.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "f9d47b15645713ced5261b760b3d6a6a48e5fa082695b90f390f5be93d5d661d"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "a220b99a6fcf05bcc59f37f0ae8dafe7807a803165a4f2694f689230a23aa831"
+ },
+ {
+  "file": "assets/art/hd/player/nereid_sheen.png",
+  "source": "tools/gen_hd_ships.py",
+  "license_id": "alface_xenis_spaceships",
+  "sha256": "070eb34898448845b96a0605c643cc234ac1b540f7f438284a6bd9c830cc1df5"
  },
  {
   "file": "assets/art/hd/player/nova_base.png",
@@ -1188,10 +1434,28 @@
   "sha256": "fc6fdb38076f9d75af38ddfb892667f1367cb9ff29b1183b05509294b7a3d87d"
  },
  {
+  "file": "assets/art/hd/player/nova_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "cac23d4eae4e5417d29efdc73a9040875036136a446bc04ed710e898ffb29b51"
+ },
+ {
+  "file": "assets/art/hd/player/nova_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "36345f4bdd51c95b571c9ba6d319f5120635f015f4bff16b6df2b4eda5a2c2c8"
+ },
+ {
   "file": "assets/art/hd/player/nova_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "1026410c60cc5992ae4931a58f577c4a12f458de9085f4f42c283da030579945"
+ },
+ {
+  "file": "assets/art/hd/player/nova_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/ram_base.png",
@@ -1212,10 +1476,28 @@
   "sha256": "fc6e1f2b321d22ade6e2278ee6796d6bd747279798a0ab2beca516b9f81ae30a"
  },
  {
+  "file": "assets/art/hd/player/ram_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "4fe1e8b2a4f2f8cecb9865f825f31ae9c668fc0830a4a5d1f1151d98a92082bb"
+ },
+ {
+  "file": "assets/art/hd/player/ram_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "73e035e684b031b389b2ab32375dfa1cae0f876322767558d796dc6e5bb0a0ea"
+ },
+ {
   "file": "assets/art/hd/player/ram_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "3c402736404e6534c58afea2d691227afd7a07ba575646ba138cae92723966e5"
+ },
+ {
+  "file": "assets/art/hd/player/ram_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/swarm_base.png",
@@ -1236,10 +1518,28 @@
   "sha256": "827454da9d29471862257e7ae95f26dc309ef2f79da9d76c7b55ec08ace0d491"
  },
  {
+  "file": "assets/art/hd/player/swarm_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "4aec2b4ab84da420f1a46bac53300e3789e59c2482f1940a6fe7fce56e1187cb"
+ },
+ {
+  "file": "assets/art/hd/player/swarm_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "a6f2bcdd91cb63010984f7a872a812a2513fc45102d6df2a0540e1e52f198100"
+ },
+ {
   "file": "assets/art/hd/player/swarm_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "5d4a1cb998f75fc0942781afa362ba3f4d91fff889d982c51b574d6c5ac39f12"
+ },
+ {
+  "file": "assets/art/hd/player/swarm_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/tempest_base.png",
@@ -1260,10 +1560,28 @@
   "sha256": "6d0ce9063f6ff3b71ca743897630cf260716b8399497c2a74d80b834b8441002"
  },
  {
+  "file": "assets/art/hd/player/tempest_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "ce461609aa642d88eb2df35d3a53b6493b23c52b06abcd10dceb943ed142f306"
+ },
+ {
+  "file": "assets/art/hd/player/tempest_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "63e4abb281b5bd443c41666fca449906af407ffca6c28fe22289971f93a3fa6d"
+ },
+ {
   "file": "assets/art/hd/player/tempest_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "e0384cb6ecd0eb74bed959c7a94906e9dd342dca5d1804af85ecd3cabb8d0b4e"
+ },
+ {
+  "file": "assets/art/hd/player/tempest_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/titan_base.png",
@@ -1284,10 +1602,28 @@
   "sha256": "451a33132964ad40260f7bbf286314841c55c5d203dad2991e8c79d89a11e951"
  },
  {
+  "file": "assets/art/hd/player/titan_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "229a8bf2736d0bc740f44a5a690716a0baa107a4c6d11b4e607bea2da5cd3cf0"
+ },
+ {
+  "file": "assets/art/hd/player/titan_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "880835358a9a5b8acc0f338827843f83aacc4c433e379f8929817bcc018c616f"
+ },
+ {
   "file": "assets/art/hd/player/titan_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "9cad01961dcc2d35a9832620f3a6c9f2ec917b25f9f28485427243aef1d4234d"
+ },
+ {
+  "file": "assets/art/hd/player/titan_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/hd/player/trident_base.png",
@@ -1308,10 +1644,28 @@
   "sha256": "6580626adf2ca8fcc768535f5569d3ad4db8925ee6733686fe95dca11152430a"
  },
  {
+  "file": "assets/art/hd/player/trident_evo.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "aecb856ad72c2b65a1f56c97bf87e8b64aa92f5f4865d20d65539a5ee90bb9ae"
+ },
+ {
+  "file": "assets/art/hd/player/trident_evo_glow.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "millionthvector_spaceships",
+  "sha256": "8df507a01ffbb383bca5289e118daa7b0e8232ffd27820b59ce1364c956db089"
+ },
+ {
   "file": "assets/art/hd/player/trident_glow.png",
   "source": "tools/gen_hd_ships.py",
   "license_id": "millionthvector_spaceships",
   "sha256": "bf77596b7d2afc296782e9cd68b157ec1de1c24a9405ce29e93fcb7e7f87ab9a"
+ },
+ {
+  "file": "assets/art/hd/player/trident_jet.png",
+  "source": "tools/gen_livery.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
   "file": "assets/art/kenney/icons/arrowLeft.png",

@@ -43,7 +43,10 @@ static func _met(profile: Dictionary, result: Dictionary, a: Dictionary) -> bool
 		"grazes":
 			return float(stats.get("grazes", 0)) >= target
 		"ships":
-			return (profile["unlocked"]["ships"] as Array).size() >= target
+			# Só as que saem jogando: nave premium (comprada ou inclusa na Steam) não adianta conquista.
+			var earned := (profile["unlocked"]["ships"] as Array).filter(
+					func(s: Variant) -> bool: return not Iap.is_premium_ship(String(s)))
+			return earned.size() >= target
 		"secrets":
 			return Economy.abyss_records(profile) >= target
 		"rescued":

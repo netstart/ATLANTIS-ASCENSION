@@ -34,6 +34,12 @@ var flash: int = 0
 ## 0..1: o feixe do jogador avança no duelo; 1 vence antes do tempo.
 var duel_power: float = 0.5
 var bonus: int = 0
+## Colisão do corpo (Hitboxes, revisão 5): círculo de dano em pos + _hurt_offset e raio de contato. Sem caixa
+## medida (revisão < 5 ou chefe fora do arquivo), o de sempre: body_pos(), body_radius() e o contato a 0,6.
+## As partes guardam "hurt" e "hit_offset" (part_hit_pos, part_radius). body_pos e body_radius seguem a boca dos
+## padrões, as quedas e a mira.
+var _box: Dictionary = {}
+var _hurt_offset := Vector2.ZERO
 var _runners: Array[Dictionary] = []
 var _patterns: Dictionary = {}
 var _start := Vector2.ZERO
@@ -60,6 +66,43 @@ func setup(p_def: Dictionary, patterns: Dictionary, hp_mult: float = 1.0) -> voi
 		p["alive"] = true
 		p["flash"] = 0
 		parts.append(p)
+
+
+## Caixas medidas na arte HD (Hitboxes.boss): corpo e partes com sprite. Vazio = as da tabela.
+func fit(box: Dictionary) -> void:
+	_box = box
+	if box.is_empty():
+		return
+	_hurt_offset = Hitboxes.vec(box.get("offset"))
+	var measured: Dictionary = box.get("parts", {})
+	for part: Dictionary in parts:
+		var pb: Dictionary = measured.get(String(part["id"]), {})
+		if not pb.is_empty():
+			part["hurt"] = float(pb.get("radius", part.get("radius", 10.0)))
+			part["hit_offset"] = Hitboxes.vec(pb.get("offset"))
+
+
+## Centro e raio do círculo de dano do corpo (armas e poderes da nave).
+func hurt_pos() -> Vector2:
+	return body_pos() if _box.is_empty() else pos + _hurt_offset
+
+
+func hurt_radius() -> float:
+	return float(_box.get("radius", body_radius()))
+
+
+## Raio de contato do corpo com a nave, em volta de hurt_pos().
+func contact_radius() -> float:
+	return float(_box.get("contact", body_radius() * Sim.CONTACT_FACTOR))
+
+
+## Centro e raio de dano de uma parte (a caixa medida, se houver; senão a posição e o "radius" da tabela).
+func part_hit_pos(part: Dictionary) -> Vector2:
+	return part_pos(part) + (part["hit_offset"] as Vector2) if part.has("hit_offset") else part_pos(part)
+
+
+func part_radius(part: Dictionary) -> float:
+	return float(part["hurt"]) if part.has("hurt") else float(part.get("radius", 10.0))
 
 
 func phase() -> Dictionary:

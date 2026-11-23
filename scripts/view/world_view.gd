@@ -72,6 +72,8 @@ var weather_slot := Node2D.new()
 var sim: Sim
 var time: float = 0.0
 var touching: bool = false
+## Depuração e capturas de teste: desenha todos os círculos de colisão da Sim (Hitboxes) por cima de tudo.
+var debug_hitboxes: bool = false
 var reduce_flashes: bool = false
 ## "Reduzir movimento": sem inclinação da nave nas curvas.
 var reduce_motion: bool = false
@@ -190,7 +192,7 @@ func setup(p_sim: Sim) -> void:
 	_paint = Color(paint) if not paint.is_empty() else Color(0, 0, 0, 0)
 	_art = SpriteBank.player(StringName(String(sim.player.ship.get("id", "falcon"))))
 	_nozzles = ShipArt.nozzles(_art)
-	var paint_fx := Store.paint_fx(String(sim.loadout.get("cosmetic", "")))
+	var paint_fx := Store.ship_fx(String(sim.player.ship.get("id", "falcon")), String(sim.loadout.get("cosmetic", "")))
 	_exhaust = paint_fx.get("trail", EXHAUST_COLOR)
 	_burst = paint_fx.get("burst", Color(0, 0, 0, 0))
 	_livery = clampi(int(sim.loadout.get("ship_level", 1)), 1, Economy.SHIP_MAX_LEVEL)
@@ -908,7 +910,7 @@ func _draw_player(ci: CanvasItem) -> void:
 	var boost := _boost() if sim.outro.rise >= 0 else 1.0
 	_bank_transform(ci, p, _bank)
 	ShipArt.draw(ci, _art, time, _livery, alpha, pl.last_move.y < -0.3 or sim.outro.rise >= 0, _paint, reduce_flashes,
-			_damage, boost)
+			_damage, boost, _muzzle > 0.0)
 	ci.draw_set_transform(Vector2.ZERO)
 	if pl.invuln > 0 and _shield != null:
 		# Escudo do tamanho da nave visível (a arte Void de 64 tinha 48 de nave).
@@ -1147,13 +1149,16 @@ func _draw_fx_above(ci: CanvasItem) -> void:
 				Color(0.02, 0.04, 0.08, 0.8 * alpha))
 		ci.draw_string(Locale.font, at, text, HORIZONTAL_ALIGNMENT_CENTER, 80, size, Color(col, alpha))
 	_draw_hitbox(ci)
+	if debug_hitboxes:
+		HitCircles.draw(ci, sim)
 
 
-## Ponto da hitbox por cima de tudo (inclusive das balas): a nave HD é bem maior que a hitbox da Sim.
+## Ponto da hitbox por cima de tudo (inclusive das balas): a nave HD é bem maior que a hitbox da Sim. Fica no ponto
+## que leva o tiro (SimPlayer.hit_pos: a cabine da nave HD), não no centro do desenho.
 func _draw_hitbox(ci: CanvasItem) -> void:
 	if not touching or not sim.player.alive:
 		return
-	var p := sim.player.pos
+	var p := sim.player.hit_pos()
 	ci.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.08, 0.07, 0.09))
 	ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), Color(1, 1, 1))
 

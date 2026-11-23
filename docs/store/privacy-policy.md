@@ -1,6 +1,6 @@
 # Política de privacidade — Atlantis Ascension
 
-*Versão 1.4 · 21/11/2026 · English version below.*
+*Versão 1.5 · 23/11/2026 · English version below.*
 
 ## Português (Brasil)
 
@@ -12,9 +12,9 @@ gratuita do Android tem **anúncios recompensados opcionais** do Google AdMob: s
 "ver anúncio" (reviver, dobrar créditos, dobrar as Pérolas do Diário, abrir o baú em dobro), **nunca durante a
 missão**, e não vendem poder. No Android há também **compras opcionais** feitas pela Google Play: o Turbo (acelera a
 partida), "Apoiar a Halcyon" e o pacote inicial (recompensas e reviver sem anúncio, mais visual), o atalho da nave
-Tridente, pinturas de nave (Aurora, Recife, Abissal e Solar) e um pacote de 3 revives sem anúncio. Nenhuma compra
+Tridente, pinturas de nave (Aurora, Recife, Abissal e Solar), naves premium (só visual) e um pacote de 3 revives sem anúncio. Nenhuma compra
 vende poder. Só os anúncios e as compras usam a internet, e os dados envolvidos ficam com o Google, como explicado
-abaixo. A versão Steam não tem anúncios nem compras (o Turbo e as pinturas vêm incluídos).
+abaixo. A versão Steam não tem anúncios nem compras (o Turbo, as pinturas e as naves premium vêm incluídos).
 
 **O que o jogo guarda no seu aparelho.** Progresso (missões, estrelas, moedas do jogo, aeronaves, conquistas),
 opções (idioma, volume, acessibilidade), a sua escolha de consentimento, replays dos seus recordes e, se você fez
@@ -47,7 +47,9 @@ vibração (para o retorno tátil, que pode ser desligado nas opções).
 Play** com a conta Google do aparelho: o Turbo (partida até 2x mais rápida, não mais fácil); "Apoiar a Halcyon"
 (recompensas da Loja e reviver sem anúncio, tema e pintura dourados); o pacote inicial ("Apoiar a Halcyon" mais a
 pintura Solar); o atalho da Tridente (libera agora uma nave que também sai jogando, por fragmentos); as pinturas
-Aurora, Recife, Abissal e Solar (só visual; também saem por Pérolas); e o pacote de 3 revives, um item consumível
+Aurora, Recife, Abissal e Solar (só visual; também saem por Pérolas); as naves premium Hipocampo, Nereida e
+Anfitrite, avulsas ou no pacote "Frota premium" (só visual: cada uma joga igual a uma nave do hangar); e o pacote de
+3 revives, um item consumível
 que pode ser comprado de novo: cada carga troca o anúncio do reviver por um reviver sem anúncio, e continua valendo
 no máximo 1 reviver por missão. Nenhuma compra vende poder. O pagamento acontece na tela da Google Play: nós **não
 recebemos nem guardamos** nome, e-mail, cartão ou qualquer dado de pagamento. O jogo só pergunta à Google Play quais
@@ -79,9 +81,10 @@ Android version has **optional rewarded ads** from Google AdMob: they only appea
 button (revive, double credits, double the Daily Pearls, open the chest doubled), **never during a mission**, and
 they never sell power. On Android there are also **optional purchases** made through Google Play: Turbo (speeds up
 the run), "Support the Halcyon" and the Starter pack (rewards and revives without ads, plus looks), the Trident ship
-shortcut, ship paints (Aurora, Reef, Abyssal and Solar) and a pack of 3 ad-free revives. No purchase sells power.
+shortcut, ship paints (Aurora, Reef, Abyssal and Solar), premium ships (looks only) and a pack of 3 ad-free revives.
+No purchase sells power.
 Only the ads and the purchases use the internet, and the data involved stays with Google, as explained below. The
-Steam version has no ads and no purchases (Turbo and the paints are included).
+Steam version has no ads and no purchases (Turbo, the paints and the premium ships are included).
 
 **What the game stores on your device.** Progress, options, your consent choice, replays of your records and, if you
 made purchases, only which products were bought, the Turbo speed you picked, the revive charges left, the IDs of
@@ -112,7 +115,9 @@ vibration (for haptic feedback, which can be turned off in the options).
 **Google Play** with the Google account on the device: Turbo (runs up to 2x faster, not easier); "Support the
 Halcyon" (Shop rewards and revives without ads, a gold theme and gold paint); the Starter pack ("Support the
 Halcyon" plus the Solar paint); the Trident shortcut (unlocks now a ship that is also earned by playing, with
-fragments); the Aurora, Reef, Abyssal and Solar paints (looks only; also earned with Pearls); and the pack of 3
+fragments); the Aurora, Reef, Abyssal and Solar paints (looks only; also earned with Pearls); the premium ships
+Hippocampus, Nereid and Amphitrite, alone or in the "Premium fleet" bundle (looks only: each one plays exactly like a
+hangar ship); and the pack of 3
 revives, a consumable item that can be bought again: each charge replaces the revive ad with an ad-free revive, and
 the limit of 1 revive per mission still applies. No purchase sells power. Payment happens on the Google Play screen:
 we **do not receive or store** your name, e-mail, card or any payment data. The game only asks Google Play which

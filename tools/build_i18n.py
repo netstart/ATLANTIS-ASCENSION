@@ -15,7 +15,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 LANGS = ["pt_BR", "en", "es", "de", "fr", "ru", "id", "ja", "ko", "zh_TW", "zh_CN"]
-MODULES = ["ui", "game", "alpha", "beta", "launch", "post", "bosses", "glory", "weather", "command", "command_campaign", "command_store", "command_hangar", "powers", "command_iap", "objectives"]
+MODULES = ["ui", "game", "alpha", "beta", "launch", "post", "bosses", "glory", "weather", "command", "command_campaign", "command_store", "command_hangar", "powers", "command_iap", "objectives", "command_premium"]
 PLACEHOLDER = re.compile(r"%[sd]")
 
 

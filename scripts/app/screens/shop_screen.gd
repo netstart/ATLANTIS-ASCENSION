@@ -13,6 +13,9 @@ extends ListScreen
 ## sempre legível embaixo (Equipada, Possuída, preço em pérolas, quanto falta). Tocar num ladrilho abre o
 ## painel de detalhe (CommandSheet) com a prévia da própria nave pintada (com rastro, tiro e estouro, nas
 ## pinturas de efeitos) e a ação: Comprar (Pérolas ou Play) ou Equipar.
+## Naves premium (Iap): seção própria no topo de Extras, com o pacote das três em destaque (quanto economiza) e
+## um cartão por nave, cada um com a vitrine animada (PremiumShowcase), o selo Premium, o preço da Play e o
+## aviso honesto: joga como uma nave do hangar, só o visual é exclusivo.
 
 const TAB_CHEST := &"chest"
 const TAB_PAINTS := &"paints"
@@ -21,6 +24,8 @@ const TAB_SUPPORT := &"support"
 const CELL := 76.0
 ## Preço que ainda não dá: coral claro (lê bem sobre o vidro escuro).
 const SHORT_COLOR := Color("ff8fa3")
+## Cor de destaque de cada nave premium (a do brilho dela).
+const PREMIUM_ACCENT := {"hippocampus": Color("ffc95a"), "nereid": Color("d79bff"), "amphitrite": Color("5cf2d6")}
 
 ## Sub-aba a abrir na próxima vez (o cartão do pacote inicial no resultado pede Extras).
 static var next_tab: StringName = &""
@@ -486,10 +491,20 @@ func _rarity_name(rarity: int) -> String:
 
 ## A sub-aba aparece quando há algo do catálogo para mostrar (à venda ou já da conta).
 static func _support_visible(profile: Dictionary) -> bool:
-	for id: String in [Iap.STARTER, Iap.SUPPORT, Iap.SHIP_SHORTCUT, Iap.REVIVE_PACK]:
+	for id: String in [Iap.STARTER, Iap.SUPPORT, Iap.SHIP_SHORTCUT, Iap.REVIVE_PACK] + _premium_ids():
 		if _extra_visible(profile, id):
 			return true
 	return false
+
+
+## Produtos premium na ordem da vitrine: o pacote primeiro, depois cada nave.
+static func _premium_ids() -> Array[String]:
+	var out: Array[String] = []
+	if not Iap.product(Iap.PREMIUM_FLEET).is_empty():
+		out.append(Iap.PREMIUM_FLEET)
+	for ship: String in Iap.premium_ships():
+		out.append(Iap.premium_product(ship))
+	return out
 
 
 ## O atalho da Tridente some para quem já a liberou pelos fragmentos (não daria nada).
@@ -503,6 +518,7 @@ static func _extra_visible(profile: Dictionary, id: String) -> bool:
 ## Pacote inicial, Apoiar, atalho de nave e pacote de revives: o que cada um dá, o preço da Play e o
 ## estado, sem pacote surpresa, sem porcentagem e sem relógio. "Restaurar compras" no fim, com cobrança real.
 func _fill_extras(profile: Dictionary) -> void:
+	_fill_premium(profile)
 	if _extra_visible(profile, Iap.STARTER):
 		_product_card(profile, {"id": Iap.STARTER, "node": "Starter", "color": UiTheme.GOLD,
 				"title": tr("store.starter"), "speaker": "duarte", "desc": tr("store.starter_desc"),
@@ -584,36 +600,129 @@ func _product_card(profile: Dictionary, spec: Dictionary) -> StoreBanner:
 	text(banner.body, String(spec["desc"]), UiTheme.WHITE)
 	if spec.has("extra"):
 		(spec["extra"] as Callable).call(banner.body)
+	_iap_actions(banner.actions, profile, spec)
+	return banner
+
+
+## Ações de uma compra com dinheiro real: o selo de já comprada, ou o estado (abrindo a Play, pendente, erro), o
+## botão com o preço da Play, "Restaurar compras" (com `restore`) e a nota honesta embaixo.
+func _iap_actions(actions: VBoxContainer, profile: Dictionary, spec: Dictionary) -> void:
+	var id := String(spec["id"])
+	var node := String(spec["node"])
 	if Iap.owns(profile, id) or (id == Turbo.PRODUCT and Turbo.owned(profile)):
 		var on := badge(String(spec.get("owned", tr("store.owned"))), UiTheme.MINT, &"check")
 		on.name = node + "Owned"
 		on.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		banner.actions.add_child(on)
-		return banner
+		actions.add_child(on)
+		return
 	var status := Iap.status(id)
 	var waiting := status == "busy" or status == "pending"
 	if not status.is_empty():
 		var says := {"busy": tr("store.turbo_busy"), "pending": String(spec.get("pending", tr("store.pending"))),
 				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
-		var line := text(banner.actions, String(says.get(status, tr("store.turbo_failed"))),
+		var line := text(actions, String(says.get(status, tr("store.turbo_failed"))),
 				UiTheme.GOLD if waiting else SHORT_COLOR, UiTheme.SMALL_SIZE)
 		line.name = node + "Status"
 		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	var price := Iap.price(id)
 	var label := String(spec.get("buy", tr("store.buy_price"))) % price if not price.is_empty() \
 			else String(spec.get("buy_plain", tr("store.buy")))
-	var buy := button(banner.actions, label, func() -> void:
+	var buy := button(actions, label, func() -> void:
 		if Iap.buy(SaveManager.data, id):
 			AudioManager.play_ui("kenney_ui_confirm")
 			SaveManager.save_profile(), not waiting, node + "Buy", true)
 	buy.custom_minimum_size.y = 44.0
 	if bool(spec.get("restore", false)) and Iap.mode() == "play":
-		var restore := button(banner.actions, tr("store.restore"), Iap.restore, status != "busy", node + "Restore")
+		var restore := button(actions, tr("store.restore"), Iap.restore, status != "busy", node + "Restore")
 		restore.add_theme_font_size_override("font_size", UiTheme.SMALL_SIZE)
-	var honest := text(banner.actions, String(spec.get("note", tr("store.support_note"))), UiTheme.TEXT,
+	var honest := text(actions, String(spec.get("note", tr("store.support_note"))), UiTheme.TEXT,
 			UiTheme.SMALL_SIZE)
+	honest.name = node + "Note"
 	honest.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	return banner
+
+
+# --- Naves premium (Iap) -----------------------------------------------------------------------------
+
+## Seção "Naves premium": o pacote das três em ouro (com a economia em relação às avulsas) e um cartão por nave.
+## Some inteira sem nada à venda nem comprado (Steam, release sem a Play, produtos sem preço).
+func _fill_premium(profile: Dictionary) -> void:
+	var ids := _premium_ids().filter(func(id: String) -> bool: return _extra_visible(profile, id))
+	if ids.is_empty():
+		return
+	Iap.on_changed(refill)
+	var head := _section(tr("store.premium_section"))
+	head.name = "PremiumSection"
+	_list.add_child(head)
+	for id: String in ids:
+		var ships := Iap.ships_of(id)
+		if id == Iap.PREMIUM_FLEET:
+			_premium_card(profile, id, "PremiumFleet", tr("store.premium_fleet"), UiTheme.GOLD, ships,
+					[tr("store.premium_fleet_desc")])
+		else:
+			var ship := ships[0]
+			var kit := ""
+			for row: Variant in DB.rows("ships"):
+				if String((row as Dictionary)["id"]) == ship:
+					kit = String((row as Dictionary).get("kit", ""))
+			_premium_card(profile, id, "Premium_" + ship, tr("ship." + ship),
+					PREMIUM_ACCENT.get(ship, UiTheme.GOLD), ships,
+					[tr("store.premium_lore_" + ship), tr("store.premium_kit") % tr("ship." + kit)])
+
+
+## Cartão premium: fundo e faixa na cor da nave, selo Premium (e a economia no pacote), a vitrine, as linhas de
+## texto e as ações da compra (preço da Play, estado, "Na sua frota").
+func _premium_card(profile: Dictionary, id: String, node: String, title: String, accent: Color,
+		ships: Array[String], lines: Array) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = node + "Card"
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	var back := StoreBanner.Backdrop.new()
+	back.accent = accent
+	back.rays = true
+	card.add_child(back)
+	var pad := MarginContainer.new()
+	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side: String in ["left", "right"]:
+		pad.add_theme_constant_override("margin_" + side, 12)
+	pad.add_theme_constant_override("margin_top", 10)
+	pad.add_theme_constant_override("margin_bottom", 12)
+	card.add_child(pad)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 6)
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pad.add_child(col)
+	var strip := StoreBanner.Strip.new()
+	strip.accent = accent
+	strip.set_text(title)
+	col.add_child(strip)
+	var tags := HFlowContainer.new()
+	tags.add_theme_constant_override("h_separation", 6)
+	tags.add_theme_constant_override("v_separation", 4)
+	tags.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(tags)
+	var mark := badge(tr("store.premium_badge"), UiTheme.GOLD, &"diamond")
+	mark.name = node + "Badge"
+	tags.add_child(mark)
+	if id == Iap.PREMIUM_FLEET and not Iap.owns(profile, id):
+		var save := Iap.fleet_savings()
+		if save > 0:
+			var deal := badge(tr("store.premium_save") % save, UiTheme.MINT, &"star")
+			deal.name = node + "Save"
+			tags.add_child(deal)
+	col.add_child(PremiumShowcase.new(ships, accent))
+	for line: Variant in lines:
+		var l := text(col, String(line), UiTheme.WHITE)
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var actions := VBoxContainer.new()
+	actions.name = "Actions"
+	actions.add_theme_constant_override("separation", 6)
+	col.add_child(actions)
+	_iap_actions(actions, profile, {"id": id, "node": node, "owned": tr("store.premium_owned"),
+			"note": tr("store.premium_note")})
+	_list.add_child(card)
+	return card
 
 
 # --- Turbo -------------------------------------------------------------------------------------------

@@ -48,7 +48,7 @@ const OBJECTIVE_SECONDS := 5.0
 const PORTRAIT := 32.0
 ## Letras por segundo da máquina de escrever do rádio.
 const TYPE_RATE := 70.0
-const LIFE_ICON := 12.0
+const LIFE_ICON := 15.0
 const LIFE_MAX_ICONS := 6
 ## Salto de pontos que faz o placar pulsar (abates grandes, medalhas, bônus).
 const SCORE_PULSE := 500
@@ -1047,7 +1047,7 @@ func _rebuild_lives() -> void:
 	_life_icons.clear()
 	var n := _hull_max if _hull_max <= LIFE_MAX_ICONS else 1
 	for i: int in range(n):
-		var icon := HudKit.life_icon(ShipIcon.texture(String(_sim.player.ship.get("id", "falcon"))), LIFE_ICON)
+		var icon := HudKit.life_icon(HudKit.life_texture(_sim), LIFE_ICON)
 		_lives_box.add_child(icon)
 		_life_icons.append(icon)
 	_life_count.visible = _hull_max > LIFE_MAX_ICONS

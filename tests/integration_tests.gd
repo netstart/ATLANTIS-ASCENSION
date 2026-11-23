@@ -27,6 +27,7 @@ const HangarTests := preload("res://tests/hangar_tests.gd")
 const StoreTests := preload("res://tests/store_tests.gd")
 const TurboTests := preload("res://tests/turbo_tests.gd")
 const IapTests := preload("res://tests/iap_tests.gd")
+const PremiumTests := preload("res://tests/premium_tests.gd")
 const ScriptGate := preload("res://tests/script_gate.gd")
 const DeathViewTests := preload("res://tests/death_view_tests.gd")
 
@@ -103,7 +104,8 @@ func _ready() -> void:
 		CampaignTests.new().run(_check)
 		StoreTests.new().run(_check)
 		TurboTests.new().run(_check)
-		IapTests.new().run(_check)})
+		IapTests.new().run(_check)
+		PremiumTests.new().run(_check)})
 	units.append({"name": "Casca de comando", "weight": 1.0, "run": func() -> void:
 		await CommandTests.new().run_view(self, _check)})
 	units.append({"name": "Campanha", "weight": 4.5, "run": func() -> void:
@@ -120,6 +122,12 @@ func _ready() -> void:
 		await TurboTests.new().run_view(self, _check)})
 	units.append({"name": "Compras da Play (catálogo)", "weight": 1.5, "run": func() -> void:
 		await IapTests.new().run_view(self, _check)})
+	units.append({"name": "Naves premium (Play)", "weight": 0.5, "run": func() -> void:
+		await PremiumTests.new().run_view(self, _check)})
+	var premium := PremiumTests.new()
+	for c: Dictionary in cases:
+		units.append({"name": "Naves premium [%s]" % c["label"], "weight": 0.6,
+				"run": func() -> void: await premium.run_layout_case(self, _check, c)})
 	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
 	units.append({"name": "Poderes na tela", "weight": 8.0, "run": func() -> void:
 		await PowerViewTests.new().run(self, _check)})
@@ -170,14 +178,14 @@ func _check(condition: bool, label: String) -> void:
 
 func _test_data(check: Callable) -> void:
 	check.call(DB.errors.is_empty(), "Dados: nenhum erro ao carregar (%s)" % [DB.errors])
-	check.call(DB.ids("ships").size() == 12, "Dados: 12 aeronaves (6 da 1.0 e 6 do pós-lançamento)")
+	check.call(DB.ids("ships").size() == 15, "Dados: 15 aeronaves (6 da 1.0, 6 do pós-lançamento e 3 premium)")
 	check.call(not Sim.load_tables()["enemies"].is_empty(), "Dados: inimigos carregam")
 	for id: StringName in DB.ids("ships"):
 		var ship := DB.ship(id)
 		check.call(not DB.weapon(StringName(String(ship.get("signature", "")))).is_empty(),
 				"Dados: arma assinatura de %s existe" % id)
 		check.call(Locale.keys.has(String(ship.get("name_key", ""))), "Dados: nome de %s traduzido" % id)
-	check.call(DB.ids("powers").size() == 36, "Dados: 36 poderes, 3 por aeronave (validados em Powers.validate)")
+	check.call(DB.ids("powers").size() == 45, "Dados: 45 poderes, 3 por aeronave (validados em Powers.validate)")
 	for id: StringName in DB.ids("powers"):
 		var power := DB.row("powers", id)
 		check.call(Locale.keys.has(String(power.get("name_key", ""))) and Locale.keys.has(String(power.get("desc_key", ""))),

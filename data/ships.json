@@ -34,5 +34,17 @@
 		"fragments": 30, "tint": "#ff6ad0", "sources": ["s3", "s4"]},
 	{"id": "ascension", "name_key": "ship.ascension", "role": "hybrid", "signature": "pulsar", "special": "rotation",
 		"trait": "hybrid", "hull": 3, "speed": 1.05, "hitbox": 2.8, "fire_rate": 1.0, "release": "post",
-		"fragments": 0, "tint": "#8afff0", "sources": [], "ending": "high_tide"}
+		"fragments": 0, "tint": "#8afff0", "sources": [], "ending": "high_tide"},
+	{"id": "hippocampus", "name_key": "ship.hippocampus", "role": "speed", "signature": "railgun", "special": "emp_pulse",
+		"hull": 3, "speed": 1.2, "hitbox": 2.5, "fire_rate": 1.0, "release": "alpha", "fragments": 0, "tint": "#ffc95a",
+		"sources": [], "premium": "ship_premium_hippocampus", "kit": "tempest",
+		"fx": {"trail": "#ffc04a", "shot": "#fff0c8", "burst": "#ffd36a"}},
+	{"id": "nereid", "name_key": "ship.nereid", "role": "precision", "signature": "laser", "special": "focused_burst",
+		"hull": 3, "speed": 1.0, "hitbox": 3.0, "fire_rate": 1.0, "release": "alpha", "fragments": 0, "tint": "#e0a6ff",
+		"sources": [], "premium": "ship_premium_nereid", "kit": "manta",
+		"fx": {"trail": "#d27aff", "shot": "#f4e0ff", "burst": "#e6a8ff"}},
+	{"id": "amphitrite", "name_key": "ship.amphitrite", "role": "missiles", "signature": "plasma", "special": "drone_swarm",
+		"hull": 3, "speed": 0.95, "hitbox": 3.0, "fire_rate": 1.0, "release": "alpha", "fragments": 0, "tint": "#6affe0",
+		"sources": [], "premium": "ship_premium_amphitrite", "kit": "hydra",
+		"fx": {"trail": "#4affd2", "shot": "#dcfff4", "burst": "#ffd27a"}}
 ]

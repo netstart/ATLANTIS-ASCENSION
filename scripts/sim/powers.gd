@@ -84,7 +84,8 @@ var _level_restore: int = -1
 var _depth: int = 0
 
 
-## Erros de data/powers.json (vazio = válido): toda nave com os níveis 1, 2 e 3, efeitos conhecidos.
+## Erros de data/powers.json (vazio = válido): toda nave com os níveis 1, 2 e 3, efeitos conhecidos. Nave premium
+## ("kit" em data/ships.json) repete os poderes da nave de origem: mesmos efeitos, textos, ícone e som.
 static func validate(powers: Dictionary, ships: Dictionary) -> PackedStringArray:
 	var errors := PackedStringArray()
 	for ship_id: Variant in ships:
@@ -96,8 +97,20 @@ static func validate(powers: Dictionary, ships: Dictionary) -> PackedStringArray
 				continue
 			if int(def.get("tier", 0)) != tier or StringName(String(def.get("ship", ""))) != StringName(String(ship_id)):
 				errors.append("%s: nave ou nível errado" % id)
-			if String(def.get("name_key", "")) != "power.%s" % id or String(def.get("desc_key", "")) != "power.%s.desc" % id:
+			# Nave premium (campo "kit"): o mesmo poder da nave de origem, só com a cor dela. Nada de força à venda.
+			var kit := String((ships[ship_id] as Dictionary).get("kit", ""))
+			var key := id if kit.is_empty() else StringName("%s_%d" % [kit, tier])
+			var name_ok := String(def.get("name_key", "")) == "power.%s" % key
+			if not name_ok or String(def.get("desc_key", "")) != "power.%s.desc" % key:
 				errors.append("%s: chaves de texto fora do contrato" % id)
+			if not kit.is_empty():
+				var src: Dictionary = powers.get(key, {})
+				if not ships.has(StringName(kit)) or (ships[StringName(kit)] as Dictionary).has("kit"):
+					errors.append("%s: kit %s inexistente ou premium" % [id, kit])
+				elif src.get("effects", []) != def.get("effects", []) or src.get("icon", "") != def.get("icon", ""):
+					errors.append("%s: diferente do poder de origem %s" % [id, key])
+				elif src.get("sfx", "") != def.get("sfx", ""):
+					errors.append("%s: diferente do poder de origem %s" % [id, key])
 			if String(def.get("color", "")) != String((ships[ship_id] as Dictionary).get("tint", "")):
 				errors.append("%s: cor diferente da nave" % id)
 			var effects: Array = def.get("effects", [])
@@ -295,9 +308,9 @@ func boss_capped(sim: Sim, share: float = 1.0) -> bool:
 ## Explosão de um poder: fere quem estiver no raio (e o chefe, com teto) e, se `cancel`, apaga as balas.
 func area(sim: Sim, at: Vector2, radius: float, amount: float, cancel: bool, id: StringName) -> void:
 	for e: SimEnemy in sim.enemies:
-		if e.active() and at.distance_to(e.pos) <= radius + e.radius:
+		if e.active() and at.distance_to(e.hit_pos()) <= radius + e.hurt:
 			hurt(sim, e, amount)
-	if sim.boss != null and sim.boss.fighting() and at.distance_to(sim.boss.body_pos()) <= radius + sim.boss.body_radius():
+	if sim.boss != null and sim.boss.fighting() and at.distance_to(sim.boss.hurt_pos()) <= radius + sim.boss.hurt_radius():
 		hurt_boss(sim, amount)
 	if cancel:
 		pearls(sim, sim.enemy_bullets.cancel_near(at, radius))

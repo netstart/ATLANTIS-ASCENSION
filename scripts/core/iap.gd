@@ -5,6 +5,10 @@ extends RefCounted
 ## dourado), pinturas (só visual; também saem por Pérolas), o atalho da Tridente (nave lateral, que também sai
 ## por fragmentos), o pacote inicial (Apoiar + uma pintura) e o pacote de 3 revives (consumível: só troca o
 ## anúncio do reviver pela carga; o reviver continua 1 por missão).
+## Naves premium (data/ships.json "premium"): a única coisa que não sai jogando, mas também não dá força: cada uma
+## repete casco, velocidade, arma, especial e poderes de uma nave do hangar ("kit", conferido por Powers.validate) e
+## só muda o visual (a arte mais vistosa do jogo, rastro, tiro e estouro próprios). Uma por produto
+## (`ship_premium_<id>`) ou as três no pacote `premium_fleet`. Na Steam vêm todas incluídas (`include_premium`).
 ##
 ## Modos (`mode()`, os mesmos do Turbo): "steam" (nada a comprar: tudo incluso ou por jogo), "play"
 ## (PlayBillingProvider), "simulated" (desenvolvimento sem o plugin: a compra é fingida na hora) e "off"
@@ -22,12 +26,16 @@ const SUPPORT := "support"
 const STARTER := "starter_pack"
 const SHIP_SHORTCUT := "ship_trident"
 const REVIVE_PACK := "revive_pack_3"
+## Pacote das três naves premium.
+const PREMIUM_FLEET := "premium_fleet"
+const PREMIUM_SHIP_USD := "2.99"
+const PREMIUM_FLEET_USD := "5.99"
 ## Pintura que vem no pacote inicial.
 const STARTER_PAINT := "paint_solar"
 ## Tokens de consumíveis já creditados guardados no perfil (os mais novos).
 const CREDITED_KEEP := 32
 ## Produtos fixos ("usd": preço-alvo, só documentação; o preço mostrado é sempre o da Play). As pinturas
-## entram de data/cosmetics.json (campo "product").
+## entram de data/cosmetics.json (campo "product") e as naves premium de data/ships.json (campo "premium").
 const PRODUCTS: Array[Dictionary] = [
 	{"id": "turbo", "kind": "turbo", "usd": "1.99"},
 	{"id": SUPPORT, "kind": "support", "usd": "3.99", "cosmetics": ["tint_supporter"]},
@@ -56,7 +64,77 @@ static func catalog() -> Array[Dictionary]:
 			if def.has("product"):
 				_catalog.append({"id": String(def["product"]), "kind": "paint", "usd": String(def.get("usd", "")),
 						"cosmetics": [String(def["id"])]})
+		var fleet: Array = premium_ships()
+		for ship: String in fleet:
+			_catalog.append({"id": premium_product(ship), "kind": "premium_ship", "usd": PREMIUM_SHIP_USD,
+					"ships": [ship]})
+		if not fleet.is_empty():
+			_catalog.append({"id": PREMIUM_FLEET, "kind": "premium_bundle", "usd": PREMIUM_FLEET_USD, "ships": fleet})
 	return _catalog
+
+
+## Naves premium na ordem de data/ships.json.
+static func premium_ships() -> Array[String]:
+	var out: Array[String] = []
+	for row: Variant in Economy.data_rows("ships"):
+		if (row as Dictionary).has("premium"):
+			out.append(String((row as Dictionary)["id"]))
+	return out
+
+
+static func is_premium_ship(ship: String) -> bool:
+	return premium_ships().has(ship)
+
+
+## Produto da Play de uma nave premium ("" se não é premium).
+static func premium_product(ship: String) -> String:
+	for row: Variant in Economy.data_rows("ships"):
+		if String((row as Dictionary)["id"]) == ship:
+			return String((row as Dictionary).get("premium", ""))
+	return ""
+
+
+## Naves que um produto libera (o atalho da Tridente, uma premium ou as três do pacote).
+static func ships_of(id: String) -> Array[String]:
+	var def := product(id)
+	var out: Array[String] = []
+	for ship: Variant in def.get("ships", [def["ship"]] if def.has("ship") else []):
+		out.append(String(ship))
+	return out
+
+
+## Alguma compra da conta libera esta nave.
+static func ship_bought(profile: Dictionary, ship: String) -> bool:
+	for p: Dictionary in catalog():
+		if ships_of(String(p["id"])).has(ship) and owns(profile, String(p["id"])):
+			return true
+	return false
+
+
+## O produto de naves não daria nada novo: toda nave dele já veio por outra compra.
+static func ships_covered(profile: Dictionary, id: String) -> bool:
+	var ships := ships_of(id)
+	if ships.is_empty() or String(product(id).get("kind", "")) == "ship":
+		return false
+	for ship: String in ships:
+		if not ship_bought(profile, ship):
+			return false
+	return true
+
+
+## Steam (premium, sem compra no app): as naves premium vêm incluídas, como as pinturas e o Turbo. Devolve se o
+## perfil mudou. Fora da Steam não faz nada (a compra é que libera).
+static func include_premium(profile: Dictionary, steam: bool) -> bool:
+	if not steam:
+		return false
+	var changed := false
+	for ship: String in premium_ships():
+		if not (profile["unlocked"]["ships"] as Array).has(ship):
+			(profile["unlocked"]["ships"] as Array).append(ship)
+			changed = true
+		if not (profile["hangar"]["ship_levels"] as Dictionary).has(ship):
+			profile["hangar"]["ship_levels"][ship] = 1
+	return changed
 
 
 static func product(id: String) -> Dictionary:
@@ -155,7 +233,8 @@ static func mode_for(steam: bool, play: bool, simulated: bool) -> String:
 
 
 ## O produto aparece na Loja: já é da conta (para mostrar "Ativo"), ou dá para comprar (simulado, ou na Play
-## com o preço já respondido). Pacote inicial e pacote de revives somem para quem já apoiou (não dariam nada).
+## com o preço já respondido). Pacote inicial e pacote de revives somem para quem já apoiou (não dariam nada);
+## nave premium (ou o pacote delas) some quando outra compra já deu todas as suas naves.
 static func visible(profile: Dictionary, id: String, in_mode: String = "") -> bool:
 	var m := in_mode if not in_mode.is_empty() else mode()
 	if product(id).is_empty() or m == "steam":
@@ -163,6 +242,8 @@ static func visible(profile: Dictionary, id: String, in_mode: String = "") -> bo
 	if owns(profile, id):
 		return true
 	if (id == STARTER or id == REVIVE_PACK) and supporter(profile):
+		return false
+	if ships_covered(profile, id):
 		return false
 	if m == "simulated":
 		return true
@@ -203,6 +284,8 @@ static func buy(profile: Dictionary, id: String, in_mode: String = "") -> bool:
 		return false
 	if (not is_consumable(id) and owns(profile, id)) or ((id == STARTER or id == REVIVE_PACK) and supporter(profile)):
 		return false
+	if ships_covered(profile, id):
+		return false
 	if m == "simulated":
 		if is_consumable(id):
 			return credit(profile, id, "sim_%d" % Time.get_ticks_usec())
@@ -223,6 +306,31 @@ static func restore() -> void:
 ## Preço formatado pela Play ("US$ 0,99", "R$ 5,49"...) ou "" enquanto não chegou (ou sem produto no Console).
 static func price(id: String) -> String:
 	return _billing.price_of(id) if _billing != null else ""
+
+
+## Economia do pacote premium em relação às naves avulsas, em % inteiro (0 sem dados): na Play, pelos valores em
+## micros que ela respondeu (moeda da conta); sem a Play, pelos preços-alvo em dólar do catálogo.
+static func fleet_savings(in_mode: String = "") -> int:
+	var m := in_mode if not in_mode.is_empty() else mode()
+	var fleet := 0.0
+	var apart := 0.0
+	for ship: String in ships_of(PREMIUM_FLEET):
+		var single := premium_product(ship)
+		if m == "play":
+			if _billing == null or not _billing.micros.has(single):
+				return 0
+			apart += float(_billing.micros[single])
+		else:
+			apart += float(String(product(single).get("usd", "0")))
+	if m == "play":
+		if _billing == null or not _billing.micros.has(PREMIUM_FLEET):
+			return 0
+		fleet = float(_billing.micros[PREMIUM_FLEET])
+	else:
+		fleet = float(String(product(PREMIUM_FLEET).get("usd", "0")))
+	if apart <= 0.0 or fleet >= apart:
+		return 0
+	return floori((1.0 - fleet / apart) * 100.0)
 
 
 ## "busy" (esperando a Play ou com a tela de pagamento aberta), "pending", "canceled", "unavailable",
@@ -321,21 +429,22 @@ static func _sync(profile: Dictionary) -> void:
 
 
 static func _grant(profile: Dictionary, id: String) -> void:
-	var ship := String(product(id).get("ship", ""))
-	if ship.is_empty() or (profile["unlocked"]["ships"] as Array).has(ship):
-		return
-	(profile["unlocked"]["ships"] as Array).append(ship)
-	var levels: Dictionary = profile["hangar"]["ship_levels"]
-	if not levels.has(ship):
-		levels[ship] = 1
+	for ship: String in ships_of(id):
+		if not (profile["unlocked"]["ships"] as Array).has(ship):
+			(profile["unlocked"]["ships"] as Array).append(ship)
+		var levels: Dictionary = profile["hangar"]["ship_levels"]
+		if not levels.has(ship):
+			levels[ship] = 1
 
 
 static func _revoke(profile: Dictionary, id: String) -> void:
 	var def := product(id)
 	if id == "turbo":
 		(profile["selected"] as Dictionary)["turbo"] = 1.0
-	var ship := String(def.get("ship", ""))
-	if not ship.is_empty() and not _earned_ship(profile, ship):
+	# Nave que outra compra ainda dá (a premium avulsa e o pacote) ou que saiu jogando fica; o nível também.
+	for ship: String in ships_of(id):
+		if _earned_ship(profile, ship) or ship_bought(profile, ship) or (Store.is_steam() and is_premium_ship(ship)):
+			continue
 		(profile["unlocked"]["ships"] as Array).erase(ship)
 		if String(profile["selected"]["ship"]) == ship:
 			profile["selected"]["ship"] = "falcon"
@@ -344,11 +453,14 @@ static func _revoke(profile: Dictionary, id: String) -> void:
 		profile["selected"]["cosmetic"] = ""
 
 
-## A nave também foi ganha jogando (fragmentos completos): o reembolso do atalho não a tira.
+## A nave também foi ganha jogando (fragmentos completos): o reembolso do atalho não a tira. Premium nunca sai
+## jogando.
 static func _earned_ship(profile: Dictionary, ship: String) -> bool:
 	for row: Variant in DB.rows("ships"):
 		var def := row as Dictionary
 		if String(def["id"]) == ship:
+			if def.has("premium"):
+				return false
 			return int((profile["hangar"]["fragments"] as Dictionary).get(ship, 0)) >= int(def.get("fragments", 0))
 	return false
 

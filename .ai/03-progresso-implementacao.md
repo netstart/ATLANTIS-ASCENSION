@@ -555,3 +555,46 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   exatamente o aviso da Sim (1,5 s), então os alvos entram com o alto do campo livre em todo layout. Testes em
   `tests/sprite_bank_tests.gd`, `tests/livery_tests.gd`, `tests/layout_tests.gd` e `tests/credits_screen_tests.gd`.
   Falta conferir no aparelho
+- ✅ Naves premium (pedido do dono: naves vistosas vendidas com dinheiro real na Play). Três naves (`hippocampus`,
+  `nereid`, `amphitrite` em `data/ships.json`, campo `premium` com o produto e `kit` com a nave de origem: Tempest,
+  Manta e Hydra) e o pacote `premium_fleet` (as três, US$ 5,99 contra 3 x US$ 2,99). Sem força à venda: mesmos
+  atributos, arma, especial e os três poderes da origem (`Powers.validate` reprova diferença; mesmo Poder). Arte por
+  `tools/gen_hd_ships.py` (`PREMIUM`): XENIS dourada e violeta giradas 180° e a meia-lua "RD2" da Faction 6 em
+  turquesa, com madrepérola nos meios-tons, ouro nos realces, luz de borda cheia, chama de cor própria e a tira
+  `<id>_sheen.png` do brilho que varre o casco (`ShipArt._sheen`). Rastro, tiro pastel e estouro próprios
+  (`Store.ship_fx`, a pintura vale por cima). Loja: seção "Naves premium" no topo de Extras, pacote em destaque com a
+  economia (micros da Play), cartões com a vitrine animada (`PremiumShowcase`), selo, preço da Play e "Visual
+  exclusivo, não é mais forte". Coleção: grade "Naves premium" fora da contagem, com "Ver na Loja". Reembolso tira só
+  o que nenhuma outra compra dá; restaurar devolve; Steam inclui as três (`Iap.include_premium`); conquista de frota
+  não conta premium. Play Console: `tools/play_products.py` (convertRegionPrices, onetimeproducts.patch com
+  allowMissing, ativação da opção `<id>-compra`; `--dry-run` e `list`). Testes em `tests/premium_tests.gd` (regras,
+  Play falsa e layout da seção e da coleção em todas as resoluções). Falta: o mantenedor rodar `apply` com a chave e
+  conferir no aparelho a compra de teste
+- ✅ Caixas de colisão ajustadas à arte HD (pedido do dono: "ajuste o hitbox de todas as naves"). `tools/fit_hitboxes.py`
+  (numpy e Pillow) lê o alfa da base de cada nave como ela é desenhada (escala, `part_scale`, inimigos e chefes girados
+  em PI), tira antenas, pernas e asas finas (abertura de 3 unidades) e grava `data/hitboxes.json`: inimigos e partes
+  com sprite ganham o círculo de dano que cobre 85% do corpo (generoso para o tiro), o centro deslocado e o raio de
+  contato do miolo (50%); o corpo do chefe nunca fica abaixo do `body_radius` da tabela (a vida da luta foi balanceada
+  nele); as naves do jogador mantêm o raio de `ships.json` (o ponto do piloto contra as balas, que não mudaram) e o
+  ponto vai para a cabine de cada nave HD (posto de olho na folha; nave nova sem ponto usa o centro da espinha).
+  `Hitboxes` (revisão 5 da Sim) aplica tudo na colisão (tiro, respingo, feixe, mísseis, poderes, contato, partes,
+  raspão e o ponto da nave); o que falta no arquivo cai no valor antigo e a revisão 4 joga igual, passo a passo
+  (replays antigos conferidos contra o código da 1.25.1). O ponto desenhado na nave fica no ponto da Sim
+  (`SimPlayer.hit_pos`); `WorldView.debug_hitboxes` desenha os círculos e `game_shots_runner -- --hitboxes` grava as
+  galerias (inimigos, chefes, naves). Bot: desvia pelo ponto deslocado, foge das paredes e contorna o chefe quando
+  fica acima dele. Balanceamento (3 sementes, 120 partidas): antes 3 derrotas e 24 danos, depois 0 derrotas e 14
+  danos; lutas de chefe 14% mais curtas no total (fragatas a 1,5x mais longas para o bot). Testes em
+  `tests/hitbox_tests.gd`. Falta conferir no aparelho
+- ✅ Evolução da nave com peças físicas (pedido do dono: "cada evolução da nave precisa adicionar algo no gráfico
+  dela"). Cada nível do 2 ao 10 monta uma peça nova no casco, cumulativa: blindagem (2), canhões de asa com boca
+  acesa (3), propulsores extras com chama própria (4), aletas de asa (5), estabilizadores (6), casulos de mísseis (7),
+  domo sensor com antenas (8), bobinas de energia (9) e a coroa de ouro com o acabamento dourado das peças (10).
+  `tools/gen_livery.py` desenha as peças em relevo (chanfro, luz de cima à esquerda, especular, luz de borda,
+  contorno, sombra sobre o casco) na cor do metal de cada nave (tabela luminância -> cor do matiz dominante) e grava
+  `<nave>_evo.png` (9 quadros do tamanho da base), `<nave>_evo_glow.png` e `<nave>_jet.png`; as âncoras por nave e os
+  pontos da boca, dos jatos e das pontas das aletas ficam em `data/livery.json`, e o gerador reprova peça sobre o
+  ponto de acerto (`data/hitboxes.json`). A luz ficou como reforço (brilho e aura mais suaves, luzes de navegação nas
+  aletas, cristal no domo, bobinas pulsando); a divisa saiu. Emblemas da Oficina mostram a peça. Anfitrite trocou o
+  casco "orangeship" pela meia-lua RD2 da Faction 6 (girada 180°, turquesa e ouro). Testes em
+  `tests/livery_tests.gd`; folha em `tests/livery_shots_runner.tscn` (15 naves x níveis 1 a 10). Falta: o WorldView
+  passar `firing` ao `ShipArt.draw` para a boca dos canhões lampejar a cada tiro

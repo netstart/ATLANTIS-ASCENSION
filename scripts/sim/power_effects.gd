@@ -244,12 +244,12 @@ static func _heal(sim: Sim, spec: Dictionary) -> void:
 static func _sweep(sim: Sim, pw: Powers, e: Dictionary, at: Vector2, reach: float, amount: float) -> void:
 	var hit: Array = e["_hit"]
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and not hit.has(foe) and at.distance_to(foe.pos) <= reach + foe.radius:
+		if foe.active() and not hit.has(foe) and at.distance_to(foe.hit_pos()) <= reach + foe.hurt:
 			hit.append(foe)
 			pw.hurt(sim, foe, amount)
 	var b := sim.boss
 	if b != null and b.fighting() and not bool(e.get("_boss_hit", false)) \
-			and at.distance_to(b.body_pos()) <= reach + b.body_radius():
+			and at.distance_to(b.hurt_pos()) <= reach + b.hurt_radius():
 		e["_boss_hit"] = true
 		pw.hurt_boss(sim, amount)
 
@@ -360,12 +360,12 @@ static func _salvo(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 ## Acerto de um projétil de poder: inimigo (cada um uma vez por projétil) e depois o corpo do chefe.
 static func _shot_hit(sim: Sim, pw: Powers, at: Vector2, r: float, amount: float, hit: Array) -> bool:
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and not hit.has(foe) and at.distance_to(foe.pos) <= r + foe.radius:
+		if foe.active() and not hit.has(foe) and at.distance_to(foe.hit_pos()) <= r + foe.hurt:
 			hit.append(foe)
 			pw.hurt(sim, foe, amount)
 			return true
 	var b := sim.boss
-	if b != null and b.fighting() and not hit.has(b) and at.distance_to(b.body_pos()) <= r + b.body_radius():
+	if b != null and b.fighting() and not hit.has(b) and at.distance_to(b.hurt_pos()) <= r + b.hurt_radius():
 		hit.append(b)
 		pw.hurt_boss(sim, amount)
 		return true
@@ -392,10 +392,10 @@ static func _beam(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> bool
 	for a: float in angles:
 		var dir := Vector2.from_angle(a)
 		for foe: SimEnemy in sim.enemies:
-			if foe.active() and _on_beam(origin, dir, length, half + foe.radius, foe.pos):
+			if foe.active() and _on_beam(origin, dir, length, half + foe.hurt, foe.hit_pos()):
 				pw.hurt(sim, foe, amount)
 		var b := sim.boss
-		if b != null and b.fighting() and _on_beam(origin, dir, length, half + b.body_radius(), b.body_pos()):
+		if b != null and b.fighting() and _on_beam(origin, dir, length, half + b.hurt_radius(), b.hurt_pos()):
 			pw.hurt_boss(sim, amount)
 		if bool(spec.get("cancel", false)):
 			pw.pearls(sim, pw.cancel_segment(sim, origin, origin + dir * length, half))
@@ -427,7 +427,7 @@ static func _chain(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 		var best: SimEnemy = null
 		var best_d := reach * reach
 		for foe: SimEnemy in sim.enemies:
-			var d := from.distance_squared_to(foe.pos)
+			var d := from.distance_squared_to(foe.hit_pos())
 			if foe.active() and not hit.has(foe) and d <= best_d:
 				best_d = d
 				best = foe
@@ -437,7 +437,7 @@ static func _chain(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 			hit.append(best)
 			next = best.pos
 			pw.hurt(sim, best, amount)
-		elif not boss_done and b != null and b.fighting() and from.distance_to(b.body_pos()) <= reach + b.body_radius():
+		elif not boss_done and b != null and b.fighting() and from.distance_to(b.hurt_pos()) <= reach + b.hurt_radius():
 			boss_done = true
 			next = b.body_pos()
 			pw.hurt_boss(sim, amount)
@@ -474,12 +474,12 @@ static func _wave(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> bool
 	var hit: Array = e["_hit"]
 	var amount := float(spec.get("damage", 20.0))
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and not hit.has(foe) and absf(foe.pos.y - pos.y) <= h * 0.5 + foe.radius:
+		if foe.active() and not hit.has(foe) and absf(foe.hit_pos().y - pos.y) <= h * 0.5 + foe.hurt:
 			hit.append(foe)
 			pw.hurt(sim, foe, amount)
 	var b := sim.boss
 	if b != null and b.fighting() and not bool(e["_boss_hit"]) \
-			and absf(b.body_pos().y - pos.y) <= h * 0.5 + b.body_radius():
+			and absf(b.hurt_pos().y - pos.y) <= h * 0.5 + b.hurt_radius():
 		e["_boss_hit"] = true
 		pw.hurt_boss(sim, amount)
 	return pos.y > -h
@@ -494,13 +494,13 @@ static func _vortex(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> bo
 	var amount := float(spec.get("dps", 30.0)) * Sim.STEP
 	var small := float(spec.get("small_hp", 30.0))
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and at.distance_to(foe.pos) <= radius + foe.radius:
+		if foe.active() and at.distance_to(foe.hit_pos()) <= radius + foe.hurt:
 			if foe.max_hp <= small:
 				# A trajetória sai da origem: arrastar a origem arrasta o inimigo sem mexer no caminho dele.
 				foe.origin += (at - foe.pos).limit_length(pull * 0.4 * Sim.STEP)
 			pw.hurt(sim, foe, amount)
 	var b := sim.boss
-	if b != null and b.fighting() and at.distance_to(b.body_pos()) <= radius + b.body_radius():
+	if b != null and b.fighting() and at.distance_to(b.hurt_pos()) <= radius + b.hurt_radius():
 		pw.hurt_boss(sim, amount)
 	return true
 
@@ -553,10 +553,10 @@ static func _orbitals(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> 
 		points.append(at)
 		pw.pearls(sim, sim.enemy_bullets.cancel_near(at, orb))
 		for foe: SimEnemy in sim.enemies:
-			if foe.active() and at.distance_to(foe.pos) <= orb + foe.radius:
+			if foe.active() and at.distance_to(foe.hit_pos()) <= orb + foe.hurt:
 				pw.hurt(sim, foe, amount)
 		var b := sim.boss
-		if b != null and b.fighting() and at.distance_to(b.body_pos()) <= orb + b.body_radius():
+		if b != null and b.fighting() and at.distance_to(b.hurt_pos()) <= orb + b.hurt_radius():
 			pw.hurt_boss(sim, amount)
 	e["points"] = points
 	return true
@@ -573,10 +573,10 @@ static func _barrier(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> b
 	pw.pearls(sim, pw.cancel_rect(sim, rect))
 	var amount := float(spec.get("dps", 40.0)) * Sim.STEP
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and rect.grow(foe.radius).has_point(foe.pos):
+		if foe.active() and rect.grow(foe.hurt).has_point(foe.hit_pos()):
 			pw.hurt(sim, foe, amount)
 	var b := sim.boss
-	if b != null and b.fighting() and rect.grow(b.body_radius()).has_point(b.body_pos()):
+	if b != null and b.fighting() and rect.grow(b.hurt_radius()).has_point(b.hurt_pos()):
 		pw.hurt_boss(sim, amount)
 	return true
 
@@ -643,7 +643,8 @@ static func _drone_links(sim: Sim, pw: Powers, points: PackedVector2Array, spec:
 		var b := points[(k + 1) % count]
 		pw.pearls(sim, pw.cancel_segment(sim, a, b, cut))
 		for foe: SimEnemy in sim.enemies:
-			if foe.active() and foe.pos.distance_to(Geometry2D.get_closest_point_to_segment(foe.pos, a, b)) <= cut + foe.radius:
+			var at := foe.hit_pos()
+			if foe.active() and at.distance_to(Geometry2D.get_closest_point_to_segment(at, a, b)) <= cut + foe.hurt:
 				pw.hurt(sim, foe, amount)
 
 
@@ -657,10 +658,10 @@ static func _aura(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> bool
 		pw.pearls(sim, sim.enemy_bullets.cancel_near(at, radius))
 	var amount := float(spec.get("dps", 60.0)) * Sim.STEP
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and at.distance_to(foe.pos) <= radius + foe.radius:
+		if foe.active() and at.distance_to(foe.hit_pos()) <= radius + foe.hurt:
 			pw.hurt(sim, foe, amount)
 	var b := sim.boss
-	if b != null and b.fighting() and at.distance_to(b.body_pos()) <= radius + b.body_radius():
+	if b != null and b.fighting() and at.distance_to(b.hurt_pos()) <= radius + b.hurt_radius():
 		pw.hurt_boss(sim, amount)
 	return true
 

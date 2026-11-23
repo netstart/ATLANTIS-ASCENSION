@@ -17,7 +17,8 @@ const LayoutTests := preload("res://tests/layout_tests.gd")
 const CODE := BillingClient.BillingResponseCode
 const STATE := BillingClient.PurchaseState
 const EXPECTED := ["turbo", "support", "starter_pack", "ship_trident", "revive_pack_3", "paint_aurora", "paint_reef",
-		"paint_abyssal", "paint_solar"]
+		"paint_abyssal", "paint_solar", "ship_premium_hippocampus", "ship_premium_nereid", "ship_premium_amphitrite",
+		"premium_fleet"]
 
 var _host: Node
 var _check: Callable
