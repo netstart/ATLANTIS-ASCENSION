@@ -10,7 +10,10 @@ extends Screen
 ##   pontilhada em zigue-zague que sobe; concluídas com as estrelas embaixo; a próxima com o sonar e a
 ##   nave do jogador pairando em cima; trancadas = pino cinza com cadeado; chefe com octógono e coroa.
 ##   Tocar num nó aberto abre o cartão da missão (MissionCard). Deslizar para o lado ou as setas trocam
-##   de capítulo (só os abertos).
+##   de capítulo (só os abertos). Arrastar na vertical rola a trilha com o dedo: para baixo o capítulo de
+##   cima (o seguinte) entra pela borda de cima, para cima o anterior entra por baixo; ao soltar, além de
+##   DRAG_COMMIT da altura ou num piparote (FLICK_SPEED) assenta no vizinho, senão volta. Na ponta
+##   (primeiro ou último aberto) a trilha cede um pouco (EDGE_GIVE) e volta.
 ## - Marco do capítulo: o baú com o prêmio que já existe no jogo (aeronave dos fragmentos ou próxima asa
 ##   pelas estrelas, CampaignTrail.milestone) e a barra do progresso; tocar leva a Naves ou à Oficina.
 ## - Atalhos dos dois lados da trilha (ícone grande e rótulo curto, bolinha de aviso pelo Notices):
@@ -40,6 +43,14 @@ const COMPACT_BELOW := 400.0
 ## Coluna abaixo da qual o selo grande do Poder vira a linha compacta sob o nome.
 const NARROW_BELOW := 380.0
 const PULSE_PERIOD := 1.6
+## Arraste vertical da trilha: px até virar arraste (antes disso é toque), fração da altura para trocar
+## de capítulo ao soltar, piparote (px/s) que troca mesmo curto, duração máxima do assentar e quanto a
+## ponta cede (fração da altura).
+const DRAG_START := 12.0
+const DRAG_COMMIT := 1.0 / 3.0
+const FLICK_SPEED := 700.0
+const SETTLE_SECONDS := 0.24
+const EDGE_GIVE := 0.18
 
 ## Capítulo à vista na trilha.
 var chapter: int = 1
@@ -72,17 +83,47 @@ var _clock: float = 0.0
 var _next_at := Vector2(-1, -1)
 ## Lado dos nós da trilha (cresce de NODE até NODE_MAX quando sobra espaço).
 var _node_size: float = NODE
+## Arraste vertical: _clip recorta a trilha só enquanto ela anda; _leaf leva o capítulo à vista (linhas,
+## nós, sonar e nave) e _ghost o vizinho que entra pela borda (só desenho, sem toque nem foco).
+var _clip: Control
+var _leaf: Control
+var _ghost: Control
+var _ghost_view: CampaignParts.TrailView
+var _ghost_nodes: Array[CampaignParts.TrailNode] = []
+var _ghost_chapter: int = 0
+## Área dos nós (onde o arraste começa) e deslocamento vertical da trilha (px; > 0 = desceu).
+var _trail_rect := Rect2()
+var _offset: float = 0.0
+var _touch: int = -1
+var _press_at := Vector2.ZERO
+var _scrolling: bool = false
+var _grab: float = 0.0
+var _velocity: float = 0.0
+var _settle: Tween
+## Quadro do último arraste: o nó solto embaixo do dedo neste quadro ou no seguinte não abre o cartão.
+var _tap_block_frame: int = -10
 
 
 func _build() -> void:
+	_clip = _layer_control("TrailClip")
+	add_child(_clip)
+	_ghost = _layer_control("TrailGhost")
+	_ghost.visible = false
+	_clip.add_child(_ghost)
+	_ghost_view = CampaignParts.TrailView.new()
+	_ghost_view.name = "TrailGhostView"
+	_ghost_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_ghost.add_child(_ghost_view)
+	_leaf = _layer_control("TrailLeaf")
+	_clip.add_child(_leaf)
 	_trail = CampaignParts.TrailView.new()
 	_trail.swiped.connect(func(step: int) -> void: show_chapter(CampaignTrail.neighbor(SaveManager.data, chapter, step)))
-	add_child(_trail)
+	_leaf.add_child(_trail)
 	_pulse = CampaignParts.Pulse.new()
-	add_child(_pulse)
+	_leaf.add_child(_pulse)
 	_build_header()
 	_marker = CampaignParts.Marker.new()
-	add_child(_marker)
+	_leaf.add_child(_marker)
 	_prev = CampaignParts.Chevron.new("PrevChapter", false)
 	_prev.pressed.connect(_step_chapter.bind(-1))
 	add_child(_prev)
@@ -131,6 +172,13 @@ func _build() -> void:
 		close_card()
 		play.emit(id))
 	add_child(_card)
+
+
+static func _layer_control(node_name: String) -> Control:
+	var c := Control.new()
+	c.name = node_name
+	c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	return c
 
 
 func _build_header() -> void:
@@ -204,6 +252,9 @@ func default_focus() -> Control:
 
 func on_show(_app: Node) -> void:
 	close_card()
+	_touch = -1
+	_scrolling = false
+	_reset_drag()
 	chapter = CampaignTrail.current_chapter(SaveManager.data)
 	var reward := LiveOps.login(SaveManager.data, App.today())
 	if not reward.is_empty():
@@ -230,13 +281,15 @@ func show_toast(text: String) -> void:
 	relayout()
 
 
-## Mostra a trilha de outro capítulo (só os abertos; o mesmo não faz nada).
-func show_chapter(target: int) -> void:
+## Mostra a trilha de outro capítulo (só os abertos; o mesmo não faz nada). `fade` = false quando o
+## arraste já trouxe a trilha nova para o lugar.
+func show_chapter(target: int, fade: bool = true) -> void:
 	if target == chapter or not CampaignTrail.open_chapters(SaveManager.data).has(target):
 		return
 	chapter = target
+	_reset_drag()
 	_rebuild()
-	if not UiFx.reduced():
+	if fade and not UiFx.reduced():
 		for c: CanvasItem in [_trail, _number, _name, _hook] + _nodes:
 			c.modulate.a = 0.0
 			create_tween().tween_property(c, "modulate:a", 1.0, 0.18)
@@ -244,11 +297,162 @@ func show_chapter(target: int) -> void:
 
 ## Nós da trilha à vista (testes e foco).
 func trail_nodes() -> Array[CampaignParts.TrailNode]:
+	return _shown(_nodes)
+
+
+static func _shown(list: Array[CampaignParts.TrailNode]) -> Array[CampaignParts.TrailNode]:
 	var out: Array[CampaignParts.TrailNode] = []
-	for b: CampaignParts.TrailNode in _nodes:
+	for b: CampaignParts.TrailNode in list:
 		if b.visible:
 			out.append(b)
 	return out
+
+
+## Arraste vertical (testes): deslocamento da trilha, distância entre dois capítulos, capítulo vizinho
+## à vista (0 = nenhum) e se o dedo ou o assentar ainda mexem nela.
+func trail_offset() -> float:
+	return _offset
+
+
+func trail_gap() -> float:
+	return _trail_rect.size.y + 10.0
+
+
+func ghost_chapter() -> int:
+	return _ghost_chapter if _ghost.visible else 0
+
+
+func trail_busy() -> bool:
+	return _scrolling or (_settle != null and _settle.is_running())
+
+
+## Toque e arraste da trilha. Só ScreenTouch e ScreenDrag (o mouse chega por emulate_touch_from_mouse).
+## Até DRAG_START px na vertical (e mais vertical que lateral) é toque: o nó e o deslize lateral do
+## TrailView ficam com ele; depois disso o arraste é da trilha.
+func _input(event: InputEvent) -> void:
+	if _card == null or not is_visible_in_tree() or _card.visible:
+		_touch = -1
+		return
+	if event is InputEventScreenTouch:
+		var touch := event as InputEventScreenTouch
+		if touch.pressed:
+			var at := (make_input_local(touch) as InputEventScreenTouch).position
+			if _touch < 0 and _trail_rect.has_point(at):
+				_touch = touch.index
+				_press_at = at
+				_scrolling = false
+		elif touch.index == _touch:
+			_touch = -1
+			if _scrolling:
+				_scrolling = false
+				_tap_block_frame = Engine.get_process_frames()
+				_release_drag()
+	elif event is InputEventScreenDrag:
+		var drag := event as InputEventScreenDrag
+		if drag.index != _touch:
+			return
+		var local := make_input_local(drag) as InputEventScreenDrag
+		var moved := local.position - _press_at
+		if not _scrolling:
+			if absf(moved.y) < DRAG_START or absf(moved.y) <= absf(moved.x):
+				return
+			_scrolling = true
+			if _settle != null:
+				_settle.kill()
+				_settle = null
+			# Continua de onde a trilha está (assentar interrompido), sem pular a zona morta.
+			_grab = _offset - moved.y
+		_velocity = local.velocity.y
+		_tap_block_frame = Engine.get_process_frames()
+		_drag_to(_grab + moved.y)
+		TouchScroll.mark_moving()
+		get_viewport().set_input_as_handled()
+
+
+## Trilha deslocada `raw` px pelo dedo: o vizinho daquele lado entra pela borda; sem vizinho, cede pouco.
+func _drag_to(raw: float) -> void:
+	var gap := trail_gap()
+	var step := 1 if raw > 0.0 else -1
+	var target := CampaignTrail.neighbor(SaveManager.data, chapter, step)
+	if is_zero_approx(raw) or target == chapter:
+		_show_ghost(0)
+		_offset = signf(raw) * gap * EDGE_GIVE * (1.0 - exp(-absf(raw) / gap))
+	else:
+		_show_ghost(target)
+		_offset = clampf(raw, -gap, gap)
+	_apply_offset()
+
+
+## Dedo solto: assenta no vizinho (passou de DRAG_COMMIT ou piparote para o lado dele) ou volta.
+func _release_drag() -> void:
+	var gap := trail_gap()
+	var step := 1 if _offset > 0.0 else -1
+	var target := CampaignTrail.neighbor(SaveManager.data, chapter, step)
+	var go := target != chapter and not is_zero_approx(_offset) and \
+			(absf(_offset) >= gap * DRAG_COMMIT or _velocity * step >= FLICK_SPEED)
+	var to := step * gap if go else 0.0
+	var done := func() -> void:
+		_settle = null
+		if go:
+			show_chapter(target, false)
+		else:
+			_reset_drag()
+	if UiFx.reduced() or is_equal_approx(_offset, to):
+		_set_offset(to)
+		done.call()
+		return
+	_settle = create_tween()
+	_settle.tween_method(_set_offset, _offset, to, clampf(SETTLE_SECONDS * absf(to - _offset) / gap, 0.1,
+			SETTLE_SECONDS)).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	_settle.tween_callback(done)
+
+
+func _set_offset(value: float) -> void:
+	_offset = value
+	_apply_offset()
+
+
+func _reset_drag() -> void:
+	if _settle != null:
+		_settle.kill()
+		_settle = null
+	_offset = 0.0
+	_show_ghost(0)
+	_apply_offset()
+
+
+## Só posições (nada se redesenha): o capítulo à vista desce ou sobe com o dedo e o vizinho vem colado
+## a ele, a trail_gap() de distância (a linha que sai por cima encontra a que entra por baixo).
+func _apply_offset() -> void:
+	if _clip == null:
+		return
+	_leaf.position = Vector2(-_clip.position.x, -_clip.position.y + _offset)
+	_ghost.position = _leaf.position + Vector2(0.0, -trail_gap() if _offset > 0.0 else trail_gap())
+	var moving := not is_zero_approx(_offset)
+	_clip.clip_contents = moving
+	_ghost.visible = moving and _ghost_chapter > 0
+
+
+## Monta o vizinho que entra pela borda (só quando muda o lado ou o capítulo).
+func _show_ghost(target: int) -> void:
+	if target == _ghost_chapter:
+		return
+	_ghost_chapter = target
+	if target <= 0:
+		_ghost.visible = false
+		return
+	var list := CampaignTrail.nodes(SaveManager.data, target)
+	while _ghost_nodes.size() < list.size():
+		var b := CampaignParts.TrailNode.new()
+		b.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_ghost.add_child(b)
+		_ghost_nodes.append(b)
+	for i: int in range(_ghost_nodes.size()):
+		_ghost_nodes[i].visible = i < list.size()
+		if i < list.size():
+			_ghost_nodes[i].setup(list[i])
+			_ghost_nodes[i].focus_mode = Control.FOCUS_NONE
+	_place_chapter(_shown(_ghost_nodes), target, _ghost_view, _trail_rect)
 
 
 func node_button(id: StringName) -> CampaignParts.TrailNode:
@@ -358,9 +562,11 @@ func _rebuild() -> void:
 	var list := CampaignTrail.nodes(p, chapter)
 	while _nodes.size() < list.size():
 		var b := CampaignParts.TrailNode.new()
-		b.pressed.connect(func() -> void: open_card(b.id))
-		add_child(b)
-		move_child(b, _pulse.get_index() + 1)
+		b.pressed.connect(func() -> void:
+			if Engine.get_process_frames() - _tap_block_frame > 1:
+				open_card(b.id))
+		_leaf.add_child(b)
+		_leaf.move_child(b, _pulse.get_index() + 1)
 		_nodes.append(b)
 	for i: int in range(_nodes.size()):
 		_nodes[i].visible = i < list.size()
@@ -555,7 +761,15 @@ func _layout() -> void:
 		trail.size.x = maxf(0.0, right_x - 6.0 - trail.position.x)
 	_trail.position = Vector2(safe.position.x, area_top - 4.0)
 	_trail.size = Vector2(safe.size.x, trail.size.y + 8.0)
+	_ghost_view.position = _trail.position
+	_ghost_view.size = _trail.size
+	# Recorte do arraste: da faixa sob o cabeçalho até o marco (os atalhos ficam fora, por cima).
+	_clip.position = Vector2(safe.position.x, area_top - 6.0)
+	_clip.size = Vector2(safe.size.x, maxf(0.0, row_y - 2.0 - _clip.position.y))
+	_leaf.size = size
+	_ghost.size = size
 	_place_nodes(trail)
+	_apply_offset()
 	# Cartão da missão e aviso do login.
 	_dim.position = Vector2.ZERO
 	_dim.size = size
@@ -579,7 +793,25 @@ func _layout() -> void:
 ## Posição dos nós: linhas que sobem; o zigue-zague vai de um lado ao outro, a linha abaixo de duas
 ## rotas fica no meio e as rotas ficam nas pontas (nenhum nó encosta no da linha vizinha).
 func _place_nodes(trail: Rect2) -> void:
-	var shown := trail_nodes()
+	_trail_rect = trail
+	_next_at = _place_chapter(trail_nodes(), chapter, _trail, trail)
+	_pulse.visible = _next_at.x >= 0.0
+	_marker.visible = _next_at.x >= 0.0
+	if _next_at.x >= 0.0:
+		_pulse.size = Vector2.ONE * floorf(_node_size * 1.6)
+		_pulse.position = (_next_at - _pulse.size * 0.5).floor()
+		_marker.position = Vector2(floorf(_next_at.x - _marker.size.x * 0.5), _marker_y())
+		if UiFx.reduced():
+			_pulse.scale = Vector2.ONE
+			_pulse.modulate.a = 0.6
+	if _ghost_chapter > 0:
+		_place_chapter(_shown(_ghost_nodes), _ghost_chapter, _ghost_view, trail)
+
+
+## Posiciona os nós de um capítulo e passa linhas e halos ao `view`; devolve o centro da próxima missão
+## (x < 0 quando ela não está no capítulo). Só a trilha à vista guarda o lado dos nós (_node_size).
+func _place_chapter(shown: Array[CampaignParts.TrailNode], chapter_number: int, view: CampaignParts.TrailView,
+		trail: Rect2) -> Vector2:
 	var rows: Dictionary = {}
 	for b: CampaignParts.TrailNode in shown:
 		var r := CampaignTrail.row_of(b.id)
@@ -589,7 +821,7 @@ func _place_nodes(trail: Rect2) -> void:
 	var count := 0
 	for r: int in rows:
 		count = maxi(count, r + 1)
-	var xs := row_positions(rows, count, chapter)
+	var xs := row_positions(rows, count, chapter_number)
 	# Folga em cima para a nave e embaixo para as estrelas. Nós maiores quando sobra espaço (o espaço
 	# entre linhas fica ≥ 2 nós quando eles crescem; no aperto, o zigue-zague os afasta na horizontal).
 	# Em tela baixa as folgas encolhem (a nave pode passar por cima do vão do cabeçalho).
@@ -599,8 +831,9 @@ func _place_nodes(trail: Rect2) -> void:
 	var usable := Rect2(trail.position.x, trail.position.y + pad_top, trail.size.x,
 			maxf(0.0, trail.size.y - pad_top - pad_bottom))
 	var rows_gap := maxf(1.0, float(count - 1))
-	_node_size = floorf(clampf(minf((usable.size.y - NODE) / rows_gap * 0.5, usable.size.x / 4.0), NODE, NODE_MAX))
-	var ns := _node_size
+	var ns := floorf(clampf(minf((usable.size.y - NODE) / rows_gap * 0.5, usable.size.x / 4.0), NODE, NODE_MAX))
+	if view == _trail:
+		_node_size = ns
 	var span_x := maxf(0.0, minf(usable.size.x - ns, 300.0))
 	var x0 := usable.position.x + (usable.size.x - ns - span_x) * 0.5 + ns * 0.5
 	# A trilha ocupa a altura toda: primeiro nó perto do marco, último perto do topo.
@@ -614,19 +847,19 @@ func _place_nodes(trail: Rect2) -> void:
 			var b: CampaignParts.TrailNode = list[k]
 			var c := Vector2(x0 + span_x * float(xs[r][k]), bottom - spacing * r).floor()
 			centers[b.id] = c
-			b.size = Vector2(_node_size, _node_size)
+			b.size = Vector2(ns, ns)
 			b.position = c - b.size * 0.5
 	# Linhas e halos no espaço do TrailView.
-	var o := _trail.position
+	var o := view.position
 	var links: Array = []
 	var halos: Array = []
-	_next_at = Vector2(-1, -1)
+	var next_at := Vector2(-1, -1)
 	for b: CampaignParts.TrailNode in shown:
 		var c: Vector2 = centers[b.id]
 		if b.open:
 			halos.append([c - o, Color(UiTheme.GOLD if b.next else CampaignParts.ORANGE, 0.42 if b.next else 0.2)])
 		if b.next:
-			_next_at = c
+			next_at = c
 		var after: Array = Economy.node(b.id)["after"]
 		var linked := false
 		for prev: Variant in after:
@@ -639,19 +872,11 @@ func _place_nodes(trail: Rect2) -> void:
 		if _leads_out(b.id):
 			# Segue para o capítulo seguinte: a linha sai pela borda de cima.
 			links.append([c - o, Vector2(c.x, trail.position.y - 4.0) - o, b.cleared])
-	_trail.node_radius = _node_size * 0.5
-	_trail.links = links
-	_trail.halos = halos
-	_trail.queue_redraw()
-	_pulse.visible = _next_at.x >= 0.0
-	_marker.visible = _next_at.x >= 0.0
-	if _next_at.x >= 0.0:
-		_pulse.size = Vector2.ONE * floorf(_node_size * 1.6)
-		_pulse.position = (_next_at - _pulse.size * 0.5).floor()
-		_marker.position = Vector2(floorf(_next_at.x - _marker.size.x * 0.5), _marker_y())
-		if UiFx.reduced():
-			_pulse.scale = Vector2.ONE
-			_pulse.modulate.a = 0.6
+	view.node_radius = ns * 0.5
+	view.links = links
+	view.halos = halos
+	view.queue_redraw()
+	return next_at
 
 
 ## A missão abre alguma de outro capítulo (a linha da trilha continua para cima).

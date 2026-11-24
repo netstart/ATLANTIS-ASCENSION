@@ -1,12 +1,17 @@
 extends RefCounted
 ## Testes do feixe dos padrões (EnemyBeam, revisão 6 da Sim): a boca segue o emissor que anda, o aviso mira o jogador
 ## e trava, o giro aceso respeita o teto, a colisão é no segmento inclinado, a nave que anda escapa, o emissor que
-## some leva o feixe junto e a revisão 5 (replays antigos) continua com o feixe parado e vertical. Chamado por
-## tests/run_tests.gd (regras rápidas, sem autoloads).
+## some leva o feixe junto e a revisão 5 (replays antigos) continua com o feixe parado e vertical. Revisão 9: toda
+## boca de feixe de chefe e de inimigo fica sobre a arte visível do emissor (nada de feixe saindo do vazio) e destruir o
+## drone emissor corta o feixe dele. Chamado por tests/run_tests.gd (regras rápidas, sem autoloads).
 
 const EMPTY := {"id": "beam_test", "chapter": 1, "events": []}
 const WARN := 40
 const FRAMES := 60
+## Folga da boca até o pixel firme mais perto da arte do emissor (unidades na tela): o clarão da boca tem ~18 u.
+const MOUTH_SLACK := 5.0
+## Alfa a partir do qual o pixel da arte conta como casco (o mesmo de tools/fit_hitboxes.py).
+const SOLID := 0.5
 
 var _tables: Dictionary = {}
 
@@ -20,6 +25,9 @@ func run_unit(check: Callable) -> void:
 	_emitter_gone(check)
 	_columns(check)
 	_old_revision(check)
+	_mouths_on_art(check)
+	_drone_cuts_beam(check)
+	_drone_data(check)
 
 
 func _sim(rev: int = SimRevision.CURRENT, field_h: float = Playfield.FIELD.y) -> Sim:
@@ -185,3 +193,163 @@ func _old_revision(check: Callable) -> void:
 	var hull := sim.player.hull
 	sim._collide_ship(sim.player)
 	check.call(sim.player.hull == hull - 1 and sim.last_cause == &"beam", "Feixe: revisão 5 fere embaixo da boca")
+
+
+## Boca (âncora + ox/oy) de todo feixe de padrão que a revisão atual usa, em chefes e inimigos, em cima da arte do
+## emissor: corpo (sprite girado 180°, na escala da tabela), parte com sprite, ou dentro do raio do drone/parte sem
+## sprite. O Sky Leviathan tinha faixas a 95 u do casco, saindo do nada.
+func _mouths_on_art(check: Callable) -> void:
+	var patterns: Dictionary = _tables["patterns"]
+	var bad: Array[String] = []
+	var seen := 0
+	for def: Dictionary in (_tables["bosses"] as Dictionary).values():
+		var parts := {}
+		for part: Dictionary in def.get("parts", []):
+			if SimBoss.in_rev(part, SimRevision.CURRENT):
+				parts[String(part.get("id", ""))] = part
+		var body := Vector2(float(def.get("body_x", 0.0)), float(def.get("body_y", 0.0)))
+		for ph: Dictionary in def.get("phases", []):
+			for entry: Dictionary in ph.get("patterns", []):
+				if not SimBoss.in_rev(entry, SimRevision.CURRENT):
+					continue
+				var anchor := String(entry.get("anchor", "body"))
+				for st: Dictionary in (patterns.get(StringName(String(entry["pattern"])), {}) as Dictionary).get("steps", []):
+					if String(st.get("op", "")) != "beam":
+						continue
+					seen += 1
+					var off := Vector2(float(st.get("ox", 0.0)), float(st.get("oy", 0.0)))
+					var ok := false
+					if anchor == "body":
+						ok = _on_art(String(def["sprite"]), float(def.get("scale", 1.0)), body + off)
+					elif parts.has(anchor):
+						var part: Dictionary = parts[anchor]
+						var scale := float(part.get("part_scale", 1.0))
+						var radius := float(part.get("radius", 10.0))
+						ok = _on_art(String(part["sprite"]), scale, off) if part.has("sprite") else off.length() <= radius
+					if not ok:
+						bad.append("%s/%s %s@%s %s" % [def.get("id"), ph.get("id"), entry["pattern"], anchor, off])
+	for def: Dictionary in (_tables["enemies"] as Dictionary).values():
+		var pattern: Dictionary = patterns.get(StringName(String(def.get("pattern", ""))), {})
+		for st: Dictionary in pattern.get("steps", []):
+			if String(st.get("op", "")) == "beam":
+				seen += 1
+				var off := Vector2(float(st.get("ox", 0.0)), float(st.get("oy", 0.0)))
+				if not _on_art(String(def.get("sprite", "")), float(def.get("scale", 1.0)), off):
+					bad.append("%s %s %s" % [def.get("id"), def.get("pattern"), off])
+	check.call(seen > 20 and bad.is_empty(), "Feixe: toda boca de feixe sai da arte do emissor (%d bocas; fora: %s)"
+			% [seen, ", ".join(bad)])
+
+
+## Há casco (alfa firme) a até MOUTH_SLACK de `at` (relativo ao centro, na tela) na arte HD de `sprite`, desenhada
+## girada 180° com 2 texels por unidade vezes `scale` (WorldView._draw_ship, tools/fit_hitboxes.py).
+func _on_art(sprite: String, scale: float, at: Vector2) -> bool:
+	var fleet := sprite.get_slice("_", 0)
+	var path := "res://assets/art/hd/%s/%s_base.png" % [fleet, sprite.trim_prefix(fleet + "_")]
+	if not ResourceLoader.exists(path):
+		return false
+	var img := (load(path) as Texture2D).get_image()
+	if img.is_compressed():
+		img.decompress()
+	var side := img.get_height()
+	var unit := 0.5 * scale
+	var cx := side * 0.5 - at.x / unit
+	var cy := side * 0.5 - at.y / unit
+	var r := MOUTH_SLACK / unit
+	for y: int in range(maxi(0, floori(cy - r)), mini(side, ceili(cy + r) + 1)):
+		for x: int in range(maxi(0, floori(cx - r)), mini(side, ceili(cx + r) + 1)):
+			if Vector2(x + 0.5 - cx, y + 0.5 - cy).length() <= r and img.get_pixel(x, y).a >= SOLID:
+				return true
+	return false
+
+
+## Olho da Tempestade (revisão 9): os dois drones saem do casco até o posto, cada feixe sai da lente do seu drone, e
+## destruir um drone corta o feixe dele (fecha sem ferir) enquanto o do outro segue. Na revisão 8 não há drones e o
+## padrão antigo continua (replays).
+func _drone_cuts_beam(check: Callable) -> void:
+	var sim := _sim()
+	sim.spawn_boss(&"storm_eye", false)
+	var boss := sim.boss
+	var drones: Array[Dictionary] = []
+	for part: Dictionary in boss.parts:
+		if bool(part.get("drone", false)):
+			drones.append(part)
+	var mouth_ok := true
+	var left: Dictionary = {}
+	var right: Dictionary = {}
+	for f: int in range(SimBoss.ENTER_FRAMES + 400):
+		_boss_tick(sim)
+		for b: Dictionary in sim.beams:
+			var at := Vector2(float(b["x"]), float(b["y"]))
+			var near := false
+			for d: Dictionary in drones:
+				near = near or at.distance_to(boss.part_pos(d)) < 0.01
+			mouth_ok = mouth_ok and near
+			if near and at.x < boss.pos.x:
+				left = b
+			elif near:
+				right = b
+		if not left.is_empty() and not right.is_empty() and int(right["age"]) > int(right["warn"]):
+			break
+	var home := boss.pos + (drones[0]["base"] as Vector2) if drones.size() == 2 else Vector2.INF
+	var near := boss.part_pos(drones[0]).distance_to(home) <= 6.0 if drones.size() == 2 else false
+	var posted := drones.size() == 2 and float(drones[0]["out"]) == 1.0 and near
+	check.call(posted and mouth_ok and not left.is_empty() and not right.is_empty(),
+			"Feixe: drones do Olho da Tempestade saem até o posto e cada feixe sai da lente de um drone")
+	var kill: Dictionary = drones[1] if boss.part_pos(drones[1]).x > boss.pos.x else drones[0]
+	var keep: Dictionary = drones[0] if kill == drones[1] else drones[1]
+	# Vida própria: acertar o drone só tira dele; acertar o corpo não tira dos drones.
+	var hp := boss.hp
+	var mine := float(kill["hp"])
+	boss.damage_part(kill, mine * 0.5, sim)
+	var only_drone := boss.hp == hp and is_equal_approx(float(kill["hp"]), mine * 0.5) and bool(kill["alive"])
+	var keep_hp := float(keep["hp"])
+	var kill_hp := float(kill["hp"])
+	boss.damage_body(10.0, sim)
+	var only_body := boss.hp < hp and float(keep["hp"]) == keep_hp and float(kill["hp"]) == kill_hp
+	hp = boss.hp
+	boss.damage_part(kill, mine, sim)
+	check.call(only_drone and only_body and not bool(kill["alive"]) and bool(keep["alive"]) and boss.hp == hp,
+			"Feixe: drone tem vida própria (só a dele cai, morre sozinho, o chefe e o outro drone não perdem vida)")
+	_boss_tick(sim)
+	var cut := not bool(kill["alive"]) and (bool(right["dead"]) or not sim.beams.has(right))
+	for f: int in range(EnemyBeam.CLOSE_FRAMES + 1):
+		_boss_tick(sim)
+	check.call(cut and not sim.beams.has(right), "Feixe: destruir o drone corta o feixe dele")
+	var again := false
+	for f: int in range(400):
+		_boss_tick(sim)
+		for b: Dictionary in sim.beams:
+			again = again or float(b["x"]) > boss.pos.x
+	check.call(not again, "Feixe: drone destruído não volta a atirar na luta")
+	var old := _sim(8)
+	old.spawn_boss(&"storm_eye", false)
+	var none := true
+	for part: Dictionary in old.boss.parts:
+		none = none and not bool(part.get("drone", false))
+	check.call(none, "Feixe: revisão 8 (replays antigos) sem drones no Olho da Tempestade")
+
+
+## Todo drone emissor dos dados: vida própria bem menor que a do chefe (até 15%) e sem vazar para ele.
+func _drone_data(check: Callable) -> void:
+	var bad: Array[String] = []
+	var count := 0
+	for def: Dictionary in (_tables["bosses"] as Dictionary).values():
+		for part: Dictionary in def.get("parts", []):
+			if not bool(part.get("drone", false)):
+				continue
+			count += 1
+			var hp := float(part.get("hp", 0.0))
+			var leaks := float(part.get("leak", 0.25)) != 0.0 or float(part.get("share", 0.0)) != 0.0
+			if hp <= 0.0 or hp > float(def.get("hp", 0.0)) * 0.15 or leaks:
+				bad.append("%s/%s" % [def.get("id"), part.get("id")])
+	check.call(count >= 8 and bad.is_empty(), "Feixe: %d drones com vida própria, menor que a do chefe, sem vazar (%s)"
+			% [count, ", ".join(bad)])
+
+
+## Um passo do chefe sozinho, como na Sim: o chefe roda os padrões, os feixes envelhecem.
+func _boss_tick(sim: Sim) -> void:
+	sim.frame += 1
+	if sim.no_fire > 0:
+		sim.no_fire -= 1
+	sim.boss.step(sim)
+	sim._beams_step()

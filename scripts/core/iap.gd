@@ -9,6 +9,8 @@ extends RefCounted
 ## repete casco, velocidade, arma, especial e poderes de uma nave do hangar ("kit", conferido por Powers.validate) e
 ## só muda o visual (a arte mais vistosa do jogo, rastro, tiro e estouro próprios). Uma por produto
 ## (`ship_premium_<id>`) ou as três no pacote `premium_fleet`. Na Steam vêm todas incluídas (`include_premium`).
+## Pacotes de Pérolas (`pearls_<total>`, consumíveis, PEARL_PACKS): só a moeda dos cosméticos, nunca créditos,
+## oricalco ou outra coisa que dê força.
 ##
 ## Modos (`mode()`, os mesmos do Turbo): "steam" (nada a comprar: tudo incluso ou por jogo), "play"
 ## (PlayBillingProvider), "simulated" (desenvolvimento sem o plugin: a compra é fingida na hora) e "off"
@@ -34,6 +36,18 @@ const PREMIUM_FLEET_USD := "5.99"
 const STARTER_PAINT := "paint_solar"
 ## Tokens de consumíveis já creditados guardados no perfil (os mais novos).
 const CREDITED_KEEP := 32
+## Pacotes de Pérolas: "pearls" = total creditado, "bonus" = % acima da base, "best" = selo "Melhor valor".
+## A conta: base de 100 Pérolas por dólar e bônus crescente (0, 10, 20, 30%). US$ 4,99 = 550, uma pintura de 400
+## (Abissal ou Solar) e um tom de 120 de sobra. A pintura avulsa da Play (250 por US$ 0,99, 400 por US$ 1,99, uns
+## 200 por dólar) continua o caminho mais barato para UMA pintura: quem já comprou avulsa nunca sai no prejuízo, e
+## o pacote é a moeda livre (os tons, que não se vendem avulsos, e qualquer pintura). O catálogo inteiro de
+## cosméticos por Pérolas soma 1.770; jogando, o baú dá 5 a cada 6 h e a missão uns 2 a 5.
+const PEARL_PACKS: Array[Dictionary] = [
+	{"id": "pearls_100", "kind": "consumable", "usd": "0.99", "pearls": 100, "bonus": 0},
+	{"id": "pearls_550", "kind": "consumable", "usd": "4.99", "pearls": 550, "bonus": 10},
+	{"id": "pearls_1200", "kind": "consumable", "usd": "9.99", "pearls": 1200, "bonus": 20},
+	{"id": "pearls_2600", "kind": "consumable", "usd": "19.99", "pearls": 2600, "bonus": 30, "best": true},
+]
 ## Produtos fixos ("usd": preço-alvo, só documentação; o preço mostrado é sempre o da Play). As pinturas
 ## entram de data/cosmetics.json (campo "product") e as naves premium de data/ships.json (campo "premium").
 const PRODUCTS: Array[Dictionary] = [
@@ -58,6 +72,8 @@ static var _catalog: Array[Dictionary] = []
 static func catalog() -> Array[Dictionary]:
 	if _catalog.is_empty():
 		for p: Dictionary in PRODUCTS:
+			_catalog.append(p)
+		for p: Dictionary in PEARL_PACKS:
 			_catalog.append(p)
 		for c: Variant in Store.cosmetics():
 			var def := c as Dictionary
@@ -161,6 +177,14 @@ static func consumables() -> PackedStringArray:
 
 static func is_consumable(id: String) -> bool:
 	return String(product(id).get("kind", "")) == "consumable"
+
+
+## Ids dos pacotes de Pérolas, do menor ao maior.
+static func pearl_packs() -> Array[String]:
+	var out: Array[String] = []
+	for p: Dictionary in PEARL_PACKS:
+		out.append(String(p["id"]))
+	return out
 
 
 # --- O que o perfil tem ------------------------------------------------------------------------
@@ -382,13 +406,17 @@ static func apply_state(profile: Dictionary, id: String, state: String) -> bool:
 			return false
 
 
-## Regra pura do consumível: credita as cargas da compra `token` uma vez só. Devolve se creditou.
+## Regra pura do consumível: credita as cargas (ou as Pérolas) da compra `token` uma vez só. Devolve se creditou.
+## Pérolas compradas vão só para a carteira (não contam como ganhas jogando em profile["earned"]).
 static func credit(profile: Dictionary, id: String, token: String) -> bool:
 	var iap: Dictionary = profile["iap"]
 	var done: Array = iap["credited"]
 	if token.is_empty() or done.has(token) or not is_consumable(id):
 		return false
-	iap["revive_charges"] = revive_charges(profile) + int(product(id).get("charges", 0))
+	var def := product(id)
+	iap["revive_charges"] = revive_charges(profile) + int(def.get("charges", 0))
+	var wallet: Dictionary = profile["wallet"]
+	wallet["pearls"] = int(wallet.get("pearls", 0)) + int(def.get("pearls", 0))
 	done.append(token)
 	while done.size() > CREDITED_KEEP:
 		done.pop_front()

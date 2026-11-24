@@ -29,6 +29,11 @@ const PLAYER: Array[Dictionary] = [
 			"glow": Color(0.75, 0.45, 1.0)},
 	{"id": &"rail", "radius": 3.0, "texture": "res://assets/art/generated/bullets/rail.png",
 			"glow": Color(1.0, 0.5, 0.35)},
+	# Tiro dos drones da secundária nos níveis 4 e 5 da fase (SecondaryFire, revisão 10): mais grosso e de outra cor.
+	{"id": &"shot_drone_heavy", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_drone_heavy.png",
+			"glow": Color(0.75, 0.45, 1.0)},
+	{"id": &"shot_drone_gold", "radius": 4.0, "texture": "res://assets/art/generated/bullets/shot_drone_gold.png",
+			"glow": Color(1.0, 0.92, 0.65)},
 ]
 
 

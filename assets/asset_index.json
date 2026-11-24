@@ -1,5 +1,11 @@
 [
  {
+  "file": "assets/art/generated/boss/beam_drone.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "38403435fbc27060241395f8430c3d2b8de2698d4c7743e8f8555393abed29f9"
+ },
+ {
   "file": "assets/art/generated/boss/tentacle_segment.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
@@ -66,6 +72,18 @@
   "sha256": "e604b2956cbd6166eccc672acb835d3b60ad9f7f589253c4f0d485acccab1409"
  },
  {
+  "file": "assets/art/generated/bullets/shot_drone_gold.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "8d68bed68163053fd38a4acbb9db4e77c9a0ff99fbbe55c262910e8edb039374"
+ },
+ {
+  "file": "assets/art/generated/bullets/shot_drone_heavy.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3dc77487e5905197b3699932e7a99d0740f34f875b25bb958805a50a299aa2b4"
+ },
+ {
   "file": "assets/art/generated/bullets/shot_pulsar.png",
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
@@ -112,6 +130,18 @@
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "57c4c923a4e68c26679c80dee56c0b089ed84fc63df7d0860e883897e8698f6b"
+ },
+ {
+  "file": "assets/art/generated/fx/drone_gold.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "257bcdc615f775c8c0842f252f6882c56f8606dfe9445c7ff59ac9ee67c63e42"
+ },
+ {
+  "file": "assets/art/generated/fx/drone_heavy.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "373314518de6a2025835d82e9b725d4f0c741ee640697667cf6cae473c01387c"
  },
  {
   "file": "assets/art/generated/fx/flare_64.png",
@@ -172,6 +202,18 @@
   "source": "tools/gen_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "1b84a99fdfc88e725d2ca7e887289efa25782fc5e796ceb6d8fcec0feb7ac9c3"
+ },
+ {
+  "file": "assets/art/generated/fx/warhead_gold.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "59d50dbb34a0b2d215969633fae94f46462d5d3b92b00bd479b203f2eb19be92"
+ },
+ {
+  "file": "assets/art/generated/fx/warhead_heavy.png",
+  "source": "tools/gen_sprites.py",
+  "license_id": "atlantis_generated",
+  "sha256": "06a54396325a452e126fea0afed88ec5396110520a5d431e18101967c7253c49"
  },
  {
   "file": "assets/art/generated/icon/adaptive_background_432.png",
@@ -730,6 +772,30 @@
   "source": "tools/gen_power_sprites.py",
   "license_id": "atlantis_generated",
   "sha256": "5564f1f1f289b18aac00cf77f38c015d78215f3a25d4194bff6af03f7d2b21f4"
+ },
+ {
+  "file": "assets/art/generated/shop/pearls_1.png",
+  "source": "tools/gen_pearl_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "56ff63621339b54186a98a8d081fb3192be7960ec28cd162ef17cc4b07035bee"
+ },
+ {
+  "file": "assets/art/generated/shop/pearls_2.png",
+  "source": "tools/gen_pearl_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "0d771d6385263cb242c5b3406999c12d4150b429cf93d43133d8f6f9f1b3d14a"
+ },
+ {
+  "file": "assets/art/generated/shop/pearls_3.png",
+  "source": "tools/gen_pearl_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "06a4608094f56e1ad6a0a33a7b73f032d183714d7b8d6562556168e6f294fc23"
+ },
+ {
+  "file": "assets/art/generated/shop/pearls_4.png",
+  "source": "tools/gen_pearl_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "3b4b8e75b3bc3dc37904c07f4dc30c528bb15d173e4070af1a6f97e1bce45c23"
  },
  {
   "file": "assets/art/hd/klaed/battlecruiser_base.png",

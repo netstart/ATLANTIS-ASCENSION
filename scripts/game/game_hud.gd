@@ -4,7 +4,6 @@ extends Control
 ## Playfield: em retrato o HUD de cima fica sobre o topo do campo (≤ 6%, mais transparente) ou numa faixa acima
 ## dele, e os botões de ação ficam empilhados na borda esquerda (direita na mão esquerda), sobre a parte de baixo
 ## do campo, com a arma e o nome do poder ao lado; no desktop vão para o painel lateral.
-##
 ## Lê a Sim a cada quadro, mas só troca texto, StyleBox e desenho vetorial quando o valor muda (regra
 ## de desempenho de docs/policies/qualidade.md). O que anda a cada quadro é só tamanho de ColorRect,
 ## modulate, escala e tweens; os anéis e glifos (draw_arc/polígonos) são refeitos só na troca de estado.
@@ -56,7 +55,6 @@ const SCORE_PULSE := 500
 const CHARGE_STEPS := 48
 ## Título do Poder III: segundos na tela (os níveis I e II usam o PowerChip).
 const SUPREME_BANNER_SECONDS := 1.1
-## Nave do jogador (Void) recortada para os ícones de casco.
 ## Dicas da primeira missão (tutorial em jogo, plano mestre 7.5): passo da Sim e chave do texto.
 const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint.orbs"], [1500, "hint.special"],
 		[2100, "hint.tide"], [2700, "hint.marked"], [3300, "hint.capture"]]
@@ -320,6 +318,7 @@ func _build_buttons() -> void:
 	_weapon_pips = HudKit.ignore(Control.new())
 	_weapon_pips.draw.connect(func() -> void: HudKit.draw_pips(_weapon_pips, _pip_level, _pip_max))
 	add_child(_weapon_pips)
+	_weapon_pips.add_child(HudSecondary.new())
 	_style_special()
 	_style_bomb()
 	_style_turbo()
@@ -1070,6 +1069,7 @@ func _refresh_weapon(sim: Sim) -> void:
 		_weapon_key = key
 		_weapon.text = tr("weapon." + key)
 		_place_weapon()
+	(_weapon_pips.get_child(0) as HudSecondary).refresh(sim, _weapon_right_edge > 0.0)
 
 
 func _refresh_buttons(sim: Sim) -> void:

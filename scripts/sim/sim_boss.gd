@@ -6,6 +6,11 @@ extends RefCounted
 ## Estados: ENTER (desce até a posição, invulnerável) → FIGHT (etapas por HP) → DUEL (feixe contra
 ## feixe, toques do jogador empurram) → DYING (explosões) → DEAD.
 ## Toda troca de etapa tem hitstop, cancela as balas (viram pérolas) e dá 1 s sem balas novas.
+##
+## Revisão da Sim (SimRevision): parte ou entrada de padrão com "since_rev" só existe a partir dela; entrada com
+## "until_rev" só até ela (replays antigos seguem a luta de antes). Drone emissor (revisão 9, parte com "deploy"):
+## sai de dentro do casco até o posto em `deploy` passos quando a etapa dele começa e volta para dentro quando ela
+## acaba; o feixe dele sai da lente (padrão ancorado nele) e some com ele.
 
 enum State { ENTER, FIGHT, DUEL, DYING, DEAD }
 
@@ -43,11 +48,13 @@ var _hurt_offset := Vector2.ZERO
 var _runners: Array[Dictionary] = []
 var _patterns: Dictionary = {}
 var _start := Vector2.ZERO
+var _rev: int = SimRevision.CURRENT
 
 
-## `hp_mult`: curva por capítulo da Sim (corpo e partes; 1 = vida da tabela).
-func setup(p_def: Dictionary, patterns: Dictionary, hp_mult: float = 1.0) -> void:
+## `hp_mult`: curva por capítulo da Sim (corpo e partes; 1 = vida da tabela). `rev`: revisão da Sim da partida.
+func setup(p_def: Dictionary, patterns: Dictionary, hp_mult: float = 1.0, rev: int = SimRevision.CURRENT) -> void:
 	def = p_def
+	_rev = rev
 	id = StringName(String(def.get("id", "")))
 	is_final = bool(def.get("duel", false))
 	max_hp = float(def.get("hp", 1000.0)) * hp_mult
@@ -57,15 +64,23 @@ func setup(p_def: Dictionary, patterns: Dictionary, hp_mult: float = 1.0) -> voi
 	_start = Vector2(home.x, -float(def.get("enter_from", 120.0)))
 	pos = _start
 	for raw: Variant in def.get("parts", []):
+		if not in_rev(raw as Dictionary, rev):
+			continue
 		var p: Dictionary = (raw as Dictionary).duplicate(true)
 		p["id"] = StringName(String(p.get("id", "")))
 		p["base"] = Vector2(float(p.get("x", 0.0)), float(p.get("y", 0.0)))
-		p["offset"] = p["base"]
+		p["offset"] = Vector2.ZERO if int(p.get("deploy", 0)) > 0 else p["base"]
+		p["out"] = 0.0 if int(p.get("deploy", 0)) > 0 else 1.0
 		p["max_hp"] = float(p.get("hp", 0.0)) * hp_mult
 		p["hp"] = p["max_hp"]
 		p["alive"] = true
 		p["flash"] = 0
 		parts.append(p)
+
+
+## Parte ou entrada de padrão que vale nesta revisão da Sim ("since_rev", "until_rev").
+static func in_rev(entry: Dictionary, rev: int) -> bool:
+	return rev >= int(entry.get("since_rev", 0)) and rev <= int(entry.get("until_rev", rev))
 
 
 ## Caixas medidas na arte HD (Hitboxes.boss): corpo e partes com sprite. Vazio = as da tabela.
@@ -251,6 +266,8 @@ func _enter_phase(index: int, sim: Sim) -> void:
 	var ph := phase()
 	for raw: Variant in ph.get("patterns", []):
 		var entry: Dictionary = raw
+		if not in_rev(entry, _rev):
+			continue
 		var pattern_id := StringName(String(entry.get("pattern", "")))
 		if _patterns.has(pattern_id):
 			var anchor := String(entry.get("anchor", "body"))
@@ -272,6 +289,15 @@ func _move() -> void:
 			var ph := float(part.get("phase", 0.0))
 			part["offset"] = (part["base"] as Vector2) + Vector2(sway * sin((t * f + ph) * TAU),
 					sway * 0.5 * cos((t * f * 1.3 + ph) * TAU))
+		var deploy := int(part.get("deploy", 0))
+		if deploy > 0:
+			# Drone: sai do casco no começo da etapa dele e volta quando ela acaba (destruído, fica onde caiu).
+			var want := 1.0 if part_active(part) else 0.0
+			if bool(part["alive"]):
+				part["out"] = move_toward(float(part["out"]), want, 1.0 / deploy)
+			var u := float(part["out"])
+			var rest: Vector2 = part["offset"] if sway > 0.0 else part["base"]
+			part["offset"] = rest * (u * u * (3.0 - 2.0 * u))
 
 
 func _part(part_id: StringName) -> Dictionary:

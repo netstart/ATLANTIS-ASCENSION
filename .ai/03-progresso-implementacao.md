@@ -367,7 +367,13 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   número do capítulo em ouro, Poder contra o recomendado, nós em zigue-zague com estrelas, sonar e nave na próxima
   missão, setas/deslize entre capítulos abertos, marco com prêmio que já existe (aeronave dos fragmentos ou próxima
   asa), atalhos dos dois lados, JOGAR entre Carta e Desafio. Textos em `tools/i18n/command_campaign.py`; testes em
-  `tests/campaign_tests.gd` (todos os capítulos no layout apertado e no desktop). Falta conferir no aparelho
+  `tests/campaign_tests.gd` (todos os capítulos no layout apertado e no desktop). Arrastar a trilha na vertical
+  (dedo ou mouse) rola entre os capítulos abertos com os nós à vista: para baixo o capítulo de cima entra pela borda
+  de cima (para cima, o anterior por baixo), a linha que sai de um encontra a que entra no outro; ao soltar, além de
+  1/3 da altura ou num piparote (700 px/s) assenta no vizinho em até 0,24 s (sem animação em "reduzir movimento"),
+  senão volta; no primeiro e no último aberto a trilha só cede (18% da altura) e volta. Até 12 px é toque (o nó abre
+  o cartão); o deslize lateral, as setas e o controle seguem iguais. Testes de arraste em `campaign_tests.gd`.
+  Falta conferir no aparelho
 - 🔧 Menus de comando, fase 2 — Loja, Naves e Eventos: Loja com sub-abas em pílula (`scripts/app/ui/pill_tabs.gd`),
   baú no cartão-destaque com retrato pixel art em escala física inteira (`store_banner.gd`), pinturas em grade de
   ladrilhos por raridade com estado sempre legível e painel de detalhe Comprar/Equipar (`command_sheet.gd`,
@@ -615,6 +621,45 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (com o Portão mirando, c8m2 perdia 2 de 3: virou coluna), 2 golpes de feixe em 36 partidas; o resto vem do
   desvio extra empurrando o bot para balas. Testes em `tests/beam_tests.gd`; capturas com
   `game_shots_runner.tscn -- --mission=c3m1 --beams`. Falta conferir no aparelho
+- ✅ Nenhum feixe saindo do nada (pedido do dono, Sky Leviathan: "não pode ter um raio saindo do nada; ao menos precisa
+  ter um drone"). Auditoria de todas as bocas de feixe de padrão contra a arte HD do emissor: fora do casco estavam
+  as faixas laterais do Sky Leviathan (±95, 62 u fora), os raios do Olho da Tempestade (±70, 41 u), os pilares do
+  Arquiteto (±90, 51 u), os feixes do Portão Orbital (±60, 27 u) e as asas da Raia-Trovão (±64, 27 u); os outros
+  (Kraken, Poseidon, investida do Leviatã, Caranguejo, Hidra, Guardiã da Torre, Aríete, Enguia, Bulwark) já saem do
+  casco ou a até 4 u dele. Revisão 9 da Sim: drones emissores (parte `"drone"` com `"deploy"`) nos postos das bocas,
+  que saem de dentro do casco em 40 passos quando a etapa deles começa e voltam quando ela acaba; o feixe sai da
+  lente do drone (padrões novos ancorados nele, mesmo ritmo) e destruir o drone corta o feixe e o tira da luta (2000
+  pontos e medalha). Cada drone tem vida própria, de 4% a 10% da do chefe, independente dele (`leak` e `share` 0:
+  acertar o drone não fere o chefe e vice-versa; pedido do dono), com uma barrinha coral logo acima do drone
+  (`scripts/view/beam_drones.gd`), bem menor que a barra do chefe no topo, que some com ele. Raia-Trovão: a boca foi para as cápsulas laterais (±31), a arte não tem asas. Partes e entradas
+  de padrão com `since_rev`/`until_rev` (`SimBoss.in_rev`): replays até a revisão 8 seguem a luta antiga. Arte do
+  drone em `tools/gen_sprites.py` (`boss/beam_drone.png`, própria, 2 texels por unidade): casco de aço com aro coral,
+  aletas, antena e lente magenta; no jogo (`BeamDrones`) a lente vira para o feixe, acende na cor dele durante o aviso e fica
+  branca-quente aceso; os drones ainda no posto estouram com o chefe. Fontes: `tools/gen_bosses_beta.py`
+  (Arquiteto, Portão, Leviatã), `tools/gen_bosses_mid.py` (Raia) e `data/bosses.json`/`data/patterns.json` (Olho da
+  Tempestade, escrito à mão). Balanceamento (bot, sementes 7, 11 e 23): Arquiteto 121/102/103 → 122/103/102 s,
+  Portão 54/81/78 → 54/84/79 s, Leviatã (c5m3a/c5m3s) igual a ±5 s, Raia igual; Olho da Tempestade 60/76/69 →
+  62/68/55 s e danos 4 → 2 (os dois golpes de feixe somem: o bot derruba os drones de 480 de vida no caminho),
+  nenhuma perdida. Testes em `tests/beam_tests.gd` (toda boca da revisão atual sobre a arte, drone com vida própria
+  que morre sozinho, drone corta o feixe, dados dos drones, revisão 8 sem drones); capturas com
+  `game_shots_runner.tscn -- --mission=c5m3s --beams --beam-boss=sky_leviathan --beam-phase=storm`. Falta conferir
+  no aparelho
+- ✅ Secundária sobe na fase (pedido do dono: "o tiro secundário também precisa receber atualização e ficar mais
+  forte"). Revisão 10 da Sim (`SecondaryFire.phased`): cada orbe (e núcleo de força) sobe a arma principal e 1 nível
+  da secundária, até 5; cada dano no casco tira 1. O módulo da Oficina dá só o nível inicial, com a mesma quantidade de
+  antes (Oficina 1 a 5 → nível 1, 1, 2, 2, 3). Escala única: mísseis 2, 4 e 6 nos níveis 1 a 3, Ogiva I no 4 (+50%,
+  maior, aço e ciano, rastro ciano) e Ogiva II no 5 (2x, dourada, rastro e halo dourados, estilhaço de 18 u que fere as
+  escoltas no ar mas não o mar nem o chefe); drones 1, 2 e 3 com 30%, 35% e 40% do dano da arma principal, 60% no 4
+  (drone e tiro violeta) e 80% no 5 (drone dourado, tiro champanhe); o lançador do mar das fases de água é sistema
+  automático, não secundária, e segue fixo em 1 par de 5 (decisão do coordenador: com o nível, o bot perdia a c5m3a
+  na semente 7); módulos do Abismo continuam instalando no nível 2 ou subindo 2. HUD: glifo da secundária e 5 degraus abaixo dos da
+  arma (3 ciano, 2 ouro; `HudSecondary`), com pulso dourado e o som de melhora na subida. Arte própria em
+  `tools/gen_sprites.py` (ogivas, drones e tiros); desenho em `scripts/view/secondary_art.gd`. Replays até a revisão 9
+  seguem com o nível fixo da Oficina. Balanceamento (bot, sementes 7 e 11, c1m1, c1m3, c3m2, c5m2, c7m3s, c9m2,
+  c10m3; `boss_timing.gd --secondary=missiles:3` e `drones:5`): fases de 142 a 187 s, nenhuma perdida, 0 dano; luta
+  do Olho da Tempestade 43/60 → 29/34 s com mísseis, Arquiteto 53/66 → 56/47 s, Matriarca 98/113 → 66/84 s. Testes em
+  `tests/secondary_tests.gd`; capturas com `game_shots_runner.tscn -- --secondary=missiles:5` (prende o nível).
+  Falta conferir no aparelho
 - ✅ Nave do jogador de volta ao tamanho original (pedido do dono: "a nave precisa ser menor, do tamanho da original").
   Medido pela caixa opaca: a Void da 1.24.0 tinha 30 x 26 unidades no nível 1 e 46 x 35 no 10 (lâminas); a HD da
   1.25.0 saía a 2 texels por unidade com 52 a 62 de altura (Falcon 43,5 x 56 no 1 e 67,5 x 57,5 no 10). Agora a
@@ -647,3 +692,15 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   30 s finais; replays até a revisão 7 jogam sem elas, passo a passo. Bot: não mira no mar. Balanceamento (bot,
   sementes 7 e 11): as 16 fases de água vencidas, de 146 a 314 s. Testes em `tests/sea_tests.gd`. A arte e a
   caixa de colisão (`sea_submarine`, `sea_warship`) vêm de outra tarefa. Falta conferir no aparelho
+- ✅ Pacotes de Pérolas com dinheiro real (pedido do dono: "coloque na loja pacotes de compras de moedas do jogo usando
+  dinheiro real"; decidido: só Pérolas, a moeda dos cosméticos). Quatro consumíveis na Google Play em
+  `Iap.PEARL_PACKS` (`pearls_100` US$ 0,99, `pearls_550` US$ 4,99 +10%, `pearls_1200` US$ 9,99 +20%, `pearls_2600`
+  US$ 19,99 +30% e "Melhor valor"): base de 100 por dólar, US$ 4,99 = uma pintura de 400 e um tom; a pintura avulsa
+  segue mais barata para uma pintura só. Crédito pelo caminho dos consumíveis (credita, grava, consome; token contra
+  crédito em dobro; pendente e cancelado não creditam), sem contar como Pérola ganha. Loja: sub-aba "Pérolas" (grade
+  2 colunas no retrato e 4 no PC, pilha que cresce de 3 pérolas a um baú, `tools/gen_pearl_packs.py`, "atlantis_generated"),
+  aberta direto pelo "+" das Pérolas na barra do topo (`NavShell._pick_currency`). Steam e release sem plugin: nada.
+  Textos nos 11 idiomas (`tools/i18n/command_iap.py`) e fichas da Play (`tools/i18n/play_products.py`);
+  `tools/play_products.py` cria os quatro pela API (só `--dry-run` rodado). Testes em `tests/iap_tests.gd`. Falta
+  👤 criar/ativar os produtos no Play Console (`python tools\play_products.py apply --only pearls_100,pearls_550,pearls_1200,pearls_2600`)
+  e conferir no aparelho

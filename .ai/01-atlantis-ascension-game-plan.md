@@ -225,12 +225,13 @@ quarto nível, **Ressonância**.
 DPS-alvo por nível, contra um alvo: 60, 90, 130, 175 (Ressonância). O Laser é melhor em alvo único, o Pulsar em
 cobertura, o Plasma em grupos, o Railgun contra blindados. Tabelas finais em `data/weapons.json`.
 
-**Secundárias** (escolhidas no hangar, sobem com módulos permanentes):
+**Secundárias** (escolhidas no hangar; o módulo permanente dá o nível inicial e, na fase, cada orbe sobe 1 nível até
+5 e cada dano tira 1, como a arma principal; revisão 10 da Sim):
 
 | Secundária | Comportamento |
 |---|---|
-| **Mísseis** | 2 a 6 mísseis teleguiados a cada 1,2 s, priorizam o inimigo mais próximo do topo |
-| **Drones** | 1 a 3 drones que orbitam e copiam a arma principal com 30% do dano |
+| **Mísseis** | Teleguiados a cada 1,2 s, priorizam o mar e depois o inimigo mais próximo: 2, 4 e 6 nos níveis 1 a 3; Ogiva I (+50%) no 4; Ogiva II dourada (2x, estilhaço nas escoltas) no 5 |
+| **Drones** | 1 a 3 drones que orbitam e atiram reto com 30%, 35% e 40% do dano da arma principal; 60% (violeta) no 4 e 80% (dourado) no 5 |
 
 **Especiais** (uma por aeronave, recarga por tempo e por graze):
 
@@ -381,9 +382,10 @@ solar). Regras:
 |---|---|---|
 | **Créditos** | Toda missão (pontuação), conquistas, eventos | Subir nível de aeronave, módulos, alas |
 | **Oricalco** | Medalhas, chefes, estrelas | Material para nível alto de aeronave e Ressonância |
-| **Pérolas de Maré** | Conquistas, desafio diário, eventos, anúncio recompensado | Só cosméticos |
+| **Pérolas de Maré** | Conquistas, desafio diário, eventos, anúncio recompensado; pacotes na Play | Só cosméticos |
 
-Não existe compra de moeda. Cosméticos podem ser comprados direto com dinheiro ou com Pérolas.
+Só a moeda dos cosméticos se vende: pacotes de Pérolas na Google Play (seção 17). Créditos e oricalco (força)
+nunca. Cosméticos podem ser comprados direto com dinheiro ou com Pérolas.
 
 **Progressão permanente** (hangar): aeronave nível 1 a 10; módulos (Casco, Motor, Mira, Secundária) nível 1 a 5;
 **teto de poder:** um jogador no máximo tem no máximo +35% de DPS e +1 casco em relação ao inicial. Missões mostram
@@ -1189,12 +1191,22 @@ Metas de retenção (D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 6%) e as referências de me
     e estouro próprios. Ficam fora da contagem da coleção e da conquista de frota. Loja: seção "Naves premium" em
     Extras, pacote em destaque com a economia; coleção: grade "Naves premium" que leva à Loja. Steam: inclusas.
     Produtos criados pela API com `tools/play_products.py`.
+  - **Pacotes de Pérolas** (consumíveis, `pearls_100` US$ 0,99, `pearls_550` US$ 4,99 (+10%), `pearls_1200`
+    US$ 9,99 (+20%), `pearls_2600` US$ 19,99 (+30%, "Melhor valor")): só a moeda dos cosméticos, nunca créditos ou
+    oricalco. Base de 100 Pérolas por dólar com bônus crescente; US$ 4,99 compra uma pintura de 400 e um tom. A
+    pintura avulsa da Play (uns 200 Pérolas por dólar) continua mais barata para UMA pintura, então quem comprou
+    avulsa nunca sai no prejuízo; o pacote é a moeda livre (tons, que não se vendem avulsos, e qualquer pintura).
+    Crédito igual ao do pacote de revives: credita, grava e só então consome, token guardado contra crédito em dobro,
+    pendente e cancelado não creditam; Pérolas compradas não contam como ganhas jogando (`earned`). Loja: sub-aba
+    "Pérolas" (grade de cartões com a pilha que cresce, `tools/gen_pearl_packs.py`, quantidade, bônus e o preço da
+    Play no botão), aberta direto pelo "+" das Pérolas na barra do topo. Steam: não existe. Criados pela API com
+    `tools/play_products.py` (ids, quantidades e preços lidos de `PEARL_PACKS` em `scripts/core/iap.gd`).
   - **Ficou de fora: Expansão de modos.** Abismo Infinito e Boss Rush já existem e abrem jogando (c7m1; os 4 chefes
     de ato). Vender a abertura antecipada seria vender progresso: o Abismo paga créditos (upgrades) e o Boss Rush
     sem os chefes vencidos é spoiler e frustração. Continuam grátis por jogo.
 - O passe dourado continua só **simulado** (sem produto no Play Console) e escondido em release
   (`Store.purchases_enabled`).
-- Nada de energia, gacha pago, moeda vendida ou vantagem de poder.
+- Nada de energia, gacha pago, moeda que compre força ou vantagem de poder (só as Pérolas, dos cosméticos).
 - Conformidade: UMP para consentimento, classificação etária, Data Safety, `app-ads.txt`, IARC "compras digitais".
 
 **Steam (premium, preço-alvo US$ 9,99):** jogo completo, sem anúncios, com o Turbo e todas as pinturas incluídos

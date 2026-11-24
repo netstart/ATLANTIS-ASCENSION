@@ -16,10 +16,19 @@ extends ListScreen
 ## Naves premium (Iap): seção própria no topo de Extras, com o pacote das três em destaque (quanto economiza) e
 ## um cartão por nave, cada um com a vitrine animada (PremiumShowcase), o selo Premium, o preço da Play e o
 ## aviso honesto: joga como uma nave do hangar, só o visual é exclusivo.
+## Pacotes de Pérolas (Iap.PEARL_PACKS): sub-aba própria (Baú | Pinturas | Pérolas | Extras), aberta direto pelo "+"
+## das Pérolas na barra do topo (NavShell). Grade de cartões (2 colunas no retrato, 4 no PC) com a pilha que cresce
+## (tools/gen_pearl_packs.py), a quantidade grande, o "+X% bônus" em menta, o selo "Melhor valor" no maior e o preço
+## da Play no botão. Só a moeda dos cosméticos: o texto diz que nada ali dá força. Some sem nada à venda (Steam).
 
 const TAB_CHEST := &"chest"
 const TAB_PAINTS := &"paints"
 const TAB_SUPPORT := &"support"
+const TAB_PEARLS := &"pearls"
+## Destaque dos pacotes de Pérolas (a cor da moeda na barra do topo); o maior vai em ouro.
+const PEARL_ACCENT := Color("b57bff")
+## Largura mínima de um cartão de pacote: 2 colunas no retrato (270), 4 quando cabe (PC).
+const PACK_CELL := 118.0
 ## Largura mínima de cada coluna da grade de pinturas (pontos lógicos).
 const CELL := 76.0
 ## Preço que ainda não dá: coral claro (lê bem sobre o vidro escuro).
@@ -35,6 +44,7 @@ var _tabs: PillTabs
 var _sheet: CommandSheet
 var _sheet_id: String = ""
 var _shelves: Array[GridContainer] = []
+var _packs: GridContainer
 
 
 func title_key() -> String:
@@ -114,6 +124,8 @@ func _layout() -> void:
 	_scroll.size.y = maxf(0.0, safe.end.y - list_y)
 	for shelf: GridContainer in _shelves:
 		shelf.columns = _columns()
+	if is_instance_valid(_packs):
+		_packs.columns = _pack_columns()
 	_sheet.position = Vector2.ZERO
 	_sheet.size = size
 	_sheet.place(safe)
@@ -125,6 +137,10 @@ func _set_tabs() -> void:
 		{"id": TAB_CHEST, "text": tr("store.tab_chest"),
 				"notice": Notices.free_chest_ready(profile, int(Time.get_unix_time_from_system()))},
 		{"id": TAB_PAINTS, "text": tr("store.tab_paints")}]
+	if pearls_visible(profile):
+		items.append({"id": TAB_PEARLS, "text": tr("store.tab_pearls")})
+	elif _tab == TAB_PEARLS:
+		_tab = TAB_CHEST
 	if _support_visible(profile):
 		items.append({"id": TAB_SUPPORT, "text": tr("store.tab_support")})
 	elif _tab == TAB_SUPPORT:
@@ -144,6 +160,8 @@ func _fill() -> void:
 			_fill_paints(profile, false)
 		TAB_SUPPORT:
 			_fill_extras(profile)
+		TAB_PEARLS:
+			_fill_pearls(profile)
 		_:
 			_fill_chest(profile, now)
 			if Turbo.shop_visible(profile):
@@ -723,6 +741,148 @@ func _premium_card(profile: Dictionary, id: String, node: String, title: String,
 			"note": tr("store.premium_note")})
 	_list.add_child(card)
 	return card
+
+
+# --- Pacotes de Pérolas (Iap) -----------------------------------------------------------------------
+
+## A sub-aba Pérolas aparece quando algum pacote está à venda (simulado, ou na Play com preço).
+static func pearls_visible(profile: Dictionary) -> bool:
+	for id: String in Iap.pearl_packs():
+		if Iap.visible(profile, id):
+			return true
+	return false
+
+
+func _pack_columns() -> int:
+	return 4 if _width + 6.0 >= 4.0 * (PACK_CELL + 6.0) else 2
+
+
+## Vitrine dos pacotes: faixa da seção, a frase do que as Pérolas compram, a grade de cartões e a nota honesta.
+func _fill_pearls(profile: Dictionary) -> void:
+	Iap.on_changed(refill)
+	var head := _section(tr("store.pearls_section"))
+	head.name = "PearlsSection"
+	_list.add_child(head)
+	var intro := text(_list, tr("store.pearls_intro"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
+	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_packs = GridContainer.new()
+	_packs.name = "PearlPacks"
+	_packs.columns = _pack_columns()
+	_packs.add_theme_constant_override("h_separation", 6)
+	_packs.add_theme_constant_override("v_separation", 14)
+	_packs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_list.add_child(_packs)
+	var tier := 0
+	for id: String in Iap.pearl_packs():
+		tier += 1
+		if Iap.visible(profile, id):
+			_pack_card(id, tier)
+	var note := text(_list, tr("store.pearls_note"), UiTheme.TEXT_DIM, UiTheme.SMALL_SIZE)
+	note.name = "PearlsNote"
+	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+
+## Cartão de um pacote: selo "Melhor valor" pendurado na borda de cima (só o maior), a pilha, a quantidade grande
+## com a pérola, o bônus em menta, o estado da Play e o botão com o preço da Play.
+func _pack_card(id: String, tier: int) -> void:
+	var def := Iap.product(id)
+	var best := bool(def.get("best", false))
+	var accent := UiTheme.GOLD if best else PEARL_ACCENT
+	var card := PanelContainer.new()
+	card.name = "Pack_" + id
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+	var back := StoreBanner.Backdrop.new()
+	back.accent = accent
+	back.rays = tier >= 3
+	card.add_child(back)
+	var pad := MarginContainer.new()
+	pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side: String in ["left", "right", "top", "bottom"]:
+		pad.add_theme_constant_override("margin_" + side, 8)
+	card.add_child(pad)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 3)
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	pad.add_child(col)
+	if best:
+		_ribbon_badge(card, tr("store.pearls_best"))
+	var art := TextureRect.new()
+	art.name = "PackArt"
+	art.texture = load("res://assets/art/generated/shop/pearls_%d.png" % clampi(tier, 1, 4)) as Texture2D
+	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	art.custom_minimum_size = Vector2(0, 66.0)
+	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(art)
+	var amount := HBoxContainer.new()
+	amount.alignment = BoxContainer.ALIGNMENT_CENTER
+	amount.add_theme_constant_override("separation", 4)
+	amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var g := glyph(&"pearls", Color.WHITE, 16)
+	g.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	amount.add_child(g)
+	var value := UiTheme.label(Locale.format_number(int(def.get("pearls", 0))), 20, UiTheme.WHITE)
+	_bold(value)
+	value.name = "PackAmount"
+	amount.add_child(value)
+	col.add_child(amount)
+	var bonus := int(def.get("bonus", 0))
+	var extra := UiTheme.label(tr("store.pearls_bonus") % bonus if bonus > 0 else " ", UiTheme.SMALL_SIZE,
+			UiTheme.MINT)
+	_bold(extra)
+	extra.name = "PackBonus"
+	extra.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	col.add_child(extra)
+	var status := Iap.status(id)
+	var waiting := status == "busy" or status == "pending"
+	if not status.is_empty():
+		var says := {"busy": tr("store.turbo_busy"), "pending": tr("store.pending"),
+				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
+		var line := text(col, String(says.get(status, tr("store.turbo_failed"))),
+				UiTheme.GOLD if waiting else SHORT_COLOR, UiTheme.SMALL_SIZE)
+		line.name = "PackStatus"
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var price := Iap.price(id)
+	var buy := button(col, price if not price.is_empty() else tr("store.buy"), func() -> void:
+		if Iap.buy(SaveManager.data, id):
+			AudioManager.play_ui("kenney_ui_confirm")
+			SaveManager.save_profile(), not waiting, "PackBuy_" + id, true)
+	buy.custom_minimum_size.y = 40.0
+	buy.tooltip_text = tr("store.pearls_buy") % [Locale.format_number(int(def.get("pearls", 0))),
+			price if not price.is_empty() else tr("store.buy")]
+	_packs.add_child(card)
+
+
+## Selo em ouro cheio (texto escuro) centrado sobre a borda de cima do cartão, metade para fora (fora do fluxo:
+## não empurra o conteúdo).
+func _ribbon_badge(card: PanelContainer, value: String) -> void:
+	var mark := PanelContainer.new()
+	var box := UiTheme.pill_box(UiTheme.GOLD)
+	box.bg_color = UiTheme.GOLD
+	box.border_color = UiTheme.GOLD.lightened(0.35)
+	mark.add_theme_stylebox_override("panel", box)
+	mark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 3)
+	row.add_child(glyph(&"star", UiTheme.GOLD_DARK, 10))
+	var l := UiTheme.label(value, UiTheme.SMALL_SIZE, UiTheme.GOLD_DARK)
+	_bold(l)
+	row.add_child(l)
+	mark.add_child(row)
+	var layer := Control.new()
+	layer.name = "Ribbon"
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(layer)
+	mark.name = "PackBest"
+	layer.add_child(mark)
+	var place := func() -> void:
+		mark.size = mark.get_combined_minimum_size()
+		mark.position = Vector2(floorf((layer.size.x - mark.size.x) * 0.5), -floorf(mark.size.y * 0.5) - 1.0)
+	layer.resized.connect(place)
+	mark.minimum_size_changed.connect(place)
 
 
 # --- Turbo -------------------------------------------------------------------------------------------

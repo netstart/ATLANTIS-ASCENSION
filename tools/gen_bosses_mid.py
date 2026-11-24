@@ -53,6 +53,11 @@ PATTERNS = [
     {"id": "mid_manta_wings", "steps": [
         {"op": "beam", "warn_frames": 50, "frames": 36, "width": 16, "ox": -64, "oy": 16},
         {"op": "beam", "warn_frames": 50, "frames": 36, "width": 16, "ox": 64, "oy": 16}, wait(170)]},
+    # Revisão 9 da Sim: os mesmos feixes saindo das cápsulas cinzas dos lados do casco (a arte não tem asas; a boca
+    # antiga, a 64 u do centro, ficava no vazio).
+    {"id": "mid_manta_pods", "steps": [
+        {"op": "beam", "warn_frames": 50, "frames": 36, "width": 16, "ox": -31, "oy": 14},
+        {"op": "beam", "warn_frames": 50, "frames": 36, "width": 16, "ox": 31, "oy": 14}, wait(170)]},
     {"id": "mid_manta_rain", "bullet": "orb_cyan_s", "steps": [
         {"op": "fan", "count": 7, "spread_deg": 150, "speed": 64, "angle_deg": -90, "turn": 40}, wait(26),
         {"op": "repeat", "from": 0, "times": 2}, wait(100)]},
@@ -203,6 +208,16 @@ def mid(ch, id_, sprite, tint, scale, radius, phases, parts=None, chain=None, hp
     return out
 
 
+def pods(beta, boss):
+    """Raia-Trovão: na revisão 9 os feixes saem das cápsulas laterais (mid_manta_pods), no lugar dos de antes."""
+    for ph in boss["phases"]:
+        out = []
+        for e in ph["patterns"]:
+            out += beta.by_rev([e], [dict(e, pattern="mid_manta_pods")]) if e["pattern"] == "mid_manta_wings" else [e]
+        ph["patterns"] = out
+    return boss
+
+
 def mids(beta):
     seg = lambda n, sprite, spacing, sway, hp: [dict(s, hp=hp, active_in=["open", "press"])
                                                for s in beta.chain(n, sprite, spacing, sway)]
@@ -217,9 +232,9 @@ def mids(beta):
              [("mid_oracle_gaze", "body"), ("mid_oracle_bloom", "body")]],
             parts=[dict(turret("orb_l", "nairan_scout", -48, 30, 200, ["open", "press"]), ring=True),
                    dict(turret("orb_r", "nairan_scout", 48, 30, 200, ["open", "press"]), ring=True)]),
-        mid(3, "thunder_manta", "nautolan_bomber", "#c9f0ff", 1.9, 30,
-            [[("mid_manta_rain", "body")], [("mid_manta_wings", "body"), ("mid_manta_rain", "body")],
-             [("mid_manta_spin", "body"), ("mid_manta_wings", "body")]]),
+        pods(beta, mid(3, "thunder_manta", "nautolan_bomber", "#c9f0ff", 1.9, 30,
+                       [[("mid_manta_rain", "body")], [("mid_manta_wings", "body"), ("mid_manta_rain", "body")],
+                        [("mid_manta_spin", "body"), ("mid_manta_wings", "body")]])),
         mid(4, "magma_crab", "klaed_support", "#ffb08a", 1.8, 28,
             [[("mid_crab_claws", "body")], [("mid_crab_bubbles", "claw_l"), ("mid_crab_bubbles", "claw_r")],
              [("mid_crab_jet", "body"), ("mid_crab_claws", "body")]],

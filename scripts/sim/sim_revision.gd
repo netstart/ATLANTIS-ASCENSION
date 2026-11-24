@@ -13,9 +13,15 @@ extends RefCounted
 ##      do centro (Hitboxes.ship).
 ##   8: mar: submarinos e navios nas missões de água (SimEnemy.sea, só mísseis e explosões os ferem), mísseis do mar
 ##      automáticos (SecondaryFire.sea_launcher) e mísseis buscando o mar primeiro (Sim.nearest_target).
+##   9: feixe só sai de algo visível: drones emissores destrutíveis nas bocas fora do casco (partes "drone" do
+##      Olho da Tempestade, Arquiteto, Portão Orbital e Sky Leviathan; destruir um corta o feixe dele) e a boca da
+##      Raia Trovejante nas cápsulas laterais. Partes e entradas de padrão com "since_rev"/"until_rev" (SimBoss).
+##  10: secundária com nível na fase (SecondaryFire.phased): a Oficina dá o nível inicial, cada orbe sobe 1 até 5 e
+##      cada dano tira 1; 2, 4 e 6 mísseis (1 a 3 drones), Ogiva I (+50%) e Ogiva II (2x e estilhaço). O lançador
+##      do mar segue fixo (1 par de 5).
 ## A saída da fase continua na marca "outro" da carga, anterior a este número (SimOutro).
 
-const CURRENT := 8
+const CURRENT := 10
 
 
 ## Revisão das regras de uma partida com esta carga.

@@ -27,6 +27,9 @@ PATTERNS = [
         {"op": "beam", "aim": False, "warn_frames": 50, "frames": 40, "width": 18, "ox": -90, "oy": 20},
         {"op": "beam", "aim": False, "warn_frames": 50, "frames": 40, "width": 18, "ox": 90, "oy": 20},
         {"op": "wait", "frames": 170}]},
+    # Revisão 9 da Sim: cada coluna sai de um drone pilar (parte "pylon_l"/"pylon_r"), não do vazio ao lado do casco.
+    {"id": "architect_pillar", "steps": [
+        {"op": "beam", "aim": False, "warn_frames": 50, "frames": 40, "width": 18}, {"op": "wait", "frames": 170}]},
     {"id": "architect_grid", "bullet": "needle_gold", "steps": [
         {"op": "line", "count": 4, "speed": 80, "speed_step": 18, "aim": True}, {"op": "wait", "frames": 20},
         {"op": "repeat", "from": 0, "times": 2}, {"op": "wait", "frames": 80}]},
@@ -51,6 +54,13 @@ PATTERNS = [
         {"op": "beam", "aim": False, "warn_frames": 55, "frames": 45, "width": 22, "ox": -60, "oy": 24},
         {"op": "wait", "frames": 60},
         {"op": "beam", "aim": False, "warn_frames": 55, "frames": 45, "width": 22, "ox": 60, "oy": 24}, {"op": "wait", "frames": 160}]},
+    # Revisão 9: os feixes laterais saem dos drones "gate_l"/"gate_r", alternados como antes.
+    {"id": "gate_beam_a", "steps": [
+        {"op": "beam", "aim": False, "warn_frames": 55, "frames": 45, "width": 22}, {"op": "wait", "frames": 60},
+        {"op": "wait", "frames": 160}]},
+    {"id": "gate_beam_b", "steps": [
+        {"op": "wait", "frames": 60}, {"op": "beam", "aim": False, "warn_frames": 55, "frames": 45, "width": 22},
+        {"op": "wait", "frames": 160}]},
     # Sky Leviathan (Ato II): segmentos soltam pares; investida; faixas.
     {"id": "leviathan_pellets", "bullet": "orb_cyan_m", "steps": [
         {"op": "aimed_fan", "count": 2, "spread_deg": 24, "speed": 70}, {"op": "wait", "frames": 150}]},
@@ -62,6 +72,17 @@ PATTERNS = [
         {"op": "wait", "frames": 140},
         {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "ox": 0, "oy": 10},
         {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "ox": 95, "oy": 10},
+        {"op": "wait", "frames": 140}]},
+    # Revisão 9: as faixas dos lados saem dos drones de tempestade "lane_l"/"lane_r"; a do meio, do corpo. Mesmo
+    # ritmo das faixas antigas (esquerda + meio, depois meio + direita), uma espera por meia volta para não derivar.
+    {"id": "leviathan_lane_core", "steps": [
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "oy": 10}, {"op": "wait", "frames": 140},
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60, "oy": 10}, {"op": "wait", "frames": 140}]},
+    {"id": "leviathan_lane_a", "steps": [
+        {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60}, {"op": "wait", "frames": 140},
+        {"op": "wait", "frames": 140}]},
+    {"id": "leviathan_lane_b", "steps": [
+        {"op": "wait", "frames": 140}, {"op": "beam", "aim": False, "warn_frames": 60, "frames": 50, "width": 60},
         {"op": "wait", "frames": 140}]},
     {"id": "leviathan_head_fans", "bullet": "orb_violet_m", "steps": [
         {"op": "fan", "count": 7, "spread_deg": 80, "speed": 70}, {"op": "rotate", "deg": 9}, {"op": "wait", "frames": 24},
@@ -120,24 +141,69 @@ def chain(n, sprite, spacing, sway):
     return parts
 
 
+def drone(id_, x, y, hp, phases, scale=1.0, radius=9):
+    """Drone emissor de feixe (revisão 9 da Sim): sai do casco até (x, y) quando a etapa começa ("deploy" passos),
+    balança de leve, e o feixe do padrão ancorado nele sai da lente. Vida própria, independente do chefe (sem
+    "leak" nem "share": acertar o drone não fere o chefe, e vice-versa); destruído, corta o feixe e o tira da luta."""
+    return {"id": id_, "drone": True, "since_rev": 9, "part_scale": scale, "x": x, "y": y, "hp": hp,
+            "radius": radius, "share": 0.0, "leak": 0.0, "sway": 4, "freq": 0.25, "phase": 0.5 * (x > 0),
+            "points": 2000, "deploy": 40, "active_in": phases}
+
+
+def by_rev(old, new):
+    """Entradas de padrão de uma etapa: `old` até a revisão 8 da Sim (replays antigos), `new` a partir da 9."""
+    return [dict(e, until_rev=8) for e in old] + [dict(e, since_rev=9) for e in new]
+
+
+def _swap(boss, phase, old, new, parts):
+    """Troca o padrão `old` da etapa por `new` (lista de (padrão, âncora)) na revisão 9 e acrescenta os drones."""
+    for ph in boss["phases"]:
+        if ph["id"] != phase:
+            continue
+        out = []  # no lugar do antigo: a ordem dos emissores da revisão 8 não muda (replays)
+        for e in ph["patterns"]:
+            swap = [{"pattern": p, "anchor": a, "delay": e["delay"]} for p, a in new]
+            out += by_rev([e], swap) if e["pattern"] == old else [e]
+        ph["patterns"] = out
+    boss["parts"] = boss.get("parts", []) + parts
+    return boss
+
+
+def pylons(boss):
+    """Arquiteto: as duas colunas saem de drones pilares nos lados, ativos na primeira etapa."""
+    return _swap(boss, "first", "architect_pillars", [("architect_pillar", "pylon_l"), ("architect_pillar", "pylon_r")],
+                 [drone("pylon_l", -90, 20, 300, ["first"]), drone("pylon_r", 90, 20, 300, ["first"])])
+
+
+def gates(boss):
+    """Portão Orbital: os feixes alternados saem de dois drones do portão, ativos na segunda etapa."""
+    return _swap(boss, "second", "gate_beams", [("gate_beam_a", "gate_l"), ("gate_beam_b", "gate_r")],
+                 [drone("gate_l", -60, 24, 360, ["second"]), drone("gate_r", 60, 24, 360, ["second"])])
+
+
 BOSSES = [
     mini("forge", "klaed_battlecruiser", "#ffb08a", 5200, ["forge_fan", "forge_embers"], ["forge_spiral", "forge_fan"]),
-    mini("architect", "nairan_frigate", "#c8d6ff", 5600, ["architect_wall", "architect_pillars"],
-         ["architect_grid", "architect_wall"]),
+    pylons(mini("architect", "nairan_frigate", "#c8d6ff", 5600, ["architect_wall", "architect_pillars"],
+                ["architect_grid", "architect_wall"])),
     mini("ice_queen", "nautolan_frigate", "#bff4ff", 6000, ["queen_crystal"], ["queen_snow", "queen_crystal"]),
     mini("steel_albatross", "klaed_frigate", "#d8d8e8", 6400, ["albatross_wings"], ["albatross_dive", "albatross_wings"]),
-    mini("orbital_gate", "klaed_dreadnought", "#a0ffd0", 7000, ["gate_rings"], ["gate_beams", "gate_rings"]),
+    gates(mini("orbital_gate", "klaed_dreadnought", "#a0ffd0", 7000, ["gate_rings"], ["gate_beams", "gate_rings"])),
     {"id": "sky_leviathan", "name_key": "boss.sky_leviathan", "sprite": "nautolan_battlecruiser", "scale": 1.5,
      "tint": "#bfe6ff", "hp": 6800, "home_y": 84, "body_radius": 32, "points": 40000, "medals": 10, "duel": True,
-     "music": "flow_apex_onslaught", "enter_from": 160, "parts": chain(8, "nautolan_scout", 22, 16),
+     "music": "flow_apex_onslaught", "enter_from": 160,
+     "parts": chain(8, "nautolan_scout", 22, 16) + [drone("lane_l", -95, 10, 380, ["storm"], 1.5, 13),
+                                                    drone("lane_r", 95, 10, 380, ["storm"], 1.5, 13)],
      "phases": [
          {"id": "crossing", "until_hp": 0.6, "armor": 0.4, "par_s": 45, "move": {"amp": 70, "freq": 0.09},
           "patterns": [{"pattern": "leviathan_pellets", "anchor": f"seg{k}", "delay": 40 + 25 * k} for k in range(1, 9)]
           + [{"pattern": "leviathan_lunge", "anchor": "body", "delay": 120}]},
          {"id": "storm", "until_hp": 0.3, "armor": 0.8, "par_s": 40, "move": {"amp": 30, "freq": 0.07},
           "intro": {"hitstop": 8, "dialogue": "sky_leviathan_storm"},
-          "patterns": [{"pattern": "leviathan_lanes", "anchor": "body", "delay": 60},
-                       {"pattern": "leviathan_pellets", "anchor": "seg8", "delay": 90}]},
+          "patterns": by_rev([{"pattern": "leviathan_lanes", "anchor": "body", "delay": 60}],
+                             [{"pattern": "leviathan_lane_core", "anchor": "body", "delay": 60},
+                              {"pattern": "leviathan_lane_a", "anchor": "lane_l", "delay": 60},
+                              {"pattern": "leviathan_lane_b", "anchor": "lane_r", "delay": 60}])
+          + [{"pattern": "leviathan_pellets", "anchor": "seg8", "delay": 90}]},
          {"id": "tail", "until_hp": 0.0, "armor": 1.0, "par_s": 40, "move": {"amp": 50, "freq": 0.14},
           "desperation_after_s": 35, "intro": {"hitstop": 10},
           "patterns": [{"pattern": "leviathan_head_fans", "anchor": "body", "delay": 60},

@@ -7,8 +7,9 @@ extends Control
 ##
 ## Barra de cima: o bloco da piloto (retrato da Maré com moldura, nível no canto e barrinha de
 ## experiência, Economy.pilot), o Poder em ouro com o raio (Economy.power) e as três moedas em pílulas
-## com "+" (tocar leva à Loja); a engrenagem abre as Opções. Em telas estreitas (até 420 pontos de
-## coluna) as moedas descem para uma segunda linha. As moedas e o Poder contam até o valor novo.
+## com "+" (tocar leva à Loja; o das Pérolas abre direto os pacotes de Pérolas, quando há à venda); a
+## engrenagem abre as Opções. Em telas estreitas (até 420 pontos de coluna) as moedas descem para uma
+## segunda linha. As moedas e o Poder contam até o valor novo.
 ##
 ## Barra de abas: cinco botões iguais, ícone grande sobre o rótulo; a aba ativa sobe um pouco acima da
 ## barra, ganha fundo ciano claro e ícone maior. A Campanha fica no meio, com o ícone dourado (é a casa
@@ -86,7 +87,7 @@ func _ready() -> void:
 		var pill := CurrencyPill.new()
 		pill.kind = kind
 		pill.name = "Pill_" + kind
-		pill.pressed.connect(func() -> void: _pick(&"shop"))
+		pill.pressed.connect(_pick_currency.bind(kind))
 		add_child(pill)
 		_pills[kind] = pill
 	_options = UiTheme.icon_button("gear", "Options")
@@ -182,6 +183,17 @@ func _pick(tab: StringName) -> void:
 	AudioManager.play_ui("kenney_ui_tab")
 	if tab != current:
 		tab_selected.emit(tab)
+
+
+## Pílula de moeda: a Loja; a das Pérolas abre na sub-aba dos pacotes (ShopScreen.TAB_PEARLS), mesmo já na Loja.
+func _pick_currency(kind: String) -> void:
+	if kind == "pearls" and ShopScreen.pearls_visible(SaveManager.data):
+		ShopScreen.next_tab = ShopScreen.TAB_PEARLS
+		if current == &"shop":
+			AudioManager.play_ui("kenney_ui_tab")
+			tab_selected.emit(&"shop")
+			return
+	_pick(&"shop")
 
 
 func _unhandled_input(event: InputEvent) -> void:

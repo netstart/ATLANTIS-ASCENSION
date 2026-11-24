@@ -32,7 +32,12 @@ extends Node
 ## nave do jogador (hitbox_ship_<id>_<res>.png). Use --zoom=4 para ver de perto.
 ##
 ## Feixes inimigos (HostileBeams, EnemyBeam): `--beams[=N]` joga a missão e grava os N primeiros feixes de padrão
-## (padrão 4) no meio do aviso e aceso: <pasta>/beam_<missão>_<n>_<warn|lit>_<res>.png.
+## (padrão 4) no meio do aviso e aceso: <pasta>/beam_<missão>_<n>_<warn|lit>_<res>.png. `--beam-boss=<id>` só grava
+## os feixes da luta com esse chefe; `--beam-phase=<etapa>` ainda adianta a luta até essa etapa (tira vida do chefe na
+## hora, só para a captura): os drones do Sky Leviathan com
+## --mission=c5m3s --beam-boss=sky_leviathan --beam-phase=storm.
+## Secundária (SecondaryFire, revisão 10): `--secondary=missiles:5` (ou drones:N) voa com essa secundária presa no
+## nível N da fase (1 a 5) durante toda a partida, para ver mísseis, ogivas e drones de cada nível.
 
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
@@ -82,6 +87,9 @@ var _ship: StringName = &""
 var _play_ship: StringName = &"falcon"
 ## Nível do hangar da nave (--level=1..10: peças da evolução, ShipLivery); 0 = o da carga padrão.
 var _level: int = 0
+## Secundária e nível na fase pedidos por --secondary (0 = a da carga, sem prender o nível).
+var _secondary: StringName = &""
+var _secondary_level: int = 0
 var _cast: int = 0
 var _cast_frame: int = -1
 var _pending: Array[Array] = []
@@ -99,6 +107,10 @@ var _gallery := false
 var _beams := 0
 var _beam_n := 0
 var _beam_seen := {}
+## Modo --beams com --beam-boss: só a luta com este chefe (vazio = todos os feixes).
+var _beam_boss := ""
+## Modo --beams com --beam-phase: etapa do chefe a que a luta é adiantada.
+var _beam_phase := ""
 var _obj_taken: Dictionary = {}
 var _obj_end_frame: int = -1
 var _obj_results: int = 0
@@ -146,6 +158,10 @@ func _ready() -> void:
 			_paint = arg.trim_prefix("--paint=")
 		elif arg.begins_with("--level="):
 			_level = int(arg.trim_prefix("--level="))
+		elif arg.begins_with("--secondary="):
+			var pick := arg.trim_prefix("--secondary=").split(":")
+			_secondary = StringName(pick[0])
+			_secondary_level = clampi(int(pick[1]) if pick.size() > 1 else 1, 1, SecondaryFire.MAX_LEVEL)
 		elif arg == "--deaths":
 			_deaths = true
 		elif arg == "--objectives":
@@ -155,6 +171,10 @@ func _ready() -> void:
 		elif arg == "--beams" or arg.begins_with("--beams="):
 			_beams = maxi(1, int(arg.trim_prefix("--beams").trim_prefix("="))) if "=" in arg else 4
 			_shots = [9999.0]
+		elif arg.begins_with("--beam-phase="):
+			_beam_phase = arg.trim_prefix("--beam-phase=")
+		elif arg.begins_with("--beam-boss="):
+			_beam_boss = arg.trim_prefix("--beam-boss=")
 		elif arg == "--left":
 			Settings.set_value("handedness", "left")
 	_gallery = _hitboxes and _shots.is_empty()
@@ -182,8 +202,9 @@ func _ready() -> void:
 		return
 	_game = GAME.instantiate() as Game
 	var load: Variant = _play_ship
-	if _rev > 0 or not _paint.is_empty() or _level > 0:
+	if _rev > 0 or not _paint.is_empty() or _level > 0 or _secondary != &"":
 		load = Sim.default_loadout(_play_ship)
+		load["secondary"] = String(_secondary)
 		if _level > 0:
 			load["ship_level"] = _level
 		if _rev > 0:
@@ -199,6 +220,8 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if _game == null or _busy:
 		return
+	if _secondary_level > 0 and _game.sim != null:
+		_game.sim.secondary_level = _secondary_level
 	if _powers:
 		_process_powers()
 		return
@@ -235,6 +258,16 @@ func _process(_delta: float) -> void:
 
 ## Modo --beams: grava cada feixe de padrão no meio do aviso e 10 passos depois de acender.
 func _process_beams() -> void:
+	var boss := _game.sim.boss
+	if not _beam_boss.is_empty() and (boss == null or String(boss.id) != _beam_boss):
+		if _game.sim.finished:
+			_quit()
+		return
+	if not _beam_phase.is_empty() and boss != null and boss.fighting() and String(boss.phase_id()) != _beam_phase:
+		var index := boss.phase_index
+		while boss.fighting() and boss.phase_index == index:
+			boss.damage_body(boss.max_hp * 0.02, _game.sim)
+		return
 	for b: Dictionary in _game.sim.beams:
 		if not HostileBeams.pattern(b):
 			continue

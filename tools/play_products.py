@@ -1,7 +1,13 @@
-"""Cria ou atualiza no Play Console os produtos das naves premium (API Android Publisher v3, monetization).
+"""Cria ou atualiza no Play Console os produtos das naves premium e os pacotes de Pérolas (API Android Publisher v3,
+monetization).
 
-Só os produtos NOVOS desta ferramenta (CATALOG): ship_premium_<id> x3 e o pacote premium_fleet. Os produtos que já
-existem (turbo, support, pinturas...) nunca são tocados: a ferramenta recusa qualquer id fora do CATALOG.
+Só os produtos NOVOS desta ferramenta (catalog()): ship_premium_<id> x3, o pacote premium_fleet e os quatro pacotes de
+Pérolas pearls_<total> (lidos de PEARL_PACKS em scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo). Os
+produtos que já existem (turbo, support, pinturas...) nunca são tocados: a ferramenta recusa qualquer id fora dela.
+
+Consumível: a API de produtos únicos (onetimeproducts) não tem campo "consumível"; um produto vira consumível porque o
+app chama consumePurchase depois de creditar (scripts/core/iap.gd e play_billing_provider.gd), o que libera a compra
+de novo. Por isso os pacotes de Pérolas têm o mesmo corpo dos outros produtos (opção de compra compatível, quantidade 1).
 
 Para cada produto, de forma idempotente (rodar de novo só reaplica o mesmo estado):
 1. pricing:convertRegionPrices com o preço em USD: preço local de cada região (o que o Console faz com "aplicar a
@@ -27,6 +33,7 @@ import argparse
 import importlib.util
 import json
 import pathlib
+import re
 import sys
 from decimal import Decimal
 
@@ -46,6 +53,9 @@ PREMIUM_SHIPS = ["hippocampus", "nereid", "amphitrite"]
 SHIP_USD = "2.99"
 FLEET_ID = "premium_fleet"
 FLEET_USD = "5.99"
+IAP = ROOT / "scripts" / "core" / "iap.gd"
+## Separador de milhar do título dos pacotes, por idioma (como Locale.format_number no jogo).
+THOUSANDS = {"pt_BR": ".", "es": ".", "de": ".", "id": ".", "fr": "\u202f", "ru": "\u00a0"}
 
 
 class PlayError(Exception):
@@ -61,7 +71,7 @@ def _module(path: pathlib.Path) -> dict:
 
 def texts() -> dict:
     out: dict = {}
-    for name in ("ui", "command_premium", "play_products"):
+    for name in ("ui", "command_premium", "command_iap", "play_products"):
         out.update(_module(ROOT / "tools" / "i18n" / f"{name}.py"))
     return out
 
@@ -71,8 +81,21 @@ def kits() -> dict:
     return {s["id"]: s.get("kit", "") for s in ships if "premium" in s}
 
 
+def pearl_packs() -> list[dict]:
+    """[{id, usd, pearls}] de PEARL_PACKS em scripts/core/iap.gd, na ordem de lá."""
+    text = IAP.read_text(encoding="utf-8")
+    found = re.findall(r'\{"id": "(pearls_\d+)", "kind": "consumable", "usd": "([\d.]+)", "pearls": (\d+)', text)
+    if len(found) != 4:
+        raise SystemExit(f"PEARL_PACKS em {IAP.relative_to(ROOT)}: {len(found)} pacotes, esperado 4")
+    return [{"id": pid, "usd": usd, "pearls": int(n)} for pid, usd, n in found]
+
+
+def number(value: int, lang: str) -> str:
+    return f"{value:,}".replace(",", THOUSANDS.get(lang, ","))
+
+
 def catalog() -> list[dict]:
-    """[{id, usd, listings: [{languageCode, title, description}]}] dos quatro produtos novos."""
+    """[{id, usd, listings: [{languageCode, title, description}]}] dos produtos novos (naves premium e Pérolas)."""
     t = texts()
     kit = kits()
     out = []
@@ -96,6 +119,14 @@ def catalog() -> list[dict]:
         listings.append({"languageCode": PLAY_LOCALES[lang], "title": t["play.premium_fleet_title"][i],
                          "description": desc})
     out.append({"id": FLEET_ID, "usd": FLEET_USD, "listings": listings})
+    for pack in pearl_packs():
+        listings = []
+        for i, lang in enumerate(LANGS):
+            desc = GLUE.get(lang, " ").join([t["store.pearls_intro"][i], t["store.pearls_note"][i]])
+            listings.append({"languageCode": PLAY_LOCALES[lang],
+                             "title": t["play.pearls_title"][i].replace("%s", number(pack["pearls"], lang)),
+                             "description": desc})
+        out.append({"id": pack["id"], "usd": pack["usd"], "listings": listings})
     return out
 
 
@@ -236,7 +267,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--key", help="JSON da conta de serviço (padrão: PLAY_SERVICE_ACCOUNT_JSON)")
     parser.add_argument("--dry-run", action="store_true", help="só imprime os corpos das requisições (sem rede)")
-    parser.add_argument("--only", help="ids separados por vírgula (padrão: os quatro)")
+    parser.add_argument("--only", help="ids separados por vírgula (padrão: todos os desta ferramenta)")
     parser.add_argument("command", nargs="?", choices=["apply", "list"], default="apply")
     args = parser.parse_args()
     products = catalog()

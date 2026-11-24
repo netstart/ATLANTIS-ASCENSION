@@ -1,6 +1,7 @@
-"""Textos da ficha dos produtos premium no Play Console (lidos por tools/play_products.py; não vão para o jogo,
+"""Textos da ficha dos produtos premium e dos pacotes de Pérolas no Play Console (lidos por tools/play_products.py; não vão para o jogo,
 por isso ficam fora de MODULES em tools/build_i18n.py). O resto vem dos textos do jogo em command_premium.py
-(nome, frase, "joga como" e "visual exclusivo") e ui.py (nome da nave de origem).
+(nome, frase, "joga como" e "visual exclusivo"), ui.py (nome da nave de origem) e command_iap.py (a frase e a nota
+dos pacotes de Pérolas).
 Limites da Play: título até 55 caracteres, descrição até 200 (tools/play_products.py confere).
 Ordem: pt_BR, en, es, de, fr, ru, id, ja, ko, zh_TW, zh_CN.
 """
@@ -16,4 +17,6 @@ STRINGS = {
     "play.premium_fleet_ships": ["Inclui %s.", "Includes %s.", "Incluye %s.", "Enthält %s.", "Comprend %s.",
                                  "Включает: %s.", "Termasuk %s.", "%sを収録。", "%s 포함.", "包含%s。", "包含%s。"],
     "play.list_and": [" e ", " and ", " y ", " und ", " et ", " и ", " dan ", "、", ", ", "、", "、"],
+    "play.pearls_title": ["%s Pérolas", "%s Pearls", "%s Perlas", "%s Perlen", "%s Perles", "%s жемчуга",
+                          "%s Mutiara", "真珠 %s 個", "진주 %s개", "珍珠 %s 顆", "珍珠 %s 颗"],
 }

@@ -631,8 +631,9 @@ func _on_event(ev: Dictionary) -> void:
 			AudioManager.play("fx_graze", 1.0, 0.06, -8.0)
 			Settings.vibrate(8, 0.25, 0)
 		&"orb":
-			AudioManager.play("fx_power_up" if bool(ev.get("up", false)) else "fx_orb", 1.0, 0.0,
-					0.0 if bool(ev.get("up", false)) else -3.0)
+			# Subiu a arma principal ou a secundária (revisão 10): o som de melhora; senão a coleta simples.
+			var up := bool(ev.get("up", false)) or bool(ev.get("secondary_up", false))
+			AudioManager.play("fx_power_up" if up else "fx_orb", 1.0, 0.0, 0.0 if up else -3.0)
 		&"medal":
 			# O tom sobe com o valor só até +30% (a +60% a moeda em quadrada chegava a ~4 kHz de centro) e mais baixo:
 			# era a coleta mais alta da partida.

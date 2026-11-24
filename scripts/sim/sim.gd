@@ -224,6 +224,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 		_setup_wing(StringName(String(loadout.get("coop_ship", "manta"))))
 	secondary = StringName(String(loadout.get("secondary", "")))
 	secondary_level = clampi(int(loadout.get("secondary_level", 1)), 1, 5)
+	secondary_level = SecondaryFire.start_level(secondary_level) if SecondaryFire.phased(self) else secondary_level
 	scroll_speed = float(mission.get("scroll_speed", 22.0))
 	scoring.window = Scoring.CHAIN_WINDOW + mods.chain_window
 	scoring.point_mult = float(diff["score"]) * float(mission.get("score_mult", 1.0))
@@ -564,7 +565,7 @@ func spawn_boss(boss_id: StringName, final: bool) -> void:
 	if def.is_empty():
 		return
 	boss = SimBoss.new()
-	boss.setup(def, tables["patterns"], SimCurve.boss_hp_mult(curve, def))
+	boss.setup(def, tables["patterns"], SimCurve.boss_hp_mult(curve, def), SimRevision.of(loadout))
 	boss.fit(Hitboxes.find(tables, loadout, "bosses", boss_id))
 	if not final:
 		_miniboss_start = frame
@@ -752,14 +753,15 @@ func _collide_player_bullets() -> void:
 		i -= 1
 
 
-## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio. Estilhaço de arma não chega ao mar.
-func splash(at: Vector2, radius: float, dmg: float) -> void:
+## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio. Estilhaço de arma não chega ao mar. `warhead`
+## (Ogiva II, SecondaryFire): só nas escoltas; o chefe leva o golpe direto (2x), sem a metade a mais do estilhaço.
+func splash(at: Vector2, radius: float, dmg: float, warhead: bool = false) -> void:
 	for e: SimEnemy in enemies:
 		if e.active() and not e.sea and at.distance_to(e.hit_pos()) <= radius + e.hurt and e.damage(dmg * 0.5):
 			_kill_enemy(e)
-	if boss != null and boss.fighting() and at.distance_to(boss.hurt_pos()) <= radius + boss.hurt_radius():
+	if not warhead and boss != null and boss.fighting() and at.distance_to(boss.hurt_pos()) <= radius + boss.hurt_radius():
 		boss.damage_body(dmg * 0.5, self)
-	emit(&"splash", {"pos": at, "radius": radius})
+	emit(&"splash", {"pos": at, "radius": radius, "gold": warhead})
 
 
 ## Fotografia dos alvos de _hit_boss: as mesmas partes (ativas, na mesma ordem), posições e raios.
@@ -927,6 +929,7 @@ func _player_hit(cause: StringName, ship: SimPlayer = null) -> void:
 	last_cause = cause
 	var keep_level := player.level
 	var down := player.take_hit()
+	SecondaryFire.level_down(self)
 	if ship != player:
 		# O casco é do par; o nível de arma perdido é o da nave atingida.
 		player.level = keep_level
@@ -1073,11 +1076,13 @@ func collect(kind: StringName, frames: int, who: SimPlayer = null) -> void:
 			if who == wing and weapon == &"laser":
 				weapon = &"pulsar"
 			var up := who.collect_orb(weapon)
-			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos})
+			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos,
+					"secondary_up": SecondaryFire.level_up(self)})
 		&"power":
 			# Núcleo de força (chefes de meio de fase): +1 nível na arma atual, sem trocar de arma.
 			var up := who.collect_orb(who.weapon)
-			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos})
+			emit(&"orb", {"weapon": who.weapon, "level": who.level, "up": up, "pos": who.pos,
+					"secondary_up": SecondaryFire.level_up(self)})
 		&"medal":
 			emit(&"medal", {"value": scoring.on_medal(), "pos": who.pos})
 		&"pearl":

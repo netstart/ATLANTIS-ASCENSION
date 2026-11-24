@@ -140,6 +140,7 @@ func run_view(host: Node, check: Callable) -> void:
 	check.call(hub.chapter == 3, "Campanha: deslizar para o lado avança o capítulo")
 	hub.show_chapter(5)
 	check.call(hub.chapter == 3, "Campanha: capítulo fechado não abre")
+	await _vertical_drag(host, hub, check)
 	# Controle: JOGAR é o foco padrão; para cima chega à trilha ou aos atalhos.
 	FocusNav.pad = true
 	app.go(&"credits")
@@ -175,6 +176,78 @@ func run_view(host: Node, check: Callable) -> void:
 	await host.get_tree().process_frame
 	await _layout_all_chapters(host, check)
 	SaveManager.reset_profile()
+
+
+## Arraste vertical da trilha (capítulos 1 a 3 abertos): para baixo além de 1/3 sobe ao capítulo de
+## cima, curto volta, piparote troca mesmo curto, na ponta cede e volta, para cima desce; toque parado
+## não troca nada.
+func _vertical_drag(host: Node, hub: HubScreen, check: Callable) -> void:
+	hub.show_chapter(2)
+	await LayoutTests.settle(host)
+	var gap := hub.trail_gap()
+	check.call(hub.chapter == 2 and gap > 100.0, "Campanha: arraste começa no capítulo 2 (trilha %.0f)" % gap)
+	await _drag(host, hub, gap * 0.2, 0.0)
+	check.call(hub.chapter == 2 and is_zero_approx(hub.trail_offset()) and hub.ghost_chapter() == 0,
+			"Campanha: arraste curto volta ao capítulo")
+	await _drag(host, hub, gap * 0.5, 0.0, false)
+	check.call(hub.ghost_chapter() == 3 and hub.trail_offset() > gap * 0.3 and hub.trail_offset() <= gap * 0.5,
+			"Campanha: no meio do arraste para baixo o capítulo 3 entra por cima (%d, %.0f)" %
+			[hub.ghost_chapter(), hub.trail_offset()])
+	await _release(host, hub, gap * 0.5)
+	check.call(hub.chapter == 3 and is_zero_approx(hub.trail_offset()) and hub.node_button(&"c3m1") != null,
+			"Campanha: arrastar para baixo além de 1/3 assenta no capítulo de cima")
+	check.call((hub.find_child("ChapterNumber", true, false) as Label).text == "03.",
+			"Campanha: o cabeçalho acompanha o arraste")
+	await _drag(host, hub, gap * 0.9, 0.0, false)
+	check.call(hub.ghost_chapter() == 0 and hub.trail_offset() > 0.0 and hub.trail_offset() < gap * HubScreen.EDGE_GIVE,
+			"Campanha: no último capítulo aberto a trilha só cede (%.0f)" % hub.trail_offset())
+	await _release(host, hub, gap * 0.9)
+	check.call(hub.chapter == 3 and is_zero_approx(hub.trail_offset()), "Campanha: e volta sem passar do último aberto")
+	await _drag(host, hub, -gap * 0.5, 0.0)
+	check.call(hub.chapter == 2, "Campanha: arrastar para cima volta ao capítulo anterior")
+	await _drag(host, hub, gap * 0.15, 1500.0)
+	check.call(hub.chapter == 3, "Campanha: piparote para baixo troca mesmo curto")
+	await _drag(host, hub, 0.0, 0.0)
+	check.call(hub.chapter == 3 and not hub.card_open(), "Campanha: toque parado não troca de capítulo")
+
+
+## Dedo na trilha (eventos de toque como o Android e o mouse emulado mandam): desce `dy` px em passos.
+func _drag(host: Node, hub: HubScreen, dy: float, speed: float, release: bool = true) -> void:
+	var from := _drag_from(hub)
+	var down := InputEventScreenTouch.new()
+	down.pressed = true
+	down.position = hub.get_global_transform_with_canvas() * from
+	hub.get_viewport().push_input(down, true)
+	var steps := 8
+	for i: int in range(1, steps + 1):
+		var move := InputEventScreenDrag.new()
+		move.position = hub.get_global_transform_with_canvas() * (from + Vector2(0.0, dy * i / steps))
+		move.relative = Vector2(0.0, dy / steps)
+		move.velocity = Vector2(0.0, speed)
+		hub.get_viewport().push_input(move, true)
+	if release:
+		await _release(host, hub, dy)
+
+
+func _release(host: Node, hub: HubScreen, dy: float) -> void:
+	var up := InputEventScreenTouch.new()
+	up.pressed = false
+	up.position = hub.get_global_transform_with_canvas() * (_drag_from(hub) + Vector2(0.0, dy))
+	hub.get_viewport().push_input(up, true)
+	for i: int in range(120):
+		if not hub.trail_busy():
+			break
+		await host.get_tree().process_frame
+	await LayoutTests.settle(host)
+
+
+## Meio da trilha (coordenadas da tela), entre os dois primeiros nós: o toque começa na área dos nós.
+static func _drag_from(hub: HubScreen) -> Vector2:
+	var to_hub := hub.get_global_transform_with_canvas().affine_inverse()
+	var mid := Vector2.ZERO
+	for node: Control in hub.trail_nodes().slice(0, 2):
+		mid += to_hub * (node.get_global_transform_with_canvas() * (node.size * 0.5)) * 0.5
+	return mid.floor()
 
 
 ## Todos os capítulos abertos, cada um nas telas apertadas e no desktop, nos idiomas mais longos.

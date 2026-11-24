@@ -347,6 +347,127 @@ def tentacle(size: int, tip: bool) -> list:
     return px
 
 
+def beam_drone(size: int) -> list:
+    """Drone emissor dos feixes dos chefes, visto de cima com a lente para baixo (+y, para o jogador): casco redondo de
+    aço com aro coral do Protocolo, duas aletas laterais, antena atrás e a lente magenta (cor do feixe,
+    HostileBeams.BODY) num soquete escuro. Desenhado em 2 texels por unidade, como a arte HD (o jogo o mostra na
+    metade), com 4x4 amostras por texel para a borda sair suave. O jogo acende a lente durante o aviso."""
+    u = size / 24.0  # texels por unidade de desenho (24 unidades de lado)
+    glass = (255, 51, 107)
+
+    def shade(x: float, y: float) -> tuple:
+        dx, dy = x / u - 12.0, y / u - 12.0
+        d = math.hypot(dx, dy)
+        ld = math.hypot(dx, dy - 2.6)
+        if ld < 4.4:
+            if ld > 3.5:
+                return OUTLINE
+            if math.hypot(dx + 1.2, dy - 1.4) < 1.0:
+                return WHITE
+            k = ld / 3.5
+            return (int(glass[0] * (1 - 0.4 * k)), int(glass[1] * (1 - 0.7 * k)), int(glass[2] * (1 - 0.45 * k)), 255)
+        if d <= 8.6:
+            if d > 7.8:
+                return OUTLINE
+            if d > 6.6:
+                return (*PALETTE["coral"][1], 255) if dy > -5.0 else (*PALETTE["coral"][0], 255)
+            if abs(dx) < 0.5 and dy < -1.5:
+                return OUTLINE  # junta das duas placas do casco
+            light = 0.5 - 0.5 * (dx + dy) / 9.0
+            return tuple(int(lo + (hi - lo) * light) for lo, hi in zip(STEEL[:3], STEEL_LIGHT[:3])) + (255,)
+        fy = abs(dy + 0.8)
+        if fy < 2.6 and 7.0 < abs(dx) < 11.6:
+            return OUTLINE if fy > 1.7 or abs(dx) > 10.8 else STEEL_LIGHT
+        if abs(dx) < 0.9 and -11.6 < dy < -7.4:
+            return (*PALETTE["coral"][0], 255) if dy < -10.4 else STEEL_LIGHT
+        return (0, 0, 0, 0)
+
+    px = canvas(size, size)
+    n = 4
+    for y in range(size):
+        for x in range(size):
+            acc = [0.0, 0.0, 0.0, 0.0]
+            for sy in range(n):
+                for sx in range(n):
+                    c = shade(x + (sx + 0.5) / n, y + (sy + 0.5) / n)
+                    acc[0] += c[0] * c[3]
+                    acc[1] += c[1] * c[3]
+                    acc[2] += c[2] * c[3]
+                    acc[3] += c[3]
+            if acc[3] > 0:
+                px[y * size + x] = (int(acc[0] / acc[3]), int(acc[1] / acc[3]), int(acc[2] / acc[3]),
+                                    int(acc[3] / (n * n)))
+    return px
+
+
+# --- Secundária na fase (revisão 10 da Sim, SecondaryFire) --------------------------------------------------------
+# O míssil comum (níveis 1 a 3) é o foguete da série Void, 5x15. As ogivas dos níveis 4 e 5 são maiores e de outra cor
+# para o nível se ler à primeira vista: Ogiva I em aço com ponta e faixa ciano e aletas largas; Ogiva II dourada, mais
+# larga ainda, com ponta branca-quente e duas faixas. Desenhadas à mão em grade (pixel art, escala inteira), com o bico
+# para cima (o WorldView gira na direção do voo); a chama é o rastro aditivo do jogo.
+WARHEAD_HEAVY = [
+    "...o...",
+    "..oTo..",
+    "..oTo..",
+    ".oTTto.",
+    ".oBBbo.",
+    ".oBBbo.",
+    ".oSSso.",
+    ".oBBbo.",
+    ".oBBbo.",
+    ".oBBbo.",
+    ".oBBbo.",
+    "ooBBboo",
+    "oFBBbFo",
+    "oFBBbFo",
+    "ooNNNoo",
+    ".oNNNo.",
+    "..ooo..",
+]
+WARHEAD_GOLD = [
+    "....o....",
+    "...oWo...",
+    "...oWo...",
+    "..oWTto..",
+    "..oTTto..",
+    ".oBBBBbo.",
+    ".oBBBBbo.",
+    ".oSSSSso.",
+    ".oBBBBbo.",
+    ".oBBBBbo.",
+    ".oBBBBbo.",
+    ".oSSSSso.",
+    ".oBBBBbo.",
+    "ooBBBBboo",
+    "oFBBBBbFo",
+    "oFBBBBbFo",
+    "oooNNNooo",
+    "..oNNNo..",
+    "...ooo...",
+]
+WARHEAD_COLORS = {
+    "heavy": {"o": OUTLINE, "T": (*PALETTE["cyan"][0], 255), "t": (*PALETTE["cyan"][1], 255),
+              "B": (168, 186, 214, 255), "b": (92, 106, 134, 255), "S": (*PALETTE["cyan"][0], 255),
+              "s": (*PALETTE["cyan"][1], 255), "F": (*PALETTE["cyan"][1], 255), "N": (44, 48, 60, 255)},
+    "gold": {"o": OUTLINE, "W": WHITE, "T": (255, 240, 184, 255), "t": (232, 172, 64, 255),
+             "B": (*PALETTE["gold"][0], 255), "b": (*PALETTE["gold"][1], 255), "S": (255, 248, 222, 255),
+             "s": (232, 172, 64, 255), "F": (*PALETTE["coral"][0], 255), "N": (70, 44, 22, 255)},
+}
+
+
+def grid(rows: list, colors: dict) -> list:
+    """Pixel art desenhada em texto: cada letra é uma cor de `colors`, "." é transparente."""
+    return [colors.get(ch, (0, 0, 0, 0)) for row in rows for ch in row]
+
+
+def capsule_px(w: int, h: int, color: str) -> list:
+    """Tiro grosso dos drones nos níveis 4 e 5, sem contorno escuro (as balas inimigas têm): violeta do Plasma no 4 e
+    champanhe no 5, bem mais claro que o ouro das balas inimigas, para não confundir."""
+    if color == "champagne":
+        return capsule(w, h, (255, 246, 214), (236, 200, 110), False)
+    return capsule(w, h, PALETTE[color][0], PALETTE[color][1], False)
+
+
 # --- Objetivos de fase (plano mestre 5.6) -------------------------------------------------------------
 # Leitura: o atlante salvo é uma bolha OCA (anel claro, miolo quase transparente) com a silhueta dourada dentro, maior
 # e mais lenta que qualquer bala (as balas são cheias, com contorno escuro e núcleo branco). Os alvos são metal
@@ -635,6 +756,12 @@ SPRITES = {
     "pickups/log.png": (14, 14, lambda: capsule_log(14)),
     "pickups/capsule.png": (12, 16, lambda: rescue_pod(12, 16)),
     "fx/drone.png": (10, 10, lambda: orb(10, "cyan")),
+    "fx/drone_heavy.png": (12, 12, lambda: orb(12, "violet")),
+    "fx/drone_gold.png": (12, 12, lambda: orb(12, "gold")),
+    "fx/warhead_heavy.png": (7, 17, lambda: grid(WARHEAD_HEAVY, WARHEAD_COLORS["heavy"])),
+    "fx/warhead_gold.png": (9, 19, lambda: grid(WARHEAD_GOLD, WARHEAD_COLORS["gold"])),
+    "bullets/shot_drone_heavy.png": (6, 14, lambda: capsule_px(6, 14, "violet")),
+    "bullets/shot_drone_gold.png": (6, 14, lambda: capsule_px(6, 14, "champagne")),
     "enemies/glyph.png": (20, 20, lambda: glyph(20)),
     "enemies/prison_barge.png": (32, 32, lambda: prison_barge(32)),
     "enemies/prison_pod.png": (26, 26, lambda: prison_pod(26)),
@@ -659,6 +786,7 @@ SPRITES = {
     "fx/shock_64.png": (64, 64, lambda: shock(64)),
     "boss/tentacle_segment.png": (14, 14, lambda: tentacle(14, False)),
     "boss/tentacle_tip.png": (18, 18, lambda: tentacle(18, True)),
+    "boss/beam_drone.png": (48, 48, lambda: beam_drone(48)),
     "icon/icon_512.png": (512, 512, lambda: icon_full(512)),
     "icon/icon_192.png": (192, 192, lambda: icon_full(192)),
     "icon/adaptive_foreground_432.png": (432, 432, lambda: icon_adaptive("foreground")),

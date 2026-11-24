@@ -5,7 +5,8 @@ const SimTests := preload("res://tests/sim_tests.gd")
 ## quantos segmentos de casco perdeu (danos), o menor casco a que chegou e os abates. Meta do bot na dificuldade
 ## normal: plano mestre 4.7 ("Meta de dificuldade medida pelo bot").
 ## Uso: Godot --headless --path . --script res://tests/boss_timing.gd [-- --only=c1m1,c9m3] [--hits] [--rev=1]
-##        [--seeds=7,11,23] [--diff=brisa|normal|veteran|abyssal] [--hangar]
+##        [--seeds=7,11,23] [--diff=brisa|normal|veteran|abyssal] [--hangar] [--secondary=missiles:3]
+## --secondary dá à nave a secundária com esse nível da Oficina (missiles ou drones, 1 a 5).
 ## --rev roda com as regras de uma revisão antiga da Sim (SimRevision), para comparar o balanceamento.
 ## --hangar dá à nave o nível típico do hangar no capítulo da missão (Economy.TYPICAL_LEVEL, arredondado para baixo).
 ## No fim imprime o resumo por capítulo (linhas "Capítulo").
@@ -23,6 +24,10 @@ func _init() -> void:
 			only = arg.trim_prefix("--only=")
 		elif arg.begins_with("--rev="):
 			base["rev"] = int(arg.trim_prefix("--rev="))
+		elif arg.begins_with("--secondary="):
+			var pick := arg.trim_prefix("--secondary=").split(":")
+			base["secondary"] = pick[0]
+			base["secondary_level"] = int(pick[1]) if pick.size() > 1 else 1
 		elif arg.begins_with("--diff="):
 			base["difficulty"] = arg.trim_prefix("--diff=")
 		elif arg.begins_with("--seeds="):

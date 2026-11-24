@@ -131,8 +131,6 @@ var _capsule: Texture2D
 ## Objetivos de fase: mira dos alvos, atlantes nas bolhas e relíquia.
 var _objectives := ObjectiveView.new()
 var _sea_view := SeaView.new()
-var _drone: Texture2D
-var _rocket: Texture2D
 ## Pintura da loja (alfa 0 = a arte como é) e estágio de avaria do casco (ShipArt).
 var _paint := Color(0, 0, 0, 0)
 var _damage: int = 0
@@ -192,8 +190,6 @@ func setup(p_sim: Sim) -> void:
 	_capsule = SpriteBank.generated("pickups/capsule")
 	_objectives.setup()
 	dark = bool(sim.mission.get("dark", false))
-	_drone = SpriteBank.generated("fx/drone")
-	_rocket = SpriteBank.texture("res://assets/art/void/main_ship/proj_rocket.png")
 	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
 	_paint = Color(paint) if not paint.is_empty() else Color(0, 0, 0, 0)
 	_art = SpriteBank.player(StringName(String(sim.player.ship.get("id", "falcon"))))
@@ -383,6 +379,7 @@ func on_event(ev: Dictionary) -> void:
 			fx.chain(at, Vector2(18, 14), 3, 0.3, 1.0)
 			_ring_at(at, 0.4, 60.0, Color(0.85, 0.6, 1.0))
 		&"boss_dead":
+			BeamDrones.pop(sim.boss, fx)
 			var ship := SpriteBank.ship(StringName((sim.tables["bosses"] as Dictionary).get(StringName(ev["id"]), {})
 					.get("sprite", "")))
 			for k: int in range(5):
@@ -426,7 +423,8 @@ func on_event(ev: Dictionary) -> void:
 			if StringName(ev["type"]) == &"heal":
 				powers.heal_burst(fx, at)
 		&"splash":
-			_ring_at(at, 0.25, float(ev.get("radius", 20.0)), Color(0.8, 0.55, 1.0))
+			_ring_at(at, 0.25, float(ev.get("radius", 20.0)),
+					UiTheme.GOLD if bool(ev.get("gold", false)) else Color(0.8, 0.55, 1.0))
 		&"power":
 			_on_power(ev, at)
 		&"power_blast":
@@ -754,17 +752,7 @@ func _draw_items(ci: CanvasItem) -> void:
 				_tex_centered(ci, _capsule, p, 1.0)
 			_:
 				_tex_centered(ci, _pearl, p, 1.0)
-	for m: Dictionary in sim.missiles:
-		var mp: Vector2 = m["pos"]
-		var angle := (m["vel"] as Vector2).angle() + PI * 0.5
-		if _rocket != null:
-			var rh := _rocket.get_height()
-			ci.draw_set_transform(mp, angle)
-			ci.draw_texture_rect_region(_rocket, Rect2(-rh * 0.5, -rh * 0.5, rh, rh),
-					SpriteBank.frame_rect(int(time * ANIM_FPS) % maxi(1, _rocket.get_width() / rh), rh))
-			ci.draw_set_transform(Vector2.ZERO)
-	for d: Vector2 in sim.drones:
-		_tex_centered(ci, _drone, d, 1.0)
+	SecondaryArt.draw(ci, sim, time)
 
 
 ## Tranco do acerto num inimigo, pelo raio: nenhum nos pequenos (tremer 1 px num sprite de 24 só parece
@@ -822,6 +810,7 @@ func _draw_boss(ci: CanvasItem, b: SimBoss) -> void:
 		if alive:
 			_tex_centered(ci, _tip, tip, 1.0, color)
 	_draw_boss_parts(ci, b, body, shake)
+	BeamDrones.draw_all(ci, sim, shake, _part_pulses, time, reduce_flashes)
 	var tint := _hit_color(Color(String(b.def.get("tint", "#ffffff"))), _boss_pulse.intensity(), false)
 	_draw_ship(ci, ship, b.pos + shake, 1.0, scale, tint)
 	_draw_wounds(ci, b, shake)
@@ -1113,6 +1102,7 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 		var alpha := (1.0 - u) * (0.5 if reduce_flashes else 0.95)
 		ci.draw_texture_rect(_shock, Rect2((r["pos"] as Vector2) - Vector2(radius, radius), Vector2(radius, radius) * 2.0),
 				false, Color(r["color"] as Color, alpha))
+	SecondaryArt.draw_add(ci, sim, time)
 
 
 func _draw_power_below(ci: CanvasItem) -> void:
