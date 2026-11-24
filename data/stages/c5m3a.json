@@ -153,6 +153,20 @@
 			"t": 18.13
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 20.0
+		},
+		{
 			"op": "blessing",
 			"t": 20.05
 		},
@@ -317,6 +331,19 @@
 			"y": -40,
 			"marked": true,
 			"t": 47.91
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 48.48
 		},
 		{
 			"op": "wave",

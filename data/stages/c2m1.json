@@ -121,6 +121,19 @@
 			"t": 25.0
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 27.0
+		},
+		{
 			"op": "weather",
 			"to": "thermocline",
 			"warn": 2.0,
@@ -368,6 +381,19 @@
 			"strength": 38,
 			"duration": 8.0,
 			"t": 87.8
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 90.47
 		},
 		{
 			"op": "weather",

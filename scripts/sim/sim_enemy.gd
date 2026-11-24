@@ -29,6 +29,9 @@ var glyph: int = -1
 ## encostar fere a nave (falso nos alvos no chão e nas jaulas: data/enemies.json "contact").
 var objective: StringName = &""
 var contact: bool = true
+## Na água, abaixo da nave (data/enemies.json "layer": "sea"; submarino, navio): tiro, feixe e estilhaço passam por
+## cima; só mísseis teleguiados, bomba e explosões de área o ferem (Sim.nearest_target o procura primeiro).
+var sea: bool = false
 var origin := Vector2.ZERO
 var path: StringName = &"straight"
 var params: Dictionary = {}
@@ -60,6 +63,7 @@ func setup(p_def: Dictionary, p_origin: Vector2, p_path: StringName, p_params: D
 	depth = DEPTH_START if from_depth else 1.0
 	glyph = int(def.get("glyph", -1))
 	contact = bool(def.get("contact", true))
+	sea = String(def.get("layer", "")) == "sea"
 	var pattern_id := String(def.get("pattern", ""))
 	if not pattern_id.is_empty() and patterns.has(StringName(pattern_id)):
 		runner = PatternRunner.new(patterns[StringName(pattern_id)], int(def.get("pattern_delay", 30)), radius)

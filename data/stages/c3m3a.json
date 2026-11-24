@@ -204,6 +204,19 @@
 			"t": 32.24
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 34.0
+		},
+		{
 			"op": "current",
 			"dx": -1,
 			"strength": 44,
@@ -358,6 +371,19 @@
 			"drop_last": "orb",
 			"from_depth": true,
 			"t": 59.74
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.6,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 59.98
 		},
 		{
 			"op": "wave",

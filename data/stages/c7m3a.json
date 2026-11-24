@@ -111,6 +111,19 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 12.0
+		},
+		{
+			"op": "wave",
 			"enemy": "volt_ray",
 			"formation": "line",
 			"count": 2,
@@ -160,6 +173,19 @@
 		{
 			"op": "blessing",
 			"t": 20.05
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.75,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 23.08
 		},
 		{
 			"op": "gravity_breach",
@@ -364,6 +390,19 @@
 			"op": "capsule",
 			"x": 0.3,
 			"t": 56.14
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 56.53
 		},
 		{
 			"op": "capsule",

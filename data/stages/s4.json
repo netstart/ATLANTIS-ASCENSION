@@ -30,11 +30,37 @@
 			"t": 10.0
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 12.0
+		},
+		{
 			"op": "ocean_shift",
 			"to": "flood",
 			"warn": 2.0,
 			"duration": 6.0,
 			"t": 18.0
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.6,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 22.13
 		},
 		{
 			"op": "capsule",
@@ -47,6 +73,20 @@
 			"warn": 2.0,
 			"duration": 6.0,
 			"t": 34.0
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 35.16
 		},
 		{
 			"op": "capsule",

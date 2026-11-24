@@ -244,8 +244,9 @@ func _target_x(sim: Sim) -> float:
 			best = e.pos.x
 	if best_y > -INF:
 		return best
+	# Os do mar (submarino, navio) ficam para os mísseis: o tiro passa por cima deles.
 	for e: SimEnemy in sim.enemies:
-		if e.active() and e.pos.y < sim.player.pos.y - 40.0 and e.pos.y > best_y:
+		if e.active() and not e.sea and e.pos.y < sim.player.pos.y - 40.0 and e.pos.y > best_y:
 			best_y = e.pos.y
 			best = e.pos.x
 	return best

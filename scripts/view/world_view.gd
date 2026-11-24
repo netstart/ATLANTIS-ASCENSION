@@ -1,6 +1,7 @@
 class_name WorldView
 extends Node2D
 ## Desenho do campo de jogo a partir da Sim (só leitura). Camadas, de baixo para cima:
+##   navios na água (SeaView: def "layer" "sea", esteira, sem sombra) →
 ##   sombras no chão → destroços caindo → entidades (inimigos, chefe, coletáveis) → fumaça e estilhaços →
 ##   tiros do jogador (com halo) → nave → efeitos de baixo (avisos e feixes do cenário, explosões, duelo) →
 ##   luz aditiva (bocal do laser, motores, clarões, anéis de choque) → laser e fluxo solar (EnergyStream) →
@@ -129,6 +130,7 @@ var _log: Texture2D
 var _capsule: Texture2D
 ## Objetivos de fase: mira dos alvos, atlantes nas bolhas e relíquia.
 var _objectives := ObjectiveView.new()
+var _sea_view := SeaView.new()
 var _drone: Texture2D
 var _rocket: Texture2D
 ## Pintura da loja (alfa 0 = a arte como é) e estágio de avaria do casco (ShipArt).
@@ -217,6 +219,8 @@ func setup(p_sim: Sim) -> void:
 	fx.setup(int(budget * 0.7), int(budget * 0.3))
 	if not fx.landed.is_connected(_on_landed):
 		fx.landed.connect(_on_landed)
+	_sea_view.setup(self, _enemy_pulses, flash)
+	add_child(_sea_view)
 	_shadows = _Layer.new(self, _draw_shadows)
 	_shadows.texture_filter = SpriteBank.HD_FILTER
 	# No espaço não há chão para receber sombra.
@@ -310,6 +314,7 @@ func refresh(delta: float) -> void:
 	if sim.wing != null:
 		_wing_bank = lerpf(_wing_bank, _bank_target(sim.wing), ease)
 	_trail(delta)
+	_sea_view.queue_redraw()
 	_shadows.queue_redraw()
 	_wrecks.queue_redraw()
 	_entities.queue_redraw()
@@ -346,7 +351,8 @@ func on_event(ev: Dictionary) -> void:
 			var roll := absi(hash([_kills, int(at.x), int(at.y), String(sprite)]))
 			var style := CombatFx.death_style(roll, big, fx.surface, SpriteBank.SPECIAL.has(sprite))
 			var def: Dictionary = (sim.tables.get("enemies", {}) as Dictionary).get(StringName(String(ev.get("id", ""))), {})
-			kill_fx(at, sprite, big, int(ev.get("points", 0)), style, float(def.get("scale", 1.0)), roll)
+			if not _sea_view.sink(def, ev):
+				kill_fx(at, sprite, big, int(ev.get("points", 0)), style, float(def.get("scale", 1.0)), roll)
 		&"hit":
 			# No ponto fraco do chefe as faíscas saem douradas: o jogador vê onde está acertando.
 			fx.impact(at, UiTheme.GOLD if _on_weak_point(at) else _weapon_tint())
@@ -651,6 +657,8 @@ static func rise_of(depth: float) -> float:
 
 func _draw_shadows(ci: CanvasItem) -> void:
 	for e: SimEnemy in sim.enemies:
+		if SeaView.is_sea(e):
+			continue
 		var rise := rise_of(e.depth)
 		var s := float(e.def.get("scale", 1.0)) * lerpf(RISE_SCALE, 1.0, rise)
 		_shadow(ci, SpriteBank.ship(e.sprite), e.pos, s, rise, PI)
@@ -704,11 +712,11 @@ func _draw_entities(ci: CanvasItem) -> void:
 func _draw_enemies(ci: CanvasItem, hd: bool) -> void:
 	for e: SimEnemy in sim.enemies:
 		var ship := SpriteBank.ship(e.sprite)
-		if bool(ship["hd"]) != hd:
+		if bool(ship["hd"]) != hd or SeaView.is_sea(e):
 			continue
 		var pulse := _enemy_pulses.of(e)
 		var tint := _hit_color(Color(String(e.def.get("tint", "#ffffff"))), pulse.intensity(), false)
-		var at := e.pos + pulse.offset() * _shake_scale(e.radius)
+		var at := e.pos + pulse.offset() * shake_scale(e.radius)
 		_draw_ship(ci, ship, at, e.depth, float(e.def.get("scale", 1.0)), tint)
 		if e.marked and sim.mods.chart and e.depth >= 1.0:
 			# Carta de Nereu: losango dourado sobre os marcados.
@@ -761,7 +769,7 @@ func _draw_items(ci: CanvasItem) -> void:
 
 ## Tranco do acerto num inimigo, pelo raio: nenhum nos pequenos (tremer 1 px num sprite de 24 só parece
 ## defeito), metade nos médios e o do chefe nos grandes.
-static func _shake_scale(radius: float) -> float:
+static func shake_scale(radius: float) -> float:
 	return 0.0 if radius < 15.0 else clampf(radius / 30.0, 0.5, 1.0)
 
 
@@ -1067,7 +1075,7 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 			_tex_centered(ci, _sparkle, muzzle, 1.6, Color(1, 1, 1, _muzzle / 0.06))
 	if fx_level >= 1:
 		for e: SimEnemy in sim.enemies:
-			if e.depth >= 1.0:
+			if e.depth >= 1.0 and not SeaView.is_sea(e):
 				var size := float(SpriteBank.ship(e.sprite)["size"]) * float(e.def.get("scale", 1.0))
 				_tex_centered(ci, _flare, e.pos + Vector2(0, -size * 0.36), size / 150.0,
 						Color(1.0, 0.45, 0.3, 0.35 * flicker))

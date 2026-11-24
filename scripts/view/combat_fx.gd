@@ -373,6 +373,12 @@ func _drip(w: Dictionary, u: float) -> void:
 				Color(1.0, 0.8, 0.4), Color(1.0, 0.3, 0.0, 0.0), 1.0)
 
 
+## Navio ou submarino afundado (SeaView): estouro curto no casco e o mesmo jorro d'água da queda no mar.
+func splash(at: Vector2, big: bool) -> void:
+	explosion(at, 1.0 if big else 0.6)
+	_land_water(at, big)
+
+
 ## Queda no mar: coluna d'água, espuma e, logo depois, a explosão abafada lá embaixo com bolhas subindo.
 func _land_water(at: Vector2, big: bool) -> void:
 	var m := 1.5 if big else 1.0

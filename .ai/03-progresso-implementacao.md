@@ -630,3 +630,20 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `tests/sprite_bank_tests.gd`. O bot passou a dar 10 unidades de folga ao feixe (eram 8): com o ponto novo ele
   encostava no feixe mirado da c8m1 na semente 7 (a c8m1 é limítrofe para o bot nas duas revisões). Falta conferir no
   aparelho
+- ✅ Mar com submarinos e navios (pedido do dono: "quando o solo é água, adicione submarinos inimigos e navios inimigos
+  na água; para atingi-los precisamos de um míssil teleguiado que dá preferência a inimigos em solo, depois voando").
+  Revisão 8 da Sim. `sea_submarine` (30 de vida, sobe do fundo, 2 torpedos lentos mirados `sub_torpedo`, 500 pontos) e
+  `sea_warship` (70 de vida, leque de 5 + leque mirado de 3 agulhas `warship_fan`, 900 pontos, marcado, medalha) em
+  `data/enemies.json` com `"layer": "sea"` e sem contato (`SimEnemy.sea`). Tiro, feixe, drones, estilhaço da arma
+  (`Sim.splash`: Plasma, Ressaca, explosão do Titan) e poderes de anel, investida, feixe, raio, onda, orbes, aura e
+  eclipse passam por cima; ferem o mar só mísseis teleguiados (secundária, lançador do mar, salvas dos poderes) e
+  explosões de área (bomba, especial de área, explosões dos poderes). Lançador do mar: nas missões de água (ocean,
+  atlantis, hadal) toda nave solta um par de mísseis de 5 a cada 1 s (`SecondaryFire.sea_launcher`; submarino em 3
+  pares, navio em 7); com a secundária de mísseis ele não soma (ela já busca o mar primeiro, com mais dano por
+  segundo); na luta de chefe só dispara com alvo no mar (as lutas ficam como foram medidas: ligado nelas, o bot perdia
+  a c5m3a na semente 7). `Sim.nearest_target` e `Powers.strongest_target` buscam primeiro o mar no campo, depois o ar ou o chefe.
+  Aviso: o sonar grave toca quando um deles aparece (`sea_contact`). `tools/gen_missions.py` (`add_sea`, sorteio
+  próprio) põe 1 a 3 ondas do mar nas 16 missões de água, a cada 10 a 15 s, longe de chefes (22 s), objetivos e dos
+  30 s finais; replays até a revisão 7 jogam sem elas, passo a passo. Bot: não mira no mar. Balanceamento (bot,
+  sementes 7 e 11): as 16 fases de água vencidas, de 146 a 314 s. Testes em `tests/sea_tests.gd`. A arte e a
+  caixa de colisão (`sea_submarine`, `sea_warship`) vêm de outra tarefa. Falta conferir no aparelho

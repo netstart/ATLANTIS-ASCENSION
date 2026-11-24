@@ -261,6 +261,8 @@ enemy.prison_pod,Cápsula-prisão,Prison Pod,Cápsula prisión,Gefängniskapsel,
 enemy.protocol_beacon,Farol do Protocolo,Protocol Beacon,Faro del Protocolo,Protokoll-Leuchtfeuer,Balise du Protocole,Маяк Протокола,Suar Protokol,プロトコルの信号塔,프로토콜 신호탑,協定信標,协议信标
 enemy.protocol_shard,Fragmento do Protocolo,Protocol Shard,Fragmento del Protocolo,Protokollsplitter,Éclat du Protocole,Осколок Протокола,Serpihan Protokol,プロトコルの欠片,프로토콜 파편,協議碎片,协议碎片
 enemy.relic_courier,Mensageiro do Protocolo,Protocol Courier,Mensajero del Protocolo,Protokoll-Kurier,Messager du Protocole,Курьер Протокола,Kurir Protokol,プロトコルの運び屋,프로토콜 운반선,協定信使,协议信使
+enemy.sea_submarine,Submarino do Protocolo,Protocol Submarine,Submarino del Protocolo,Protokoll-U-Boot,Sous-marin du Protocole,Подлодка Протокола,Kapal Selam Protokol,プロトコルの潜水艦,프로토콜 잠수함,協定潛艦,协议潜艇
+enemy.sea_warship,Couraçado do Protocolo,Protocol Warship,Acorazado del Protocolo,Protokoll-Kriegsschiff,Cuirassé du Protocole,Линкор Протокола,Kapal Perang Protokol,プロトコルの戦艦,프로토콜 전함,協定戰艦,协议战舰
 enemy.sentinel_buoy,Boia Sentinela,Sentinel Buoy,Boya Centinela,Wächterboje,Bouée sentinelle,Буй-страж,Pelampung Penjaga,センチネルブイ,감시 부표,哨兵浮標,哨兵浮标
 enemy.skiff,Esquife,Skiff,Esquife,Skiff,Esquif,Ялик,Sekoci,スキフ,스키프,小艇,小艇
 enemy.sower,Semeador,Sower,Sembrador,Säer,Semeur,Сеятель,Penabur,種蒔き,파종자,播種者,播种者

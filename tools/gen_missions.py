@@ -618,6 +618,48 @@ def add_objectives(mission_id: str, spec: dict, out: dict) -> None:
     out.get("objectives", []).sort(key=lambda o: o["t"])
 
 
+# Mar (revisão 8 da Sim): nas missões de água sobem submarinos e passam navios na superfície, abaixo da nave. Só os
+# mísseis teleguiados (o lançador automático do mar, a secundária, as salvas) e as explosões de área os ferem. Entram
+# depois do roteiro, dos objetivos e do clima, com um sorteio próprio: nada do que já existia muda de lugar. Uma onda a
+# cada 10 a 15 s de fase, longe de chefes (o navio cruza o campo em ~20 s e precisa sair antes da luta), de objetivos e
+# do fim (a fase só termina com o campo vazio).
+SEA_BACKDROPS = {"ocean", "atlantis", "hadal"}
+SEA_FIRST = 12.0
+SEA_GAP = (10.0, 15.0)
+SEA_BOSS_CLEAR = 22.0
+SEA_TAIL = 30.0
+SEA_WAVES = (
+    ("sea_submarine", 1, {"speed": 34}, {"from_depth": True}),
+    ("sea_submarine", 2, {"speed": 34}, {"from_depth": True, "spacing": 110}),
+    ("sea_warship", 1, {"speed": 28}, {"y": -28}),
+)
+
+
+def add_sea(mission_id: str, out: dict) -> None:
+    if out["backdrop"] not in SEA_BACKDROPS:
+        return
+    rng = random.Random(f"sea:{mission_id}")
+    length = out["length_s"]
+    bosses = [e["t"] for e in out["events"] if e["op"] in ("boss", "miniboss")]
+    goals = [(o["t"], objective_seconds(o)) for o in out.get("objectives", [])]
+    t = SEA_FIRST
+    while t <= length - SEA_TAIL:
+        # Um instante só dela: o roteiro ordena por tempo (sort_custom não é estável) e os empates mudariam replays.
+        taken = {e["t"] for e in out["events"]}
+        near_boss = any(t - 2.0 <= b <= t + SEA_BOSS_CLEAR for b in bosses)
+        near_goal = any(g - 2.0 <= t <= g + d + 1.0 for g, d in goals)
+        clear = round(t, 2) not in taken and not near_boss and not near_goal
+        if clear:
+            enemy, count, params, extra = rng.choice(SEA_WAVES)
+            formation = "line" if count > 1 else "single"
+            x = 0.5 if count > 1 else rng.choice([0.25, 0.4, 0.6, 0.75])
+            out["events"].append(dict(wave(enemy, formation, count, "scroll", params, x, **extra), t=round(t, 2)))
+            t += rng.uniform(*SEA_GAP)
+        else:
+            t = round(t + 1.0, 2)
+    out["events"].sort(key=lambda e: e["t"])
+
+
 def build(mission_id: str, spec: dict) -> dict:
     events, cuts, t = script(mission_id, spec, 1.0)
     if any(e["op"] in ("boss", "miniboss") for e in events):
@@ -631,6 +673,7 @@ def build(mission_id: str, spec: dict) -> dict:
             out[key] = spec[key]
     add_weather(mission_id, out, t)
     add_objectives(mission_id, spec, out)
+    add_sea(mission_id, out)
     return out
 
 

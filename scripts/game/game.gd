@@ -623,6 +623,9 @@ func _on_event(ev: Dictionary) -> void:
 				Settings.vibrate(18, 0.45, 0)
 		&"hit":
 			AudioManager.play("hit", 1.0, 0.1, -16.0)
+		&"sea_contact":
+			# Submarino ou navio no sonar: aviso grave e baixo antes de ele subir e atirar (só os mísseis o alcançam).
+			AudioManager.play("fx_sonar", 0.8, 0.0, -10.0)
 		&"graze":
 			# Sopro de ar curto (o highUp em quadrada de 8 bits era agudo e repetitivo).
 			AudioManager.play("fx_graze", 1.0, 0.06, -8.0)

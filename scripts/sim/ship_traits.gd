@@ -65,7 +65,8 @@ static func extra_drones(sim: Sim) -> int:
 static func on_kill(sim: Sim, e: SimEnemy) -> void:
 	if of(sim) == &"blast":
 		sim.splash(e.pos, BLAST_RADIUS, BLAST_DAMAGE * sim.damage_mult())
-	if e.marked and sim.player.alive and e.pos.distance_to(sim.player.pos) <= CAPTURE_RANGE \
+	# Navio do mar não vira escolta voadora.
+	if e.marked and not e.sea and sim.player.alive and e.pos.distance_to(sim.player.pos) <= CAPTURE_RANGE \
 			and sim.escorts.size() < MAX_ESCORTS:
 		var used := 0.0
 		for esc: Dictionary in sim.escorts:

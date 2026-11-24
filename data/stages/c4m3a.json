@@ -186,6 +186,19 @@
 			"t": 23.5
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 25.0
+		},
+		{
 			"op": "lightning",
 			"kind": "lava",
 			"x": 0.2,
@@ -399,6 +412,20 @@
 			"op": "log",
 			"x": 0.39044900421398837,
 			"t": 59.7
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 61.78
 		},
 		{
 			"op": "capsule",

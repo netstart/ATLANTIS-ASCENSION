@@ -17,7 +17,7 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **Void — Environment Pack** — Foozle (foozle.io) (CC0-1.0) — https://foozlecc.itch.io/void-environment-pack
 - **Void — Pickups Pack** — Foozle (foozle.io) (CC0-1.0) — https://foozlecc.itch.io/void-pickups-pack
 - **Ocean Creatures** — michael-jay-rov (CC-BY-4.0) — https://michael-jay-rov.itch.io/ocean-creatures
-- **Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
+- **Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos, navios do mar)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/ATLANTIS-ASCENSION
 - **Animated Explosions** — Luis Zuno (ansimuz) (CC0-1.0) — https://opengameart.org/content/animated-explosions
 - **Cyberpunk Portraits** — Hyptosis (CC0-1.0) — https://opengameart.org/content/cyberpunk-portraits
 - **Spaceships: Faction 1, 2, 3, 5, 6, 7 e 10, Blue fighter, Fighter e Yellow starship** — MillionthVector (http://millionthvector.blogspot.de) (CC-BY-3.0) — https://opengameart.org/users/millionthvector

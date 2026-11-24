@@ -11,9 +11,11 @@ extends RefCounted
 ##   6: feixe dos padrões sai da boca do emissor e o segue, mira o jogador e gira devagar (EnemyBeam).
 ##   7: nave do jogador de volta ao porte original na tela (meia escala da HD): ponto da hitbox a meia distância
 ##      do centro (Hitboxes.ship).
+##   8: mar: submarinos e navios nas missões de água (SimEnemy.sea, só mísseis e explosões os ferem), mísseis do mar
+##      automáticos (SecondaryFire.sea_launcher) e mísseis buscando o mar primeiro (Sim.nearest_target).
 ## A saída da fase continua na marca "outro" da carga, anterior a este número (SimOutro).
 
-const CURRENT := 7
+const CURRENT := 8
 
 
 ## Revisão das regras de uma partida com esta carga.

@@ -280,6 +280,19 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 49.0
+		},
+		{
+			"op": "wave",
 			"enemy": "prism_jelly",
 			"formation": "line",
 			"count": 3,

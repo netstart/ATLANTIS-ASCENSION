@@ -27,5 +27,7 @@
 	{"id": "prison_barge", "name_key": "enemy.prison_barge", "faction": "protocol", "sprite": "prison_barge", "hp": 140, "radius": 17, "points": 1500, "contact": false},
 	{"id": "prison_pod", "name_key": "enemy.prison_pod", "faction": "protocol", "sprite": "prison_pod", "hp": 120, "radius": 14, "points": 1500, "contact": false},
 	{"id": "protocol_beacon", "name_key": "enemy.protocol_beacon", "faction": "protocol", "sprite": "protocol_beacon", "hp": 40, "radius": 12, "points": 600, "contact": false},
-	{"id": "relic_courier", "name_key": "enemy.relic_courier", "faction": "protocol", "sprite": "nairan_scout", "tint": "#ffd76a", "hp": 24, "radius": 11, "points": 1200}
+	{"id": "relic_courier", "name_key": "enemy.relic_courier", "faction": "protocol", "sprite": "nairan_scout", "tint": "#ffd76a", "hp": 24, "radius": 11, "points": 1200},
+	{"id": "sea_submarine", "name_key": "enemy.sea_submarine", "faction": "protocol", "layer": "sea", "sprite": "sea_submarine", "hp": 30, "radius": 14, "points": 500, "pattern": "sub_torpedo", "pattern_delay": 50, "contact": false},
+	{"id": "sea_warship", "name_key": "enemy.sea_warship", "faction": "protocol", "layer": "sea", "sprite": "sea_warship", "hp": 70, "radius": 20, "points": 900, "pattern": "warship_fan", "pattern_delay": 60, "marked": true, "drop": "medal", "contact": false}
 ]

@@ -150,6 +150,19 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 34.0
+		},
+		{
+			"op": "wave",
 			"enemy": "skiff",
 			"formation": "column",
 			"count": 6,
@@ -296,6 +309,20 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 70.9
+		},
+		{
+			"op": "wave",
 			"enemy": "trawler",
 			"formation": "single",
 			"count": 1,
@@ -319,6 +346,19 @@
 			},
 			"marked": true,
 			"t": 77.2
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 81.82
 		},
 		{
 			"op": "wave",

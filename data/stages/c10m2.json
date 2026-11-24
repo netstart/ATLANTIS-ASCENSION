@@ -149,6 +149,20 @@
 			"t": 20.05
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 22.0
+		},
+		{
 			"op": "current",
 			"dx": 1,
 			"strength": 30,
@@ -332,6 +346,19 @@
 			"op": "log",
 			"x": 0.6987280961424679,
 			"t": 53.14
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 55.11
 		},
 		{
 			"op": "capsule",

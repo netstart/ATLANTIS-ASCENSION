@@ -149,6 +149,9 @@ python -I tools\gen_sprites.py
 python tools\gen_portraits.py
 # Naves HD (jogador e frotas; numpy e Pillow; grava assets\art\hd e registra no asset_index; --preview DIR folhas)
 python tools\gen_hd_ships.py
+# Submarino e navio de guerra do mar (procedural, MIT; numpy e Pillow; grava assets\art\hd\sea). Rode antes do
+# fit_hitboxes; na primeira vez rode o Godot com --import e o gerador de novo (liga mipmaps nos .import)
+python tools\gen_sea_ships.py
 # Evolução da nave no hangar: uma peça HD por nível montada em cada nave, jatos, emblemas e rachadura (numpy e
 # Pillow; rode depois do gen_hd_ships e do fit_hitboxes; --preview DIR grava as folhas)
 python tools\gen_livery.py

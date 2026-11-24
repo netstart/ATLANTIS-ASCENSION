@@ -518,7 +518,10 @@ func choose_blessing(id: StringName) -> void:
 
 func spawn_enemy(spec: Dictionary, member: int) -> void:
 	var def: Dictionary = (tables["enemies"] as Dictionary).get(StringName(String(spec.get("enemy", ""))), {})
+	# Inimigos do mar só nascem a partir da revisão do mar: replays antigos das missões de água jogam sem eles.
 	if def.is_empty():
+		return
+	if String(def.get("layer", "")) == "sea" and SimRevision.of(loadout) < SecondaryFire.SEA_REVISION:
 		return
 	var count := maxi(1, int(spec.get("count", 1)))
 	var spacing := float(spec.get("spacing", 36.0))
@@ -548,6 +551,9 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 	if spec.has("glyph"):
 		e.glyph = int(spec["glyph"])
 	enemies.append(e)
+	if e.sea:
+		# Contato no sonar (aviso sonoro do Game) antes de ele subir do fundo e atirar.
+		emit(&"sea_contact", {"pos": e.pos, "id": e.id})
 
 
 func spawn_boss(boss_id: StringName, final: bool) -> void:
@@ -698,7 +704,8 @@ func _collide_player_bullets() -> void:
 		c.clear()
 	var width := Playfield.FIELD.x / COLUMNS
 	for e: SimEnemy in enemies:
-		if not e.active():
+		# O tiro passa por cima dos inimigos do mar.
+		if not e.active() or e.sea:
 			continue
 		var hx := e.hit_pos().x
 		var c0 := clampi(floori((hx - e.hurt) / width), 0, COLUMNS - 1)
@@ -745,10 +752,10 @@ func _collide_player_bullets() -> void:
 		i -= 1
 
 
-## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio.
+## Dano em área (Plasma, Ressaca): metade do dano em quem estiver no raio. Estilhaço de arma não chega ao mar.
 func splash(at: Vector2, radius: float, dmg: float) -> void:
 	for e: SimEnemy in enemies:
-		if e.active() and at.distance_to(e.hit_pos()) <= radius + e.hurt and e.damage(dmg * 0.5):
+		if e.active() and not e.sea and at.distance_to(e.hit_pos()) <= radius + e.hurt and e.damage(dmg * 0.5):
 			_kill_enemy(e)
 	if boss != null and boss.fighting() and at.distance_to(boss.hurt_pos()) <= radius + boss.hurt_radius():
 		boss.damage_body(dmg * 0.5, self)
@@ -816,16 +823,20 @@ func hit_at_id(p: Vector2, r: float, dmg: float, skip: int = 0) -> int:
 	return 0
 
 
-## Alvo mais próximo para os mísseis (Vector2.INF se não houver).
+## Alvo mais próximo para os mísseis (Vector2.INF se não houver): primeiro o inimigo do mar no campo (só míssil e
+## explosão o ferem), depois o que voa ou o chefe.
 func nearest_target(from: Vector2) -> Vector2:
 	var best := Vector2.INF
 	var best_d := INF
-	for e: SimEnemy in enemies:
-		if e.active() and Rect2(Vector2.ZERO, field).has_point(e.pos):
-			var d := from.distance_squared_to(e.pos)
-			if d < best_d:
-				best_d = d
-				best = e.pos
+	for sea: bool in [true, false]:
+		for e: SimEnemy in enemies:
+			if e.active() and e.sea == sea and Rect2(Vector2.ZERO, field).has_point(e.pos):
+				var d := from.distance_squared_to(e.pos)
+				if d < best_d:
+					best_d = d
+					best = e.pos
+		if sea and best != Vector2.INF:
+			return best
 	if boss != null and boss.fighting():
 		var d := from.distance_squared_to(boss.body_pos())
 		if d < best_d:

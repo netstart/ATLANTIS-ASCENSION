@@ -13,6 +13,8 @@
 	{"id": "kraken_rain", "bullet": "orb_violet_m", "steps": [{"op": "aimed", "speed": 88}, {"op": "wait", "frames": 85}]},
 	{"id": "trawler_fan", "bullet": "orb_gold_m", "steps": [{"op": "fan", "count": 5, "spread_deg": 60, "speed": 70}, {"op": "wait", "frames": 90}]},
 	{"id": "turret_burst", "bullet": "needle_gold", "steps": [{"op": "aimed", "speed": 120}, {"op": "wait", "frames": 8}, {"op": "aimed", "speed": 120}, {"op": "wait", "frames": 8}, {"op": "aimed", "speed": 120}, {"op": "wait", "frames": 110}]},
+	{"id": "sub_torpedo", "bullet": "orb_coral_l", "steps": [{"op": "line", "count": 2, "speed": 52, "speed_step": 12, "aim": true}, {"op": "wait", "frames": 150}]},
+	{"id": "warship_fan", "bullet": "orb_gold_m", "steps": [{"op": "fan", "count": 5, "spread_deg": 70, "speed": 60}, {"op": "wait", "frames": 60}, {"op": "aimed_fan", "count": 3, "spread_deg": 24, "speed": 76, "bullet": "needle_gold"}, {"op": "wait", "frames": 140}]},
 	{"id": "bulwark_beam", "steps": [{"op": "beam", "warn_frames": 40, "frames": 40, "width": 16, "oy": 20}, {"op": "wait", "frames": 150}]},
 	{"id": "sower_mines", "bullet": "orb_coral_l", "steps": [{"op": "ring", "count": 6, "speed": 60, "accel": -45}, {"op": "rotate", "deg": 30}, {"op": "wait", "frames": 120}]},
 	{"id": "lance_pair", "bullet": "orb_gold_m", "steps": [{"op": "aimed_fan", "count": 2, "spread_deg": 8, "speed": 105}, {"op": "wait", "frames": 75}]},

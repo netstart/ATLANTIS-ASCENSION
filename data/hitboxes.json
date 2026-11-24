@@ -46,7 +46,9 @@
 		"prison_barge": {"radius": 12.5, "offset": [0.0, 0.0], "contact": 8.5},
 		"prison_pod": {"radius": 11.5, "offset": [0.0, 0.0], "contact": 8.5},
 		"protocol_beacon": {"radius": 8.5, "offset": [0.0, 0.0], "contact": 6.0},
-		"relic_courier": {"radius": 10.5, "offset": [0.0, -0.9], "contact": 8.0}
+		"relic_courier": {"radius": 10.5, "offset": [0.0, -0.9], "contact": 8.0},
+		"sea_submarine": {"radius": 17.5, "offset": [0.0, 0.2], "contact": 10.0},
+		"sea_warship": {"radius": 23.5, "offset": [0.0, -2.7], "contact": 14.0}
 	},
 	"bosses": {
 		"tidebreaker": {"radius": 41.0, "offset": [0.0, -7.4], "contact": 28.0},

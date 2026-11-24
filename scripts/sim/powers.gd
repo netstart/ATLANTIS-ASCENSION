@@ -278,8 +278,11 @@ func on_fire(sim: Sim, from: int) -> void:
 
 # --- Ajudas das primitivas (PowerEffects) --------------------------------------------------------
 
-## Dano num inimigo (já com o multiplicador da nave).
-func hurt(sim: Sim, e: SimEnemy, amount: float) -> void:
+## Dano num inimigo (já com o multiplicador da nave). Os do mar (SimEnemy.sea) só levam de explosão e salva de
+## mísseis (`sea_ok`); anel, investida, feixe, raio, onda, orbes, drones e aura passam por cima da água.
+func hurt(sim: Sim, e: SimEnemy, amount: float, sea_ok: bool = false) -> void:
+	if e.sea and not sea_ok:
+		return
 	if e.active() and e.damage(amount * sim.damage_mult()):
 		sim.kill_enemy(e)
 
@@ -309,7 +312,7 @@ func boss_capped(sim: Sim, share: float = 1.0) -> bool:
 func area(sim: Sim, at: Vector2, radius: float, amount: float, cancel: bool, id: StringName) -> void:
 	for e: SimEnemy in sim.enemies:
 		if e.active() and at.distance_to(e.hit_pos()) <= radius + e.hurt:
-			hurt(sim, e, amount)
+			hurt(sim, e, amount, true)
 	if sim.boss != null and sim.boss.fighting() and at.distance_to(sim.boss.hurt_pos()) <= radius + sim.boss.hurt_radius():
 		hurt_boss(sim, amount)
 	if cancel:
@@ -378,8 +381,17 @@ func cancel_segment(sim: Sim, a: Vector2, b: Vector2, dist: float) -> PackedVect
 	return out
 
 
-## Alvo de maior vida (Estrela Cadente): o chefe se estiver lutando, senão o inimigo mais forte na tela.
+## Alvo de maior vida (Estrela Cadente): o inimigo do mar mais forte na tela (como Sim.nearest_target), senão o chefe
+## se estiver lutando, senão o inimigo mais forte na tela.
 func strongest_target(sim: Sim) -> Vector2:
+	var sea := Vector2.INF
+	var sea_hp := -INF
+	for e: SimEnemy in sim.enemies:
+		if e.sea and e.active() and Rect2(Vector2.ZERO, sim.field).has_point(e.pos) and e.hp > sea_hp:
+			sea_hp = e.hp
+			sea = e.pos
+	if sea != Vector2.INF:
+		return sea
 	if sim.boss != null and sim.boss.fighting():
 		return sim.boss.body_pos()
 	var best := Vector2.INF

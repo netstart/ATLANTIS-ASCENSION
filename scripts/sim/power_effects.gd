@@ -331,7 +331,7 @@ static func _salvo(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 		vel[i] = v
 		angles[i] = v.angle()
 		life[i] += 1
-		var hit := _shot_hit(sim, pw, pos, radius, dmg, hits[i] as Array)
+		var hit := _shot_hit(sim, pw, pos, radius, dmg, hits[i] as Array, true)
 		if hit:
 			sim.emit(&"hit", {"pos": pos})
 			if splash > 0.0:
@@ -357,12 +357,14 @@ static func _salvo(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 	return int(e["_next"]) < count or not points.is_empty()
 
 
-## Acerto de um projétil de poder: inimigo (cada um uma vez por projétil) e depois o corpo do chefe.
-static func _shot_hit(sim: Sim, pw: Powers, at: Vector2, r: float, amount: float, hit: Array) -> bool:
+## Acerto de um projétil de poder: inimigo (cada um uma vez por projétil) e depois o corpo do chefe. Só os mísseis
+## da salva (`sea`) acertam os inimigos do mar; os outros projéteis passam por cima deles.
+static func _shot_hit(sim: Sim, pw: Powers, at: Vector2, r: float, amount: float, hit: Array,
+		sea: bool = false) -> bool:
 	for foe: SimEnemy in sim.enemies:
-		if foe.active() and not hit.has(foe) and at.distance_to(foe.hit_pos()) <= r + foe.hurt:
+		if foe.active() and (sea or not foe.sea) and not hit.has(foe) and at.distance_to(foe.hit_pos()) <= r + foe.hurt:
 			hit.append(foe)
-			pw.hurt(sim, foe, amount)
+			pw.hurt(sim, foe, amount, sea)
 			return true
 	var b := sim.boss
 	if b != null and b.fighting() and not hit.has(b) and at.distance_to(b.hurt_pos()) <= r + b.hurt_radius():
@@ -428,7 +430,7 @@ static func _chain(sim: Sim, pw: Powers, e: Dictionary, spec: Dictionary) -> boo
 		var best_d := reach * reach
 		for foe: SimEnemy in sim.enemies:
 			var d := from.distance_squared_to(foe.hit_pos())
-			if foe.active() and not hit.has(foe) and d <= best_d:
+			if foe.active() and not foe.sea and not hit.has(foe) and d <= best_d:
 				best_d = d
 				best = foe
 		var next := Vector2.INF

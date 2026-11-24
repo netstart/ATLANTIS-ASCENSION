@@ -211,6 +211,8 @@ STRINGS = {
     "enemy.sower": ["Semeador", "Sower", "Sembrador", "Säer", "Semeur", "Сеятель", "Penabur", "種蒔き", "파종자", "播種者", "播种者"],
     "enemy.spark_swarm": ["Enxame de Faíscas", "Spark Swarm", "Enjambre de Chispas", "Funkenschwarm", "Essaim d'Étincelles", "Рой искр", "Kawanan Percik", "火花の群れ", "불꽃 떼", "火花群", "火花群"],
     "enemy.squid_probe": ["Sonda Lula", "Squid Probe", "Sonda Calamar", "Tintensonde", "Sonde Calmar", "Зонд-кальмар", "Probe Cumi", "イカ型探査機", "오징어 탐사기", "魷魚探測器", "鱿鱼探测器"],
+    "enemy.sea_submarine": ["Submarino do Protocolo", "Protocol Submarine", "Submarino del Protocolo", "Protokoll-U-Boot", "Sous-marin du Protocole", "Подлодка Протокола", "Kapal Selam Protokol", "プロトコルの潜水艦", "프로토콜 잠수함", "協定潛艦", "协议潜艇"],
+    "enemy.sea_warship": ["Couraçado do Protocolo", "Protocol Warship", "Acorazado del Protocolo", "Protokoll-Kriegsschiff", "Cuirassé du Protocole", "Линкор Протокола", "Kapal Perang Protokol", "プロトコルの戦艦", "프로토콜 전함", "協定戰艦", "协议战舰"],
     "enemy.trawler": ["Arrastão", "Trawler", "Arrastrero", "Trawler", "Chalutier", "Траулер", "Kapal Pukat", "トロール船", "트롤선", "拖網船", "拖网船"],
     "enemy.trireme": ["Trirreme", "Trireme", "Trirreme", "Trireme", "Trirème", "Трирема", "Trireme", "三段櫂船", "삼단노선", "三列槳船", "三列桨船"],
     "enemy.volt_ray": ["Raia Voltaica", "Volt Ray", "Raya Voltaica", "Voltrochen", "Raie Voltaïque", "Электроскат", "Pari Volt", "ボルトエイ", "볼트 가오리", "電鰩", "电鳐"],

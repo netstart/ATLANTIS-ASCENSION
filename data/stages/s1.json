@@ -279,6 +279,20 @@
 			"t": 51.38
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 53.0
+		},
+		{
 			"op": "log",
 			"x": 0.5,
 			"t": 54.88

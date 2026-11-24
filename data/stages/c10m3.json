@@ -97,6 +97,20 @@
 		},
 		{
 			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "line",
+			"count": 2,
+			"x": 0.5,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"spacing": 110,
+			"t": 12.0
+		},
+		{
+			"op": "wave",
 			"enemy": "nautilus",
 			"formation": "single",
 			"count": 1,
@@ -343,6 +357,19 @@
 			"op": "log",
 			"x": 0.5116841984791136,
 			"t": 53.14
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_submarine",
+			"formation": "single",
+			"count": 1,
+			"x": 0.25,
+			"path": "scroll",
+			"params": {
+				"speed": 34
+			},
+			"from_depth": true,
+			"t": 54.34
 		},
 		{
 			"op": "capsule",

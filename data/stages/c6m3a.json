@@ -189,6 +189,19 @@
 			"t": 23.5
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 25.0
+		},
+		{
 			"op": "lightning",
 			"kind": "icefall",
 			"x": 0.3,
@@ -424,6 +437,19 @@
 			"op": "log",
 			"x": 0.6924998764555421,
 			"t": 59.7
+		},
+		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.4,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 62.03
 		},
 		{
 			"op": "capsule",

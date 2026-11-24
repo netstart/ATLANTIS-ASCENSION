@@ -1,7 +1,8 @@
 class_name SimBeam
 extends RefCounted
 ## Feixe vertical do Laser e da Rajada (Sim._beam_attack): acerta só o alvo mais próximo acima da nave (inimigo, parte
-## ou corpo do chefe, pelo círculo de dano de cada um: Hitboxes) e guarda onde o feixe para (Sim.laser_to_y).
+## ou corpo do chefe, pelo círculo de dano de cada um: Hitboxes) e guarda onde o feixe para (Sim.laser_to_y). Passa por
+## cima dos inimigos do mar (SimEnemy.sea).
 
 
 static func attack(sim: Sim, width: float, dps_value: float) -> void:
@@ -15,7 +16,7 @@ static func attack(sim: Sim, width: float, dps_value: float) -> void:
 	var target: SimEnemy = null
 	for e: SimEnemy in sim.enemies:
 		var ep := e.hit_pos()
-		if e.active() and absf(ep.x - me.x) <= half + e.hurt and ep.y < me.y and ep.y > best_y:
+		if e.active() and not e.sea and absf(ep.x - me.x) <= half + e.hurt and ep.y < me.y and ep.y > best_y:
 			best_y = ep.y
 			target = e
 	var boss_part: Dictionary = {}

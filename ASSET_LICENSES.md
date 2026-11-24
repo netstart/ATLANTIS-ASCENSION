@@ -28,7 +28,7 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Void — Environment Pack | Foozle (foozle.io) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://foozlecc.itch.io/void-environment-pack |
 | Void — Pickups Pack | Foozle (foozle.io) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://foozlecc.itch.io/void-pickups-pack |
 | Ocean Creatures | michael-jay-rov | CC-BY-4.0 |  | sim | sim | `licenses/texts/CC-BY-4.0.txt` | https://michael-jay-rov.itch.io/ocean-creatures |
-| Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos) | Clayton K. N. Passos | MIT | tools/gen_sprites.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
+| Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos, navios do mar) | Clayton K. N. Passos | MIT | tools/gen_sprites.py | sim | não | `licenses/texts/MIT-AtlantisAscension.txt` | https://github.com/netstart/ATLANTIS-ASCENSION |
 | Exo 2 (variable) | Natanael Gama (The Exo 2 Project Authors) | OFL-1.1 |  | sim | sim | `licenses/texts/OFL-1.1.txt` | https://github.com/google/fonts/tree/main/ofl/exo2 |
 | Animated Explosions | Luis Zuno (ansimuz) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/animated-explosions |
 | 80 CC0 creature SFX | rubberduck | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://opengameart.org/content/80-cc0-creature-sfx |

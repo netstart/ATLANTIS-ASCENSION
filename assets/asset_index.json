@@ -1668,6 +1668,36 @@
   "sha256": "3ff5832b1a7caedfb06241e1e7f9dd3230af4203ee1a532660cc22a494e3eabb"
  },
  {
+  "file": "assets/art/hd/sea/foam.png",
+  "source": "tools/gen_sea_ships.py",
+  "license_id": "atlantis_generated",
+  "sha256": "aba0f7a6a0a49c24c071c5a8f4fbeab1bea22f62f92ef79eed899b3cca83bec1"
+ },
+ {
+  "file": "assets/art/hd/sea/submarine_base.png",
+  "source": "tools/gen_sea_ships.py",
+  "license_id": "atlantis_generated",
+  "sha256": "38830fd86e5a00190799f095598e4252acc3f4f3fea8b915ba158fe300b761fe"
+ },
+ {
+  "file": "assets/art/hd/sea/submarine_engine.png",
+  "source": "tools/gen_sea_ships.py",
+  "license_id": "atlantis_generated",
+  "sha256": "4277c8ee8a541fa2e596026c587174d670d7e2e8278c80e39c6996a0674da4a8"
+ },
+ {
+  "file": "assets/art/hd/sea/warship_base.png",
+  "source": "tools/gen_sea_ships.py",
+  "license_id": "atlantis_generated",
+  "sha256": "9facfca64e802a5caedc5863d907a0c6d4067a584cbfa49043a8f7e9550b6d4d"
+ },
+ {
+  "file": "assets/art/hd/sea/warship_engine.png",
+  "source": "tools/gen_sea_ships.py",
+  "license_id": "atlantis_generated",
+  "sha256": "4aa3c4d48b4af2af509ad630a46609508008d5ad4fa64275a9361353fea08c68"
+ },
+ {
   "file": "assets/art/kenney/icons/arrowLeft.png",
   "source": "kenney/game-icons/PNG/White/2x/arrowLeft.png",
   "license_id": "kenney_art",

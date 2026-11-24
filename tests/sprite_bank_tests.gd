@@ -55,7 +55,7 @@ func run(check: Callable) -> void:
 			"" if big.is_empty() else ": " + ", ".join(big)))
 	check.call(SpriteBank.frame_rect(2, 160) == Rect2(320, 0, 160, 160), "SpriteBank: quadro em texels")
 	var missing: Array[String] = []
-	for group: String in ["player", "klaed", "nairan", "nautolan"]:
+	for group: String in ["player", "klaed", "nairan", "nautolan", "sea"]:
 		var dir := DirAccess.open("res://assets/art/hd/" + group)
 		if dir == null:
 			missing.append(group)

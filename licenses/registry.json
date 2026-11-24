@@ -604,7 +604,7 @@
   },
   {
     "id": "atlantis_generated",
-    "name": "Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos)",
+    "name": "Atlantis Ascension — arte gerada (balas, coletáveis, efeitos, tentáculos, navios do mar)",
     "category": "art",
     "author": "Clayton K. N. Passos",
     "version": "tools/gen_sprites.py",
@@ -618,7 +618,8 @@
     "ai_generated": false,
     "modifications": "",
     "files": [
-      "assets/art/generated/*"
+      "assets/art/generated/*",
+      "assets/art/hd/sea/*"
     ],
     "sha256": {
       "license_file": "1ab2072c77bfa02b09e6c8bc14df394dea29fb7fde887901b599deff059b9ef3",

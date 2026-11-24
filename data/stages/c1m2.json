@@ -160,6 +160,19 @@
 			"t": 23.96
 		},
 		{
+			"op": "wave",
+			"enemy": "sea_warship",
+			"formation": "single",
+			"count": 1,
+			"x": 0.6,
+			"path": "scroll",
+			"params": {
+				"speed": 28
+			},
+			"y": -28,
+			"t": 26.0
+		},
+		{
 			"op": "ocean_shift",
 			"to": "ruins",
 			"warn": 2.0,
