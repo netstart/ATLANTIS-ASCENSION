@@ -28,6 +28,8 @@ const ANIM_FPS := 12.0
 const EXPLOSION_TIME := 0.6
 const SHADOW_OFFSET := Vector2(6, 10)
 const SHADOW_SCALE := 0.8
+## Lado maior da nave Void original (nível 1), a régua do escudo e das bolhas em volta da nave.
+const ORIGINAL_REACH := 30.0
 const SHADOW_COLOR := Color(0.0, 0.02, 0.05, 0.35)
 ## Escala visual de quem sobe do fundo (0,35 → 1,0 enquanto a Sim leva depth de DEPTH_START a 1).
 const RISE_SCALE := 0.35
@@ -193,7 +195,7 @@ func setup(p_sim: Sim) -> void:
 	var paint := Store.tint_of(String(sim.loadout.get("cosmetic", "")))
 	_paint = Color(paint) if not paint.is_empty() else Color(0, 0, 0, 0)
 	_art = SpriteBank.player(StringName(String(sim.player.ship.get("id", "falcon"))))
-	_nozzles = ShipArt.nozzles(_art)
+	_nozzles = ShipArt.game_nozzles(_art)
 	var paint_fx := Store.ship_fx(String(sim.player.ship.get("id", "falcon")), String(sim.loadout.get("cosmetic", "")))
 	_exhaust = paint_fx.get("trail", EXHAUST_COLOR)
 	_burst = paint_fx.get("burst", Color(0, 0, 0, 0))
@@ -664,9 +666,10 @@ func _draw_shadows(ci: CanvasItem) -> void:
 						float(part.get("part_scale", 1.0)), 1.6, PI)
 	var pl := sim.player
 	if pl.alive:
-		_shadow(ci, _art, pl.pos, 1.0, 1.0, _bank * BANK_ROT, 1.0 - BANK_SQUEEZE * absf(_bank))
+		_shadow(ci, _art, pl.pos, ShipArt.game_scale(_art), 1.0, _bank * BANK_ROT, 1.0 - BANK_SQUEEZE * absf(_bank))
 	if sim.wing != null and sim.wing.alive:
-		_shadow(ci, _wing(), sim.wing.pos, 1.0, 1.0, _wing_bank * BANK_ROT, 1.0 - BANK_SQUEEZE * absf(_wing_bank))
+		_shadow(ci, _wing(), sim.wing.pos, ShipArt.game_scale(_wing()), 1.0, _wing_bank * BANK_ROT,
+				1.0 - BANK_SQUEEZE * absf(_wing_bank))
 
 
 func _shadow(ci: CanvasItem, ship: Dictionary, pos: Vector2, scale: float, height: float, angle: float,
@@ -874,10 +877,10 @@ func _draw_wing(ci: CanvasItem, w: SimPlayer, blink: bool) -> void:
 		_tex_centered(ci, _glow, (a + w.pos) * 0.5, 0.6, Color(TIDE_COLOR, 0.6))
 	var art := _wing()
 	var alpha := 0.45 if blink else 1.0
-	_bank_transform(ci, w.pos, _wing_bank)
+	_bank_transform(ci, w.pos, _wing_bank, ShipArt.game_scale(art))
 	ShipArt.draw(ci, art, time, _wing_livery, alpha, w.last_move.y < -0.3, Color(0, 0, 0, 0), reduce_flashes)
 	ci.draw_set_transform(Vector2.ZERO)
-	var label := w.pos + Vector2(-2.5, (art["used"] as Rect2).end.y + 9.0)
+	var label := w.pos + Vector2(-2.5, ShipArt.game_used(art).end.y + 9.0)
 	ci.draw_string_outline(Locale.font, label, "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0.02, 0.04, 0.08, 0.8))
 	ci.draw_string(Locale.font, label, "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.62, 0.91, 1.0, alpha))
 
@@ -903,32 +906,32 @@ func _draw_player(ci: CanvasItem) -> void:
 		var pulse := 1.0 + 0.15 * sin(time * 12.0)
 		_tex_centered(ci, _ring, p, Sim.TIDE_RADIUS / 14.0 * pulse, TIDE_COLOR)
 	if sim.mods.bubbles > 0:
-		_tex_centered(ci, _ring, p, 1.2 * _reach() / 40.0, Color(0.7, 0.95, 1.0, 0.45))
+		_tex_centered(ci, _ring, p, 1.2 * _reach() / ORIGINAL_REACH, Color(0.7, 0.95, 1.0, 0.45))
 	if sim.wing != null:
 		_draw_wing(ci, sim.wing, blink)
 	if ghost_sim != null and ghost_sim.player.alive:
 		if _ghost_art.is_empty():
 			_ghost_art = SpriteBank.player(StringName(String(ghost_sim.player.ship.get("id", "falcon"))))
-		ci.draw_set_transform(ghost_sim.player.pos)
+		ci.draw_set_transform(ghost_sim.player.pos, 0.0, Vector2.ONE * ShipArt.game_scale(_ghost_art))
 		ShipArt.draw(ci, _ghost_art, time, 1, 0.3, false, Color(0.5, 1.0, 1.0), true)
 		ci.draw_set_transform(Vector2.ZERO)
 	_draw_wake(ci, alpha)
 	var boost := _boost() if sim.outro.rise >= 0 else 1.0
-	_bank_transform(ci, p, _bank)
+	_bank_transform(ci, p, _bank, ShipArt.game_scale(_art))
 	ShipArt.draw(ci, _art, time, _livery, alpha, pl.last_move.y < -0.3 or sim.outro.rise >= 0, _paint, reduce_flashes,
 			_damage, boost, _muzzle > 0.0)
 	ci.draw_set_transform(Vector2.ZERO)
 	if pl.invuln > 0 and _shield != null:
-		# Escudo do tamanho da nave visível (a arte Void de 64 tinha 48 de nave).
-		var side := _reach() * 1.3
+		# Escudo na proporção da nave Void original: quadro de 64 para 30 unidades de nave visível.
+		var side := _reach() * 64.0 / ORIGINAL_REACH
 		var sf := int(time * ANIM_FPS) % maxi(1, _shield.get_width() / 64)
 		ci.draw_texture_rect_region(_shield, Rect2(p - Vector2(side, side) * 0.5, Vector2(side, side)),
 				SpriteBank.frame_rect(sf, 64), Color(1, 1, 1, 0.7))
 
 
-## Lado maior da nave visível (caixa opaca), em unidades lógicas.
+## Lado maior da nave visível (caixa opaca na escala da partida), em unidades lógicas.
 func _reach() -> float:
-	var used: Rect2 = _art.get("used", Rect2(-24, -24, 48, 48))
+	var used := ShipArt.game_used(_art)
 	return maxf(used.size.x, used.size.y)
 
 
@@ -937,7 +940,7 @@ func _damage_smoke(pl: SimPlayer) -> void:
 	_damage = ShipArt.damage_stage(pl.hull, pl.max_hull)
 	if _damage == 0 or _ticks % (14 if _damage == 1 else 8) != 0:
 		return
-	var spots := ShipArt.damage_spots(_art)
+	var spots := ShipArt.game_spots(_art)
 	var count := mini(spots.size(), ShipArt.DAMAGE_CRACKS[_damage])
 	if count > 0:
 		fx.damage_smoke(pl.pos + spots[(_ticks / 8) % count])
@@ -966,9 +969,10 @@ func _draw_wake(ci: CanvasItem, alpha: float) -> void:
 		ci.draw_rect(Rect2(_wake[i] + drift - Vector2(0.5, 0.5), Vector2(1, 1)), Color(1, 0.95, 0.75, 0.8 * k * alpha))
 
 
-## Nave inclinada na curva: gira um pouco e estreita (a asa de dentro "abaixa").
-func _bank_transform(ci: CanvasItem, at: Vector2, bank: float) -> void:
-	ci.draw_set_transform(at, bank * BANK_ROT, Vector2(1.0 - BANK_SQUEEZE * absf(bank), 1.0))
+## Nave inclinada na curva: gira um pouco e estreita (a asa de dentro "abaixa"), na escala da partida
+## (ShipArt.game_scale).
+func _bank_transform(ci: CanvasItem, at: Vector2, bank: float, scale: float) -> void:
+	ci.draw_set_transform(at, bank * BANK_ROT, Vector2(1.0 - BANK_SQUEEZE * absf(bank), 1.0) * scale)
 
 
 # --- Efeitos -------------------------------------------------------------------------------------
@@ -1058,7 +1062,7 @@ func _draw_fx_add(ci: CanvasItem) -> void:
 					Color(_exhaust, 0.75))
 		if _muzzle > 0.0:
 			var tint := _weapon_tint()
-			var muzzle := p + Vector2(0, (_art["used"] as Rect2).position.y + 2.0)
+			var muzzle := p + Vector2(0, ShipArt.game_used(_art).position.y + 2.0)
 			_tex_centered(ci, _flare, muzzle, 0.42, Color(tint, 0.9 * _muzzle / 0.06))
 			_tex_centered(ci, _sparkle, muzzle, 1.6, Color(1, 1, 1, _muzzle / 0.06))
 	if fx_level >= 1:

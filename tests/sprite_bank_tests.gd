@@ -44,6 +44,15 @@ func run(check: Callable) -> void:
 	var falcon := SpriteBank.player(&"falcon")
 	check.call(bool(falcon["hd"]) and float((falcon["used"] as Rect2).size.y) >= 52.0
 			and float((falcon["used"] as Rect2).size.y) <= 60.0, "SpriteBank: a Falcon HD tem de 52 a 60 unidades")
+	# Na partida, toda nave HD sai no porte da nave Void original (30 x 26 unidades, lado maior 30).
+	var big: Array[String] = []
+	for id: StringName in [&"falcon", &"amphitrite", &"hippocampus", &"ram", &"eclipse"]:
+		var game := ShipArt.game_used(SpriteBank.player(id))
+		if maxf(game.size.x, game.size.y) < 24.0 or maxf(game.size.x, game.size.y) > 34.0:
+			big.append("%s %s" % [id, game.size])
+	check.call(big.is_empty() and ShipArt.game_scale(fallback) == 1.0,
+			"SpriteBank: nave na partida do porte da original (lado maior 24 a 34)%s" % (
+			"" if big.is_empty() else ": " + ", ".join(big)))
 	check.call(SpriteBank.frame_rect(2, 160) == Rect2(320, 0, 160, 160), "SpriteBank: quadro em texels")
 	var missing: Array[String] = []
 	for group: String in ["player", "klaed", "nairan", "nautolan"]:

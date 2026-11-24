@@ -7,6 +7,10 @@ extends RefCounted
 ## valores de data/ships.json, enemies.json e bosses.json (replays antigos reproduzem igual).
 
 const REVISION := 5
+## A partir desta revisão a nave do jogador sai em SHIP_SCALE na tela (ShipArt.GAME_SCALE, o porte da nave original),
+## e o ponto da hitbox ("offset" medido na arte HD em escala 1) encolhe junto para ficar na cabine. O raio não muda.
+const SHIP_SCALE_REVISION := 7
+const SHIP_SCALE := 0.5
 const PATH := "res://data/hitboxes.json"
 
 
@@ -36,3 +40,13 @@ static func vec(raw: Variant) -> Vector2:
 	if typeof(raw) == TYPE_ARRAY and (raw as Array).size() >= 2:
 		return Vector2(float(raw[0]), float(raw[1]))
 	return Vector2.ZERO
+
+
+## Caixa da nave do jogador `id` (find "ships"), com o ponto na escala da tela da revisão (SHIP_SCALE na 7+).
+static func ship(tables: Dictionary, loadout: Dictionary, id: StringName) -> Dictionary:
+	var box := find(tables, loadout, "ships", id)
+	if box.is_empty() or SimRevision.of(loadout) < SHIP_SCALE_REVISION:
+		return box
+	var out := box.duplicate()
+	out["offset"] = [vec(box.get("offset")).x * SHIP_SCALE, vec(box.get("offset")).y * SHIP_SCALE]
+	return out

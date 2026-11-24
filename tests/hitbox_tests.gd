@@ -141,16 +141,23 @@ func _bot_hashes(mission: Dictionary, tables: Dictionary, rev: int) -> PackedStr
 	return hashes
 
 
-## Ponto da nave na cabine: a bala no ponto deslocado acerta; a mesma bala no centro do desenho, fora do círculo do
-## ponto, não acerta.
+## Ponto da nave na cabine: na revisão 7+ o ponto medido na arte HD encolhe com a nave na tela (Hitboxes.SHIP_SCALE),
+## na 5 e 6 fica inteiro (replays antigos); a bala no ponto deslocado acerta e a mesma bala no centro do desenho, fora
+## do círculo do ponto, não acerta (Atlas: cabine bem à frente do centro).
 func _player_point(check: Callable) -> void:
+	var row: Dictionary = Hitboxes.find(_tables, {}, "ships", &"falcon")
+	var full := Hitboxes.vec(row["offset"])
+	var old := _sim(Hitboxes.SHIP_SCALE_REVISION - 1)
 	var sim := _sim()
-	var row: Dictionary = Hitboxes.find(_tables, sim.loadout, "ships", &"falcon")
-	check.call(sim.player.hit_offset == Hitboxes.vec(row["offset"]) and sim.player.hit_offset != Vector2.ZERO
-			and sim.player.hit_pos() == sim.player.pos + sim.player.hit_offset, "Hitboxes: ponto da Falcon vem do arquivo")
+	check.call(full != Vector2.ZERO and old.player.hit_offset == full
+			and sim.player.hit_offset == full * Hitboxes.SHIP_SCALE
+			and sim.player.hit_pos() == sim.player.pos + sim.player.hit_offset,
+			"Hitboxes: ponto da Falcon vem do arquivo (inteiro na revisão 6, na escala da tela na atual)")
+	check.call(is_equal_approx(sim.player.hitbox, old.player.hitbox), "Hitboxes: o raio da nave não muda com a escala")
+	sim = _sim(SimRevision.CURRENT, &"atlas")
 	sim.player.invuln = 0
 	var gap := sim.player.hit_offset.length()
-	check.call(gap > sim.player.hitbox + 0.5, "Hitboxes: ponto da Falcon longe do centro do desenho (%.1f)" % gap)
+	check.call(gap > sim.player.hitbox + 0.5, "Hitboxes: ponto da Atlas longe do centro do desenho (%.1f)" % gap)
 	# Bala pequena no centro do desenho: fora do ponto, não fere.
 	sim.enemy_bullets.spawn(sim.player.pos, Vector2.ZERO, 0.5, 0)
 	var hull := sim.player.hull

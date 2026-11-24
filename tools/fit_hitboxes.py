@@ -15,7 +15,9 @@ antiga. Esta ferramenta lê o alfa da base de cada nave do jeito que ela é dese
     de revisão (PLAYER_POINT, em unidades na tela; a arte é simétrica, então só a altura muda) e, numa nave nova
     ainda sem ponto, o centro da espinha do casco (pixels sólidos a até SPINE unidades da linha do meio); e o raio ("radius") igual ao de data/ships.json: a arte cresceu de ~48 para 52-60 unidades, mas a
     hitbox do gênero é o ponto do piloto, medido contra as balas, que não mudaram; ampliar o raio deixaria todo o
-    jogo mais difícil. Ficam as diferenças entre as naves (pesadas maiores, ágeis menores).
+    jogo mais difícil. Ficam as diferenças entre as naves (pesadas maiores, ágeis menores). O ponto é medido na arte
+    HD em escala 1; a partida desenha a nave em ShipArt.GAME_SCALE (0.5, o porte da nave original) e a
+    Sim da revisão 7+ reduz o "offset" das naves na mesma escala (Hitboxes.ship); a revisão 5 e 6 o usa inteiro.
 
 Toda nave de data/ships.json com arte HD entra sozinha (as naves novas só pedem rodar de novo). O que faltar no
 arquivo cai no valor antigo na Sim (Hitboxes). Partes sem sprite (tentáculos, olhos, anéis, núcleos) ficam fora.
@@ -188,7 +190,8 @@ def fit() -> tuple[dict, list[tuple[str, np.ndarray, float, bool, dict, dict]]]:
 
 def write(data: dict) -> None:
     lines = ["{", '\t"_doc": "Gerado por tools/fit_hitboxes.py (não edite à mão). Caixas de colisão medidas na arte HD, '
-             'unidades lógicas na tela; offset relativo à posição da Sim. Lido por scripts/sim/hitboxes.gd na revisão 5+.",']
+             'unidades lógicas na tela; offset relativo à posição da Sim (o das naves do jogador na arte HD em escala 1: a '
+             'revisão 7+ o reduz a 0.5, Hitboxes.ship). Lido por scripts/sim/hitboxes.gd na revisão 5+.",']
     groups = list(data.items())
     for gi, (group, rows) in enumerate(groups):
         lines.append(f'\t"{group}": {{')

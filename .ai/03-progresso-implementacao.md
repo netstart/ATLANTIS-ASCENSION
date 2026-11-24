@@ -615,3 +615,18 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (com o Portão mirando, c8m2 perdia 2 de 3: virou coluna), 2 golpes de feixe em 36 partidas; o resto vem do
   desvio extra empurrando o bot para balas. Testes em `tests/beam_tests.gd`; capturas com
   `game_shots_runner.tscn -- --mission=c3m1 --beams`. Falta conferir no aparelho
+- ✅ Nave do jogador de volta ao tamanho original (pedido do dono: "a nave precisa ser menor, do tamanho da original").
+  Medido pela caixa opaca: a Void da 1.24.0 tinha 30 x 26 unidades no nível 1 e 46 x 35 no 10 (lâminas); a HD da
+  1.25.0 saía a 2 texels por unidade com 52 a 62 de altura (Falcon 43,5 x 56 no 1 e 67,5 x 57,5 no 10). Agora a
+  partida desenha a nave, a ala, o Fantasma, a sombra e o rastro da investida em `ShipArt.GAME_SCALE` (0,5: 4 texels
+  por unidade, texel a pixel num campo de 1080 px): Falcon 21,75 x 28 no 1 e 33,75 x 28,75 no 10, as 15 naves com 26
+  a 31 no lado maior. Peças do hangar, chama, luz, rachaduras e brilho escalam no mesmo transform; bocais, fumaça de
+  avaria, boca do canhão, número da ala e efeitos do clima usam `ShipArt.game_nozzles`/`game_used`/`game_spots`;
+  escudo e bolhas voltam à proporção da original (quadro de 64 para 30 de nave). Menus e hangar têm zoom próprio e
+  ficam como estavam. A boca dos tiros da Sim (-14/-16) e o bico do laser (`EnergyStream.NOSE` 15) já eram da nave
+  original e voltam a casar com o nariz. Hitbox: o raio não mudou (é o de `data/ships.json` desde sempre); o ponto
+  na cabine (`offset` de `data/hitboxes.json`, medido na HD em escala 1) encolhe junto na revisão 7 da Sim
+  (`Hitboxes.ship`), e replays até a 6 seguem iguais. Testes em `tests/hitbox_tests.gd` e
+  `tests/sprite_bank_tests.gd`. O bot passou a dar 10 unidades de folga ao feixe (eram 8): com o ponto novo ele
+  encostava no feixe mirado da c8m1 na semente 7 (a c8m1 é limítrofe para o bot nas duas revisões). Falta conferir no
+  aparelho

@@ -266,7 +266,7 @@ Os nomes do conceito eram provisórios. Quatro colidem com nomes de chefes; reno
 | **Titan** | Titan | Explosão | Plasma | Bomba de área | pós |
 | **Ascension** | Ascension | Lendária híbrida | troca de arma assinatura conforme o orbe | Todas, em rodízio | pós (final verdadeiro) |
 
-Cada aeronave tem silhueta própria (48x48), 3 quadros de inclinação, motor animado, som de tiro próprio e um perfil
+Cada aeronave tem silhueta própria (arte HD; na partida do porte da nave original, ~30 unidades no lado maior), 3 quadros de inclinação, motor animado, som de tiro próprio e um perfil
 de atributos: velocidade, casco, hitbox, cadência. Diferença nunca só numérica.
 
 ### 4.3 Casco, dano e tentativa
@@ -741,7 +741,8 @@ Revisão por nativos antes da 1.0.
 
 ### 8.2 Escala e pixel
 
-Resolução lógica base 305x678, campo 270x450. Aeronaves 48x48, inimigos 24 a 96, chefes 160 a 270, balas 6 a 16.
+Resolução lógica base 305x678, campo 270x450. Aeronaves: arte HD a 2 texels por unidade, desenhada na partida em meia escala (`ShipArt.GAME_SCALE`), do porte da
+nave Void original (30 x 26 unidades no nível 1, até ~46 no 10); inimigos 24 a 96, chefes 160 a 270, balas 6 a 16.
 Sem filtro, sem escala fracionária, `snap_2d_transforms_to_pixel`.
 
 ### 8.3 Profundidade 2.5D

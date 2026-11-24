@@ -203,7 +203,7 @@ func setup(p_mission: Dictionary, p_tables: Dictionary, p_loadout: Variant, seed
 			mods.apply(StringName(String(wing.get("effect", ""))), float(wing.get("value", 0.0)))
 	var ship_id := StringName(String(loadout.get("ship", "falcon")))
 	player.setup((tables["ships"] as Dictionary).get(ship_id, {}), sensitivity * mods.speed_mult)
-	player.fit(Hitboxes.find(tables, loadout, "ships", ship_id))
+	player.fit(Hitboxes.ship(tables, loadout, ship_id))
 	player.place(field)
 	var diff: Dictionary = DIFFICULTY[difficulty]
 	curve = SimCurve.position(loadout, mission, float(diff["curve"]))
@@ -241,7 +241,7 @@ func _setup_wing(ship_id: StringName) -> void:
 	wing = SimPlayer.new()
 	wing.setup((tables["ships"] as Dictionary).get(ship_id, {}), player.speed_mult / maxf(0.01,
 			float(player.ship.get("speed", 1.0))))
-	wing.fit(Hitboxes.find(tables, loadout, "ships", ship_id))
+	wing.fit(Hitboxes.ship(tables, loadout, ship_id))
 	# O feixe do Laser é resolvido só para a nave 1; a ala usa Pulsar no lugar.
 	if wing.signature == &"laser":
 		wing.signature = &"pulsar"

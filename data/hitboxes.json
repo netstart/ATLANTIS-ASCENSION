@@ -1,5 +1,5 @@
 {
-	"_doc": "Gerado por tools/fit_hitboxes.py (não edite à mão). Caixas de colisão medidas na arte HD, unidades lógicas na tela; offset relativo à posição da Sim. Lido por scripts/sim/hitboxes.gd na revisão 5+.",
+	"_doc": "Gerado por tools/fit_hitboxes.py (não edite à mão). Caixas de colisão medidas na arte HD, unidades lógicas na tela; offset relativo à posição da Sim (o das naves do jogador na arte HD em escala 1: a revisão 7+ o reduz a 0.5, Hitboxes.ship). Lido por scripts/sim/hitboxes.gd na revisão 5+.",
 	"ships": {
 		"falcon": {"radius": 3.0, "offset": [0.0, -4.0]},
 		"manta": {"radius": 3.0, "offset": [0.0, -4.0]},

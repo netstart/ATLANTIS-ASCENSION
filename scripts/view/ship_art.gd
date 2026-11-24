@@ -11,6 +11,12 @@ extends RefCounted
 ## Avarias (dano no casco): a 2/3 e a 1/3 o casco escurece um pouco e ganha rachaduras com brilho de faísca em
 ## pontos fixos dentro da parte opaca (damage_spots); o WorldView solta a fumaça desses mesmos pontos.
 
+## Escala da nave na partida (nave, ala, Fantasma, sombra e rastro da investida): a arte HD tem 2 texels por
+## unidade e sai a 4 (texel a pixel num campo de 1080 px), do porte da nave Void original (30 x 26 unidades no
+## nível 1, 46 x 35 no 10). Quem desenha põe a escala no transform; peças, chama e rachaduras escalam juntas. Os
+## menus usam o próprio zoom (ListScreen.ShipView, HangarStage) e não leem isto. A Void de reserva (sem HD) já
+## nasceu nesse porte e sai em 1 (game_scale).
+const GAME_SCALE := 0.5
 ## Quadros por segundo da chama (o mesmo ANIM_FPS dos inimigos).
 const ANIM_FPS := 12.0
 ## Escurecimento do casco por estágio de avaria (0: inteiro, 1: <= 2/3, 2: <= 1/3).
@@ -83,6 +89,33 @@ static func nozzles(art: Dictionary) -> Array[Vector2]:
 	var spread := clampf(used.size.x * 0.16, 3.0, 9.0)
 	var y := used.end.y + 1.0
 	return [Vector2(used.get_center().x - spread, y), Vector2(used.get_center().x + spread, y)]
+
+
+## Escala da nave na partida: GAME_SCALE na arte HD, 1 na Void de reserva.
+static func game_scale(art: Dictionary) -> float:
+	return GAME_SCALE if bool(art.get("hd", false)) else 1.0
+
+
+## Caixa opaca da nave na partida (game_scale), em unidades lógicas relativas ao centro.
+static func game_used(art: Dictionary) -> Rect2:
+	var used: Rect2 = art.get("used", Rect2(-12, -12, 24, 24))
+	return Rect2(used.position * game_scale(art), used.size * game_scale(art))
+
+
+## Bocais (nozzles) na escala da partida.
+static func game_nozzles(art: Dictionary) -> Array[Vector2]:
+	var out: Array[Vector2] = []
+	for n: Vector2 in nozzles(art):
+		out.append(n * game_scale(art))
+	return out
+
+
+## Pontos de avaria (damage_spots) na escala da partida.
+static func game_spots(art: Dictionary) -> Array[Vector2]:
+	var out: Array[Vector2] = []
+	for s: Vector2 in damage_spots(art):
+		out.append(s * game_scale(art))
+	return out
 
 
 ## Chama: a tira do motor esticada a partir da popa pelo nível (ShipLivery.flame) e mais clara; subindo, a pluma

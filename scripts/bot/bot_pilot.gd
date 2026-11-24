@@ -141,7 +141,8 @@ func _view(sim: Sim, me: Vector2, reach: float, near: PackedVector2Array, near_v
 		beam_dir.append(Vector2.from_angle(float(b["angle"])) if b.has("angle") else Vector2.ZERO)
 		beam_x.append(float(b["x"]))
 		beam_y.append(float(b["y"]))
-		beam_half.append(float(b["width"]) * 0.5 + hb + 8.0)
+		# Folga de 10 unidades além da faixa (era 8; a nave menor da revisão 7 encostava no feixe mirado na c8m1).
+		beam_half.append(float(b["width"]) * 0.5 + hb + 10.0)
 		beam_base.append(400.0 if int(b["age"]) >= int(b["warn"]) - 20 else 150.0)
 	var foe_pos := PackedVector2Array()
 	var foe_reach := PackedFloat64Array()

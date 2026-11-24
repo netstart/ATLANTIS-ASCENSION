@@ -281,7 +281,7 @@ func _below(ci: CanvasItem, e: Dictionary, k: float) -> void:
 				return
 			var from: Vector2 = e["from"]
 			var tex_size: int = ship_art["tex_size"]
-			var size: float = ship_art["size"]
+			var size: float = float(ship_art["size"]) * ShipArt.game_scale(ship_art)
 			for i: int in range(AFTERIMAGES):
 				var u := float(i + 1) / float(AFTERIMAGES + 1)
 				ci.draw_set_transform(from.lerp(at, u))

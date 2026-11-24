@@ -320,8 +320,8 @@ func _emit_ship(w: Weather) -> void:
 	var r := float(h % 1000) / 1000.0
 	if _nozzles.is_empty():
 		var art := SpriteBank.player(StringName(String(pl.ship.get("id", "falcon"))))
-		_nozzles = ShipArt.nozzles(art)
-		var used: Rect2 = art["used"]
+		_nozzles = ShipArt.game_nozzles(art)
+		var used := ShipArt.game_used(art)
 		_tips = [Vector2(used.position.x * 0.8, used.get_center().y + 4.0),
 				Vector2(used.end.x * 0.8, used.get_center().y + 4.0)]
 	var tips: Array[Vector2] = [pl.pos + _tips[0], pl.pos + _tips[1]]

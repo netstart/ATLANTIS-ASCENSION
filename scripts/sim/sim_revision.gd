@@ -9,9 +9,11 @@ extends RefCounted
 ##   4: objetivos de fase (SimObjectives: resgate, sabotagem, interceptação) e alvos sem dano de contato.
 ##   5: caixas de colisão medidas na arte HD (Hitboxes, data/hitboxes.json): dano, contato e ponto da nave.
 ##   6: feixe dos padrões sai da boca do emissor e o segue, mira o jogador e gira devagar (EnemyBeam).
+##   7: nave do jogador de volta ao porte original na tela (meia escala da HD): ponto da hitbox a meia distância
+##      do centro (Hitboxes.ship).
 ## A saída da fase continua na marca "outro" da carga, anterior a este número (SimOutro).
 
-const CURRENT := 6
+const CURRENT := 7
 
 
 ## Revisão das regras de uma partida com esta carga.
