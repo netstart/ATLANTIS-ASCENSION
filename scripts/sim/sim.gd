@@ -475,6 +475,8 @@ func offer_blessings(kind: StringName = &"blessing") -> void:
 		if not id in mods.taken and bool((table[id] as Dictionary).get("abyss", false)) == (kind == &"module"):
 			pool.append(id)
 	offer.clear()
+	# Sorteio uniforme sem reposição (fluxo "blessings" da semente). A raridade é só flavor na revelação
+	# (cor, rótulo e som): um viés no sorteio desloca a trajetória do RNG e tanka demais os chefes.
 	var stream := rng.stream(&"blessings")
 	while offer.size() < 3 and not pool.is_empty():
 		offer.append(pool.pop_at(stream.randi_range(0, pool.size() - 1)))

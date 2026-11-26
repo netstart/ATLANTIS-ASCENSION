@@ -33,6 +33,7 @@ func run_basics(check: Callable) -> void:
 	_pierce(check)
 	_outro(check)
 	_spawn_spread(check)
+	_blessings(check)
 
 
 func _pool(check: Callable) -> void:
@@ -342,6 +343,32 @@ func _orbs(check: Callable) -> void:
 	check.call(Sim.orb_weapon(0) == &"pulsar" and Sim.orb_weapon(Sim.ORB_CYCLE) == &"laser", "Orbe: troca de cor no ciclo")
 
 
+## Oferta de bênção (Sim.offer_blessings): sorteio uniforme sem reposição, determinístico pela semente
+## (a raridade é só flavor na revelação). A mesma semente dá a mesma distribuição; sementes diferentes
+## divergem; por quantidade comum domina (21), rara vem no meio (7) e épica é rara mas aparece (2).
+func _blessings(check: Callable) -> void:
+	var a := _offer_tally(7)
+	var b := _offer_tally(7)
+	check.call(a == b, "Bênção: oferta determinística pela semente")
+	check.call(_offer_tally(11) != a, "Bênção: semente diferente, oferta diferente")
+	check.call(int(a["common"]) > int(a["rare"]) and int(a["rare"]) > int(a["epic"]) and int(a["epic"]) > 0,
+			"Bênção: comum domina, épica rara mas presente (comum %d, rara %d, épica %d)"
+			% [a["common"], a["rare"], a["epic"]])
+
+
+## Conta as raridades oferecidas em 300 sorteios do mesmo fluxo semeado (o fluxo avança a cada oferta).
+func _offer_tally(seed_value: int) -> Dictionary:
+	var sim := Sim.new()
+	sim.setup(Sim.load_mission(&"c1m1"), _tables_once(), Sim.default_loadout(&"falcon"), seed_value)
+	var tally := {"common": 0, "rare": 0, "epic": 0}
+	for n: int in range(300):
+		sim.offer_blessings()
+		for id: StringName in sim.offer:
+			var r := String((sim.tables["blessings"][id] as Dictionary).get("rarity", "common"))
+			tally[r] = int(tally[r]) + 1
+	return tally
+
+
 func _data(check: Callable) -> void:
 	var tables := Sim.load_tables()
 	var patterns: Dictionary = tables["patterns"]
@@ -374,6 +401,16 @@ func _data(check: Callable) -> void:
 		if String(e.get("op", "")) in ["boss", "miniboss"]:
 			check.call((tables["bosses"] as Dictionary).has(StringName(String(e.get("id", "")))),
 					"Dados: chefe %s existe" % e.get("id"))
+	# Raridade das bênçãos (B1): toda bênção traz uma raridade válida e a distribuição é sensata.
+	var rarities := {"common": 0, "rare": 0, "epic": 0}
+	for id: StringName in tables["blessings"]:
+		var r := String((tables["blessings"][id] as Dictionary).get("rarity", ""))
+		check.call(rarities.has(r), "Dados: bênção %s tem raridade válida (\"%s\")" % [id, r])
+		if rarities.has(r):
+			rarities[r] = int(rarities[r]) + 1
+	check.call(int(rarities["common"]) > int(rarities["rare"]) and int(rarities["rare"]) > int(rarities["epic"]) \
+			and int(rarities["epic"]) > 0, "Dados: distribuição de raridade (comum %d > rara %d > épica %d > 0)" \
+			% [rarities["common"], rarities["rare"], rarities["epic"]])
 
 
 ## Missão inteira pelo bot, uma unidade por missão (tests/test_shard.gd divide as unidades entre

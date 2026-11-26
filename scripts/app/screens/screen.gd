@@ -11,6 +11,8 @@ signal play(mission_id: StringName)
 signal play_mode(mode: StringName)
 ## Pede uma missão de prática (sem recompensas).
 signal play_practice(mission_id: StringName)
+## Pede para reencarar o chefe de ato da derrota (Modes.boss_only), sem recompensas.
+signal rematch_boss(boss_id: StringName)
 
 ## Área útil atual: a área segura (fora do recorte da câmera), em coordenadas da própria tela, já sem a
 ## casca de navegação nas telas-aba (NavShell: barra de cima e barra de abas).

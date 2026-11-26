@@ -543,9 +543,7 @@ func show_offer(sim: Sim) -> void:
 		var b := _offer_buttons[i]
 		b.visible = i < sim.offer.size()
 		if b.visible:
-			var def: Dictionary = table.get(sim.offer[i], {})
-			b.text = "%s · %s\n%s" % [tr("deity." + String(def.get("deity", ""))), tr(String(def.get("name_key", ""))),
-					tr(String(def.get("desc_key", "")))]
+			CommandKit.fill_offer(b, table.get(sim.offer[i], {}))
 	_open_panel(_offer_panel)
 	_place_offer()
 	_refit_panels()

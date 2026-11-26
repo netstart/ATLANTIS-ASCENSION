@@ -29,6 +29,44 @@ static func rarity_color(rarity: int) -> Color:
 	return RARITY_COLORS[clampi(rarity, COMMON, LEGENDARY)]
 
 
+## Raridade de data/blessings.json ("common"/"rare"/"epic") para o nível (COMMON/RARE/EPIC).
+static func rarity_from(name: String) -> int:
+	match name:
+		"epic":
+			return EPIC
+		"rare":
+			return RARE
+		_:
+			return COMMON
+
+
+## Preenche um botão da oferta de bênção: texto "divindade · raridade · nome / descrição" (raridade com o
+## rótulo reusado store.rarity_*) e a moldura da raridade. Traduz pelo TranslationServer (helper estático).
+static func fill_offer(button: Button, def: Dictionary) -> void:
+	var r := String(def.get("rarity", "common"))
+	button.text = "%s · %s · %s\n%s" % [_text("deity." + String(def.get("deity", ""))), _text("store.rarity_" + r),
+			_text(String(def.get("name_key", ""))), _text(String(def.get("desc_key", "")))]
+	tint_rarity(button, rarity_from(r))
+
+
+static func _text(key: String) -> String:
+	return String(TranslationServer.translate(key))
+
+
+## Moldura de um botão (ex.: oferta de bênção) na cor da raridade, com brilho que cresce com ela (épica
+## reluz mais). O brilho é fixo da caixa, sem animação: a entrada do painel que o revela (UiFx.enter,
+## UiSpark) é quem respeita "reduzir movimento" e "reduzir flashes".
+static func tint_rarity(button: Button, rarity: int) -> void:
+	var box := UiTheme.button_box("normal")
+	box.border_color = rarity_color(rarity)
+	var rank := clampi(rarity - COMMON, 0, 3)
+	box.border_width_top = 2
+	box.shadow_color = Color(box.border_color, 0.22 + 0.16 * float(rank))
+	box.shadow_size = 2 + 3 * rank
+	for state: String in ["normal", "hover", "pressed", "focus"]:
+		button.add_theme_stylebox_override(state, box)
+
+
 ## Bolinha de aviso no canto de cima à direita de `parent` (acompanha o tamanho dele). Some com `visible`.
 static func notice_dot(parent: Control) -> NoticeDot:
 	var dot := NoticeDot.new()

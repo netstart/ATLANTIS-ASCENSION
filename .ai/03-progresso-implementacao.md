@@ -716,3 +716,11 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   mid-boss do cap. 9 (`mid_protocol_sentinel`), ainda 0 perdidas; sky_leviathan mantido (as duas rotas
   compartilham hp e baixá-lo quebrava o Boss Rush). Falta 👤 criar/ativar `remove_ads` no Play Console e
   conferir no aparelho
+- ✅ `1.31.0` Retenção — raridade nas bênçãos e revanche do chefe:
+  (1) Raridade (comum/rara/épica) em `data/blessings.json` (21/7/2), mostrada na oferta com cor e rótulo
+  (reusa `store.rarity_*` e `CommandKit.rarity_color`), brilho da revelação modulado pela raridade
+  (respeita `reduce_motion`/`reduce_flashes`) e som por pitch (`game.gd`). O SORTEIO segue uniforme
+  (`Sim.offer_blessings`): a raridade é flavor, não viés — um viés no sorteio deslocava o RNG e tankava os
+  chefes (kraken 100→235 s no c2m3). Testes em `tests/sim_tests.gd`. (2) Revanche do chefe: na derrota em
+  chefe de ato, botão "Enfrentar o chefe de novo" cai direto no chefe via `Modes.boss_only`, como prática,
+  com a mesma carga (`results_screen.gd`, `app.gd`, `results.rematch` nos 11 idiomas, `tests/flow_tests.gd`)

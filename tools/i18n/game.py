@@ -112,6 +112,11 @@ STRINGS = {
         "Tentar de novo", "Try again", "Reintentar", "Nochmal", "Réessayer", "Ещё раз", "Coba lagi", "リトライ", "다시 하기",
         "再試一次", "再试一次",
     ],
+    "results.rematch": [
+        "Enfrentar o chefe de novo", "Fight the boss again", "Enfrentar al jefe otra vez", "Boss erneut bekämpfen",
+        "Affronter le boss à nouveau", "Снова сразиться с боссом", "Lawan bos lagi", "ボスに再挑戦", "보스에 재도전",
+        "再戰頭目", "再战首领",
+    ],
     "results.continue": ["Continuar", "Continue", "Continuar", "Weiter", "Continuer", "Далее", "Lanjut", "続ける", "계속", "繼續", "继续"],
     # --- HUD -------------------------------------------------------------------------------------
     "hud.special": ["SP", "SP", "SP", "SP", "SP", "СП", "SP", "必殺", "필살", "必殺", "必杀"],

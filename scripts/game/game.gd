@@ -724,13 +724,20 @@ func _on_event(ev: Dictionary) -> void:
 		&"dialogue":
 			_hud.show_radio(String(ev.get("id", "")))
 		&"blessing_offer":
-			# Oferta de bênção: sino quente (o kenney_weapon_up a 0,8 era agudo demais, mesmo baixo por cima).
-			AudioManager.play("kenney_ascend_bell", 1.0, 0.0, -3.0)
+			# Oferta de bênção: sino quente (o kenney_weapon_up a 0,8 era agudo demais, mesmo baixo por cima);
+			# sobe de tom quando há raridade alta na oferta (épica brilha mais na revelação).
+			var best := 0
+			for id: StringName in sim.offer:
+				var odef: Dictionary = (sim.tables["blessings"] as Dictionary).get(id, {})
+				best = maxi(best, CommandKit.rarity_from(String(odef.get("rarity", "common"))))
+			AudioManager.play("kenney_ascend_bell", 1.0 + 0.06 * float(best), 0.0, -3.0)
 			_hud.show_offer(sim)
 		&"blessing":
-			AudioManager.play("kenney_ui_confirm", 0.9, 0.0, -3.0)
 			_hud.hide_offer()
 			var def: Dictionary = (sim.tables["blessings"] as Dictionary).get(StringName(ev["id"]), {})
+			# Confirmação mais aguda quanto mais rara a bênção escolhida.
+			AudioManager.play("kenney_ui_confirm", 0.9 + 0.1 * float(CommandKit.rarity_from(String(
+					def.get("rarity", "common")))), 0.0, -3.0)
 			_hud.show_banner(tr(String(def.get("name_key", ""))))
 			if not String(ev.get("synergy", "")).is_empty():
 				_hud.show_radio_text(tr("hud.synergy") % tr("deity." + String(ev["synergy"])), UiTheme.GOLD)
@@ -972,6 +979,11 @@ func _finish(quit: bool) -> void:
 	result["quit"] = quit
 	result["seed"] = seed_value
 	result["replay"] = playback != null
+	# Revanche do chefe: id do chefe de ato (duelo) ativo na derrota, para a tela de resultado cair
+	# direto nele via Modes.boss_only, pulando a fase. Vazio quando a morte não foi num chefe de ato.
+	var boss := sim.boss
+	result["boss"] = String(boss.id) if not quit and not bool(result["cleared"]) \
+			and boss != null and String(boss.id) in Modes.ACT_BOSSES else ""
 	finished.emit(result)
 
 

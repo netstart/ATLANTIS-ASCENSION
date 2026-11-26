@@ -110,6 +110,70 @@ func run(host: Node, check: Callable) -> void:
 	app.queue_free()
 	await host.get_tree().process_frame
 	SaveManager.reset_profile()
+	await _boss_rematch(host, check)
+
+
+## Revanche do chefe (.ai/07 §3.7 nº4): a derrota num chefe de ato marca o chefe no resultado e a tela
+## de derrota oferece cair direto nele (Modes.boss_only), pulando a fase; na derrota sem chefe, não.
+func _boss_rematch(host: Node, check: Callable) -> void:
+	SaveManager.reset_profile()
+	Locale.set_language("pt_BR", false)
+	var app := App.new()
+	host.add_child(app)
+	await host.get_tree().process_frame
+	LayoutTests.fit(app, DeviceProfiles.main_view())
+	# Cai num chefe de ato (boss_only) como prática e perde: o resultado deve marcar o chefe.
+	app.run_mode = &"practice"
+	app.play_mission(Modes.boss_only(&"kraken_engine", 0), false, 7, Sim.default_loadout(&"falcon"))
+	await host.get_tree().process_frame
+	var sim: Sim = app.game.sim
+	var bot := BotPilot.new()
+	while sim.boss == null and sim.frame < 60 * 20:
+		sim.step(bot.decide(sim))
+	check.call(sim.boss != null and sim.boss.is_final and sim.boss.id == &"kraken_engine",
+			"Revanche: o chefe de ato entrou em cena")
+	# Força a derrota no meio da luta do chefe.
+	sim.player.alive = false
+	sim.player.hull = 0
+	sim.step(SimInput.new())
+	var frames := 0
+	while app.current != &"results" and frames < 8 * 60:
+		await host.get_tree().process_frame
+		frames += 1
+	check.call(app.current == &"results", "Revanche: a derrota abre o resultado")
+	check.call(String(app.last_result.get("boss", "")) == "kraken_engine",
+			"Revanche: (a) o resultado marca o chefe de ato da derrota")
+	var base: Dictionary = app.last_result.duplicate(true)
+	var rematch := app.screen(&"results").find_child("Rematch", true, false) as Button
+	# (c) Derrota sem chefe de ato (onda comum): não há revanche.
+	var no_boss := base.duplicate(true)
+	no_boss["mission"] = "c2m3"
+	no_boss["mode"] = ""
+	no_boss["boss"] = ""
+	app.last_result = no_boss
+	app.go(&"results")
+	await LayoutTests.settle(host)
+	check.call(rematch != null and not rematch.visible,
+			"Revanche: (c) derrota sem chefe de ato não oferece revanche")
+	# (b) Derrota num chefe de ato: o botão aparece e cai direto no chefe certo, pulando a fase.
+	var with_boss := base.duplicate(true)
+	with_boss["mission"] = "c2m3"
+	with_boss["mode"] = ""
+	with_boss["boss"] = "kraken_engine"
+	app.last_result = with_boss
+	app.go(&"results")
+	await LayoutTests.settle(host)
+	check.call(rematch.visible, "Revanche: (b) a derrota num chefe de ato oferece a revanche")
+	rematch.pressed.emit()
+	await host.get_tree().process_frame
+	check.call(app.game != null, "Revanche: a revanche começa uma partida")
+	var events: Array = app.game.sim.mission.get("events", []) if app.game != null else []
+	var first: Dictionary = events[0] if not events.is_empty() else {}
+	check.call(String(first.get("op", "")) == "boss" and String(first.get("id", "")) == "kraken_engine",
+			"Revanche: (b) cai direto no chefe de ato certo (Modes.boss_only)")
+	app.queue_free()
+	await host.get_tree().process_frame
+	SaveManager.reset_profile()
 
 
 ## Contraste WCAG da cor clara de cada bala inimiga contra cada cor da água (≥ 4,5:1).

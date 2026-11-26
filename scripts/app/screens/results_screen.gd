@@ -65,6 +65,7 @@ var _double_pearls: Button
 ## Recompensas ("credits", "pearls") cujo anúncio o jogador fechou antes do fim nesta tela.
 var _declined: Dictionary = {}
 var _retry: Button
+var _rematch: Button
 var _continue: Button
 var _revealing: bool = false
 var _sequence: Tween
@@ -210,6 +211,12 @@ func _build() -> void:
 	_retry.custom_minimum_size = Vector2(0, SECONDARY_HEIGHT)
 	_retry.pressed.connect(func() -> void: play.emit(StringName(String(result.get("mission", "c1m1")))))
 	add_child(_retry)
+	# Revanche do chefe de ato (só na derrota): cai direto no chefe via Modes.boss_only, pulando a fase.
+	_rematch = Button.new()
+	_rematch.name = "Rematch"
+	_rematch.custom_minimum_size = Vector2(0, SECONDARY_HEIGHT)
+	_rematch.pressed.connect(func() -> void: rematch_boss.emit(StringName(String(result.get("boss", "")))))
+	add_child(_rematch)
 	_continue = Button.new()
 	_continue.name = "Continue"
 	_continue.custom_minimum_size = Vector2(0, PRIMARY_HEIGHT)
@@ -299,9 +306,14 @@ func refresh_texts() -> void:
 		(_offer.find_child("OfferOpen", true, false) as Button).text = tr("store.starter_see")
 	_retry.text = tr("results.retry")
 	_continue.text = tr("results.continue")
+	# Revanche: só na derrota de uma fase (não nos modos de corrida) em que caiu num chefe de ato.
+	_rematch.visible = not cleared and not String(result.get("boss", "")).is_empty() \
+			and mode in ["", "daily", "currents"]
+	_rematch.text = tr("results.rematch")
 	# A ação principal muda com o desfecho: na vitória, seguir; na derrota, tentar de novo.
 	_style_button(_continue, cleared)
 	_style_button(_retry, not cleared)
+	_style_button(_rematch, false)
 	# A fonte em negrito é do idioma: trocar de idioma troca a fonte dos títulos.
 	var bolds: Array[Label] = [_title, _score, _record, _credits]
 	bolds.append_array(_stat_values)
@@ -431,6 +443,11 @@ func _layout() -> void:
 		secondary.position = Vector2(x, primary.position.y - GAP - SECONDARY_HEIGHT)
 		secondary.size = Vector2(width, SECONDARY_HEIGHT)
 		top = secondary.position.y
+	# Revanche: botão largo logo acima da fileira principal (só na derrota num chefe de ato).
+	if _rematch.visible:
+		_rematch.size = Vector2(width, SECONDARY_HEIGHT)
+		_rematch.position = Vector2(x, top - GAP - SECONDARY_HEIGHT)
+		top = _rematch.position.y
 	_scroll.set_meta(&"area", Rect2(x, safe.position.y + 10.0, width, top - 14.0 - (safe.position.y + 10.0)))
 	_scroll.position = Vector2(x, safe.position.y + 10.0)
 	_scroll.size = Vector2(width, top - 14.0 - _scroll.position.y)
@@ -463,7 +480,7 @@ func back() -> bool:
 
 
 func layout_controls() -> Array[Control]:
-	return [_scroll, _retry, _continue]
+	return [_scroll, _rematch, _retry, _continue]
 
 
 # --- Revelação em etapas ----------------------------------------------------------------------
@@ -547,7 +564,7 @@ func _kill_reveal() -> void:
 
 func _reveal_nodes() -> Array[CanvasItem]:
 	var nodes: Array[CanvasItem] = [_subtitle, _title, _score, _record, _rule, _credits_pill, _double, _double_pearls,
-			_retry, _continue, _grade, _defeat, _chest]
+			_retry, _rematch, _continue, _grade, _defeat, _chest]
 	for icon: Control in _star_icons:
 		nodes.append(icon)
 	for text: Label in _stars:
@@ -564,7 +581,7 @@ func _step_banner() -> void:
 	_stamp(_title, 1.3)
 	AudioManager.play_ui("kenney_ui_confirm" if bool(result.get("cleared", false)) else "kenney_ui_back")
 	# Os botões chegam junto da faixa: quem quer tentar de novo logo não espera a festa acabar.
-	for button: Control in [_retry, _continue]:
+	for button: Control in [_retry, _rematch, _continue]:
 		_fade(button, 0.3)
 	# Derrota: logo abaixo da faixa, a barra mostra até onde o jogador chegou.
 	if _defeat.visible:

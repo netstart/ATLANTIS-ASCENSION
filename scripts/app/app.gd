@@ -51,6 +51,11 @@ var run_mode: StringName = &""
 var run_queue: Array[Dictionary] = []
 var run_score: int = 0
 var _run_loadout: Dictionary = {}
+## Carga da última missão iniciada (a revanche do chefe reusa a mesma do jogador).
+var _last_loadout: Dictionary = {}
+## Missão montada em memória (boss_only) em jogo como prática/revanche: o "Tentar de novo" repete o
+## dicionário, pois não há arquivo em data/stages para carregar pelo id.
+var _practice_mission: Dictionary = {}
 var _pending_replay: Replay
 var _replay_return: StringName = &""
 
@@ -135,6 +140,7 @@ func go(screen_name: StringName, remember: bool = true) -> void:
 		screen.play.connect(_play_from_screen)
 		screen.play_mode.connect(func(mode: StringName) -> void: start_mode(mode))
 		screen.play_practice.connect(practice)
+		screen.rematch_boss.connect(_rematch_boss)
 		if screen.has_signal("watch"):
 			screen.connect("watch", func(key: String) -> void: watch_replay(key))
 		_root.add_child(screen)
@@ -168,7 +174,14 @@ func _play_from_screen(mission_id: StringName) -> void:
 		start_mode(run_mode)
 		return
 	if current == &"results" and String(last_result.get("mode", "")) == "practice":
-		practice(mission_id)
+		if not _practice_mission.is_empty():
+			# Revanche ou prática de uma missão montada (boss_only): repete o dicionário, não o id.
+			run_mode = &"practice"
+			run_queue = []
+			run_score = 0
+			play_mission(_practice_mission, false, -1, _last_loadout)
+		else:
+			practice(mission_id)
 		return
 	run_mode = &""
 	play(mission_id)
@@ -205,7 +218,18 @@ func practice(mission_id: StringName) -> void:
 	run_mode = &"practice"
 	run_queue = []
 	run_score = 0
+	_practice_mission = {}
 	play(mission_id)
+
+
+## Revanche do chefe: cai direto no chefe de ato da derrota (Modes.boss_only), com a mesma carga da
+## partida e sem recompensas nem estrelas (como a Prática).
+func _rematch_boss(boss_id: StringName) -> void:
+	run_mode = &"practice"
+	run_queue = []
+	run_score = 0
+	_practice_mission = Modes.boss_only(boss_id, 0)
+	play_mission(_practice_mission, false, -1, _last_loadout)
 
 
 func _next_in_run(bot: bool = false) -> void:
@@ -225,7 +249,9 @@ func play_mission(mission: Dictionary, bot: bool = false, seed: int = -1, loadou
 	_layer.visible = false
 	game = GAME_SCENE.instantiate() as Game
 	var run_seed := seed if seed >= 0 else int(Time.get_unix_time_from_system()) % 100000
-	game.configure(mission, loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data), run_seed, bot)
+	var use_loadout := loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data)
+	_last_loadout = use_loadout
+	game.configure(mission, use_loadout, run_seed, bot)
 	game.can_revive = not bot and run_mode in [&"", &"survival", &"abyss"]
 	if not bot and bool(Settings.get_value("ghost")) and run_mode in [&"", &"practice"]:
 		game.ghost = Replay.load_key(Replay.key_for(String(mission.get("id", "")), ""))
