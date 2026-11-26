@@ -2,7 +2,8 @@ class_name Iap
 extends RefCounted
 ## Compras com dinheiro real na Google Play (plano mestre 17): o catálogo, o estado de cada produto e o que
 ## cada um libera. Nada de força à venda: Turbo (mais rápido, não mais fácil), "Apoiar" (sem anúncio e tema
-## dourado), pinturas (só visual; também saem por Pérolas), o atalho da Tridente (nave lateral, que também sai
+## dourado), "Remover anúncios" (só tira o anúncio opcional, sem tema nem cosmético), pinturas (só visual;
+## também saem por Pérolas), o atalho da Tridente (nave lateral, que também sai
 ## por fragmentos), o pacote inicial (Apoiar + uma pintura) e o pacote de 3 revives (consumível: só troca o
 ## anúncio do reviver pela carga; o reviver continua 1 por missão).
 ## Naves premium (data/ships.json "premium"): a única coisa que não sai jogando, mas também não dá força: cada uma
@@ -25,6 +26,8 @@ extends RefCounted
 ## "starter_pack") e profile["iap"] (cargas de reviver, tokens creditados, oferta do pacote inicial já feita).
 
 const SUPPORT := "support"
+## Só tira o anúncio opcional (não consumível, sem tema nem cosmético; mais barato que o "Apoiar").
+const REMOVE_ADS := "remove_ads"
 const STARTER := "starter_pack"
 const SHIP_SHORTCUT := "ship_trident"
 const REVIVE_PACK := "revive_pack_3"
@@ -53,6 +56,7 @@ const PEARL_PACKS: Array[Dictionary] = [
 const PRODUCTS: Array[Dictionary] = [
 	{"id": "turbo", "kind": "turbo", "usd": "1.99"},
 	{"id": SUPPORT, "kind": "support", "usd": "3.99", "cosmetics": ["tint_supporter"]},
+	{"id": REMOVE_ADS, "kind": "no_ads", "usd": "2.99"},
 	{"id": STARTER, "kind": "bundle", "usd": "4.49", "cosmetics": ["tint_supporter", STARTER_PAINT]},
 	{"id": SHIP_SHORTCUT, "kind": "ship", "usd": "1.99", "ship": "trident"},
 	{"id": REVIVE_PACK, "kind": "consumable", "usd": "0.99", "charges": 3},
@@ -257,15 +261,15 @@ static func mode_for(steam: bool, play: bool, simulated: bool) -> String:
 
 
 ## O produto aparece na Loja: já é da conta (para mostrar "Ativo"), ou dá para comprar (simulado, ou na Play
-## com o preço já respondido). Pacote inicial e pacote de revives somem para quem já apoiou (não dariam nada);
-## nave premium (ou o pacote delas) some quando outra compra já deu todas as suas naves.
+## com o preço já respondido). Pacote inicial, pacote de revives e "Remover anúncios" somem para quem já
+## apoiou (não dariam nada); nave premium (ou o pacote delas) some quando outra compra já deu todas as suas naves.
 static func visible(profile: Dictionary, id: String, in_mode: String = "") -> bool:
 	var m := in_mode if not in_mode.is_empty() else mode()
 	if product(id).is_empty() or m == "steam":
 		return false
 	if owns(profile, id):
 		return true
-	if (id == STARTER or id == REVIVE_PACK) and supporter(profile):
+	if (id == STARTER or id == REVIVE_PACK or id == REMOVE_ADS) and supporter(profile):
 		return false
 	if ships_covered(profile, id):
 		return false
@@ -306,7 +310,8 @@ static func buy(profile: Dictionary, id: String, in_mode: String = "") -> bool:
 	var m := in_mode if not in_mode.is_empty() else mode()
 	if product(id).is_empty() or m == "steam" or m == "off":
 		return false
-	if (not is_consumable(id) and owns(profile, id)) or ((id == STARTER or id == REVIVE_PACK) and supporter(profile)):
+	if (not is_consumable(id) and owns(profile, id)) \
+			or ((id == STARTER or id == REVIVE_PACK or id == REMOVE_ADS) and supporter(profile)):
 		return false
 	if ships_covered(profile, id):
 		return false

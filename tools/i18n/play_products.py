@@ -19,4 +19,7 @@ STRINGS = {
     "play.list_and": [" e ", " and ", " y ", " und ", " et ", " и ", " dan ", "、", ", ", "、", "、"],
     "play.pearls_title": ["%s Pérolas", "%s Pearls", "%s Perlas", "%s Perlen", "%s Perles", "%s жемчуга",
                           "%s Mutiara", "真珠 %s 個", "진주 %s개", "珍珠 %s 顆", "珍珠 %s 颗"],
+    "play.remove_ads_title": ["Remover anúncios", "Remove ads", "Quitar anuncios", "Werbung entfernen",
+                              "Supprimer les publicités", "Убрать рекламу", "Hapus iklan", "広告を削除", "광고 제거",
+                              "移除廣告", "移除广告"],
 }

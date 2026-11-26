@@ -62,6 +62,7 @@ func _rules(_unit_check: Callable, sim: SimTests) -> void:
 	_test_frame_stats()
 	_test_frame_pacing()
 	_test_gfx_quality()
+	_test_fps_guard()
 	_test_languages()
 	_test_version()
 	_test_shard()
@@ -220,6 +221,35 @@ func _test_gfx_quality() -> void:
 	for key: String in GfxQuality.BUDGETS:
 		_check((GfxQuality.BUDGETS[key] as Array).size() == 3, "GfxQuality: %s tem 3 níveis" % key)
 	_check(int(GfxQuality.budget_at("parallax_layers", GfxQuality.HIGH)) == 7, "GfxQuality: 7 camadas na Alta")
+
+
+func _test_fps_guard() -> void:
+	var guard := FpsGuard.new()
+	# (a) Quadros rápidos (16 ms) nunca sinalizam, mesmo passado o aquecimento e a janela.
+	var any_fast := false
+	for _i: int in 400:
+		if guard.tick(0.016):
+			any_fast = true
+	_check(not any_fast, "FpsGuard: quadro rápido nunca rebaixa")
+	# (d) Quadros lentos (30 ms) durante o aquecimento não disparam.
+	guard.reset()
+	var in_warmup := false
+	for _i: int in FpsGuard.WARMUP:
+		if guard.tick(0.030):
+			in_warmup = true
+	_check(not in_warmup, "FpsGuard: aquecimento não dispara")
+	# (b) Lentos sustentados sinalizam exatamente uma vez (depois entra o cooldown).
+	guard.reset()
+	var fires := 0
+	for _i: int in FpsGuard.WARMUP + FpsGuard.WINDOW:
+		if guard.tick(0.030):
+			fires += 1
+	_check(fires == 1, "FpsGuard: lento sustentado sinaliza uma vez (%d)" % fires)
+	# (c) Passado o cooldown, lentos sustentados sinalizam de novo.
+	for _i: int in FpsGuard.COOLDOWN + FpsGuard.WINDOW:
+		if guard.tick(0.030):
+			fires += 1
+	_check(fires == 2, "FpsGuard: reavalia depois do cooldown (%d)" % fires)
 
 
 func _test_languages() -> void:

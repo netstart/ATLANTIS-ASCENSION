@@ -19,8 +19,8 @@ const FakeBillingClient := preload("res://tests/fake_billing_client.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const CODE := BillingClient.BillingResponseCode
 const STATE := BillingClient.PurchaseState
-const EXPECTED := ["turbo", "support", "starter_pack", "ship_trident", "revive_pack_3", "pearls_100", "pearls_550",
-		"pearls_1200", "pearls_2600", "paint_aurora", "paint_reef",
+const EXPECTED := ["turbo", "support", "remove_ads", "starter_pack", "ship_trident", "revive_pack_3", "pearls_100",
+		"pearls_550", "pearls_1200", "pearls_2600", "paint_aurora", "paint_reef",
 		"paint_abyssal", "paint_solar", "ship_premium_hippocampus", "ship_premium_nereid", "ship_premium_amphitrite",
 		"premium_fleet"]
 
@@ -105,8 +105,9 @@ func _visibility(check: Callable) -> void:
 			"Compras: o que é da conta aparece como Ativo, mesmo sem a Play")
 	p["purchases"]["supporter"] = true
 	check.call(not Iap.visible(p, Iap.STARTER, "simulated") and not Iap.visible(p, Iap.REVIVE_PACK, "simulated")
+			and not Iap.visible(p, Iap.REMOVE_ADS, "simulated") and not Iap.buy(p, Iap.REMOVE_ADS, "simulated")
 			and not Iap.buy(p, Iap.REVIVE_PACK, "simulated"),
-			"Compras: quem apoiou não vê o pacote inicial nem o de revives (não dariam nada)")
+			"Compras: quem apoiou não vê o pacote inicial, o de revives nem Remover anúncios (não dariam nada)")
 
 
 func _simulated(check: Callable) -> void:
@@ -114,6 +115,11 @@ func _simulated(check: Callable) -> void:
 	check.call(Iap.buy(p, Iap.SUPPORT, "simulated") and Iap.supporter(p) and not Store.ads_allowed(p)
 			and Store.owned(p, "tint_supporter"), "Apoiar: tira os anúncios e dá a pintura dourada")
 	check.call(not Iap.buy(p, Iap.SUPPORT, "simulated"), "Apoiar: a mesma compra de novo não muda nada")
+	var ads := SaveManager.default_profile()
+	check.call(Store.ads_allowed(ads) and Iap.buy(ads, Iap.REMOVE_ADS, "simulated") and not Store.ads_allowed(ads)
+			and not Iap.supporter(ads) and not Store.owned(ads, "tint_supporter"),
+			"Remover anúncios: tira o anúncio, sem virar apoiador nem dar o tema dourado")
+	check.call(not Iap.buy(ads, Iap.REMOVE_ADS, "simulated"), "Remover anúncios: a mesma compra de novo não muda nada")
 	var q := SaveManager.default_profile()
 	check.call(Iap.buy(q, Iap.STARTER, "simulated") and Iap.supporter(q) and Store.owned(q, Iap.STARTER_PAINT)
 			and Store.owned(q, "tint_supporter"), "Pacote inicial: Apoiar + a pintura Solar")

@@ -252,7 +252,7 @@ Play; compra concluída libera e é confirmada (`acknowledge`, sem isso a Play e
 então é consumido (`consume`); o token fica guardado para nunca creditar duas vezes. **Produto sem preço da Play
 (ainda não criado ou inativo no Console) não aparece na Loja**: dá para ativar um por vez.
 
-### Produtos no Play Console (criados e ativos em 2026-11-21; os quatro premium: a criar com `tools/play_products.py`)
+### Produtos no Play Console (criados e ativos em 2026-11-21; os quatro premium criados e ativos em 2026-11-23 pelo Console, com os textos nos 11 idiomas; a conta de serviço lê mas não grava produtos)
 
 Cada produto tem uma opção de compra "Comprar" com ID `<id>-compra` (hífens no lugar de `_`, ex.: `starter-pack-compra`),
 compatível com versões anteriores (a Billing Library do plugin usa essa), preço em USD aplicado a todas as 174 regiões.
@@ -263,6 +263,7 @@ Preço padrão em dólar (a Play converte para cada país; revise o preço em re
 |---|---|---|---|---|
 | `turbo` | Produto no app (não consumível) | US$ 1,99 | Turbo / Turbo | Acelera a partida em 1,5x ou 2x. Mais rápido, não mais fácil. / Speeds the run up to 1.5x or 2x. Faster, not easier. |
 | `support` | Produto no app (não consumível) | US$ 3,99 | Apoiar a Halcyon / Support the Halcyon | Recompensas da Loja e reviver sem anúncio, tema dourado no hub e a pintura dourada. Nenhum poder extra. / Shop rewards and revives without ads, a gold hub theme and the gold paint. No extra power. |
+| `remove_ads` | Produto no app (não consumível; novo, criado pela API) | US$ 2,99 | Remover anúncios / Remove ads | Receba as recompensas opcionais sem assistir ao anúncio. Sem tema nem cosmético. / Get the optional rewards without watching the ad. No theme or cosmetic. |
 | `starter_pack` | Produto no app (não consumível) | US$ 4,49 | Pacote inicial / Starter pack | "Apoiar a Halcyon" e a pintura Solar juntos, com desconto. Nenhum poder extra. / "Support the Halcyon" plus the Solar paint, at a discount. No extra power. |
 | `ship_trident` | Produto no app (não consumível) | US$ 1,99 | Atalho: Tridente / Shortcut: Trident | Libera a Tridente agora. Joga diferente, não é mais forte; também sai por fragmentos jogando. / Unlocks the Trident now. It plays differently, it is not stronger; fragments still unlock it by playing. |
 | `paint_aurora` | Produto no app (não consumível) | US$ 0,99 | Pintura Aurora / Aurora paint | Pintura de nave com rastro, cor de tiro e estouro próprios. Só visual; também sai por Pérolas. / Ship paint with its own trail, shot color and burst. Looks only; also earned with Pearls. |
@@ -277,8 +278,9 @@ Preço padrão em dólar (a Play converte para cada país; revise o preço em re
 
 ### Naves premium: criar pela API (`tools/play_products.py`)
 
-As quatro linhas premium acima (títulos e descrições nos 11 idiomas, a partir de `tools/i18n/command_premium.py` e
-`tools/i18n/play_products.py`) são criadas e ativadas pela ferramenta, sem digitar no Console:
+As quatro linhas premium acima, os quatro pacotes de Pérolas e o `remove_ads` (títulos e descrições nos 11 idiomas, a
+partir de `tools/i18n/command_premium.py`, `tools/i18n/command_iap.py` e `tools/i18n/play_products.py`) são criados e
+ativados pela ferramenta, sem digitar no Console:
 
 ```powershell
 python -I tools\play_products.py --dry-run          # mostra os corpos das requisições, sem rede

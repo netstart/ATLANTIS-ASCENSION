@@ -82,11 +82,11 @@ static func is_steam() -> bool:
 	return OS.has_feature("steam")
 
 
-## Anúncios só no Android grátis; nunca na Steam, nunca para quem apoiou e nunca no modo "off" do `Ads`
-## (release sem IDs reais): sem anúncio, a recompensa é concedida direto.
+## Anúncios só no Android grátis; nunca na Steam, nunca para quem apoiou ou comprou "Remover anúncios" e
+## nunca no modo "off" do `Ads` (release sem IDs reais): sem anúncio, a recompensa é concedida direto.
 static func ads_allowed(profile: Dictionary) -> bool:
 	return (not is_steam() and not bool(profile["purchases"].get("supporter", false))
-			and Ads.mode() != "off")
+			and not Iap.owns(profile, Iap.REMOVE_ADS) and Ads.mode() != "off")
 
 
 ## Sem plugin de pagamento a loja simula a compra — só em builds de desenvolvimento (editor, testes, APK

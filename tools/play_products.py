@@ -1,9 +1,10 @@
 """Cria ou atualiza no Play Console os produtos das naves premium e os pacotes de Pérolas (API Android Publisher v3,
 monetization).
 
-Só os produtos NOVOS desta ferramenta (catalog()): ship_premium_<id> x3, o pacote premium_fleet e os quatro pacotes de
-Pérolas pearls_<total> (lidos de PEARL_PACKS em scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo). Os
-produtos que já existem (turbo, support, pinturas...) nunca são tocados: a ferramenta recusa qualquer id fora dela.
+Só os produtos NOVOS desta ferramenta (catalog()): ship_premium_<id> x3, o pacote premium_fleet, os quatro pacotes de
+Pérolas pearls_<total> (lidos de PEARL_PACKS em scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo) e o
+remove_ads ("Remover anúncios"). Os produtos que já existem (turbo, support, pinturas...) nunca são tocados: a
+ferramenta recusa qualquer id fora dela.
 
 Consumível: a API de produtos únicos (onetimeproducts) não tem campo "consumível"; um produto vira consumível porque o
 app chama consumePurchase depois de creditar (scripts/core/iap.gd e play_billing_provider.gd), o que libera a compra
@@ -53,6 +54,8 @@ PREMIUM_SHIPS = ["hippocampus", "nereid", "amphitrite"]
 SHIP_USD = "2.99"
 FLEET_ID = "premium_fleet"
 FLEET_USD = "5.99"
+REMOVE_ADS_ID = "remove_ads"
+REMOVE_ADS_USD = "2.99"
 IAP = ROOT / "scripts" / "core" / "iap.gd"
 ## Separador de milhar do título dos pacotes, por idioma (como Locale.format_number no jogo).
 THOUSANDS = {"pt_BR": ".", "es": ".", "de": ".", "id": ".", "fr": "\u202f", "ru": "\u00a0"}
@@ -127,6 +130,11 @@ def catalog() -> list[dict]:
                              "title": t["play.pearls_title"][i].replace("%s", number(pack["pearls"], lang)),
                              "description": desc})
         out.append({"id": pack["id"], "usd": pack["usd"], "listings": listings})
+    remove_ads = []
+    for i, lang in enumerate(LANGS):
+        remove_ads.append({"languageCode": PLAY_LOCALES[lang], "title": t["play.remove_ads_title"][i],
+                           "description": t["store.remove_ads_desc"][i]})
+    out.append({"id": REMOVE_ADS_ID, "usd": REMOVE_ADS_USD, "listings": remove_ads})
     return out
 
 

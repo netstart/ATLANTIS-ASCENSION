@@ -61,6 +61,8 @@ var _ghost_sim: Sim
 var _backdrop: OceanBackdrop
 var _weather: WeatherView
 var _weather_audio := WeatherAudio.new()
+## Monitor de FPS: só na partida de verdade, rebaixa a qualidade uma vez quando o aparelho não aguenta.
+var _fps_guard := FpsGuard.new()
 var _clip: Control
 ## Palco: cenário, clima e campo, em unidades do campo. Em paisagem é ampliado até a altura da tela (Playfield):
 ## por transformação quando a ampliação dá pixels inteiros; senão desenhado num SubViewport e mostrado com o
@@ -552,6 +554,9 @@ func _process(delta: float) -> void:
 		_done -= delta
 		if _done <= 0.0:
 			_finish(false)
+	# Rebaixamento adaptativo: só na partida de verdade (nem bot, nem captura, nem partida terminada).
+	if not use_bot and quit_at <= 0.0 and not sim.finished and _fps_guard.tick(delta):
+		GfxQuality.auto_downgrade()
 
 
 ## Parte do chefe quebrando: estalo metálico, explosão média e um corpo grave, por prioridade (a rajada de

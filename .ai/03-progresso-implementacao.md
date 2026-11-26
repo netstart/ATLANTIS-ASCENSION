@@ -704,3 +704,15 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   `tools/play_products.py` cria os quatro pela API (só `--dry-run` rodado). Testes em `tests/iap_tests.gd`. Falta
   👤 criar/ativar os produtos no Play Console (`python tools\play_products.py apply --only pearls_100,pearls_550,pearls_1200,pearls_2600`)
   e conferir no aparelho
+- ✅ `1.30.0` Qualidade adaptativa, "Remover anúncios" e chefes de ato na faixa de tempo:
+  (1) `FpsGuard` (`scripts/core/fps_guard.gd`, puro e testado em `tests/run_tests.gd`) liga o rebaixamento
+  adaptativo de `GfxQuality` na partida real (modo "auto"): se o aparelho sustenta FPS bem abaixo do alvo
+  (média de 90 quadros acima de 22 ms), rebaixa um nível uma vez, com aquecimento e cooldown, sem tocar a
+  simulação; antes era código sem chamador. (2) Novo IAP `remove_ads` (US$ 2,99, não consumível): recebe as
+  recompensas opcionais sem assistir ao anúncio, sem tema nem cosmético; some para quem já apoiou
+  (`Store.ads_allowed`, `Iap.PRODUCTS`, `tools/play_products.py`, 11 idiomas, `tests/iap_tests.gd`).
+  (3) Balanceamento (bot, semente 7): 6 chefes de ato (tidebreaker, coral_guardian, kraken_engine, storm_eye,
+  forge, orbital_gate) trazidos para a faixa 90-150 s por `hp` em `data/bosses.json`; +14% de cadência no
+  mid-boss do cap. 9 (`mid_protocol_sentinel`), ainda 0 perdidas; sky_leviathan mantido (as duas rotas
+  compartilham hp e baixá-lo quebrava o Boss Rush). Falta 👤 criar/ativar `remove_ads` no Play Console e
+  conferir no aparelho

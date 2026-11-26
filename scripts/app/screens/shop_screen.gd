@@ -509,7 +509,7 @@ func _rarity_name(rarity: int) -> String:
 
 ## A sub-aba aparece quando há algo do catálogo para mostrar (à venda ou já da conta).
 static func _support_visible(profile: Dictionary) -> bool:
-	for id: String in [Iap.STARTER, Iap.SUPPORT, Iap.SHIP_SHORTCUT, Iap.REVIVE_PACK] + _premium_ids():
+	for id: String in [Iap.STARTER, Iap.SUPPORT, Iap.REMOVE_ADS, Iap.SHIP_SHORTCUT, Iap.REVIVE_PACK] + _premium_ids():
 		if _extra_visible(profile, id):
 			return true
 	return false
@@ -548,6 +548,9 @@ func _fill_extras(profile: Dictionary) -> void:
 				"title": tr("shop.support"), "speaker": "thalassa", "desc": tr("shop.support_desc"),
 				"owned": tr("shop.support_thanks"), "extra": func(body: VBoxContainer) -> void:
 					_gift(body, "tint_supporter")})
+	if _extra_visible(profile, Iap.REMOVE_ADS):
+		_product_card(profile, {"id": Iap.REMOVE_ADS, "node": "RemoveAds", "color": UiTheme.CYAN,
+				"title": tr("store.remove_ads"), "speaker": "mare", "desc": tr("store.remove_ads_desc")})
 	if _extra_visible(profile, Iap.SHIP_SHORTCUT):
 		_ship_card(profile)
 	if _extra_visible(profile, Iap.REVIVE_PACK):
