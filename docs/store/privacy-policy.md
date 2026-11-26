@@ -11,10 +11,11 @@ pelo e-mail informado na página do jogo na Google Play ou na Steam.
 gratuita do Android tem **anúncios recompensados opcionais** do Google AdMob: só aparecem quando você toca num botão
 "ver anúncio" (reviver, dobrar créditos, dobrar as Pérolas do Diário, abrir o baú em dobro), **nunca durante a
 missão**, e não vendem poder. No Android há também **compras opcionais** feitas pela Google Play: o Turbo (acelera a
-partida), "Apoiar a Halcyon" e o pacote inicial (recompensas e reviver sem anúncio, mais visual), o atalho da nave
-Tridente, pinturas de nave (Aurora, Recife, Abissal e Solar), naves premium (só visual), pacotes de Pérolas (a moeda
-que compra pinturas e tons, só visual) e um pacote de 3 revives sem anúncio. Nenhuma compra
-vende poder. Só os anúncios e as compras usam a internet, e os dados envolvidos ficam com o Google, como explicado
+partida), "Apoiar a Halcyon" e o pacote inicial (recompensas e reviver sem anúncio, mais visual), "Remover
+anúncios" (recebe as recompensas opcionais sem ver o anúncio), o atalho da nave Tridente, pinturas de nave (Aurora,
+Recife, Abissal e Solar), naves premium (só visual), o passe Maré Dourada (desbloqueia a trilha dourada do passe:
+pinturas exclusivas, só visual), pacotes de Pérolas (a moeda que compra pinturas e tons, só visual) e um pacote de 3
+revives sem anúncio. Nenhuma compra vende poder. Só os anúncios e as compras usam a internet, e os dados envolvidos ficam com o Google, como explicado
 abaixo. A versão Steam não tem anúncios nem compras (o Turbo, as pinturas e as naves premium vêm incluídos).
 
 **O que o jogo guarda no seu aparelho.** Progresso (missões, estrelas, moedas do jogo, aeronaves, conquistas),
@@ -47,9 +48,13 @@ vibração (para o retorno tátil, que pode ser desligado nas opções).
 **Compras (Google Play, só Android).** Todas as compras são opcionais e sem assinatura, processadas pela **Google
 Play** com a conta Google do aparelho: o Turbo (partida até 2x mais rápida, não mais fácil); "Apoiar a Halcyon"
 (recompensas da Loja e reviver sem anúncio, tema e pintura dourados); o pacote inicial ("Apoiar a Halcyon" mais a
-pintura Solar); o atalho da Tridente (libera agora uma nave que também sai jogando, por fragmentos); as pinturas
+pintura Solar); "Remover anúncios" (recebe as recompensas opcionais — reviver, dobrar créditos ou Pérolas, baú em
+dobro — sem ver o anúncio, sem tema nem cosmético); o atalho da Tridente (libera agora uma nave que também sai
+jogando, por fragmentos); as pinturas
 Aurora, Recife, Abissal e Solar (só visual; também saem por Pérolas); as naves premium Hipocampo, Nereida e
-Anfitrite, avulsas ou no pacote "Frota premium" (só visual: cada uma joga igual a uma nave do hangar); os pacotes de
+Anfitrite, avulsas ou no pacote "Frota premium" (só visual: cada uma joga igual a uma nave do hangar); o passe Maré
+Dourada (desbloqueia a trilha dourada do passe de temporada: 3 pinturas exclusivas resgatadas jogando; só visual); os
+pacotes de
 Pérolas (100, 550, 1.200 ou 2.600 Pérolas), a moeda que compra pinturas e tons para qualquer nave e que também se
 ganha jogando; e o pacote de 3 revives, um item consumível
 que pode ser comprado de novo: cada carga troca o anúncio do reviver por um reviver sem anúncio, e continua valendo
@@ -84,9 +89,10 @@ e-mail shown on the game's Google Play or Steam page.
 Android version has **optional rewarded ads** from Google AdMob: they only appear when you tap a "watch an ad"
 button (revive, double credits, double the Daily Pearls, open the chest doubled), **never during a mission**, and
 they never sell power. On Android there are also **optional purchases** made through Google Play: Turbo (speeds up
-the run), "Support the Halcyon" and the Starter pack (rewards and revives without ads, plus looks), the Trident ship
-shortcut, ship paints (Aurora, Reef, Abyssal and Solar), premium ships (looks only), Pearl packs (the currency that
-buys paints and tints, looks only) and a pack of 3 ad-free revives.
+the run), "Support the Halcyon" and the Starter pack (rewards and revives without ads, plus looks), "Remove ads" (get
+the optional rewards without watching the ad), the Trident ship shortcut, ship paints (Aurora, Reef, Abyssal and
+Solar), premium ships (looks only), the Golden Tide pass (unlocks the pass's gold track: exclusive paints, looks
+only), Pearl packs (the currency that buys paints and tints, looks only) and a pack of 3 ad-free revives.
 No purchase sells power.
 Only the ads and the purchases use the internet, and the data involved stays with Google, as explained below. The
 Steam version has no ads and no purchases (Turbo, the paints and the premium ships are included).
@@ -119,10 +125,13 @@ vibration (for haptic feedback, which can be turned off in the options).
 **Purchases (Google Play, Android only).** All purchases are optional, with no subscriptions, and are processed by
 **Google Play** with the Google account on the device: Turbo (runs up to 2x faster, not easier); "Support the
 Halcyon" (Shop rewards and revives without ads, a gold theme and gold paint); the Starter pack ("Support the
-Halcyon" plus the Solar paint); the Trident shortcut (unlocks now a ship that is also earned by playing, with
+Halcyon" plus the Solar paint); "Remove ads" (get the optional rewards — revive, double credits or Pearls, double
+chest — without watching the ad; no theme or cosmetic); the Trident shortcut (unlocks now a ship that is also earned
+by playing, with
 fragments); the Aurora, Reef, Abyssal and Solar paints (looks only; also earned with Pearls); the premium ships
 Hippocampus, Nereid and Amphitrite, alone or in the "Premium fleet" bundle (looks only: each one plays exactly like a
-hangar ship); the Pearl packs (100, 550, 1,200 or 2,600 Pearls), the currency that buys paints and tints for any
+hangar ship); the Golden Tide pass (unlocks the season pass's gold track: 3 exclusive paints, claimed by playing;
+looks only); the Pearl packs (100, 550, 1,200 or 2,600 Pearls), the currency that buys paints and tints for any
 ship and is also earned by playing; and the pack of 3
 revives, a consumable item that can be bought again: each charge replaces the revive ad with an ad-free revive, and
 the limit of 1 revive per mission still applies. No purchase sells power: Pearls only buy cosmetics, never power,

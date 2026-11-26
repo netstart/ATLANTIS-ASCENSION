@@ -741,3 +741,8 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (2) Masterização auditada (ffmpeg): todas as trilhas ~-14 LUFS (-13,9 a -15,35), picos ≤ -1 dBTP (nit:
   flow_tide_rising a -0,81), consistente — sem re-master. (3) Benchmark de partida (estresse 1.000 balas,
   nível 10, Alta): p95 7,95 ms (< 8 ms), 0 quadro > 33 ms — performance mantida, sem otimização necessária
+- ✅ `1.33.1` Política de privacidade atualizada com os produtos novos: a enumeração de compras (resumo e
+  detalhe, pt-BR e inglês) em `docs/store/privacy-policy.md` passou a listar "Remover anúncios" e o passe
+  "Maré Dourada" (`season_gold`). As práticas de dados NÃO mudaram (mesma Play Billing, só a posse do produto;
+  nenhum dado novo). HTML regerado (`docs/privacy/index.html`, `build_privacy_page.py --check` em dia). Site
+  `netstart.github.io/atlantis/` sincronizado com o mesmo conteúdo
