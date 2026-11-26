@@ -98,6 +98,8 @@ var _done: float = -1.0
 var _style := StyleTracker.new()
 var _slowmo: float = 0.0
 var _reported: bool = false
+## Intensidade da música aplicada pela Corrente (0/1/2): só reavisa o AudioManager quando o nível muda.
+var _music_intensity: int = 0
 
 
 ## Configura antes de entrar na árvore.
@@ -205,6 +207,7 @@ func _exit_tree() -> void:
 	if GameClock.ticked.is_connected(_on_tick):
 		GameClock.ticked.disconnect(_on_tick)
 	_weather_audio.stop()
+	AudioManager.set_music_intensity(0)
 	GameClock.paused = true
 	GameClock.time_scale = 1.0
 	GameClock.turbo = 1.0
@@ -538,6 +541,11 @@ func _process(delta: float) -> void:
 	_weather_audio.update(sim.weather, delta)
 	_world.refresh(delta)
 	_hud.refresh(sim, delta)
+	# Música reativa à Corrente: realce de presença que entra em x8 e chega ao pico em x16 (só lê a Sim).
+	var intensity := AudioManager.music_intensity_for(sim.scoring.chain)
+	if intensity != _music_intensity:
+		_music_intensity = intensity
+		AudioManager.set_music_intensity(intensity)
 	if quit_at > 0.0 and sim.frame >= int(quit_at * 60.0):
 		_report_and_quit()
 	if sim.finished:

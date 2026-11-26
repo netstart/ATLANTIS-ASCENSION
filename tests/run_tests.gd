@@ -63,6 +63,7 @@ func _rules(_unit_check: Callable, sim: SimTests) -> void:
 	_test_frame_pacing()
 	_test_gfx_quality()
 	_test_fps_guard()
+	_test_music_intensity()
 	_test_languages()
 	_test_version()
 	_test_shard()
@@ -250,6 +251,18 @@ func _test_fps_guard() -> void:
 		if guard.tick(0.030):
 			fires += 1
 	_check(fires == 2, "FpsGuard: reavalia depois do cooldown (%d)" % fires)
+
+
+## Mapa puro Corrente→intensidade da música: limiares 7/8 (percussão entra) e 15/16 (pico). O AudioManager
+## é carregado em runtime (como o ScriptGate), porque ele depende do autoload Settings na compilação.
+func _test_music_intensity() -> void:
+	var am: GDScript = load("res://scripts/autoload/audio_manager.gd")
+	_check(am.music_intensity_for(0) == 0, "Música: corrente 0 → nível 0")
+	_check(am.music_intensity_for(7) == 0, "Música: corrente 7 → nível 0")
+	_check(am.music_intensity_for(8) == 1, "Música: corrente 8 → nível 1 (percussão entra)")
+	_check(am.music_intensity_for(15) == 1, "Música: corrente 15 → nível 1")
+	_check(am.music_intensity_for(16) == 2, "Música: corrente 16 → nível 2 (pico)")
+	_check(am.music_intensity_for(99) == 2, "Música: corrente alta → nível 2")
 
 
 func _test_languages() -> void:

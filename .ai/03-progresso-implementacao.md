@@ -733,3 +733,11 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   👤 criar/ativar `season_gold` no Play Console. (2) +4 cosméticos só-Pérolas (tints Maré/Brasa/Vazio, paint
   Geleira): sumidouro de Pérolas 1.770→2.390 (+35%), economia conferida saudável (~5-8 semanas p/ completista,
   item avulso em dias), sem mexer nas taxas de ganho
+- ✅ `1.33.0` Áudio reativo à Corrente + confirmações:
+  (1) A música ganha intensidade com a Corrente de Maré (`sim.scoring.chain`): realce de presença que entra
+  em x8 e chega ao pico em x16, voltando suave ao quebrar. Efeito high-shelf no bus "Music" (ganho 1.0/1.3/1.6),
+  neutro e desligado no nível 0 (passthrough bit-exato), sem brigar com o volume das opções; não toca a Sim
+  (`AudioManager.music_intensity_for`/`set_music_intensity`, ligado em `game.gd`, teste em `run_tests.gd`).
+  (2) Masterização auditada (ffmpeg): todas as trilhas ~-14 LUFS (-13,9 a -15,35), picos ≤ -1 dBTP (nit:
+  flow_tide_rising a -0,81), consistente — sem re-master. (3) Benchmark de partida (estresse 1.000 balas,
+  nível 10, Alta): p95 7,95 ms (< 8 ms), 0 quadro > 33 ms — performance mantida, sem otimização necessária

@@ -29,6 +29,13 @@ const AMBIENCE_BUS := "Ambience"
 const AMBIENCE_RATE := 0.6
 const MUFFLE_OPEN_HZ := 20500.0
 const MUFFLE_CLOSED_HZ := 700.0
+## Intensidade da música pela Corrente (combo): realce de presença/agudos (ganho do high-shelf) por nível
+## 0/1/2, cutoff da faixa e os tempos de subida (entra) e de volta suave (a corrente quebrou). O nível 0 é
+## plano (ganho 1,0) e o efeito fica desligado, então a trilha chega igual à mixada.
+const MUSIC_INTENSITY_GAIN: Array[float] = [1.0, 1.3, 1.6]
+const MUSIC_INTENSITY_CUTOFF := 3500.0
+const MUSIC_INTENSITY_RISE := 0.6
+const MUSIC_INTENSITY_FALL := 1.1
 
 ## Ids pedidos sem arquivo (diagnóstico e testes).
 var missing: Dictionary = {}
@@ -43,6 +50,10 @@ var _last_play_ms: Dictionary = {}
 var _streams: Dictionary = {}
 var _duck_tween: Tween
 var _fade_tween: Tween
+## Realce de presença no bus Music (índice do AudioEffectHighShelfFilter), nível atual e o tween do ganho.
+var _music_presence: int = -1
+var _music_intensity: int = 0
+var _intensity_tween: Tween
 ## Camadas de ambiente: id → {player, level, target, db}.
 var _ambience: Dictionary = {}
 var _muffle: float = 0.0
@@ -85,6 +96,15 @@ func _setup_buses() -> void:
 			low.cutoff_hz = MUFFLE_OPEN_HZ
 			AudioServer.add_bus_effect(index, low)
 			AudioServer.set_bus_effect_enabled(index, 0, false)
+	# Realce de presença da música (depois do passa-baixa do clima), desligado e plano até a Corrente pedir.
+	var music := AudioServer.get_bus_index("Music")
+	if music >= 0 and _music_presence < 0:
+		var shelf := AudioEffectHighShelfFilter.new()
+		shelf.cutoff_hz = MUSIC_INTENSITY_CUTOFF
+		shelf.gain = MUSIC_INTENSITY_GAIN[0]
+		AudioServer.add_bus_effect(music, shelf)
+		_music_presence = AudioServer.get_bus_effect_count(music) - 1
+		AudioServer.set_bus_effect_enabled(music, _music_presence, false)
 
 
 func _make_player(bus: String) -> AudioStreamPlayer:
@@ -152,6 +172,42 @@ func stop_music(fade: float = 1.0) -> void:
 
 func music_id() -> String:
 	return _music_id
+
+
+## Mapa puro Corrente→intensidade (0/1/2): a percussão/energia "entra" em x8 (nível 1) e chega ao pico em
+## x16 (nível 2). Estático e sem estado, para o teste de regras cobrir os limiares 7/8/15/16.
+static func music_intensity_for(chain: int) -> int:
+	if chain >= 16:
+		return 2
+	if chain >= 8:
+		return 1
+	return 0
+
+
+## Intensidade reativa à Corrente (0/1/2): realça a presença/agudos da trilha (OGG único, sem stems) com um
+## tween suave do ganho do high-shelf — sobe rápido quando a Corrente cresce e volta devagar quando ela
+## quebra. O volume base do bus continua vindo das opções (não brigam: são efeito × volume do bus). No
+## nível 0 o ganho volta a 1,0 (plano) e o efeito é desligado, garantindo a música normal.
+func set_music_intensity(level: int) -> void:
+	level = clampi(level, 0, MUSIC_INTENSITY_GAIN.size() - 1)
+	if level == _music_intensity:
+		return
+	var rising := level > _music_intensity
+	_music_intensity = level
+	var index := AudioServer.get_bus_index("Music")
+	if index < 0 or _music_presence < 0:
+		return
+	var effect := AudioServer.get_bus_effect(index, _music_presence) as AudioEffectHighShelfFilter
+	if effect == null:
+		return
+	if _intensity_tween != null:
+		_intensity_tween.kill()
+	AudioServer.set_bus_effect_enabled(index, _music_presence, true)
+	_intensity_tween = create_tween()
+	_intensity_tween.tween_property(effect, "gain", MUSIC_INTENSITY_GAIN[level],
+			MUSIC_INTENSITY_RISE if rising else MUSIC_INTENSITY_FALL)
+	if level == 0:
+		_intensity_tween.tween_callback(AudioServer.set_bus_effect_enabled.bind(index, _music_presence, false))
 
 
 ## Toca um efeito (ou uma das variantes `id_N`). Devolve false se o arquivo não existe, o som passou do
