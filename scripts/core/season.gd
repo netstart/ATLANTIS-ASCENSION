@@ -1,7 +1,7 @@
 class_name Season
 extends RefCounted
 ## Passe de temporada (plano mestre Fase 4): uma temporada por trimestre, 30 níveis de 100 XP. A trilha
-## grátis paga moedas; a trilha "Maré Dourada" (compra simulada até a Fase 4) paga pinturas a cada 10
+## grátis paga moedas; a trilha "Maré Dourada" (IAP season_gold, scripts/core/iap.gd) paga pinturas a cada 10
 ## níveis. Nada de poder. XP: 1 por 1.000 pontos + 40 por missão vencida.
 
 const TIERS := 30
@@ -20,10 +20,16 @@ static func id_for(date: String) -> String:
 static func state(profile: Dictionary, date: String) -> Dictionary:
 	var sid := id_for(date)
 	if not profile.has("season") or String((profile["season"] as Dictionary).get("id", "")) != sid:
-		var premium := profile.has("season") and bool((profile["season"] as Dictionary).get("premium_forever", false))
-		profile["season"] = {"id": sid, "xp": 0, "claimed": [], "premium": premium, "premium_claimed": [],
-				"premium_forever": premium}
-	return profile["season"]
+		var forever := profile.has("season") and bool((profile["season"] as Dictionary).get("premium_forever", false))
+		profile["season"] = {"id": sid, "xp": 0, "claimed": [], "premium": forever, "premium_claimed": [],
+				"premium_forever": forever}
+	var s: Dictionary = profile["season"]
+	# A trilha dourada é a posse do IAP season_gold (ou o desbloqueio simulado antigo, premium_forever): vale
+	# para sempre, em todas as temporadas.
+	if Iap.owns(profile, Iap.SEASON_GOLD):
+		s["premium"] = true
+		s["premium_forever"] = true
+	return s
 
 
 static func tier(profile: Dictionary, date: String) -> int:
@@ -70,10 +76,10 @@ static func claim_premium(profile: Dictionary, date: String) -> Array[String]:
 	return out
 
 
-## Compra simulada da trilha dourada (sem plugin de pagamento, Store.simulated).
+## Inicia a compra da trilha dourada (IAP season_gold). Simulado: compra na hora e a posse já liga o premium
+## (via state). Na Play: abre o billing e a posse volta pelo callback do Iap, marcando premium na próxima
+## leitura. Devolve o que Iap.buy devolve (true só quando a compra concluiu na hora).
 static func buy_premium(profile: Dictionary, date: String) -> bool:
-	var s := state(profile, date)
-	if bool(s["premium"]) or not Store.simulated():
+	if bool(state(profile, date)["premium"]):
 		return false
-	s["premium"] = true
-	return true
+	return Iap.buy(profile, Iap.SEASON_GOLD)

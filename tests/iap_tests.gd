@@ -19,8 +19,8 @@ const FakeBillingClient := preload("res://tests/fake_billing_client.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const CODE := BillingClient.BillingResponseCode
 const STATE := BillingClient.PurchaseState
-const EXPECTED := ["turbo", "support", "remove_ads", "starter_pack", "ship_trident", "revive_pack_3", "pearls_100",
-		"pearls_550", "pearls_1200", "pearls_2600", "paint_aurora", "paint_reef",
+const EXPECTED := ["turbo", "support", "remove_ads", "starter_pack", "ship_trident", "revive_pack_3", "season_gold",
+		"pearls_100", "pearls_550", "pearls_1200", "pearls_2600", "paint_aurora", "paint_reef",
 		"paint_abyssal", "paint_solar", "ship_premium_hippocampus", "ship_premium_nereid", "ship_premium_amphitrite",
 		"premium_fleet"]
 
@@ -35,6 +35,7 @@ func run(check: Callable) -> void:
 	_simulated(check)
 	_consumable(check)
 	_pearls(check)
+	_season(check)
 	_starter_offer(check)
 	_same_hash(check)
 
@@ -229,6 +230,29 @@ func _pearls(check: Callable) -> void:
 	check.call(Iap.visible(q, "pearls_100", "simulated") and Iap.buy(q, "pearls_100", "simulated")
 			and Iap.buy(q, "pearls_100", "simulated") and int(q["wallet"]["pearls"]) == 200,
 			"Pérolas: o simulado credita na hora, dá para comprar de novo e quem apoia também vê")
+
+
+## Passe "Maré Dourada" (season_gold): comprado (simulado) liga a trilha premium do passe e deixa as 3 pinturas
+## da trilha resgatáveis, sem dar nada além de cosmético, e a posse vale para a temporada seguinte.
+func _season(check: Callable) -> void:
+	var p := SaveManager.default_profile()
+	var date := "2026-11-01"
+	var credits := int(p["wallet"]["credits"])
+	var ships := (p["unlocked"]["ships"] as Array).size()
+	check.call(not bool(Season.state(p, date)["premium"]) and Iap.buy(p, Iap.SEASON_GOLD, "simulated")
+			and Iap.owns(p, Iap.SEASON_GOLD) and bool(Season.state(p, date)["premium"]),
+			"Passe: comprar season_gold (simulado) liga a trilha dourada (premium)")
+	Season.state(p, date)["xp"] = 10 * Season.XP_PER_TIER
+	check.call(Season.claim_premium(p, date) == ["tint_season_a"]
+			and (p["unlocked"]["cosmetics"] as Array).has("tint_season_a"),
+			"Passe: a trilha comprada resgata a pintura do nível 10")
+	check.call(int(p["wallet"]["credits"]) == credits and (p["unlocked"]["ships"] as Array).size() == ships
+			and (Iap.product(Iap.SEASON_GOLD).get("cosmetics", []) as Array).is_empty()
+			and not Iap.product(Iap.SEASON_GOLD).has("ships"),
+			"Passe: season_gold não dá nada além do cosmético da trilha (sem moeda, nave ou poder)")
+	check.call(not Iap.buy(p, Iap.SEASON_GOLD, "simulated"), "Passe: a mesma compra de novo não muda nada")
+	check.call(bool(Season.state(p, "2027-01-05")["premium"]) and Season.tier(p, "2027-01-05") == 0,
+			"Passe: a trilha comprada vale para a temporada nova, que começa do zero")
 
 
 func _starter_offer(check: Callable) -> void:

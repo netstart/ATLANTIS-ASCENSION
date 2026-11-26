@@ -724,3 +724,12 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   chefes (kraken 100→235 s no c2m3). Testes em `tests/sim_tests.gd`. (2) Revanche do chefe: na derrota em
   chefe de ato, botão "Enfrentar o chefe de novo" cai direto no chefe via `Modes.boss_only`, como prática,
   com a mesma carga (`results_screen.gd`, `app.gd`, `results.rematch` nos 11 idiomas, `tests/flow_tests.gd`)
+- ✅ `1.32.0` Monetização — passe "Maré Dourada" vendável e mais cosméticos:
+  (1) O passe deixou de ser só simulado: novo IAP não-consumível `season_gold` (US$ 4,99) liga a trilha
+  dourada (`Season.state()` deriva premium de `Iap.owns`, desbloqueio único via `premium_forever`);
+  `Season.buy_premium`→`Iap.buy`; a tela do passe usa o fluxo de compra com preço da Play. Só cosmético
+  (as 3 pinturas da trilha, resgatadas jogando), nunca poder. Ficha da Play (`tools/play_products.py`),
+  11 idiomas, testes em `iap_tests.gd`/`launch_tests.gd`; docs obsoletos ("só simulado") corrigidos. Falta
+  👤 criar/ativar `season_gold` no Play Console. (2) +4 cosméticos só-Pérolas (tints Maré/Brasa/Vazio, paint
+  Geleira): sumidouro de Pérolas 1.770→2.390 (+35%), economia conferida saudável (~5-8 semanas p/ completista,
+  item avulso em dias), sem mexer nas taxas de ganho

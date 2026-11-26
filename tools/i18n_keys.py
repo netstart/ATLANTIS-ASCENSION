@@ -34,7 +34,7 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
     f"task.{k}" for k in ("kills", "grazes", "medals", "clears", "rescued", "chain", "stars", "blessings")] + [
     "events.daily", "events.weekly", "speaker.duarte", "results.new_district", "results.rescued"] + [
     f"cosmetic.{c}" for c in ("tint_abyss", "tint_coral", "tint_kelp", "tint_orichalcum", "tint_pearl", "tint_storm",
-                              "tint_supporter")] + [
+                              "tint_tide", "tint_ember", "tint_void", "paint_glacier", "tint_supporter")] + [
     f"district.{d}" for d in ("docks", "gardens", "forge", "temple", "observatory")] + [
     f"city.bonus_{b}" for b in ("credits", "pearls", "discount", "bombs", "orichalcum")] + [
     f"ending.{e}" for e in ("shattered", "return", "high_tide")] + [

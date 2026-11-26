@@ -1,7 +1,7 @@
 class_name SeasonScreen
 extends ListScreen
 ## Passe de temporada (Season): nível atual, recompensas grátis de cada nível alcançado e a trilha
-## "Maré Dourada" com 3 pinturas (compra simulada até a Fase 4 ligar o Play Billing).
+## "Maré Dourada" com 3 pinturas (compra real pelo IAP season_gold, como a Loja; preço da Play quando houver).
 ##
 ## Topo: cartão com o nível e a barra de XP. A trilha dourada tem cartão próprio (ouro). Os níveis
 ## formam uma trilha de linhas: resgatado com visto menta, pronto para resgatar com "Resgatar" em ouro,
@@ -31,11 +31,8 @@ func _fill() -> void:
 			SaveManager.save_profile()
 		var gold := card(UiTheme.GOLD)
 		title_row(gold, tr("season.gold_owned"), UiTheme.GOLD, 13, &"check", UiTheme.GOLD)
-	elif Store.simulated():
-		var gold := card(UiTheme.GOLD)
-		button(gold, tr("season.gold_buy"), func() -> void:
-			Season.buy_premium(SaveManager.data, date)
-			SaveManager.save_profile(), true, "SeasonGold", true)
+	elif Iap.visible(profile, Iap.SEASON_GOLD):
+		_gold_offer()
 	var track := card(UiTheme.CYAN, null, 0.78)
 	track.add_theme_constant_override("separation", 6)
 	for level: int in range(1, Season.TIERS + 1):
@@ -68,3 +65,26 @@ func _fill() -> void:
 			b.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 			b.autowrap_mode = TextServer.AUTOWRAP_OFF
 		track.add_child(row)
+
+
+## Cartão da trilha dourada à venda (IAP season_gold, como a Loja): o que dá (só as 3 pinturas da trilha), o
+## estado da Play (abrindo, pendente, erro) e o botão com o preço quando houver. Refaz quando a Play responde.
+func _gold_offer() -> void:
+	Iap.on_changed(refill)
+	var gold := card(UiTheme.GOLD)
+	title_row(gold, tr("season.gold_buy"), UiTheme.GOLD, 13, &"star", UiTheme.GOLD)
+	text(gold, tr("store.season_desc"), UiTheme.WHITE)
+	var status := Iap.status(Iap.SEASON_GOLD)
+	var waiting := status == "busy" or status == "pending"
+	if not status.is_empty():
+		var says := {"busy": tr("store.turbo_busy"), "pending": tr("store.pending"),
+				"canceled": tr("store.turbo_canceled"), "unavailable": tr("store.turbo_unavailable")}
+		var line := text(gold, String(says.get(status, tr("store.turbo_failed"))),
+				UiTheme.GOLD if waiting else UiTheme.CORAL, UiTheme.SMALL_SIZE)
+		line.name = "SeasonGoldStatus"
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var price := Iap.price(Iap.SEASON_GOLD)
+	button(gold, tr("store.buy_price") % price if not price.is_empty() else tr("store.buy_money"), func() -> void:
+		if Iap.buy(SaveManager.data, Iap.SEASON_GOLD):
+			AudioManager.play_ui("kenney_ui_confirm")
+			SaveManager.save_profile(), not waiting, "SeasonGold", true)

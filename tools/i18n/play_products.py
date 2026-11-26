@@ -22,4 +22,6 @@ STRINGS = {
     "play.remove_ads_title": ["Remover anúncios", "Remove ads", "Quitar anuncios", "Werbung entfernen",
                               "Supprimer les publicités", "Убрать рекламу", "Hapus iklan", "広告を削除", "광고 제거",
                               "移除廣告", "移除广告"],
+    "play.season_title": ["Maré Dourada", "Golden Tide", "Marea Dorada", "Goldene Flut", "Marée Dorée",
+                          "Золотой прилив", "Pasang Emas", "黄金の潮", "황금 조수", "黃金潮汐", "黄金潮汐"],
 }

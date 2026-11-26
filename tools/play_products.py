@@ -2,9 +2,9 @@
 monetization).
 
 Só os produtos NOVOS desta ferramenta (catalog()): ship_premium_<id> x3, o pacote premium_fleet, os quatro pacotes de
-Pérolas pearls_<total> (lidos de PEARL_PACKS em scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo) e o
-remove_ads ("Remover anúncios"). Os produtos que já existem (turbo, support, pinturas...) nunca são tocados: a
-ferramenta recusa qualquer id fora dela.
+Pérolas pearls_<total> (lidos de PEARL_PACKS em scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo), o
+remove_ads ("Remover anúncios") e o season_gold ("Maré Dourada", passe). Os produtos que já existem (turbo,
+support, pinturas...) nunca são tocados: a ferramenta recusa qualquer id fora dela.
 
 Consumível: a API de produtos únicos (onetimeproducts) não tem campo "consumível"; um produto vira consumível porque o
 app chama consumePurchase depois de creditar (scripts/core/iap.gd e play_billing_provider.gd), o que libera a compra
@@ -56,6 +56,8 @@ FLEET_ID = "premium_fleet"
 FLEET_USD = "5.99"
 REMOVE_ADS_ID = "remove_ads"
 REMOVE_ADS_USD = "2.99"
+SEASON_ID = "season_gold"
+SEASON_USD = "4.99"
 IAP = ROOT / "scripts" / "core" / "iap.gd"
 ## Separador de milhar do título dos pacotes, por idioma (como Locale.format_number no jogo).
 THOUSANDS = {"pt_BR": ".", "es": ".", "de": ".", "id": ".", "fr": "\u202f", "ru": "\u00a0"}
@@ -135,6 +137,11 @@ def catalog() -> list[dict]:
         remove_ads.append({"languageCode": PLAY_LOCALES[lang], "title": t["play.remove_ads_title"][i],
                            "description": t["store.remove_ads_desc"][i]})
     out.append({"id": REMOVE_ADS_ID, "usd": REMOVE_ADS_USD, "listings": remove_ads})
+    season = []
+    for i, lang in enumerate(LANGS):
+        season.append({"languageCode": PLAY_LOCALES[lang], "title": t["play.season_title"][i],
+                       "description": t["store.season_desc"][i]})
+    out.append({"id": SEASON_ID, "usd": SEASON_USD, "listings": season})
     return out
 
 

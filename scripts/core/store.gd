@@ -97,8 +97,9 @@ static func simulated() -> bool:
 	return not Engine.has_singleton("GodotGooglePlayBilling") and OS.is_debug_build()
 
 
-## Passe dourado (season_gold) à venda: ainda NÃO tem produto no Play Console e só existe simulado
-## (desenvolvimento). O "Apoiar" deixou de depender disto: é do catálogo `Iap`.
+## Mostra na Loja as pinturas raras ainda não obtidas (apoiador, passe) só no modo simulado (desenvolvimento),
+## para revisão; no release elas só surgem depois de obtidas. O "Apoiar" e o passe dourado (season_gold) são
+## compras reais do catálogo `Iap`, independentes disto.
 static func purchases_enabled() -> bool:
 	return not is_steam() and simulated()
 

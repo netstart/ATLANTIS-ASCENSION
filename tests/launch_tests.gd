@@ -102,8 +102,10 @@ func _season(check: Callable) -> void:
 			"Passe: resgata o nível 1")
 	check.call(Season.claim(p, "2026-11-01", 2).is_empty(), "Passe: nível não alcançado não paga")
 	Season.state(p, "2026-11-01")["xp"] = 1000
+	Iap.forced_mode = "simulated"
 	check.call(Season.buy_premium(p, "2026-11-01") and Season.claim_premium(p, "2026-11-01") == ["tint_season_a"],
-			"Passe: trilha dourada (simulada) dá a pintura do nível 10")
+			"Passe: trilha dourada (season_gold, simulada) dá a pintura do nível 10")
+	Iap.forced_mode = ""
 	Season.state(p, "2027-01-05")
 	check.call(Season.tier(p, "2027-01-05") == 0, "Passe: temporada nova começa do zero")
 

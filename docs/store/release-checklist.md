@@ -46,7 +46,8 @@ Só o mantenedor pode fazer:
 6. Turbo (Play Billing real, plugin `GodotGooglePlayBilling` no AAB): criar o produto no app `turbo` (US$ 1,99),
    pôr testadores de licença e testar compra, pendente e reinstalação (seção "Compras no app: o Turbo" de
    [play-console.md](play-console.md)). Política, ficha e IARC "compras digitais = Sim" já estão atualizados.
-   `supporter`, `season_gold` e pinturas avulsas continuam só simulados (`Store.purchases_enabled`).
+   `supporter` e pinturas avulsas continuam só simulados (`Store.purchases_enabled`). O passe `season_gold`
+   (US$ 4,99) passou a ser produto real: criar e testar com `tools/play_products.py`, como os demais.
 
 ## 3. Steam
 

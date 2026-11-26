@@ -310,8 +310,9 @@ Depois de criar:
    revives: comprar duas vezes seguidas (a Play só deixa se o jogo consumiu a primeira).
 3. Ficha da loja: a Play mostra "Compras no app" sozinha depois de o produto estar ativo; confira.
 
-O passe dourado (`season_gold`) **não** é vendido: continua só simulado no desenvolvimento e escondido no release
-(`Store.purchases_enabled`).
+O passe dourado (`season_gold`, US$ 4,99, **não** consumível) é vendido: liga a trilha premium do passe (só as 3
+pinturas da trilha, nenhum poder; a posse vale para todas as temporadas). Criado e testado como os demais produtos
+(comprar, pendente, cancelar, reinstalar/restaurar, reembolsar), pela `tools/play_products.py`.
 
 ## Ligar o anúncio recompensado (AdMob)
 

@@ -305,6 +305,10 @@ STRINGS = {
                                  "オリハルコン", "오리하르콘", "山銅", "山铜"],
     "cosmetic.tint_pearl": ["Pérola", "Pearl", "Perla", "Perle", "Perle", "Жемчуг", "Mutiara", "パール", "진주", "珍珠", "珍珠"],
     "cosmetic.tint_storm": ["Tempestade", "Storm", "Tormenta", "Sturm", "Tempête", "Буря", "Badai", "ストーム", "폭풍", "風暴", "风暴"],
+    "cosmetic.tint_tide": ["Maré", "Tide", "Marea", "Gezeiten", "Marée", "Прилив", "Pasang", "潮", "조수", "潮汐", "潮汐"],
+    "cosmetic.tint_ember": ["Brasa", "Ember", "Brasa", "Glut", "Braise", "Уголёк", "Bara", "残り火", "잉걸불", "餘燼", "余烬"],
+    "cosmetic.tint_void": ["Vazio", "Void", "Vacío", "Leere", "Abîme", "Пустота", "Hampa", "虚空", "공허", "虛空", "虚空"],
+    "cosmetic.paint_glacier": ["Geleira", "Glacier", "Glaciar", "Gletscher", "Glacier", "Ледник", "Gletser", "氷河", "빙하", "冰川", "冰川"],
     "cosmetic.tint_supporter": ["Dourado do apoiador", "Supporter gold", "Oro del apoyador", "Unterstützergold", "Or du soutien",
                                 "Золото поддержки", "Emas pendukung", "サポーターゴールド", "후원자 골드", "支持者金", "支持者金"],
     # --- Cidade e finais ----------------------------------------------------------------------------

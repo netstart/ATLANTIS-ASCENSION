@@ -16,7 +16,7 @@ extends RefCounted
 ##
 ## A cobrança é a do catálogo de compras (scripts/core/iap.gd), que o Turbo usa como os outros produtos;
 ## esta classe guarda a API do HUD e as regras próprias do Turbo (velocidades, cartão sempre visível com
-## o plugin, reembolso que volta a 1x). O passe dourado (season_gold) continua só simulado.
+## o plugin, reembolso que volta a 1x). O passe dourado (season_gold) também é do catálogo Iap.
 ##
 ## A compra fica em profile["purchases"]["turbo"] e a velocidade escolhida em
 ## profile["selected"]["turbo"] (1.0 nos saves antigos, por SaveManager.migrate). Este arquivo não

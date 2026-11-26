@@ -12,6 +12,9 @@ extends RefCounted
 ## (`ship_premium_<id>`) ou as três no pacote `premium_fleet`. Na Steam vêm todas incluídas (`include_premium`).
 ## Pacotes de Pérolas (`pearls_<total>`, consumíveis, PEARL_PACKS): só a moeda dos cosméticos, nunca créditos,
 ## oricalco ou outra coisa que dê força.
+## Passe "Maré Dourada" (`season_gold`, não consumível): liga a trilha premium do passe (scripts/core/season.gd).
+## Só cosmético (as 3 pinturas da trilha, resgatadas jogando), nunca poder; a posse vale para todas as temporadas
+## (desbloqueio único). O produto não dá cosmético por si — quem paga a trilha é o passe.
 ##
 ## Modos (`mode()`, os mesmos do Turbo): "steam" (nada a comprar: tudo incluso ou por jogo), "play"
 ## (PlayBillingProvider), "simulated" (desenvolvimento sem o plugin: a compra é fingida na hora) e "off"
@@ -31,6 +34,8 @@ const REMOVE_ADS := "remove_ads"
 const STARTER := "starter_pack"
 const SHIP_SHORTCUT := "ship_trident"
 const REVIVE_PACK := "revive_pack_3"
+## Passe "Maré Dourada": liga a trilha premium do passe (Season). Só cosmético, nunca poder.
+const SEASON_GOLD := "season_gold"
 ## Pacote das três naves premium.
 const PREMIUM_FLEET := "premium_fleet"
 const PREMIUM_SHIP_USD := "2.99"
@@ -60,6 +65,7 @@ const PRODUCTS: Array[Dictionary] = [
 	{"id": STARTER, "kind": "bundle", "usd": "4.49", "cosmetics": ["tint_supporter", STARTER_PAINT]},
 	{"id": SHIP_SHORTCUT, "kind": "ship", "usd": "1.99", "ship": "trident"},
 	{"id": REVIVE_PACK, "kind": "consumable", "usd": "0.99", "charges": 3},
+	{"id": SEASON_GOLD, "kind": "season", "usd": "4.99"},
 ]
 
 ## Só os testes: finge o modo. "" = o do aparelho (ou o Turbo.forced_mode dos testes do Turbo).

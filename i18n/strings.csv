@@ -164,10 +164,12 @@ command.power,Poder,Power,Poder,Stärke,Puissance,Мощь,Kekuatan,戦力,전�
 command.recommended,Recomendado %s,Recommended %s,Recomendado %s,Empfohlen %s,Conseillé %s,Рекомендуется %s,Disarankan %s,推奨 %s,권장 %s,建議 %s,建议 %s
 cosmetic.paint_abyssal,Abissal,Abyssal,Abisal,Abyssal,Abyssale,Бездна,Abisal,アビサル,심연,深淵,深渊
 cosmetic.paint_aurora,Aurora,Aurora,Aurora,Aurora,Aurore,Аврора,Aurora,オーロラ,오로라,極光,极光
+cosmetic.paint_glacier,Geleira,Glacier,Glaciar,Gletscher,Glacier,Ледник,Gletser,氷河,빙하,冰川,冰川
 cosmetic.paint_reef,Recife,Reef,Arrecife,Riff,Récif,Риф,Karang,リーフ,산호초,珊瑚礁,珊瑚礁
 cosmetic.paint_solar,Solar,Solar,Solar,Solar,Solaire,Солнце,Surya,ソーラー,솔라,太陽,太阳
 cosmetic.tint_abyss,Azul abissal,Abyss blue,Azul abisal,Abgrundblau,Bleu abyssal,Бездонный синий,Biru jurang,深淵ブルー,심연 파랑,深淵藍,深渊蓝
 cosmetic.tint_coral,Coral,Coral,Coral,Koralle,Corail,Коралл,Karang,コーラル,산호,珊瑚,珊瑚
+cosmetic.tint_ember,Brasa,Ember,Brasa,Glut,Braise,Уголёк,Bara,残り火,잉걸불,餘燼,余烬
 cosmetic.tint_kelp,Alga,Kelp,Alga,Seetang,Varech,Ламинария,Rumput laut,ケルプ,다시마,海帶,海带
 cosmetic.tint_orichalcum,Oricalco,Orichalcum,Oricalco,Orichalkum,Orichalque,Орихалк,Orikalkum,オリハルコン,오리하르콘,山銅,山铜
 cosmetic.tint_pearl,Pérola,Pearl,Perla,Perle,Perle,Жемчуг,Mutiara,パール,진주,珍珠,珍珠
@@ -176,6 +178,8 @@ cosmetic.tint_season_b,Maré Coral,Coral Tide,Marea Coral,Korallenflut,Marée Co
 cosmetic.tint_season_c,Maré Esmeralda,Emerald Tide,Marea Esmeralda,Smaragdflut,Marée Émeraude,Изумрудный прилив,Pasang Zamrud,エメラルドの潮,에메랄드 조수,翡翠潮,翡翠潮
 cosmetic.tint_storm,Tempestade,Storm,Tormenta,Sturm,Tempête,Буря,Badai,ストーム,폭풍,風暴,风暴
 cosmetic.tint_supporter,Dourado do apoiador,Supporter gold,Oro del apoyador,Unterstützergold,Or du soutien,Золото поддержки,Emas pendukung,サポーターゴールド,후원자 골드,支持者金,支持者金
+cosmetic.tint_tide,Maré,Tide,Marea,Gezeiten,Marée,Прилив,Pasang,潮,조수,潮汐,潮汐
+cosmetic.tint_void,Vazio,Void,Vacío,Leere,Abîme,Пустота,Hampa,虚空,공허,虛空,虚空
 credits.back,Voltar,Back,Volver,Zurück,Retour,Назад,Kembali,戻る,뒤로,返回,返回
 credits.game_by,"Design, programação e direção: %s","Design, programming and direction: %s","Diseño, programación y dirección: %s","Design, Programmierung und Regie: %s","Conception, programmation et direction : %s","Дизайн, программирование и руководство: %s","Desain, pemrograman, dan arahan: %s",デザイン・プログラム・ディレクション：%s,"디자인, 프로그래밍, 디렉션: %s",設計、程式與總監：%s,设计、程序与总监：%s
 credits.license,%s · licença %s,%s · license %s,%s · licencia %s,%s · Lizenz %s,%s · licence %s,%s · лицензия %s,%s · lisensi %s,%s・ライセンス %s,%s · 라이선스 %s,%s・授權 %s,%s・许可 %s
@@ -697,7 +701,7 @@ role.missiles,Mísseis,Missiles,Misiles,Raketen,Missiles,Ракеты,Rudal,ミ�
 role.piercing,Perfuração,Piercing,Perforación,Durchschlag,Perforation,Пробитие,Tembus,貫通,관통형,貫穿,贯穿
 role.precision,Precisão,Precision,Precisión,Präzision,Précision,Точность,Presisi,精密,정밀형,精準,精准
 role.speed,Velocidade,Speed,Velocidad,Tempo,Vitesse,Скорость,Kecepatan,スピード,속도형,速度,速度
-season.gold_buy,Trilha Maré Dourada (simulada),Golden Tide track (simulated),Pista Marea Dorada (simulada),Goldene Flut (simuliert),Piste Marée Dorée (simulée),Золотой прилив (имитация),Jalur Pasang Emas (simulasi),黄金の潮トラック（模擬）,황금 조수 트랙 (모의),黃金潮汐路線（模擬）,黄金潮汐路线（模拟）
+season.gold_buy,Trilha Maré Dourada,Golden Tide track,Pista Marea Dorada,Goldene Flut,Piste Marée Dorée,Золотой прилив,Jalur Pasang Emas,黄金の潮トラック,황금 조수 트랙,黃金潮汐路線,黄金潮汐路线
 season.gold_owned,Trilha Maré Dourada ativa,Golden Tide track active,Pista Marea Dorada activa,Goldene Flut aktiv,Piste Marée Dorée active,Золотой прилив активен,Jalur Pasang Emas aktif,黄金の潮トラック有効,황금 조수 트랙 활성,黃金潮汐路線已啟用,黄金潮汐路线已启用
 season.header,Temporada %s · nível %d de %d,Season %s · tier %d of %d,Temporada %s · nivel %d de %d,Saison %s · Stufe %d von %d,Saison %s · palier %d sur %d,Сезон %s · уровень %d из %d,Musim %s · tingkat %d dari %d,シーズン %s・%d/%d,시즌 %s · %d/%d 단계,賽季 %s・第%d/%d級,赛季 %s・第%d/%d级
 season.tier,Nível %d · %s,Tier %d · %s,Nivel %d · %s,Stufe %d · %s,Palier %d · %s,Уровень %d · %s,Tingkat %d · %s,段階%d・%s,%d단계 · %s,第%d級・%s,第%d级・%s
@@ -844,6 +848,7 @@ store.revive_desc,"Na tela ""Casco perdido"", reviva sem ver anúncio. Continua 
 store.revive_have,Cargas: %d,Charges: %d,Cargas: %d,Ladungen: %d,Charges : %d,Зарядов: %d,Muatan: %d,残り：%d,남은 횟수: %d,剩餘：%d,剩余：%d
 store.revive_note,Cada carga é gasta ao reviver. Nenhum poder extra.,Each charge is used when you revive. No extra power.,Cada carga se gasta al revivir. Sin poder extra.,Jede Ladung wird beim Wiederbeleben verbraucht. Keine zusätzliche Stärke.,Chaque charge sert à une résurrection. Aucune puissance en plus.,Заряд тратится при возрождении. Без бонуса к мощи.,Tiap muatan terpakai saat bangkit. Tanpa kekuatan tambahan.,復活のたびに1回分を使います。戦力は増えません。,부활할 때마다 1회분을 씁니다. 전투력은 오르지 않습니다.,每次復活消耗 1 次。不增加戰力。,每次复活消耗 1 次。不增加战力。
 store.revive_pack,3 revives sem anúncio,3 ad-free revives,3 revividas sin anuncio,3 Wiederbelebungen ohne Werbung,3 résurrections sans pub,3 возрождения без рекламы,3 bangkit tanpa iklan,広告なし復活 3回,광고 없는 부활 3회,免廣告復活 3 次,免广告复活 3 次
+store.season_desc,"Desbloqueia a trilha dourada do passe — 3 pinturas exclusivas por temporada. Só visual, nenhum poder.","Unlocks the pass's golden track — 3 exclusive paints per season. Looks only, no power.","Desbloquea la pista dorada del pase — 3 pinturas exclusivas por temporada. Solo visual, sin poder.","Schaltet die goldene Pass-Leiste frei — 3 exklusive Lackierungen pro Saison. Nur Optik, keine Stärke.","Débloque la piste dorée du passe — 3 peintures exclusives par saison. Visuel seulement, aucune puissance.","Открывает золотую ветку пропуска — 3 эксклюзивные окраски за сезон. Только внешний вид, без силы.","Membuka jalur emas pass — 3 cat eksklusif tiap musim. Hanya tampilan, tanpa kekuatan.",パスの黄金トラックを解放 — シーズンごとに専用塗装3種。見た目だけ、強さはなし。,"패스의 황금 트랙 해제 — 시즌마다 전용 도색 3종. 외형만, 힘은 없음.",解鎖通行證的黃金路線 — 每賽季 3 款專屬塗裝。僅限外觀，不含戰力。,解锁通行证的黄金路线 — 每赛季 3 款专属涂装。仅限外观，不含战力。
 store.see_all,Ver todas as pinturas,See all paints,Ver todas las pinturas,Alle Lacke ansehen,Voir toutes les peintures,Все окраски,Lihat semua cat,塗装をすべて見る,도색 모두 보기,查看全部塗裝,查看全部涂装
 store.ship_desc,"Libera a nave agora. Ela joga diferente (controle de área), não é mais forte. Os fragmentos continuam liberando quem joga.","Unlocks the ship now. It plays differently (area control), it is not stronger. Fragments still unlock it by playing.","Desbloquea la nave ahora. Juega distinto (control de área), no es más fuerte. Los fragmentos la siguen desbloqueando jugando.","Schaltet das Schiff sofort frei. Es spielt anders (Flächenkontrolle), ist nicht stärker. Fragmente schalten es weiter frei.","Débloque le vaisseau tout de suite. Il joue autrement (contrôle de zone), il n'est pas plus fort. Les fragments le débloquent toujours.","Открывает корабль сразу. Он играет иначе (контроль зоны), но не сильнее. Фрагменты по-прежнему открывают его в игре.","Membuka kapal sekarang. Mainnya berbeda (kontrol area), tidak lebih kuat. Fragmen tetap membukanya lewat bermain.",機体を今すぐ解放します。戦い方が違うだけ（範囲制御）で、強くはなりません。欠片でも引き続き解放できます。,기체를 바로 해금합니다. 플레이 방식이 다를 뿐(범위 제어) 더 강하지 않습니다. 조각으로도 계속 해금됩니다.,立即解鎖這架機體。玩法不同（範圍控制），但不會更強。碎片仍可透過遊玩解鎖。,立即解锁这架机体。玩法不同（范围控制），但不会更强。碎片仍可通过游玩解锁。
 store.ship_fragments,Fragmentos: %d/%d,Fragments: %d/%d,Fragmentos: %d/%d,Fragmente: %d/%d,Fragments : %d/%d,Фрагменты: %d/%d,Fragmen: %d/%d,欠片：%d/%d,조각: %d/%d,碎片：%d/%d,碎片：%d/%d
