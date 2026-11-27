@@ -753,7 +753,16 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   pela direção da luz), brilho especular com faísca de 4 pontas e o **tridente de Atlântida** gravado em
   relevo (`_credits_mark`). Sem custo de runtime (ícone gerado uma vez e cacheado), herdado por toda a UI que
   mostra créditos (carteira, oficina, baús, eventos). Conferido em engine (render headless bate com o
-  protótipo). NÃO inclui a venda de moedas de ouro por dinheiro real: isso venderia poder (créditos sobem
-  casco/dano), o que o plano mestre proíbe ("sem pay-to-win") e o teste `_no_power_for_sale` barra —
-  decisão do dono pendente (ver histórico: pedido anterior de "moedas por dinheiro real" foi resolvido como
-  só-Pérolas)
+  protótipo).
+- ✅ `1.35.0` Venda de moedas de ouro (créditos) por dinheiro real (decisão do dono: "Sim, vender créditos",
+  revertendo o "sem pay-to-win"). Quatro pacotes consumíveis `credits_<total>` (`CREDIT_PACKS` em
+  `scripts/core/iap.gd`): 2.000 (US$ 0,99), 11.000 (US$ 4,99 +10%), 24.000 (US$ 9,99 +20%), 52.000 (US$ 19,99
+  +30%, "Melhor valor") — base de 2.000 créditos/dólar, a mesma estrutura dos pacotes de Pérolas. Ao contrário das
+  Pérolas, os créditos DÃO progressão (sobem o nível da nave: casco e dano); comprados vão só para a carteira, não
+  contam como ganhos jogando (`earned`). Crédito uma vez por token (pendente e cancelado não creditam), Steam e
+  release sem plugin não vendem. Loja: sub-aba "Ouro" com a grade de cartões (arte própria `tools/gen_credit_packs.py`
+  → `coins_<n>.png`: pilhas de moedas com o tridente), aberta pelo "+" da moeda de créditos na barra do topo.
+  Produtos da Play em `tools/play_products.py` (lê `CREDIT_PACKS`). Honestidade alinhada: plano mestre, textos da
+  loja, `store.credits_note` e a política de privacidade (docs e site) dizem que os créditos sobem o nível da nave e
+  também saem jogando; removidas as afirmações gerais de "nenhuma compra vende poder / sem pay-to-win" (as notas por
+  produto — Pérolas só cosmético, Apoiar sem poder — seguem verdadeiras). Testes: `iap_tests._credits`

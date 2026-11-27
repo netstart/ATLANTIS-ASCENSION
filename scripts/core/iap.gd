@@ -1,7 +1,7 @@
 class_name Iap
 extends RefCounted
 ## Compras com dinheiro real na Google Play (plano mestre 17): o catálogo, o estado de cada produto e o que
-## cada um libera. Nada de força à venda: Turbo (mais rápido, não mais fácil), "Apoiar" (sem anúncio e tema
+## cada um libera. A maioria não dá força: Turbo (mais rápido, não mais fácil), "Apoiar" (sem anúncio e tema
 ## dourado), "Remover anúncios" (só tira o anúncio opcional, sem tema nem cosmético), pinturas (só visual;
 ## também saem por Pérolas), o atalho da Tridente (nave lateral, que também sai
 ## por fragmentos), o pacote inicial (Apoiar + uma pintura) e o pacote de 3 revives (consumível: só troca o
@@ -12,6 +12,9 @@ extends RefCounted
 ## (`ship_premium_<id>`) ou as três no pacote `premium_fleet`. Na Steam vêm todas incluídas (`include_premium`).
 ## Pacotes de Pérolas (`pearls_<total>`, consumíveis, PEARL_PACKS): só a moeda dos cosméticos, nunca créditos,
 ## oricalco ou outra coisa que dê força.
+## Pacotes de moedas de ouro (`credits_<total>`, consumíveis, CREDIT_PACKS): vendem créditos, a moeda que compra
+## níveis de nave no hangar (casco e dano). Esta é a única venda que dá progressão/força; créditos comprados vão só
+## para a carteira, não contam como ganhos jogando (profile["earned"]).
 ## Passe "Maré Dourada" (`season_gold`, não consumível): liga a trilha premium do passe (scripts/core/season.gd).
 ## Só cosmético (as 3 pinturas da trilha, resgatadas jogando), nunca poder; a posse vale para todas as temporadas
 ## (desbloqueio único). O produto não dá cosmético por si — quem paga a trilha é o passe.
@@ -56,6 +59,16 @@ const PEARL_PACKS: Array[Dictionary] = [
 	{"id": "pearls_1200", "kind": "consumable", "usd": "9.99", "pearls": 1200, "bonus": 20},
 	{"id": "pearls_2600", "kind": "consumable", "usd": "19.99", "pearls": 2600, "bonus": 30, "best": true},
 ]
+## Pacotes de moedas de ouro: "credits" = total creditado, "bonus" = % acima da base, "best" = selo "Melhor valor".
+## A conta: base de 2.000 créditos por dólar e bônus crescente (0, 10, 20, 30%). Ao contrário das Pérolas, créditos
+## compram níveis de nave (casco e dano): esta é a venda que acelera a progressão. Uma nave sobe do nível 1 ao 10 por
+## ~18.150 créditos, então o maior pacote (52.000) adianta cerca de três naves. Comprados, vão só para a carteira.
+const CREDIT_PACKS: Array[Dictionary] = [
+	{"id": "credits_2000", "kind": "consumable", "usd": "0.99", "credits": 2000, "bonus": 0},
+	{"id": "credits_11000", "kind": "consumable", "usd": "4.99", "credits": 11000, "bonus": 10},
+	{"id": "credits_24000", "kind": "consumable", "usd": "9.99", "credits": 24000, "bonus": 20},
+	{"id": "credits_52000", "kind": "consumable", "usd": "19.99", "credits": 52000, "bonus": 30, "best": true},
+]
 ## Produtos fixos ("usd": preço-alvo, só documentação; o preço mostrado é sempre o da Play). As pinturas
 ## entram de data/cosmetics.json (campo "product") e as naves premium de data/ships.json (campo "premium").
 const PRODUCTS: Array[Dictionary] = [
@@ -84,6 +97,8 @@ static func catalog() -> Array[Dictionary]:
 		for p: Dictionary in PRODUCTS:
 			_catalog.append(p)
 		for p: Dictionary in PEARL_PACKS:
+			_catalog.append(p)
+		for p: Dictionary in CREDIT_PACKS:
 			_catalog.append(p)
 		for c: Variant in Store.cosmetics():
 			var def := c as Dictionary
@@ -193,6 +208,14 @@ static func is_consumable(id: String) -> bool:
 static func pearl_packs() -> Array[String]:
 	var out: Array[String] = []
 	for p: Dictionary in PEARL_PACKS:
+		out.append(String(p["id"]))
+	return out
+
+
+## Ids dos pacotes de moedas de ouro (créditos), do menor ao maior.
+static func credit_packs() -> Array[String]:
+	var out: Array[String] = []
+	for p: Dictionary in CREDIT_PACKS:
 		out.append(String(p["id"]))
 	return out
 
@@ -417,8 +440,8 @@ static func apply_state(profile: Dictionary, id: String, state: String) -> bool:
 			return false
 
 
-## Regra pura do consumível: credita as cargas (ou as Pérolas) da compra `token` uma vez só. Devolve se creditou.
-## Pérolas compradas vão só para a carteira (não contam como ganhas jogando em profile["earned"]).
+## Regra pura do consumível: credita as cargas, as Pérolas ou os créditos da compra `token` uma vez só. Devolve se
+## creditou. Pérolas e créditos comprados vão só para a carteira (não contam como ganhos jogando em profile["earned"]).
 static func credit(profile: Dictionary, id: String, token: String) -> bool:
 	var iap: Dictionary = profile["iap"]
 	var done: Array = iap["credited"]
@@ -428,6 +451,7 @@ static func credit(profile: Dictionary, id: String, token: String) -> bool:
 	iap["revive_charges"] = revive_charges(profile) + int(def.get("charges", 0))
 	var wallet: Dictionary = profile["wallet"]
 	wallet["pearls"] = int(wallet.get("pearls", 0)) + int(def.get("pearls", 0))
+	wallet["credits"] = int(wallet.get("credits", 0)) + int(def.get("credits", 0))
 	done.append(token)
 	while done.size() > CREDITED_KEEP:
 		done.pop_front()

@@ -34,7 +34,7 @@ Atlantis Ascension é um shoot'em up vertical em pixel art, feito para ser jogad
 • 12 aeronaves, 12 asas de apoio, oficina e a Cidade de Thalassa para reerguer com quem você resgata.
 • Abismo Infinito: 60 profundidades remixadas, módulos e sinergias, cada vez mais fundo.
 • Desafio Diário igual para todos, Sobrevivência, Boss Rush, Arcade, Prática e o Fantasma do seu recorde.
-• Jogue offline. Sem energia, sem espera e sem venda de poder.
+• Jogue offline. Sem energia e sem espera.
 • Anúncios só se você quiser: um vídeo opcional para reviver ou dobrar recompensas, nunca durante a missão.
 • Turbo opcional (compra única): jogue em 1,5x ou 2x. Mais rápido, não mais fácil.
 • Acessível: modos de daltonismo, texto maior, menos clarões, dificuldade Brisa.
@@ -64,7 +64,7 @@ Atlantis Ascension is a vertical pixel-art shoot 'em up built for one thumb:
 • 12 ships, 12 support wings, a workshop and the City of Thalassa rebuilt by those you rescue.
 • Endless Abyss: 60 remixed depths, modules and synergies, ever deeper.
 • A Daily Challenge shared by everyone, Survival, Boss Rush, Arcade, Practice and a Ghost of your best run.
-• Play offline. No energy, no waiting and no pay-to-win.
+• Play offline. No energy and no waiting.
 • Ads only if you want them: an optional video to revive or double rewards, never during a mission.
 • Optional Turbo (one-time purchase): play at 1.5x or 2x. Faster, not easier.
 • Accessible: colorblind modes, larger text, fewer flashes, Breeze difficulty.

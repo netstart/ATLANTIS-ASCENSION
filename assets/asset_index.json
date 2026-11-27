@@ -774,6 +774,30 @@
   "sha256": "5564f1f1f289b18aac00cf77f38c015d78215f3a25d4194bff6af03f7d2b21f4"
  },
  {
+  "file": "assets/art/generated/shop/coins_1.png",
+  "source": "tools/gen_credit_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "f2a9620da4c8bbe27dc03db31cc1026928bb6da5ec99b28949d759e4c7dd3e51"
+ },
+ {
+  "file": "assets/art/generated/shop/coins_2.png",
+  "source": "tools/gen_credit_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "33d6bd1045f3891e1976da8258bb44f6b2bd04813c03d807f33b979ea58f8393"
+ },
+ {
+  "file": "assets/art/generated/shop/coins_3.png",
+  "source": "tools/gen_credit_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "35db7281e989fdfac708017e66ca0c4dac6cb67733a61d3eb00e5a9ae1d65e6f"
+ },
+ {
+  "file": "assets/art/generated/shop/coins_4.png",
+  "source": "tools/gen_credit_packs.py",
+  "license_id": "atlantis_generated",
+  "sha256": "bd720240bcb87327a59d0f56ea902050a9f76a438b06d24a1ea6cfa6193af075"
+ },
+ {
   "file": "assets/art/generated/shop/pearls_1.png",
   "source": "tools/gen_pearl_packs.py",
   "license_id": "atlantis_generated",

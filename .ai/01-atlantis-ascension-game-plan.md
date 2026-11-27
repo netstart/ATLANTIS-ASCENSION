@@ -69,7 +69,9 @@ Por que vai funcionar:
    cartões de aeronave e mapa de campanha em parallax que sobe do abismo à órbita.
 5. **Um estilo de arte só.** A série Void (Foozle, CC0) dá nave, três frotas inimigas, ambiente e pickups no mesmo
    traço. Três frotas viram três facções. Isso evita a "colcha de retalhos" típica de jogos com assets gratuitos.
-6. **Monetização honesta.** Sem energia, sem pay-to-win, sem anúncio durante a missão. Na Steam, jogo completo.
+6. **Monetização honesta.** Sem energia e sem anúncio durante a missão; tudo também sai jogando — os créditos, que
+   sobem o nível da nave, podem ser comprados em pacotes ou ganhos na campanha, e a dificuldade nunca é vendida (o
+   Poder levado à missão tem teto). Na Steam, jogo completo.
 7. **Cada partida é diferente.** As **Bênçãos das Marés** (1 de 3 escolhas roguelike dentro da missão), a **Maré
    Alta** (explosão de poder que transforma balas em pérolas) e as **rotas Superfície e Abismo** vieram da pesquisa
    de mercado: são o que separa os shmups que retêm dos que são esquecidos (seção 19).
@@ -1201,6 +1203,16 @@ Metas de retenção (D1 ≥ 40%, D7 ≥ 15%, D30 ≥ 6%) e as referências de me
     "Pérolas" (grade de cartões com a pilha que cresce, `tools/gen_pearl_packs.py`, quantidade, bônus e o preço da
     Play no botão), aberta direto pelo "+" das Pérolas na barra do topo. Steam: não existe. Criados pela API com
     `tools/play_products.py` (ids, quantidades e preços lidos de `PEARL_PACKS` em `scripts/core/iap.gd`).
+  - **Pacotes de moedas de ouro** (consumíveis, `credits_2000` US$ 0,99, `credits_11000` US$ 4,99 (+10%),
+    `credits_24000` US$ 9,99 (+20%), `credits_52000` US$ 19,99 (+30%, "Melhor valor")): vendem créditos, a moeda que
+    sobe o nível da nave no hangar (casco e dano). Base de 2.000 créditos por dólar com bônus crescente, a mesma
+    estrutura dos pacotes de Pérolas; uma nave vai do nível 1 ao 10 por ~18.150 créditos, então o maior pacote
+    adianta cerca de três naves. É a **única venda que dá progressão** — a aposta de monetização desta revisão —, mas
+    honesta: os créditos também saem jogando, a dificuldade nunca é vendida e a força levada à missão tem teto (Poder,
+    4.9). Crédito igual ao dos outros consumíveis (credita, grava, consome; token contra crédito em dobro; pendente e
+    cancelado não creditam); comprados não contam como ganhos jogando (`earned`). Loja: sub-aba "Ouro" (grade de
+    cartões com a pilha de moedas, `tools/gen_credit_packs.py`), aberta pelo "+" da moeda de créditos na barra do
+    topo. Steam: não existe. Criados pela API com `tools/play_products.py` (lê `CREDIT_PACKS` em `scripts/core/iap.gd`).
   - **Ficou de fora: Expansão de modos.** Abismo Infinito e Boss Rush já existem e abrem jogando (c7m1; os 4 chefes
     de ato). Vender a abertura antecipada seria vender progresso: o Abismo paga créditos (upgrades) e o Boss Rush
     sem os chefes vencidos é spoiler e frustração. Continuam grátis por jogo.

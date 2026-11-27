@@ -2,7 +2,8 @@
 monetization).
 
 Só os produtos NOVOS desta ferramenta (catalog()): ship_premium_<id> x3, o pacote premium_fleet, os quatro pacotes de
-Pérolas pearls_<total> (lidos de PEARL_PACKS em scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo), o
+Pérolas pearls_<total> e os quatro pacotes de moedas de ouro credits_<total> (lidos de PEARL_PACKS e CREDIT_PACKS em
+scripts/core/iap.gd, a fonte dos ids, quantidades e preços-alvo), o
 remove_ads ("Remover anúncios") e o season_gold ("Maré Dourada", passe). Os produtos que já existem (turbo,
 support, pinturas...) nunca são tocados: a ferramenta recusa qualquer id fora dela.
 
@@ -95,6 +96,15 @@ def pearl_packs() -> list[dict]:
     return [{"id": pid, "usd": usd, "pearls": int(n)} for pid, usd, n in found]
 
 
+def credit_packs() -> list[dict]:
+    """[{id, usd, credits}] de CREDIT_PACKS em scripts/core/iap.gd, na ordem de lá."""
+    text = IAP.read_text(encoding="utf-8")
+    found = re.findall(r'\{"id": "(credits_\d+)", "kind": "consumable", "usd": "([\d.]+)", "credits": (\d+)', text)
+    if len(found) != 4:
+        raise SystemExit(f"CREDIT_PACKS em {IAP.relative_to(ROOT)}: {len(found)} pacotes, esperado 4")
+    return [{"id": pid, "usd": usd, "credits": int(n)} for pid, usd, n in found]
+
+
 def number(value: int, lang: str) -> str:
     return f"{value:,}".replace(",", THOUSANDS.get(lang, ","))
 
@@ -130,6 +140,14 @@ def catalog() -> list[dict]:
             desc = GLUE.get(lang, " ").join([t["store.pearls_intro"][i], t["store.pearls_note"][i]])
             listings.append({"languageCode": PLAY_LOCALES[lang],
                              "title": t["play.pearls_title"][i].replace("%s", number(pack["pearls"], lang)),
+                             "description": desc})
+        out.append({"id": pack["id"], "usd": pack["usd"], "listings": listings})
+    for pack in credit_packs():
+        listings = []
+        for i, lang in enumerate(LANGS):
+            desc = GLUE.get(lang, " ").join([t["store.credits_intro"][i], t["store.credits_note"][i]])
+            listings.append({"languageCode": PLAY_LOCALES[lang],
+                             "title": t["play.credits_title"][i].replace("%s", number(pack["credits"], lang)),
                              "description": desc})
         out.append({"id": pack["id"], "usd": pack["usd"], "listings": listings})
     remove_ads = []

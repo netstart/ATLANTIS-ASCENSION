@@ -1,6 +1,6 @@
 # Política de privacidade — Atlantis Ascension
 
-*Versão 1.6 · 24/11/2026 · English version below.*
+*Versão 1.7 · 27/11/2026 · English version below.*
 
 ## Português (Brasil)
 
@@ -14,14 +14,16 @@ missão**, e não vendem poder. No Android há também **compras opcionais** fei
 partida), "Apoiar a Halcyon" e o pacote inicial (recompensas e reviver sem anúncio, mais visual), "Remover
 anúncios" (recebe as recompensas opcionais sem ver o anúncio), o atalho da nave Tridente, pinturas de nave (Aurora,
 Recife, Abissal e Solar), naves premium (só visual), o passe Maré Dourada (desbloqueia a trilha dourada do passe:
-pinturas exclusivas, só visual), pacotes de Pérolas (a moeda que compra pinturas e tons, só visual) e um pacote de 3
-revives sem anúncio. Nenhuma compra vende poder. Só os anúncios e as compras usam a internet, e os dados envolvidos ficam com o Google, como explicado
+pinturas exclusivas, só visual), pacotes de Pérolas (a moeda que compra pinturas e tons, só visual), pacotes de
+moedas de ouro (créditos, a moeda que sobe o nível da nave) e um pacote de 3
+revives sem anúncio. Entre essas compras, só os pacotes de moedas de ouro dão progressão (créditos, que também saem
+jogando, sobem o nível da nave); o resto é conforto ou visual, e a dificuldade nunca é vendida. Só os anúncios e as compras usam a internet, e os dados envolvidos ficam com o Google, como explicado
 abaixo. A versão Steam não tem anúncios nem compras (o Turbo, as pinturas e as naves premium vêm incluídos).
 
 **O que o jogo guarda no seu aparelho.** Progresso (missões, estrelas, moedas do jogo, aeronaves, conquistas),
 opções (idioma, volume, acessibilidade), a sua escolha de consentimento, replays dos seus recordes e, se você fez
 compras, só quais produtos foram comprados, a velocidade escolhida do Turbo, as cargas de reviver que sobram, os
-identificadores das compras do pacote de revives e dos pacotes de Pérolas já creditadas (para não creditar a mesma
+identificadores das compras do pacote de revives e dos pacotes de Pérolas e de moedas de ouro já creditadas (para não creditar a mesma
 compra duas vezes) e se a oferta do pacote inicial já apareceu. Tudo fica **só no seu aparelho** (`user://save.json`, `user://settings.cfg`,
 `user://replays/`). Nós não recebemos esses dados, e nada disso é dado pessoal.
 
@@ -56,15 +58,18 @@ Anfitrite, avulsas ou no pacote "Frota premium" (só visual: cada uma joga igual
 Dourada (desbloqueia a trilha dourada do passe de temporada: 3 pinturas exclusivas resgatadas jogando; só visual); os
 pacotes de
 Pérolas (100, 550, 1.200 ou 2.600 Pérolas), a moeda que compra pinturas e tons para qualquer nave e que também se
-ganha jogando; e o pacote de 3 revives, um item consumível
+ganha jogando; os pacotes de moedas de ouro (2.000, 11.000, 24.000 ou 52.000 créditos), a moeda que sobe o nível da
+nave no hangar (casco e dano) e que também se ganha jogando; e o pacote de 3 revives, um item consumível
 que pode ser comprado de novo: cada carga troca o anúncio do reviver por um reviver sem anúncio, e continua valendo
-no máximo 1 reviver por missão. Nenhuma compra vende poder: as Pérolas só compram cosméticos, nunca força, créditos
-nem melhorias. O pagamento acontece na tela da Google Play: nós **não
+no máximo 1 reviver por missão. Entre essas compras, só os pacotes de moedas de ouro dão progressão: as Pérolas só
+compram cosméticos (nunca força) e os créditos sobem o nível da nave, mas a dificuldade nunca é vendida e tudo também
+sai jogando. O pagamento acontece na tela da Google Play: nós **não
 recebemos nem guardamos** nome, e-mail, cartão ou qualquer dado de pagamento. O jogo só pergunta à Google Play quais
 produtos foram comprados (para liberá-los e para restaurá-los quando você reinstala o jogo ou troca de aparelho),
-confirma cada compra à Google Play e, nos consumíveis (o pacote de revives e os pacotes de Pérolas), credita as cargas
-ou as Pérolas e só então consome a compra, guardando o identificador dela para não creditar duas vezes. No aparelho
-fica só o que está descrito acima. As cargas de reviver não usadas e as Pérolas ficam só no aparelho: não voltam se
+confirma cada compra à Google Play e, nos consumíveis (o pacote de revives, os pacotes de Pérolas e os de moedas de
+ouro), credita as cargas, as Pérolas ou os créditos e só então consome a compra, guardando o identificador dela para
+não creditar duas vezes. No aparelho
+fica só o que está descrito acima. As cargas de reviver não usadas, as Pérolas e os créditos ficam só no aparelho: não voltam se
 você desinstalar o jogo ou apagar os dados do app. Recebemos
 do Google apenas relatórios de vendas. Os dados da compra seguem a [Política de Privacidade do
 Google](https://policies.google.com/privacy) e os [Termos de Serviço da Google
@@ -92,14 +97,16 @@ they never sell power. On Android there are also **optional purchases** made thr
 the run), "Support the Halcyon" and the Starter pack (rewards and revives without ads, plus looks), "Remove ads" (get
 the optional rewards without watching the ad), the Trident ship shortcut, ship paints (Aurora, Reef, Abyssal and
 Solar), premium ships (looks only), the Golden Tide pass (unlocks the pass's gold track: exclusive paints, looks
-only), Pearl packs (the currency that buys paints and tints, looks only) and a pack of 3 ad-free revives.
-No purchase sells power.
+only), Pearl packs (the currency that buys paints and tints, looks only), gold-coin packs (credits, the currency that
+raises your ship's level) and a pack of 3 ad-free revives.
+Of these purchases, only the gold-coin packs affect progression (credits, also earned by playing, raise your ship's
+level); the rest are comfort or looks, and difficulty is never sold.
 Only the ads and the purchases use the internet, and the data involved stays with Google, as explained below. The
 Steam version has no ads and no purchases (Turbo, the paints and the premium ships are included).
 
 **What the game stores on your device.** Progress, options, your consent choice, replays of your records and, if you
 made purchases, only which products were bought, the Turbo speed you picked, the revive charges left, the IDs of
-revive-pack and Pearl-pack purchases already credited (so the same purchase is never credited twice) and whether the
+revive-pack, Pearl-pack and gold-coin-pack purchases already credited (so the same purchase is never credited twice) and whether the
 Starter pack offer was already shown stay **only on your device**. We receive none of this data, and none of it is personal data.
 
 **Ads (Google AdMob, Android only).** To request and show an ad, the Google Mobile Ads SDK included in the game
@@ -132,15 +139,17 @@ fragments); the Aurora, Reef, Abyssal and Solar paints (looks only; also earned 
 Hippocampus, Nereid and Amphitrite, alone or in the "Premium fleet" bundle (looks only: each one plays exactly like a
 hangar ship); the Golden Tide pass (unlocks the season pass's gold track: 3 exclusive paints, claimed by playing;
 looks only); the Pearl packs (100, 550, 1,200 or 2,600 Pearls), the currency that buys paints and tints for any
-ship and is also earned by playing; and the pack of 3
+ship and is also earned by playing; the gold-coin packs (2,000, 11,000, 24,000 or 52,000 credits), the currency that
+raises your ship's level in the hangar (hull and damage) and is also earned by playing; and the pack of 3
 revives, a consumable item that can be bought again: each charge replaces the revive ad with an ad-free revive, and
-the limit of 1 revive per mission still applies. No purchase sells power: Pearls only buy cosmetics, never power,
-credits or upgrades. Payment happens on the Google Play screen:
+the limit of 1 revive per mission still applies. Of these purchases, only the gold-coin packs affect progression:
+Pearls only buy cosmetics (never power) and credits raise your ship's level, but difficulty is never sold and
+everything is also earned by playing. Payment happens on the Google Play screen:
 we **do not receive or store** your name, e-mail, card or any payment data. The game only asks Google Play which
 products were bought (to unlock them and to restore them when you reinstall the game or change devices),
-acknowledges each purchase to Google Play and, for the consumables (the revive pack and the Pearl packs), credits the
-charges or the Pearls and only then consumes the purchase, keeping its ID so it is never credited twice. Only what is
-described above stays on the device. Unused revive charges and Pearls stay only on the device: they are not restored
+acknowledges each purchase to Google Play and, for the consumables (the revive pack, the Pearl packs and the gold-coin
+packs), credits the charges, the Pearls or the credits and only then consumes the purchase, keeping its ID so it is never credited twice. Only what is
+described above stays on the device. Unused revive charges, Pearls and credits stay only on the device: they are not restored
 if you uninstall the game or clear the app's data. We
 only receive sales reports from Google. Purchase data is handled under the [Google Privacy
 Policy](https://policies.google.com/privacy) and the [Google Play Terms of

@@ -1,7 +1,7 @@
 extends RefCounted
 ## Catálogo de compras com dinheiro real (scripts/core/iap.gd), com o BillingClient falso
 ## (tests/fake_billing_client.gd) quando há Play:
-## - catálogo: IDs estáveis, toda pintura à venda também sai por Pérolas, nada que dê força;
+## - catálogo: IDs estáveis, toda pintura à venda também sai por Pérolas; só os pacotes de moedas de ouro dão força;
 ## - leitura: o halo do tiro de cada pintura é pastel, longe das balas inimigas (saturadas);
 ## - visibilidade: produto sem preço da Play some (release), Steam não vende nada, "off" só mostra o que é seu;
 ## - não consumíveis: compra simulada, restauração ao abrir, reembolso que tira (e devolve o que foi ganho
@@ -20,7 +20,8 @@ const LayoutTests := preload("res://tests/layout_tests.gd")
 const CODE := BillingClient.BillingResponseCode
 const STATE := BillingClient.PurchaseState
 const EXPECTED := ["turbo", "support", "remove_ads", "starter_pack", "ship_trident", "revive_pack_3", "season_gold",
-		"pearls_100", "pearls_550", "pearls_1200", "pearls_2600", "paint_aurora", "paint_reef",
+		"pearls_100", "pearls_550", "pearls_1200", "pearls_2600",
+		"credits_2000", "credits_11000", "credits_24000", "credits_52000", "paint_aurora", "paint_reef",
 		"paint_abyssal", "paint_solar", "ship_premium_hippocampus", "ship_premium_nereid", "ship_premium_amphitrite",
 		"premium_fleet"]
 
@@ -35,6 +36,7 @@ func run(check: Callable) -> void:
 	_simulated(check)
 	_consumable(check)
 	_pearls(check)
+	_credits(check)
 	_season(check)
 	_starter_offer(check)
 	_same_hash(check)
@@ -49,6 +51,7 @@ func run_view(host: Node, check: Callable) -> void:
 	_play_pearls()
 	await _shop_hides_unpriced()
 	await _shop_pearls()
+	await _shop_credits()
 	await _revive_in_game()
 	Iap.use_provider(null)
 	Iap.forced_mode = ""
@@ -66,8 +69,8 @@ func _catalog(check: Callable) -> void:
 			var def := Store.cosmetic(String((p["cosmetics"] as Array)[0]))
 			pearls = pearls and int(def.get("pearls", 0)) > 0 and not bool(def.get("supporter", false))
 	check.call(pearls, "Compras: toda pintura vendida na Play também sai por Pérolas ganhas jogando")
-	check.call(Array(Iap.consumables()) == [Iap.REVIVE_PACK] + Iap.pearl_packs(),
-			"Compras: só o pacote de revives e os de Pérolas são consumíveis")
+	check.call(Array(Iap.consumables()) == [Iap.REVIVE_PACK] + Iap.pearl_packs() + Iap.credit_packs(),
+			"Compras: só o pacote de revives, os de Pérolas e os de moedas de ouro são consumíveis")
 	var ship := {}
 	for row: Variant in DB.rows("ships"):
 		if String((row as Dictionary)["id"]) == "trident":
@@ -230,6 +233,53 @@ func _pearls(check: Callable) -> void:
 	check.call(Iap.visible(q, "pearls_100", "simulated") and Iap.buy(q, "pearls_100", "simulated")
 			and Iap.buy(q, "pearls_100", "simulated") and int(q["wallet"]["pearls"]) == 200,
 			"Pérolas: o simulado credita na hora, dá para comprar de novo e quem apoia também vê")
+
+
+## Pacotes de moedas de ouro (créditos): a conta das quantidades e o crédito (uma vez por token, só da compra
+## concluída). É a venda que dá força — créditos compram níveis de nave —, mas comprados não contam como ganhos jogando.
+func _credits(check: Callable) -> void:
+	var coherent := true
+	var last_bonus := -1
+	var bests := 0
+	for id: String in Iap.credit_packs():
+		var def := Iap.product(id)
+		var usd := float(String(def["usd"]))
+		var base := roundi((usd + 0.01) * 100.0) * 20
+		var credits := int(def["credits"])
+		var bonus := int(def["bonus"])
+		coherent = coherent and id == "credits_%d" % credits and credits == roundi(base * (1.0 + bonus / 100.0)) \
+				and bonus > last_bonus and Iap.is_consumable(id)
+		last_bonus = bonus
+		bests += 1 if bool(def.get("best", false)) else 0
+	check.call(coherent and Iap.credit_packs().size() == 4 and bests == 1
+			and bool(Iap.product(Iap.credit_packs()[-1]).get("best", false)),
+			"Moedas de ouro: 4 pacotes, 2.000 créditos por dólar com bônus crescente e selo no maior")
+	var p := SaveManager.default_profile()
+	var total := int(p["wallet"]["credits"])
+	var pearls0 := int(p["wallet"]["pearls"])
+	var ok := true
+	for id: String in Iap.credit_packs():
+		var amount := int(Iap.product(id)["credits"])
+		ok = ok and Iap.credit(p, id, "tok_" + id) and int(p["wallet"]["credits"]) == total + amount
+		total += amount
+		ok = ok and not Iap.credit(p, id, "tok_" + id) and int(p["wallet"]["credits"]) == total
+	check.call(ok and int(p["earned"].get("credits", 0)) == 0 and int(p["wallet"]["pearls"]) == pearls0
+			and Iap.revive_charges(p) == 0,
+			"Moedas de ouro: cada pacote credita uma vez só, na carteira e não em \"ganhos jogando\"")
+	var q := SaveManager.default_profile()
+	var start := int(q["wallet"]["credits"])
+	check.call(not Iap.apply_state(q, "credits_11000", "pending") and Iap.status("credits_11000") == "pending"
+			and not Iap.apply_state(q, "credits_11000", "canceled") and Iap.status("credits_11000") == "canceled"
+			and not Iap.apply_state(q, "credits_11000", "purchased") and int(q["wallet"]["credits"]) == start,
+			"Moedas de ouro: pendente e cancelado não creditam (o crédito só sai pelo token da compra concluída)")
+	var hidden := true
+	for id: String in Iap.credit_packs():
+		hidden = hidden and not Iap.visible(q, id, "play") and not Iap.visible(q, id, "steam") \
+				and not Iap.buy(q, id, "steam") and not Iap.buy(q, id, "off")
+	check.call(hidden, "Moedas de ouro: sem preço da Play o pacote não aparece; Steam e release sem plugin não vendem")
+	check.call(Iap.visible(q, "credits_2000", "simulated") and Iap.buy(q, "credits_2000", "simulated")
+			and Iap.buy(q, "credits_2000", "simulated") and int(q["wallet"]["credits"]) == start + 4000,
+			"Moedas de ouro: o simulado credita na hora e dá para comprar de novo")
 
 
 ## Passe "Maré Dourada" (season_gold): comprado (simulado) liga a trilha premium do passe e deixa as 3 pinturas
@@ -490,6 +540,43 @@ func _shop_pearls() -> void:
 	steam.queue_free()
 	await _host.get_tree().process_frame
 	Iap.forced_mode = ""
+
+
+## Vitrine de moedas de ouro: o "+" dos créditos abre a sub-aba "Ouro" com os pacotes com preço; comprar credita.
+func _shop_credits() -> void:
+	Locale.set_language("pt_BR", false)
+	Iap.forced_mode = "play"
+	var fake := FakeBillingClient.new()
+	var play := _provider(fake)
+	fake.connect_now()
+	fake.answer_details(["credits_2000", "credits_52000"])
+	fake.answer_purchases([])
+	var app := App.new()
+	_host.add_child(app)
+	await _host.get_tree().process_frame
+	LayoutTests.fit(app, Vector2(270, 480))
+	app.go(&"shop")
+	await LayoutTests.settle(_host)
+	var shell := app.find_child("NavShell", true, false) as NavShell
+	(shell.find_child("Pill_credits", true, false) as Button).pressed.emit()
+	await LayoutTests.settle(_host)
+	var shop := app.screen(&"shop") as ShopScreen
+	var buy := shop.find_child("PackBuy_credits_52000", true, false) as Button
+	_check.call(app.current == &"shop" and shop.find_child("CreditPacks", true, false) != null
+			and buy != null and buy.text.contains("R$ 10,99") and shop.find_child("PackBest", true, false) != null
+			and shop.find_child("Pack_credits_2000", true, false) != null
+			and shop.find_child("Pack_credits_11000", true, false) == null,
+			"Loja (Play): o \"+\" das moedas de ouro abre a vitrine, só com os pacotes com preço e o selo no maior")
+	var start := int(SaveManager.data["wallet"]["credits"])
+	buy.pressed.emit()
+	fake.purchase_update(CODE.OK, [FakeBillingClient.make_purchase("credits_52000", STATE.PURCHASED, false, "c1")])
+	await LayoutTests.settle(_host)
+	_check.call(int(SaveManager.data["wallet"]["credits"]) == start + 52000
+			and shop.find_child("PackBuy_credits_52000", true, false) != null,
+			"Loja (Play): comprar o pacote de moedas de ouro credita os créditos e a vitrine continua à venda")
+	app.queue_free()
+	await _host.get_tree().process_frame
+	_done(play)
 
 
 ## Reviver com carga no jogo: sem anúncio, gasta 1 e a vez continua 1 por missão.

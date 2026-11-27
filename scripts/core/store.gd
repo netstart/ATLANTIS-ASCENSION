@@ -1,7 +1,8 @@
 class_name Store
 extends RefCounted
-## Loja (plano mestre 17): cosméticos por Pérolas de Maré e anúncio recompensado opcional. Nada de poder à
-## venda e nenhuma compra de moeda. As compras com dinheiro real (Turbo, Apoiar, pinturas, atalho de nave,
+## Loja (plano mestre 17): cosméticos por Pérolas de Maré e anúncio recompensado opcional. Os pacotes de moedas
+## de ouro vendem créditos (sobem o nível da nave; também saem jogando); o resto não dá força. As compras com
+## dinheiro real (Turbo, Apoiar, pinturas, atalho de nave,
 ## pacotes) são as do catálogo `Iap` (scripts/core/iap.gd, Play Billing); só o passe dourado segue SIMULADO
 ## — `simulated()` diz quando a loja finge a transação (editor, testes e builds de desenvolvimento) e
 ## nenhuma cobrança acontece. As pinturas com produto na Play também saem por Pérolas. O anúncio é o do

@@ -20,13 +20,24 @@ extends ListScreen
 ## das Pérolas na barra do topo (NavShell). Grade de cartões (2 colunas no retrato, 4 no PC) com a pilha que cresce
 ## (tools/gen_pearl_packs.py), a quantidade grande, o "+X% bônus" em menta, o selo "Melhor valor" no maior e o preço
 ## da Play no botão. Só a moeda dos cosméticos: o texto diz que nada ali dá força. Some sem nada à venda (Steam).
+## Pacotes de moedas de ouro (Iap.CREDIT_PACKS): sub-aba "Ouro", a mesma grade de cartões (coins_<n>.png,
+## tools/gen_credit_packs.py) e o mesmo "+" da moeda de créditos na barra do topo. Ao contrário das Pérolas, estes
+## VENDEM progressão: o texto do cartão diz que os créditos sobem níveis de nave. Some sem nada à venda (Steam).
 
 const TAB_CHEST := &"chest"
 const TAB_PAINTS := &"paints"
 const TAB_SUPPORT := &"support"
 const TAB_PEARLS := &"pearls"
+const TAB_CREDITS := &"credits"
 ## Destaque dos pacotes de Pérolas (a cor da moeda na barra do topo); o maior vai em ouro.
 const PEARL_ACCENT := Color("b57bff")
+## Cor dos cartões de moedas de ouro (créditos); o maior vai em ouro cheio, os outros num ouro mais fundo.
+const CREDIT_ACCENT := Color("e8a93c")
+## Nós dos cartões por moeda (os de Pérolas mantêm os nomes antigos dos testes).
+const PACK_NODES := {
+	"pearls": {"packs": "PearlPacks", "section": "PearlsSection", "note": "PearlsNote"},
+	"credits": {"packs": "CreditPacks", "section": "CreditsSection", "note": "CreditsNote"},
+}
 ## Largura mínima de um cartão de pacote: 2 colunas no retrato (270), 4 quando cabe (PC).
 const PACK_CELL := 118.0
 ## Largura mínima de cada coluna da grade de pinturas (pontos lógicos).
@@ -137,6 +148,10 @@ func _set_tabs() -> void:
 		{"id": TAB_CHEST, "text": tr("store.tab_chest"),
 				"notice": Notices.free_chest_ready(profile, int(Time.get_unix_time_from_system()))},
 		{"id": TAB_PAINTS, "text": tr("store.tab_paints")}]
+	if credits_visible(profile):
+		items.append({"id": TAB_CREDITS, "text": tr("store.tab_credits")})
+	elif _tab == TAB_CREDITS:
+		_tab = TAB_CHEST
 	if pearls_visible(profile):
 		items.append({"id": TAB_PEARLS, "text": tr("store.tab_pearls")})
 	elif _tab == TAB_PEARLS:
@@ -160,8 +175,10 @@ func _fill() -> void:
 			_fill_paints(profile, false)
 		TAB_SUPPORT:
 			_fill_extras(profile)
+		TAB_CREDITS:
+			_fill_packs(profile, "credits")
 		TAB_PEARLS:
-			_fill_pearls(profile)
+			_fill_packs(profile, "pearls")
 		_:
 			_fill_chest(profile, now)
 			if Turbo.shop_visible(profile):
@@ -746,11 +763,20 @@ func _premium_card(profile: Dictionary, id: String, node: String, title: String,
 	return card
 
 
-# --- Pacotes de Pérolas (Iap) -----------------------------------------------------------------------
+# --- Pacotes de moeda (Pérolas e moedas de ouro, Iap) -----------------------------------------------
 
-## A sub-aba Pérolas aparece quando algum pacote está à venda (simulado, ou na Play com preço).
+## A sub-aba Pérolas aparece quando algum pacote de Pérolas está à venda (simulado, ou na Play com preço).
 static func pearls_visible(profile: Dictionary) -> bool:
-	for id: String in Iap.pearl_packs():
+	return _packs_visible(profile, Iap.pearl_packs())
+
+
+## A sub-aba Ouro aparece quando algum pacote de moedas de ouro (créditos) está à venda.
+static func credits_visible(profile: Dictionary) -> bool:
+	return _packs_visible(profile, Iap.credit_packs())
+
+
+static func _packs_visible(profile: Dictionary, ids: Array[String]) -> bool:
+	for id: String in ids:
 		if Iap.visible(profile, id):
 			return true
 	return false
@@ -760,37 +786,41 @@ func _pack_columns() -> int:
 	return 4 if _width + 6.0 >= 4.0 * (PACK_CELL + 6.0) else 2
 
 
-## Vitrine dos pacotes: faixa da seção, a frase do que as Pérolas compram, a grade de cartões e a nota honesta.
-func _fill_pearls(profile: Dictionary) -> void:
+## Vitrine de uma moeda (`kind` "pearls" ou "credits"): faixa da seção, a frase do que ela compra, a grade de
+## cartões e a nota embaixo. As Pérolas são só cosméticas; as moedas de ouro vendem progressão (níveis de nave).
+func _fill_packs(profile: Dictionary, kind: String) -> void:
 	Iap.on_changed(refill)
-	var head := _section(tr("store.pearls_section"))
-	head.name = "PearlsSection"
+	var nodes: Dictionary = PACK_NODES[kind]
+	var ids := Iap.pearl_packs() if kind == "pearls" else Iap.credit_packs()
+	var head := _section(tr("store.%s_section" % kind))
+	head.name = String(nodes["section"])
 	_list.add_child(head)
-	var intro := text(_list, tr("store.pearls_intro"), UiTheme.TEXT, UiTheme.SMALL_SIZE)
+	var intro := text(_list, tr("store.%s_intro" % kind), UiTheme.TEXT, UiTheme.SMALL_SIZE)
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_packs = GridContainer.new()
-	_packs.name = "PearlPacks"
+	_packs.name = String(nodes["packs"])
 	_packs.columns = _pack_columns()
 	_packs.add_theme_constant_override("h_separation", 6)
 	_packs.add_theme_constant_override("v_separation", 14)
 	_packs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_list.add_child(_packs)
 	var tier := 0
-	for id: String in Iap.pearl_packs():
+	for id: String in ids:
 		tier += 1
 		if Iap.visible(profile, id):
-			_pack_card(id, tier)
-	var note := text(_list, tr("store.pearls_note"), UiTheme.TEXT_DIM, UiTheme.SMALL_SIZE)
-	note.name = "PearlsNote"
+			_pack_card(id, tier, kind)
+	var note := text(_list, tr("store.%s_note" % kind), UiTheme.TEXT_DIM, UiTheme.SMALL_SIZE)
+	note.name = String(nodes["note"])
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 
 ## Cartão de um pacote: selo "Melhor valor" pendurado na borda de cima (só o maior), a pilha, a quantidade grande
-## com a pérola, o bônus em menta, o estado da Play e o botão com o preço da Play.
-func _pack_card(id: String, tier: int) -> void:
+## com a moeda, o bônus em menta, o estado da Play e o botão com o preço da Play.
+func _pack_card(id: String, tier: int, kind: String) -> void:
+	var pearls := kind == "pearls"
 	var def := Iap.product(id)
 	var best := bool(def.get("best", false))
-	var accent := UiTheme.GOLD if best else PEARL_ACCENT
+	var accent := UiTheme.GOLD if best else (PEARL_ACCENT if pearls else CREDIT_ACCENT)
 	var card := PanelContainer.new()
 	card.name = "Pack_" + id
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -813,7 +843,8 @@ func _pack_card(id: String, tier: int) -> void:
 		_ribbon_badge(card, tr("store.pearls_best"))
 	var art := TextureRect.new()
 	art.name = "PackArt"
-	art.texture = load("res://assets/art/generated/shop/pearls_%d.png" % clampi(tier, 1, 4)) as Texture2D
+	art.texture = load("res://assets/art/generated/shop/%s_%d.png" % ["pearls" if pearls else "coins",
+			clampi(tier, 1, 4)]) as Texture2D
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
@@ -824,10 +855,11 @@ func _pack_card(id: String, tier: int) -> void:
 	amount.alignment = BoxContainer.ALIGNMENT_CENTER
 	amount.add_theme_constant_override("separation", 4)
 	amount.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var g := glyph(&"pearls", Color.WHITE, 16)
+	var g := glyph(StringName(kind), Color.WHITE, 16)
 	g.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	amount.add_child(g)
-	var value := UiTheme.label(Locale.format_number(int(def.get("pearls", 0))), 20, UiTheme.WHITE)
+	var qty := int(def.get("pearls", 0)) + int(def.get("credits", 0))
+	var value := UiTheme.label(Locale.format_number(qty), 20, UiTheme.WHITE)
 	_bold(value)
 	value.name = "PackAmount"
 	amount.add_child(value)
@@ -854,7 +886,7 @@ func _pack_card(id: String, tier: int) -> void:
 			AudioManager.play_ui("kenney_ui_confirm")
 			SaveManager.save_profile(), not waiting, "PackBuy_" + id, true)
 	buy.custom_minimum_size.y = 40.0
-	buy.tooltip_text = tr("store.pearls_buy") % [Locale.format_number(int(def.get("pearls", 0))),
+	buy.tooltip_text = tr("store.%s_buy" % kind) % [Locale.format_number(qty),
 			price if not price.is_empty() else tr("store.buy")]
 	_packs.add_child(card)
 

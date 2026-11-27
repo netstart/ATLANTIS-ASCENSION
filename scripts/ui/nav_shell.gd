@@ -185,10 +185,14 @@ func _pick(tab: StringName) -> void:
 		tab_selected.emit(tab)
 
 
-## Pílula de moeda: a Loja; a das Pérolas abre na sub-aba dos pacotes (ShopScreen.TAB_PEARLS), mesmo já na Loja.
+## Pílula de moeda: a Loja; a das Pérolas e a dos créditos abrem direto na sub-aba dos pacotes dela
+## (ShopScreen.TAB_PEARLS / TAB_CREDITS), quando há pacote à venda, mesmo já estando na Loja.
 func _pick_currency(kind: String) -> void:
-	if kind == "pearls" and ShopScreen.pearls_visible(SaveManager.data):
-		ShopScreen.next_tab = ShopScreen.TAB_PEARLS
+	var tab := ShopScreen.TAB_PEARLS if kind == "pearls" else ShopScreen.TAB_CREDITS
+	var has := ShopScreen.pearls_visible(SaveManager.data) if kind == "pearls" \
+			else ShopScreen.credits_visible(SaveManager.data)
+	if (kind == "pearls" or kind == "credits") and has:
+		ShopScreen.next_tab = tab
 		if current == &"shop":
 			AudioManager.play_ui("kenney_ui_tab")
 			tab_selected.emit(&"shop")

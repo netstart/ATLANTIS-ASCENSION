@@ -60,7 +60,8 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
                                   "nova", "titan", "ascension") for n in (1, 2, 3) for x in ("", ".desc")] + [
     "hud.power", "hint.power", "power.tier", "power.ready", "power.meter"] + [
     f"mini.{t}" for t in ("rescue", "sabotage", "intercept")] + [
-    f"store.premium_lore_{s}" for s in ("hippocampus", "nereid", "amphitrite")]
+    f"store.premium_lore_{s}" for s in ("hippocampus", "nereid", "amphitrite")] + [
+    f"store.{c}_{k}" for c in ("pearls", "credits") for k in ("section", "intro", "note", "buy")]
 
 
 def _json_keys(value, out: set) -> None:
