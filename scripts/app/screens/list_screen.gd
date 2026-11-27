@@ -660,11 +660,30 @@ static func _icon_pixel(kind: StringName, p: Vector2) -> Color:
 	var out := Color(1, 1, 1, 0)
 	match kind:
 		&"credits":
-			# Moeda: aro escuro, disco dourado e um anel gravado.
-			out = _over(out, Color("b9790f"), _cov(p.distance_to(c) - 0.45))
-			out = _over(out, UiTheme.GOLD, _cov(p.distance_to(c) - 0.37))
-			out = _over(out, Color("fff0b8"), _cov(p.distance_to(c + Vector2(-0.1, -0.12)) - 0.1) * 0.7)
-			out = _over(out, Color("b9790f"), _cov(absf(p.distance_to(c) - 0.22) - 0.035))
+			# Moeda de ouro: aro biselado, disco com volume (degradê e oclusão), brilho especular,
+			# faísca e o tridente de Atlântida gravado em relevo.
+			var dc := p.distance_to(c)
+			var n := p - c
+			var lit := (n / maxf(n.length(), 0.0001)).dot(Vector2(-0.6, -0.8))
+			var rim := Color("b9790f").lerp(Color("ffe9a6"), clampf(lit * 0.5 + 0.5, 0.0, 1.0))
+			rim = Color("6e4406").lerp(rim, clampf(lit * 0.5 + 0.62, 0.0, 1.0))
+			out = _over(out, rim, _cov(absf(dc - 0.425) - 0.045))
+			var t := clampf((p.y - 0.14) / 0.72, 0.0, 1.0)
+			var face := Color("fff0b0").lerp(Color("ffce54"), t / 0.5) if t < 0.5 \
+					else Color("ffce54").lerp(Color("c07f12"), (t - 0.5) / 0.5)
+			var edge := clampf(dc / 0.385, 0.0, 1.0)
+			face = face.lerp(Color("c07f12"), 0.35 * edge * edge)
+			face = Color(clampf(face.r + lit * 0.1, 0.0, 1.0), clampf(face.g + lit * 0.1, 0.0, 1.0),
+					clampf(face.b + lit * 0.08, 0.0, 1.0))
+			out = _over(out, face, _cov(dc - 0.385))
+			var mask := _cov(dc - 0.36)
+			out = _over(out, Color("9a6208"), _cov(_credits_mark(p - Vector2(0.012, 0.014))) * 0.75 * mask)
+			out = _over(out, Color("fff3cc"), _cov(_credits_mark(p)) * 0.95 * mask)
+			var sp := Vector2(p.x, (p.y - 0.32) * 1.7 + 0.32).distance_to(Vector2(0.35, 0.32)) - 0.066
+			out = _over(out, Color("fffdf2"), _cov(sp) * 0.85 * _cov(dc - 0.37))
+			out = _over(out, Color("fffdf2"), _cov(_poly_sd(p, PackedVector2Array([Vector2(0.345, 0.205),
+					Vector2(0.365, 0.285), Vector2(0.44, 0.31), Vector2(0.365, 0.335), Vector2(0.345, 0.415),
+					Vector2(0.325, 0.335), Vector2(0.25, 0.31), Vector2(0.325, 0.285)]))))
 		&"orichalcum":
 			# Cristal de oricalco: hexágono em pé com a face esquerda mais escura.
 			var hexa := PackedVector2Array([Vector2(0.5, 0.04), Vector2(0.88, 0.27), Vector2(0.88, 0.73),
@@ -761,6 +780,16 @@ static func _poly_sd(p: Vector2, pts: PackedVector2Array) -> float:
 			inside = not inside
 		j = i
 	return -d if inside else d
+
+
+## Marca da moeda de créditos: o tridente de Atlântida (haste, travessão, três pontas e o pé).
+static func _credits_mark(p: Vector2) -> float:
+	var d := _seg_d(p, Vector2(0.5, 0.3), Vector2(0.5, 0.78)) - 0.027
+	d = minf(d, _seg_d(p, Vector2(0.31, 0.43), Vector2(0.69, 0.43)) - 0.025)
+	d = minf(d, _seg_d(p, Vector2(0.31, 0.27), Vector2(0.31, 0.45)) - 0.023)
+	d = minf(d, _seg_d(p, Vector2(0.5, 0.25), Vector2(0.5, 0.45)) - 0.023)
+	d = minf(d, _seg_d(p, Vector2(0.69, 0.27), Vector2(0.69, 0.45)) - 0.023)
+	return minf(d, _seg_d(p, Vector2(0.4, 0.78), Vector2(0.6, 0.78)) - 0.022)
 
 
 ## Aeronave em destaque: halo ciano em degradê (círculos vetoriais, nítidos em qualquer escala), anel

@@ -746,3 +746,14 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   "Maré Dourada" (`season_gold`). As práticas de dados NÃO mudaram (mesma Play Billing, só a posse do produto;
   nenhum dado novo). HTML regerado (`docs/privacy/index.html`, `build_privacy_page.py --check` em dia). Site
   `netstart.github.io/atlantis/` sincronizado com o mesmo conteúdo
+- ✅ `1.34.0` Moeda de ouro (créditos) redesenhada (pedido do dono: "muito feia, sem brilho ou efeito"): o
+  ícone da carteira era um disco chapado (aro, um borrão de luz e um anel). Agora é uma moeda premium
+  desenhada por SDF na textura de 64 px (`ListScreen._icon_pixel` &"credits"): aro biselado (claro em cima
+  à esquerda, escuro embaixo à direita), disco com volume (degradê vertical + oclusão junto ao aro + realce
+  pela direção da luz), brilho especular com faísca de 4 pontas e o **tridente de Atlântida** gravado em
+  relevo (`_credits_mark`). Sem custo de runtime (ícone gerado uma vez e cacheado), herdado por toda a UI que
+  mostra créditos (carteira, oficina, baús, eventos). Conferido em engine (render headless bate com o
+  protótipo). NÃO inclui a venda de moedas de ouro por dinheiro real: isso venderia poder (créditos sobem
+  casco/dano), o que o plano mestre proíbe ("sem pay-to-win") e o teste `_no_power_for_sale` barra —
+  decisão do dono pendente (ver histórico: pedido anterior de "moedas por dinheiro real" foi resolvido como
+  só-Pérolas)
