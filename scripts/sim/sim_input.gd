@@ -19,6 +19,19 @@ var tide: bool = false
 var choice: int = -1
 
 
+## Co-op: o que é do par (especial, PODER, Maré Alta, toques do duelo e a escolha da bênção) vale vindo de qualquer
+## das duas naves. `self` é a entrada da nave 1.
+func merged(other: SimInput) -> SimInput:
+	var c := copy()
+	c.special = special or other.special
+	c.power = power or other.power
+	c.tide = tide or other.tide
+	c.taps = taps + other.taps
+	if choice < 0:
+		c.choice = other.choice
+	return c
+
+
 func copy() -> SimInput:
 	var c := SimInput.new()
 	c.move = move

@@ -59,6 +59,9 @@ Licenças do jogo, lidos do motor exportado (`Engine.get_copyright_info()`).
 | Spaceships: Faction 1, 2, 3, 5, 6, 7 e 10, Blue fighter, Fighter e Yellow starship | MillionthVector (http://millionthvector.blogspot.de) | CC-BY-3.0 |  | sim | sim | `licenses/texts/CC-BY-3.0.txt` | https://opengameart.org/users/millionthvector |
 | Spaceships "XENIS" (2D Spaceships Pack 16) | Carlos Alface (http://carlosalface.blogspot.pt/) | CC-BY-3.0 |  | sim | sim | `licenses/texts/CC-BY-3.0.txt` | https://opengameart.org/content/spaceships-xenis |
 | Alien Bug Sprites, Top-down Alien Bug Sprites 1 e 2, 8 Top down Alien Bug Spider Sprites | W_K_Studio (whiteknightstudios) | CC0-1.0 |  | sim | não | `licenses/texts/CC0-1.0.txt` | https://whiteknightstudios.itch.io/alien-bug-sprites |
+| GodotPlayGameServices | Jacob Ibáñez Sánchez | MIT | 3.4.0 (commit 0563b54) | sim | sim | `licenses/texts/MIT-GodotPlayGameServices.txt` | https://github.com/godot-sdk-integrations/godot-play-game-services |
+| Google Play Games Services v2 SDK | Google LLC | LicenseRef-Google-Play-Games-Services-SDK | play-services-games-v2 21.0.0 (via GodotPlayGameServices 3.4.0) | sim | não | `licenses/texts/LicenseRef-Google-Play-Games-Services-SDK.txt` | https://developer.android.com/games/pgs/console/setup |
+| Gson | Google LLC | Apache-2.0 | 2.11.0 (via GodotPlayGameServices 3.4.0) | sim | sim | `licenses/texts/Apache-2.0.txt` | https://github.com/google/gson |
 
 Verificação: `python -I tools/check_licenses.py` (cobertura de todos os arquivos de `assets/`,
 hash das cópias, licenças permitidas, data de verificação). Snapshots das páginas de origem em

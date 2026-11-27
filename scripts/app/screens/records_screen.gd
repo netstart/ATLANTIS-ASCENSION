@@ -16,6 +16,7 @@ func title_key() -> String:
 
 
 func _fill() -> void:
+	add_button(tr("ranking.title"), func() -> void: navigate.emit(&"ranking"), true, "Ranking")
 	var boards: Dictionary = SaveManager.data.get("boards", {})
 	if boards.is_empty():
 		var empty := card(UiTheme.TEXT_DIM, null, 0.6)

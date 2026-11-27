@@ -5,7 +5,8 @@ const SimTests := preload("res://tests/sim_tests.gd")
 ## quantos segmentos de casco perdeu (danos), o menor casco a que chegou e os abates. Meta do bot na dificuldade
 ## normal: plano mestre 4.7 ("Meta de dificuldade medida pelo bot").
 ## Uso: Godot --headless --path . --script res://tests/boss_timing.gd [-- --only=c1m1,c9m3] [--hits] [--rev=1]
-##        [--seeds=7,11,23] [--diff=brisa|normal|veteran|abyssal] [--hangar] [--secondary=missiles:3]
+##        [--seeds=7,11,23] [--diff=brisa|normal|veteran|abyssal] [--hangar] [--secondary=missiles:3] [--coop]
+## --coop joga com as duas naves (a ala é a Manta, pilotada por BotPilot.decide_wing): compare com a rodada solo.
 ## --secondary dá à nave a secundária com esse nível da Oficina (missiles ou drones, 1 a 5).
 ## --rev roda com as regras de uma revisão antiga da Sim (SimRevision), para comparar o balanceamento.
 ## --hangar dá à nave o nível típico do hangar no capítulo da missão (Economy.TYPICAL_LEVEL, arredondado para baixo).
@@ -19,6 +20,9 @@ func _init() -> void:
 	var seeds: Array[int] = [7]
 	var hangar := "--hangar" in args
 	var base := Sim.default_loadout(&"falcon")
+	if "--coop" in args:
+		base["coop"] = true
+		base["coop_ship"] = "manta"
 	for arg: String in args:
 		if arg.begins_with("--only="):
 			only = arg.trim_prefix("--only=")
@@ -72,12 +76,13 @@ func _run(mission: Dictionary, tables: Dictionary, load: Dictionary, seed: int, 
 	var sim := Sim.new()
 	sim.setup(mission, tables, load.duplicate(), seed)
 	var bot := BotPilot.new()
+	var mate := BotPilot.new()
 	var start := {}
 	var fights: Array[String] = []
 	var hits := 0
 	var min_hull := sim.player.hull
 	while not sim.finished and sim.frame < 36000:
-		sim.step(bot.decide(sim))
+		sim.step(bot.decide(sim), mate.decide_wing(sim) if sim.wing != null else null)
 		min_hull = mini(min_hull, sim.player.hull)
 		for ev: Dictionary in sim.take_events():
 			if ev["type"] == &"boss_intro":

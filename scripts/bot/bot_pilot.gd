@@ -48,6 +48,7 @@ func decide_wing(sim: Sim) -> SimInput:
 	input.special = false
 	input.power = false
 	input.tide = false
+	input.taps = 0
 	input.choice = -1
 	return input
 

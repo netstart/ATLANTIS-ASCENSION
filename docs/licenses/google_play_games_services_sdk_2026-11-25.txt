@@ -1,0 +1,13 @@
+Google Play Games Services SDK license and integration references
+Verified: 2026-11-25
+Artifact: com.google.android.gms:play-services-games-v2:21.0.0
+
+Google's Android developer setup instructions require an OAuth client for authentication and
+a Play Console credential linked to the game; they describe the SDK and the OAuth consent-screen
+scopes required by Play Games Services. The SDK is distributed by Google via Google Maven.
+
+Sources:
+- https://developer.android.com/games/pgs/console/setup
+- https://developer.android.com/studio/terms
+- https://developers.google.com/terms
+- https://policies.google.com/privacy

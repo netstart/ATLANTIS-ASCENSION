@@ -694,5 +694,45 @@
     "license_file": "res://licenses/texts/CC0-1.0.txt",
     "notice_file": "res://licenses/notices/wk_studio_alien_bugs_NOTICE.txt",
     "files_count": 16
+  },
+  {
+    "id": "godot_play_game_services",
+    "name": "GodotPlayGameServices",
+    "author": "Jacob Ibáñez Sánchez",
+    "license_id": "MIT",
+    "category": "plugin",
+    "version": "3.4.0 (commit 0563b54)",
+    "downloaded_at": "2026-11-25",
+    "verified_at": "2026-11-27",
+    "modifications": "patches/top100-leaderboards.patch (loadTopScores100: as 100 melhores em 4 páginas) e export_plugin.gd (ID do jogo em project.godot; sem ID o SDK não entra no build). Cópia do addons/GodotPlayGameServices do hyakki",
+    "source_url": "https://github.com/godot-sdk-integrations/godot-play-game-services",
+    "license_file": "res://licenses/texts/MIT-GodotPlayGameServices.txt",
+    "notice_file": "res://licenses/notices/GodotPlayGameServices_NOTICE.txt"
+  },
+  {
+    "id": "google_play_games_services_sdk",
+    "name": "Google Play Games Services v2 SDK",
+    "author": "Google LLC",
+    "license_id": "LicenseRef-Google-Play-Games-Services-SDK",
+    "category": "android",
+    "version": "play-services-games-v2 21.0.0 (via GodotPlayGameServices 3.4.0)",
+    "downloaded_at": "2026-11-25",
+    "verified_at": "2026-11-27",
+    "source_url": "https://developer.android.com/games/pgs/console/setup",
+    "license_file": "res://licenses/texts/LicenseRef-Google-Play-Games-Services-SDK.txt",
+    "notice_file": "res://licenses/notices/GooglePlayGamesServicesSDK_NOTICE.txt"
+  },
+  {
+    "id": "gson",
+    "name": "Gson",
+    "author": "Google LLC",
+    "license_id": "Apache-2.0",
+    "category": "android",
+    "version": "2.11.0 (via GodotPlayGameServices 3.4.0)",
+    "downloaded_at": "2026-11-25",
+    "verified_at": "2026-11-27",
+    "source_url": "https://github.com/google/gson",
+    "license_file": "res://licenses/texts/Apache-2.0.txt",
+    "notice_file": "res://licenses/notices/Gson_NOTICE.txt"
   }
 ]

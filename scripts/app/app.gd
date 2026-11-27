@@ -29,6 +29,8 @@ const SCREENS := {
 	&"practice": preload("res://scripts/app/screens/practice_screen.gd"),
 	&"season": preload("res://scripts/app/screens/season_screen.gd"),
 	&"records": preload("res://scripts/app/screens/records_screen.gd"),
+	&"lan": preload("res://scripts/app/screens/lan_screen.gd"),
+	&"ranking": preload("res://scripts/app/screens/ranking_screen.gd"),
 }
 const ROOT_SCREEN := &"boot"
 ## Música dos menus: o tema do Atlantis Ascension (Clayton K. N. Passos com Google Flow Music), em laço sem emenda
@@ -50,6 +52,8 @@ var last_result: Dictionary = {}
 var run_mode: StringName = &""
 var run_queue: Array[Dictionary] = []
 var run_score: int = 0
+## Coop em rede local: a sala e o enlace (LanSession), criados na primeira visita à tela da sala.
+var lan: LanSession
 var _run_loadout: Dictionary = {}
 ## Carga da última missão iniciada (a revanche do chefe reusa a mesma do jogador).
 var _last_loadout: Dictionary = {}
@@ -58,6 +62,8 @@ var _last_loadout: Dictionary = {}
 var _practice_mission: Dictionary = {}
 var _pending_replay: Replay
 var _replay_return: StringName = &""
+## Coop em rede local: a semente que o anfitrião sorteou para a corrida.
+var _lan_seed: int = 0
 
 var _layer: CanvasLayer
 var _root: Control
@@ -194,6 +200,10 @@ static func today() -> String:
 ## Começa um modo: monta a fila (Modes.run) e joga a primeira missão. Arcade, Boss Rush e Diário usam a
 ## aeronave escolhida sem o hangar (todos em pé de igualdade); a Sobrevivência usa o hangar.
 func start_mode(mode: StringName, bot: bool = false) -> void:
+	if mode == &"coop_lan":
+		# A corrida em rede só começa da sala, com os dois aparelhos (também no "Tentar de novo" do resultado).
+		go(&"lan")
+		return
 	run_mode = mode
 	run_score = 0
 	run_queue = Modes.run(mode, SaveManager.data, today(), Modes.date_seed(today()))
@@ -234,7 +244,61 @@ func _rematch_boss(boss_id: StringName) -> void:
 
 func _next_in_run(bot: bool = false) -> void:
 	var mission: Dictionary = run_queue.pop_front()
-	play_mission(mission, bot, Modes.date_seed(today()) % 100000 if run_mode == &"daily" else -1, _run_loadout)
+	var seed := Modes.date_seed(today()) % 100000 if run_mode == &"daily" else -1
+	if run_mode == &"coop_lan":
+		# A mesma semente nos dois aparelhos, uma por missão da corrida.
+		seed = _lan_seed + run_queue.size()
+	play_mission(mission, bot, seed, _run_loadout)
+
+
+## Sessão do coop em rede local (a tela da sala a opera; o _process a faz andar).
+func lan_session() -> LanSession:
+	if lan == null:
+		lan = LanSession.new()
+		lan.started.connect(_on_lan_started)
+		lan.ended.connect(_on_lan_ended)
+	return lan
+
+
+## Anfitrião, com a parceira na sala: começa a corrida do coop (a do Arcade) nos dois aparelhos.
+func lan_begin() -> void:
+	var ids: Array = []
+	for id: StringName in Modes.ARCADE:
+		ids.append(String(id))
+	lan.start(lan.pack_for(Modes.loadout_for(&"coop_lan", SaveManager.data, today()), ids,
+			int(Time.get_unix_time_from_system()) % 100000))
+
+
+## O pacote de início chegou (nos dois aparelhos): a fila, a semente e a carga vêm dele, nada deste aparelho.
+func _on_lan_started(pack: Dictionary) -> void:
+	run_mode = &"coop_lan"
+	run_score = 0
+	run_queue.clear()
+	for id: Variant in pack["missions"]:
+		run_queue.append(Sim.load_mission(StringName(String(id))))
+	_run_loadout = pack["loadout"]
+	_lan_seed = int(pack["seed"])
+	_next_in_run()
+
+
+## A parceira saiu, a conexão caiu ou as partidas divergiram no meio da missão: encerra sem resultado (nada é
+## gravado) e volta à sala, que mostra o motivo. Com a missão já terminada o fim segue normal.
+func _on_lan_ended(_reason: StringName) -> void:
+	if game == null or game.sim.finished:
+		return
+	if lan.error == &"":
+		lan.error = &"left"
+	game.queue_free()
+	game = null
+	_layer.visible = true
+	run_mode = &""
+	AudioManager.play_music("")
+	go(&"lan")
+
+
+func _process(delta: float) -> void:
+	if lan != null:
+		lan.poll(delta)
 
 
 ## Inicia uma missão: esconde os menus e cria a cena Game.
@@ -252,6 +316,9 @@ func play_mission(mission: Dictionary, bot: bool = false, seed: int = -1, loadou
 	var use_loadout := loadout if not loadout.is_empty() else Economy.loadout(SaveManager.data)
 	_last_loadout = use_loadout
 	game.configure(mission, use_loadout, run_seed, bot)
+	if run_mode == &"coop_lan":
+		lan.begin_round()
+		game.lan = lan
 	game.can_revive = not bot and run_mode in [&"", &"survival", &"abyss"]
 	if not bot and bool(Settings.get_value("ghost")) and run_mode in [&"", &"practice"]:
 		game.ghost = Replay.load_key(Replay.key_for(String(mission.get("id", "")), ""))
@@ -282,13 +349,24 @@ func _on_mission_finished(result: Dictionary) -> void:
 	if bool(result.get("quit", false)):
 		AudioManager.play_music("")
 		var back_to := &"events" if run_mode not in [&"", &"practice"] else &"map"
+		if run_mode == &"coop_lan":
+			lan.leave()
 		run_mode = &""
 		go(back_to)
 		return
 	run_score += int(result.get("score", 0))
 	if run_mode not in [&"", &"practice"] and bool(result.get("cleared", false)) and not run_queue.is_empty():
+		if run_mode == &"coop_lan" and lan.state != LanSession.State.PLAYING:
+			# A parceira caiu entre duas missões: a corrida acaba aqui, na sala.
+			run_mode = &""
+			go(&"lan")
+			return
 		_next_in_run()
 		return
+	if run_mode == &"coop_lan":
+		# Fim da corrida: cada aparelho grava o próprio resultado e a sala fecha.
+		lan.leave(&"done")
+		lan.error = &""
 	result["mode"] = String(run_mode)
 	result["run_score"] = run_score
 	last_result = record_result(result, run_mode)
@@ -322,6 +400,8 @@ static func record_result(result: Dictionary, mode: StringName = &"") -> Diction
 	else:
 		SaveManager.add_stat("deaths", 1)
 	SaveManager.save_profile()
+	# Ranking de abates (Play Games): manda o total novo da carreira; sem login não faz nada.
+	PlayRanking.submit(SaveManager.data)
 	for ship: Variant in out.get("new_ships", []):
 		SaveManager.unlocked.emit("ships", StringName(String(ship)))
 	return out
@@ -329,7 +409,7 @@ static func record_result(result: Dictionary, mode: StringName = &"") -> Diction
 
 ## Placar local e replay do recorde (missões avulsas: campanha, Diário, Correntes, Sobrevivência).
 func _save_record(result: Dictionary, recording: Replay) -> void:
-	if run_mode in [&"practice", &"arcade", &"boss_rush", &"second_tide", &"coop"] or recording == null:
+	if run_mode in [&"practice", &"arcade", &"boss_rush", &"second_tide", &"coop", &"coop_lan"] or recording == null:
 		return
 	var key := Replay.key_for(String(result.get("mission", "")), String(run_mode))
 	var pos := Replay.submit(SaveManager.data, key, int(result.get("score", 0)), today(),

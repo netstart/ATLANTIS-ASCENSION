@@ -220,6 +220,9 @@ Surge XT, BeepBox. A trilha original é o maior ganho de identidade e o item de 
 | GodotGooglePlayBilling | registro do hyakki | MIT | ✅ Turbo, licença `godot_play_billing`, `addons/GodotGooglePlayBilling` |
 | Google Mobile Ads SDK | registro do hyakki | `LicenseRef-` | ✅ 1.17.0, licença `google_mobile_ads_sdk` (decisão registrada) |
 | Play Billing Library | registro do hyakki | `LicenseRef-` | ✅ Turbo, licença `play_billing_library` (decisão registrada) |
+| GodotPlayGameServices | registro do hyakki | MIT | ✅ ranking de abates, licença `godot_play_game_services`, `addons/GodotPlayGameServices` (com o patch das 100 melhores) |
+| Google Play Games Services v2 SDK | registro do hyakki | `LicenseRef-` | ✅ ranking de abates, licença `google_play_games_services_sdk` (decisão registrada) |
+| Gson | registro do hyakki | Apache-2.0 | ✅ ranking de abates, licença `gson` (dependência do plugin do Play Games) |
 | GodotSteam | https://github.com/GodotSteam/GodotSteam | MIT | ⚠️ |
 | Steamworks SDK | partner.steamgames.com | `LicenseRef-Steamworks` | 🔶 |
 

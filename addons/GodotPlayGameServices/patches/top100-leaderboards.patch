@@ -1,0 +1,113 @@
+diff --git a/plugin/build.gradle.kts b/plugin/build.gradle.kts
+index 5e8adb6..0609804 100644
+--- a/plugin/build.gradle.kts
++++ b/plugin/build.gradle.kts
+@@ -11,7 +11,7 @@ val pluginPackageName = "com.jacobibanez.plugin.android.godotplaygameservices"
+ 
+ android {
+     namespace = pluginPackageName
+-    compileSdk = 35
++    compileSdk = 34
+ 
+     buildFeatures {
+         buildConfig = true
+diff --git a/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/GodotAndroidPlugin.kt b/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/GodotAndroidPlugin.kt
+index 477990e..3c21cdb 100644
+--- a/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/GodotAndroidPlugin.kt
++++ b/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/GodotAndroidPlugin.kt
+@@ -326,6 +326,10 @@ class GodotAndroidPlugin(godot: Godot) : GodotPlugin(godot) {
+         forceReload
+     )
+ 
++    @UsedByGodot
++    fun loadTopScores100(leaderboardId: String, timeSpan: Int, collection: Int, forceReload: Boolean) =
++        leaderboardsProxy.loadTopScores100(leaderboardId, timeSpan, collection, forceReload)
++
+     /**
+      * Call this method and subscribe to the emitted signal to receive the list of friends for the
+      * currently signed in player in JSON format. The JSON received from the [com.jacobibanez.plugin.android.godotplaygameservices.signals.PlayerSignals.friendsLoaded]
+diff --git a/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/leaderboards/LeaderboardsProxy.kt b/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/leaderboards/LeaderboardsProxy.kt
+index 30b3ccd..92dc08b 100644
+--- a/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/leaderboards/LeaderboardsProxy.kt
++++ b/plugin/src/main/java/com/jacobibanez/plugin/android/godotplaygameservices/leaderboards/LeaderboardsProxy.kt
+@@ -3,6 +3,7 @@ package com.jacobibanez.plugin.android.godotplaygameservices.leaderboards
+ import android.util.Log
+ import androidx.core.app.ActivityCompat
+ import com.google.android.gms.games.LeaderboardsClient
++import com.google.android.gms.games.PageDirection
+ import com.google.android.gms.games.PlayGames
+ import com.google.android.gms.games.leaderboard.LeaderboardBuffer
+ import com.google.gson.Gson
+@@ -314,4 +315,70 @@ class LeaderboardsProxy(
+                 }
+             }
+     }
+-}
+\ No newline at end of file
++
++    fun loadTopScores100(
++        leaderboardId: String,
++        timeSpan: Int,
++        collection: Int,
++        forceReload: Boolean
++    ) {
++        leaderboardsClient.loadTopScores(leaderboardId, timeSpan, collection, 25, forceReload)
++            .addOnSuccessListener { task ->
++                val first = task.get()!!
++                val leaderboard: Dictionary? = first.leaderboard?.let { fromLeaderboard(godot, it) }
++                accumulateTopScores(leaderboardId, first, leaderboard, ArrayList(), 1)
++            }
++            .addOnFailureListener { error ->
++                Log.e(tag, "Failed to load top scores for leaderboard $leaderboardId", error)
++                emitSignal(godot, BuildConfig.GODOT_PLUGIN_NAME, topScoresLoaded, leaderboardId, Gson().toJson(null))
++            }
++    }
++
++    // Google's loadMoreScores delivers every page in its own windowed buffer, so we copy each page's
++    // rows into [accumulated] and concatenate, instead of emitting a single page. We walk forward until
++    // we hold 100 rows, a page comes back short (the leaderboard ended), or we reach the four-page cap.
++    // Rows are kept only when their rank advances, guarding against a repeated or overlapping page.
++    private fun accumulateTopScores(
++        leaderboardId: String,
++        scores: LeaderboardsClient.LeaderboardScores,
++        leaderboard: Dictionary?,
++        accumulated: MutableList<Dictionary>,
++        page: Int
++    ) {
++        val buffer = scores.scores
++        val pageCount = buffer.count
++        for (score in buffer) {
++            val lastRank = (accumulated.lastOrNull()?.get("rank") as? Long) ?: 0L
++            if (score.rank <= lastRank) continue
++            accumulated.add(fromLeaderboardScore(godot, score))
++            if (accumulated.size >= 100) break
++        }
++        if (accumulated.size >= 100 || pageCount < 25 || page >= 4) {
++            emitTopScores(leaderboardId, leaderboard, accumulated)
++            scores.release()
++            return
++        }
++        leaderboardsClient.loadMoreScores(buffer, 25, PageDirection.NEXT)
++            .addOnSuccessListener { task ->
++                val next = task.get()!!
++                scores.release()
++                accumulateTopScores(leaderboardId, next, leaderboard, accumulated, page + 1)
++            }
++            .addOnFailureListener { error ->
++                Log.e(tag, "Failed to load next top scores page for leaderboard $leaderboardId", error)
++                emitTopScores(leaderboardId, leaderboard, accumulated)
++                scores.release()
++            }
++    }
++
++    private fun emitTopScores(
++        leaderboardId: String,
++        leaderboard: Dictionary?,
++        accumulated: List<Dictionary>
++    ) {
++        val result = Dictionary()
++        leaderboard?.let { result["leaderboard"] = it }
++        result["scores"] = accumulated.take(100)
++        emitSignal(godot, BuildConfig.GODOT_PLUGIN_NAME, topScoresLoaded, leaderboardId, Gson().toJson(result))
++    }
++}

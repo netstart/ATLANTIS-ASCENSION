@@ -15,7 +15,7 @@ extends ListScreen
 
 const MODE_HINT := {&"arcade": "c2m3", &"daily": "c2m1", &"survival": "c4m1", &"boss_rush": "c9m3",
 		&"practice": "c1m1", &"currents": "c3m2", &"second_tide": "c9m3",
-		&"abyss": "c7m1", &"coop": "c1m3"}
+		&"abyss": "c7m1", &"coop": "c1m3", &"coop_lan": "c1m3"}
 
 var _modes: GridContainer
 
@@ -163,6 +163,9 @@ func _fill_modes(profile: Dictionary, today: String) -> void:
 		banner.button.pressed.connect(_press.bind(func() -> void:
 			if mode == &"practice":
 				navigate.emit(&"practice")
+			elif mode == &"coop_lan":
+				# A corrida só começa da sala, com os dois aparelhos.
+				navigate.emit(&"lan")
 			else:
 				play_mode.emit(mode)))
 

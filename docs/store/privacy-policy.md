@@ -1,6 +1,6 @@
 # Política de privacidade — Atlantis Ascension
 
-*Versão 1.7 · 27/11/2026 · English version below.*
+*Versão 1.8 · 27/11/2026 · English version below.*
 
 ## Português (Brasil)
 
@@ -46,6 +46,16 @@ Se você não quiser ver anúncios, não toque nos botões de anúncio: nada no 
 internet e do ID de publicidade usados pelos anúncios e da permissão de cobrança da Google Play
 (`com.android.vending.BILLING`, usada só para as compras opcionais), a única permissão pedida no Android é a
 vibração (para o retorno tátil, que pode ser desligado nas opções).
+
+**Ranking de abates (Google Play Games, só Android, opcional).** Se você entrar com o Google Play Games, o jogo envia
+ao placar do Google o total de abates e o tempo jogado da sua carreira, e mostra os 100 primeiros com o **nome de
+jogador do Play Games** de cada um. O login, o nome e o ID de jogador são do Google Play Games e seguem a [Política de
+Privacidade do Google](https://policies.google.com/privacy); nós não recebemos nem guardamos esses dados. Sem o login,
+nada é enviado. Para isso o Android pede a permissão de estado da rede.
+
+**Co-op em rede local.** No modo cooperativo por Wi-Fi, os dois aparelhos se encontram **só na rede local** pelo
+número da sala e trocam apenas os comandos da partida e o código da sala. Nada sai da rede local nem passa por
+servidor nosso ou de terceiros.
 
 **Compras (Google Play, só Android).** Todas as compras são opcionais e sem assinatura, processadas pela **Google
 Play** com a conta Google do aparelho: o Turbo (partida até 2x mais rápida, não mais fácil); "Apoiar a Halcyon"
@@ -128,6 +138,16 @@ buttons: nothing in the game requires an ad.
 the internet access and advertising ID used by the ads and the Google Play billing permission
 (`com.android.vending.BILLING`, used only for the optional purchases), the only Android permission requested is
 vibration (for haptic feedback, which can be turned off in the options).
+
+**Kill ranking (Google Play Games, Android only, optional).** If you sign in with Google Play Games, the game sends
+your career kill count and play time to Google's leaderboard, and shows the top 100 with each player's **Play Games
+player name**. Sign-in, the player name and the player ID belong to Google Play Games and follow the [Google Privacy
+Policy](https://policies.google.com/privacy); we neither receive nor store them. Without signing in, nothing is sent.
+For this, Android asks for the network state permission.
+
+**Local network co-op.** In Wi-Fi co-op mode, the two devices find each other **only on the local network** through
+the room number and exchange only the match inputs and the room code. Nothing leaves the local network or goes through
+any server of ours or of third parties.
 
 **Purchases (Google Play, Android only).** All purchases are optional, with no subscriptions, and are processed by
 **Google Play** with the Google account on the device: Turbo (runs up to 2x faster, not easier); "Support the

@@ -100,6 +100,7 @@ func _fill() -> void:
 	add_heading(tr("options.data"))
 	var data := card()
 	button(data, tr("options.logbook"), func() -> void: navigate.emit(&"logbook"))
+	button(data, tr("ranking.title"), func() -> void: navigate.emit(&"ranking"), true, "Ranking")
 	button(data, tr("options.credits"), func() -> void: navigate.emit(&"credits"))
 	# Formulário de privacidade do Google (UMP), só onde ele exige a entrada (EEE, Reino Unido...).
 	if Ads.privacy_options_required():

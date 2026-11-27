@@ -1,0 +1,3 @@
+Google Play Games Services v2 SDK
+Copyright Google LLC. All rights reserved.
+Distributed by Google via Google Maven under the Android SDK License Agreement.

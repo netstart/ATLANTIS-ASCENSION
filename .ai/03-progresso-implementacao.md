@@ -770,3 +770,36 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   (que rodava `tools/run_checks.ps1`) e o gatilho de `pull_request`; o job `release` agora baixa o Godot sozinho
   (cache + download, não depende mais do job de checagens). O CI só assina o AAB e publica na Play. Regra registrada
   no `AGENTS.md` ("Testes e CI"): os testes rodam só na máquina do desenvolvedor, antes de cada push.
+- ✅ `1.36.0` Ranking mundial de abates (Google Play Games Services): plugin
+  `GodotPlayGameServices` 3.4.0 (`play-services-games-v2` 21.0.0, com o patch `loadTopScores100`, portado do hyakki;
+  licenças do plugin, do SDK e do Gson registradas). Ordena pelo total de abates da carreira (`stats.kills`) e, no
+  empate, pelo menor tempo jogado (`stats.time_played`), num inteiro só (`scripts/core/kill_ranking.gd`). Ponte
+  `scripts/autoload/play_ranking.gd` (login, envio depois de cada resultado gravado e ao entrar, 100 melhores) e tela
+  "Ranking de abates" (`ranking_screen.gd`; entra por Recordes e por Opções): posição, nome do Play Games, abates e
+  tempo (`12h 05m`), ouro/prata/bronze, a linha do jogador em menta, estados "só no Android", indisponível, entrar,
+  carregando, sem conexão e vazio; rola por toque, teclado e controle. IDs em `project.godot` (`[play_games]`),
+  **vazios**: sem `game_id` o plugin de exportação não põe nada do Play Games no build. Permissões `INTERNET` e
+  `ACCESS_NETWORK_STATE` nos dois presets Android. Testes: `tests/ranking_tests.gd` (regras) e
+  `tests/ranking_view_tests.gd` (estados e layout com 100 linhas em todas as resoluções e idiomas). Falta 👤 criar o
+  projeto do Play Games, as credenciais OAuth e o placar e colar os dois IDs (`docs/store/play-console.md`, "Play
+  Games Services e ranking") e atualizar "Segurança dos dados". Política de privacidade 1.8 já cita o ranking.
+- ✅ `1.36.0` Co-op em rede local (LAN/Wi-Fi), 2 aparelhos, sala por código: modo `coop_lan`
+  em todas as plataformas (inclusive Android), aberto pela mesma regra do co-op local (1-3), com a corrida do Arcade.
+  Sala (`scripts/net/lan_room.gd`, `lan_session.gd`, `net_link.gd`, adaptados do hyakki; tela `lan_screen.gd`, aberta
+  pelo banner nos Eventos): o anfitrião abre e mostra um código de 4 dígitos sorteado; a convidada digita no teclado
+  numérico da tela e acha a sala por busca UDP na rede local (broadcast e varredura do /24), só endereços privados,
+  ENet confiável, máximo 2 aparelhos. Aperto de mão com protocolo, versão do jogo e `SimRevision`. Partida em
+  **lockstep de entradas** (atraso de 3 passos, entrada nos campos do replay em 25 bytes, a mesma quantização nos dois
+  lados): o anfitrião é a nave 1, a convidada a ala; fila, semente, carga, sensibilidade 1 e a menor altura de campo
+  das duas telas vêm do pacote de início. Sem a entrada da parceira a Sim espera ("Esperando o parceiro…" depois de
+  0,5 s); pausa avisada ("Parceiro pausou"); `SimHash` trocado a cada 60 passos (diferença, saída ou queda de 5 s
+  encerram nos dois com aviso e voltam à sala, sem gravar resultado). Especial, PODER, Maré Alta, toques do duelo e a
+  escolha da bênção valem de qualquer das duas naves (`SimInput.merged`); sem reviver por anúncio, sem placar nem
+  replay (como o co-op local). **Balanceamento do co-op (local e LAN)**: vida ×1,7 nos inimigos comuns e ×1,8 nos
+  chefes (`SimCurve.COOP_HP`, `COOP_BOSS_HP`), a mesma quantidade, cadência e velocidade de balas do solo, e a bala
+  mirada procura a nave mais perto (`SimCurve.target`); medido com `tests/boss_timing.gd --coop` (9 missões do Arcade
+  × 3 sementes: fase +3%, chefes de meio −5%, chefes finais +11% contra o solo). O solo não muda (mesmos hashes; a
+  `SimRevision` continua 10). Testes: `tests/lan_tests.gd` (sala, codificação, fator de coop e duas sessões com duas
+  Sims em 127.0.0.1 com latência e perda) e `tests/lan_screen_tests.gd` (layout de cada estado da sala em todas as
+  resoluções e idiomas, e dois Apps jogando pelo Game até o resultado). Falta 👤 testar em dois aparelhos de
+  verdade no mesmo Wi-Fi (Android + Android e Android + PC). Política de privacidade 1.8 já cita a rede local.

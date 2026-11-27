@@ -28,6 +28,8 @@ const StoreTests := preload("res://tests/store_tests.gd")
 const TurboTests := preload("res://tests/turbo_tests.gd")
 const IapTests := preload("res://tests/iap_tests.gd")
 const PremiumTests := preload("res://tests/premium_tests.gd")
+const RankingViewTests := preload("res://tests/ranking_view_tests.gd")
+const LanScreenTests := preload("res://tests/lan_screen_tests.gd")
 const ScriptGate := preload("res://tests/script_gate.gd")
 const DeathViewTests := preload("res://tests/death_view_tests.gd")
 
@@ -128,6 +130,17 @@ func _ready() -> void:
 	for c: Dictionary in cases:
 		units.append({"name": "Naves premium [%s]" % c["label"], "weight": 0.6,
 				"run": func() -> void: await premium.run_layout_case(self, _check, c)})
+	var ranking := RankingViewTests.new()
+	units.append({"name": "Ranking de abates", "weight": 0.5, "run": func() -> void: await ranking.run_view(self, _check)})
+	for c: Dictionary in cases:
+		units.append({"name": "Ranking de abates [%s]" % c["label"], "weight": 0.5 * (c["langs"] as Array).size(),
+				"run": func() -> void: await ranking.run_layout_case(self, _check, c)})
+	var lan := LanScreenTests.new()
+	units.append({"name": "Coop LAN (sala e partida)", "weight": 8.0,
+			"run": func() -> void: await lan.run_flow(self, _check)})
+	for c: Dictionary in cases:
+		units.append({"name": "Coop LAN [%s]" % c["label"], "weight": 0.6 * (c["langs"] as Array).size(),
+				"run": func() -> void: await lan.run_layout_case(self, _check, c)})
 	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
 	units.append({"name": "Poderes na tela", "weight": 8.0, "run": func() -> void:
 		await PowerViewTests.new().run(self, _check)})

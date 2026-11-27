@@ -13,6 +13,11 @@ const HP := 0.8
 const BOSS_HP := 0.15
 ## Rank na cadência: ±RANK_CADENCE nas esperas dos padrões, além dos ±12% na velocidade das balas (Sim).
 const RANK_CADENCE := 0.1
+## Co-op (local e LAN): são duas naves atirando, então inimigos comuns e chefes aguentam mais. Só vida: a contagem, a
+## cadência e a velocidade das balas ficam as do solo (com mais balas ninguém sobrevive). Medido com
+## tests/boss_timing.gd --coop: o tempo de fase e de chefe do par fica perto do solo.
+const COOP_HP := 1.7
+const COOP_BOSS_HP := 1.8
 
 
 ## Posição na curva de uma partida: 0 antes da revisão 3 ou no capítulo 1; `scale` é o "curve" da dificuldade.
@@ -58,13 +63,27 @@ static func wait_mult(curve: float, rank: float) -> float:
 
 ## Vida de um inimigo comum. Quem desce com o cenário ("scroll": torre de coral, trirreme) fecha a faixa até cair:
 ## mais vida ali vira parede, não desafio, e ele fica com a vida da tabela.
-static func apply_enemy(e: SimEnemy, curve: float) -> void:
+## `coop`: duas naves atirando (COOP_HP); o inimigo do mar fica de fora, porque só os mísseis o ferem e eles não dobram.
+static func apply_enemy(e: SimEnemy, curve: float, coop: bool = false) -> void:
 	if curve > 0.0 and e.path != &"scroll":
 		e.max_hp *= 1.0 + HP * curve
+		e.hp = e.max_hp
+	if coop and e.path != &"scroll" and not e.sea:
+		e.max_hp *= COOP_HP
 		e.hp = e.max_hp
 
 
 ## Vida de um chefe. Só o chefe de ato (o do duelo) sobe: os de meio de fase já sobem por capítulo na tabela
 ## (tools/gen_bosses_mid.py CHAPTER_HP) e a fase precisa caber em 5,5 min.
-static func boss_hp_mult(curve: float, def: Dictionary) -> float:
-	return 1.0 + BOSS_HP * curve if bool(def.get("duel", false)) else 1.0
+static func boss_hp_mult(curve: float, def: Dictionary, coop: bool = false) -> float:
+	var mult := 1.0 + BOSS_HP * curve if bool(def.get("duel", false)) else 1.0
+	return mult * COOP_BOSS_HP if coop else mult
+
+
+## Nave que uma bala mirada de `from` procura: no co-op, a mais perto das duas (empate: a nave 1), para a ala também
+## correr perigo sem nascer nenhuma bala a mais; no solo, a nave 1.
+static func target(sim: Sim, from: Vector2) -> SimPlayer:
+	var wing := sim.wing
+	if wing != null and wing.alive and from.distance_squared_to(wing.pos) < from.distance_squared_to(sim.player.pos):
+		return wing
+	return sim.player

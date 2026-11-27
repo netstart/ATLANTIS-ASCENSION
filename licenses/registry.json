@@ -1519,5 +1519,86 @@
     },
     "snapshot_file": "docs/licenses/wk_studio_alien_bugs_2026-11-22.pdf",
     "downloaded_at": "2026-11-22"
+  },
+  {
+    "id": "godot_play_game_services",
+    "name": "GodotPlayGameServices",
+    "category": "plugin",
+    "author": "Jacob Ibáñez Sánchez",
+    "version": "3.4.0 (commit 0563b54)",
+    "source_url": "https://github.com/godot-sdk-integrations/godot-play-game-services",
+    "license_id": "MIT",
+    "license_url": "https://raw.githubusercontent.com/godot-sdk-integrations/godot-play-game-services/0563b54/LICENSE",
+    "license_file": "licenses/texts/MIT-GodotPlayGameServices.txt",
+    "notice_file": "licenses/notices/GodotPlayGameServices_NOTICE.txt",
+    "snapshot_url": "https://github.com/godot-sdk-integrations/godot-play-game-services",
+    "attribution_required": true,
+    "commercial_use": true,
+    "modifications": "patches/top100-leaderboards.patch (loadTopScores100: as 100 melhores em 4 páginas) e export_plugin.gd (ID do jogo em project.godot; sem ID o SDK não entra no build). Cópia do addons/GodotPlayGameServices do hyakki",
+    "files": [
+      "addons/GodotPlayGameServices/**"
+    ],
+    "sha256": {
+      "license_file": "ed364d1a1fe81fcd672eabc639889075173da2906c69b746753ccb3672b1ea94",
+      "notice_file": "395fad8911f79ffefd45877262252dd441b4f3b897930403b42d96161c3b2fae",
+      "snapshot_file": "9e7d88ce97329a2d9fdb446861989b263aada11438dc48a95999244db4fa1ea3"
+    },
+    "downloaded_at": "2026-11-25",
+    "verified_at": "2026-11-27",
+    "verified_by": "Claude (ranking de abates; cópia do hyakki, registro de 2026-11-25, fonte fixada em 0563b54); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/godot_play_game_services_source_2026-11-25.txt"
+  },
+  {
+    "id": "google_play_games_services_sdk",
+    "name": "Google Play Games Services v2 SDK",
+    "category": "android",
+    "author": "Google LLC",
+    "version": "play-services-games-v2 21.0.0 (via GodotPlayGameServices 3.4.0)",
+    "source_url": "https://developer.android.com/games/pgs/console/setup",
+    "license_id": "LicenseRef-Google-Play-Games-Services-SDK",
+    "license_source": "licenses/sources/LicenseRef-Google-Play-Games-Services-SDK.txt",
+    "license_file": "licenses/texts/LicenseRef-Google-Play-Games-Services-SDK.txt",
+    "notice_file": "licenses/notices/GooglePlayGamesServicesSDK_NOTICE.txt",
+    "snapshot_url": "https://developer.android.com/studio/terms",
+    "attribution_required": false,
+    "commercial_use": true,
+    "modifications": "",
+    "decision": "Em 2026-11-27 o mantenedor (Clayton K. N. Passos) pediu o ranking de abates com o Google Play Games Services no Android. O SDK do Google não é aberto, mas é o SDK da loja para login e placares: é distribuído pelo Google Maven para ser incluído no APK/AAB, sob o Android SDK License Agreement e os termos das APIs do Google, que permitem o uso em apps comerciais. O jogo só usa login e placar (sem acesso de servidor, e-mail nem lista de amigos). Mesma decisão do projeto hyakki (mesmo mantenedor).",
+    "files": [],
+    "sha256": {
+      "license_file": "600030f3033d7ce5a8e5d4e82af5dfd71c3bd81907dbdddb8b94131ace701b5c",
+      "notice_file": "5c72ea5efda62bb67fa0a923b7866a93faf1f04a416d2af0ee179a3b4a2efa1d",
+      "snapshot_file": "77d9e94506f2189ed5a4949a3223cc672019042dd7076cb29bb8fd5dca66fe78"
+    },
+    "downloaded_at": "2026-11-25",
+    "verified_at": "2026-11-27",
+    "verified_by": "Claude (ranking de abates, a partir do registro do hyakki de 2026-11-25); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/google_play_games_services_sdk_2026-11-25.txt"
+  },
+  {
+    "id": "gson",
+    "name": "Gson",
+    "category": "android",
+    "author": "Google LLC",
+    "version": "2.11.0 (via GodotPlayGameServices 3.4.0)",
+    "source_url": "https://github.com/google/gson",
+    "license_id": "Apache-2.0",
+    "license_url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+    "license_file": "licenses/texts/Apache-2.0.txt",
+    "notice_file": "licenses/notices/Gson_NOTICE.txt",
+    "snapshot_url": "https://github.com/google/gson/blob/gson-parent-2.11.0/LICENSE",
+    "attribution_required": true,
+    "commercial_use": true,
+    "modifications": "",
+    "files": [],
+    "sha256": {
+      "license_file": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "notice_file": "587220af51bb44c362b121b3dae2dbff2b12eadd677566507d8e22075ae290ee",
+      "snapshot_file": "c5b94b4c24c297e049e91b25cb63cc1515feda8ce63caad0635bc7982aed939a"
+    },
+    "downloaded_at": "2026-11-25",
+    "verified_at": "2026-11-27",
+    "verified_by": "Claude (ranking de abates; LICENSE do Gson 2.11.0, a partir do registro do hyakki); revisão final por Clayton antes do lançamento",
+    "snapshot_file": "docs/licenses/gson_2026-11-25.txt"
   }
 ]

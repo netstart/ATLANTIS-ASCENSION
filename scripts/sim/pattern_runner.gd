@@ -122,7 +122,7 @@ func _emit(sim: Sim, origin: Vector2, s: Dictionary) -> void:
 	var turn := deg_to_rad(float(s.get("turn", 0.0)))
 	var accel := float(s.get("accel", 0.0))
 	var count := maxi(1, int(s.get("count", 1)))
-	var to_player := rad_to_deg((sim.player.pos - origin).angle())
+	var to_player := rad_to_deg((SimCurve.target(sim, origin).pos - origin).angle())
 	var rev2 := SimRevision.of(sim.loadout) >= 2
 	var mz := muzzle if rev2 else 0.0
 	var gap := BulletKinds.enemy_radius(kind) * SPAWN_GAP if rev2 else 0.0

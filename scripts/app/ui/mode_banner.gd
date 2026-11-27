@@ -17,6 +17,7 @@ const STYLE := {
 	&"second_tide": [Color("b57bff"), &"ship"],
 	&"abyss": [Color("6a7dff"), &"orichalcum"],
 	&"coop": [Color("ff9a5c"), &"plus"],
+	&"coop_lan": [Color("ff7ab8"), &"plus"],
 }
 
 var mode: StringName

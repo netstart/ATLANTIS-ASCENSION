@@ -61,6 +61,8 @@ const HINTS: Array[Array] = [[60, "hint.move"], [420, "hint.graze"], [900, "hint
 
 var layout := {}
 var safe := Rect2()
+## Convidada do coop LAN: a arma e a pilha de botões seguem a ala (casco, bombas e medidores são do par).
+var guest: bool = false
 
 var _sim: Sim
 var _reduced := false
@@ -765,7 +767,7 @@ func _refresh_stack(sim: Sim) -> void:
 	if _stack_zone.size == Vector2.ZERO:
 		return
 	var field: Rect2 = layout.get("field", Rect2())
-	var under := _stack_zone.grow(STACK_SHIP_GAP).has_point(field.position + sim.player.pos)
+	var under := _stack_zone.grow(STACK_SHIP_GAP).has_point(field.position + (sim.wing if guest else sim.player).pos)
 	if under != _ship_under:
 		_ship_under = under
 		_apply_stack_alpha()
@@ -1053,7 +1055,7 @@ func _rebuild_lives() -> void:
 
 
 func _refresh_weapon(sim: Sim) -> void:
-	var p := sim.player
+	var p := sim.wing if guest else sim.player
 	var max_level := p.max_level()
 	if p.level != _pip_level or max_level != _pip_max:
 		_pip_level = p.level

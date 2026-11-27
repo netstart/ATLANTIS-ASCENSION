@@ -99,5 +99,5 @@ static func reach(a: Vector2, d: Vector2, field: Vector2, margin: float = 0.0) -
 
 
 static func _aim(sim: Sim, from: Vector2) -> float:
-	var to := sim.player.hit_pos() - from
+	var to := SimCurve.target(sim, from).hit_pos() - from
 	return to.angle() if to.length_squared() > 1.0 else DOWN

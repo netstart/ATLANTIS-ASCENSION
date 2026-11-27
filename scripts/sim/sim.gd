@@ -307,6 +307,8 @@ func damage_mult() -> float:
 func step(input: SimInput, input2: SimInput = null) -> void:
 	if finished:
 		return
+	if input2 != null:
+		input = input.merged(input2)
 	if not offer.is_empty():
 		if input.choice < 0 or input.choice >= offer.size():
 			return
@@ -544,7 +546,7 @@ func spawn_enemy(spec: Dictionary, member: int) -> void:
 	e.setup(def, Vector2(x, y), StringName(String(spec.get("path", "straight"))), params,
 			tables["patterns"], bool(spec.get("from_depth", false)))
 	e.fit(Hitboxes.find(tables, loadout, "enemies", e.id))
-	SimCurve.apply_enemy(e, curve)
+	SimCurve.apply_enemy(e, curve, wing != null)
 	e.marked = bool(spec.get("marked", def.get("marked", false)))
 	if e.marked:
 		scoring.marked_total += 1
@@ -567,7 +569,7 @@ func spawn_boss(boss_id: StringName, final: bool) -> void:
 	if def.is_empty():
 		return
 	boss = SimBoss.new()
-	boss.setup(def, tables["patterns"], SimCurve.boss_hp_mult(curve, def), SimRevision.of(loadout))
+	boss.setup(def, tables["patterns"], SimCurve.boss_hp_mult(curve, def, wing != null), SimRevision.of(loadout))
 	boss.fit(Hitboxes.find(tables, loadout, "bosses", boss_id))
 	if not final:
 		_miniboss_start = frame
@@ -964,8 +966,8 @@ func _kill_enemy(e: SimEnemy) -> void:
 		fury_stacks = mini(10, fury_stacks + 1)
 	if second_tide and can_fire() and player.alive and e.pos.distance_to(player.pos) > 70.0:
 		# Bala de vingança: lenta, mirada, nunca à queima-roupa (Segunda Maré).
-		fire_enemy(e.pos, rad_to_deg((player.pos - e.pos).angle()), 62.0, BulletKinds.enemy_index(&"orb_gold_m"),
-				0.0, 0.0)
+		fire_enemy(e.pos, rad_to_deg((SimCurve.target(self, e.pos).pos - e.pos).angle()), 62.0,
+				BulletKinds.enemy_index(&"orb_gold_m"), 0.0, 0.0)
 	if mods.undertow:
 		splash(e.pos, 30.0, 8.0 * damage_mult())
 	ShipTraits.on_kill(self, e)

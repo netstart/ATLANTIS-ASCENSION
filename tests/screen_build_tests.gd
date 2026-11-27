@@ -7,7 +7,7 @@ extends RefCounted
 const LayoutTests := preload("res://tests/layout_tests.gd")
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const LISTS: Array[StringName] = [&"hangar", &"ships", &"options", &"logbook", &"events", &"shop", &"city",
-		&"practice", &"season", &"records"]
+		&"practice", &"season", &"records", &"ranking", &"lan"]
 
 
 func run(host: Node, check: Callable) -> void:

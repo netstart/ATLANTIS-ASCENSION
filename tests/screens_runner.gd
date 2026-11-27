@@ -12,8 +12,10 @@ extends Node
 const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const DeviceWindow := preload("res://tests/device_window.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
+const RankingViewTests := preload("res://tests/ranking_view_tests.gd")
 const SCREENS: Array[StringName] = [&"boot", &"hub", &"map", &"results", &"credits", &"story", &"hangar",
-		&"ships", &"options", &"shop", &"events", &"logbook", &"records", &"season", &"city", &"practice"]
+		&"ships", &"options", &"shop", &"events", &"logbook", &"records", &"ranking", &"season", &"city", &"practice",
+		&"lan"]
 
 
 func _ready() -> void:
@@ -84,6 +86,12 @@ func _ready() -> void:
 					continue
 				if screen_name == &"shop" and not shop_tab.is_empty():
 					ShopScreen.next_tab = StringName(shop_tab)
+				if screen_name == &"ranking":
+					# No PC o ranking só avisa "só no Android": a captura mostra a lista com pontuações falsas.
+					PlayRanking.available = true
+					PlayRanking.authenticated = true
+					PlayRanking.scores = RankingViewTests.fake_scores(100)
+					PlayRanking.player_id = RankingViewTests.ME
 				app.go(screen_name)
 				if screen_name == &"shop" and not sheet.is_empty():
 					await LayoutTests.settle(self)

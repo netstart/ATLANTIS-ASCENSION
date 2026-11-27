@@ -75,6 +75,8 @@ var weather_slot := Node2D.new()
 var sim: Sim
 var time: float = 0.0
 var touching: bool = false
+## Convidada do coop LAN: a nave deste aparelho é a ala (o ponto da hitbox e a marca da parceira trocam de nave).
+var guest: bool = false
 ## Depuração e capturas de teste: desenha todos os círculos de colisão da Sim (Hitboxes) por cima de tudo.
 var debug_hitboxes: bool = false
 var reduce_flashes: bool = false
@@ -877,9 +879,12 @@ func _draw_wing(ci: CanvasItem, w: SimPlayer, blink: bool) -> void:
 	_bank_transform(ci, w.pos, _wing_bank, ShipArt.game_scale(art))
 	ShipArt.draw(ci, art, time, _wing_livery, alpha, w.last_move.y < -0.3, Color(0, 0, 0, 0), reduce_flashes)
 	ci.draw_set_transform(Vector2.ZERO)
-	var label := w.pos + Vector2(-2.5, ShipArt.game_used(art).end.y + 9.0)
-	ci.draw_string_outline(Locale.font, label, "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0.02, 0.04, 0.08, 0.8))
-	ci.draw_string(Locale.font, label, "2", HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.62, 0.91, 1.0, alpha))
+	# O número marca a nave da parceira: a "2" para quem pilota a nave 1; para a convidada, a "1" (a sem marca é a dela).
+	var other := sim.player if guest else w
+	var mark := "1" if guest else "2"
+	var label := other.pos + Vector2(-2.5, ShipArt.game_used(_art if guest else art).end.y + 9.0)
+	ci.draw_string_outline(Locale.font, label, mark, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, 2, Color(0.02, 0.04, 0.08, 0.8))
+	ci.draw_string(Locale.font, label, mark, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.62, 0.91, 1.0, alpha))
 
 
 func _wing() -> Dictionary:
@@ -1163,7 +1168,7 @@ func _draw_fx_above(ci: CanvasItem) -> void:
 func _draw_hitbox(ci: CanvasItem) -> void:
 	if not touching or not sim.player.alive:
 		return
-	var p := sim.player.hit_pos()
+	var p := (sim.wing if guest and sim.wing != null else sim.player).hit_pos()
 	ci.draw_rect(Rect2(p - Vector2(2.5, 2.5), Vector2(5, 5)), Color(0.08, 0.07, 0.09))
 	ci.draw_rect(Rect2(p - Vector2(1.5, 1.5), Vector2(3, 3)), Color(1, 1, 1))
 

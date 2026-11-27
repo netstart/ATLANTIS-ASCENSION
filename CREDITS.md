@@ -76,6 +76,9 @@ Créditos do jogo mostra as mesmas entradas. Não editar à mão.
 - **GodotGooglePlayBilling** — Godot Engine contributors (MIT) — https://github.com/godot-sdk-integrations/godot-google-play-billing
 - **Google Play Billing Library** — Google LLC (LicenseRef-Google-Play-Billing-Library) — https://developer.android.com/google/play/billing
 - **Hyakki (código portado: escala, área segura, rolagem, save, idiomas, ferramentas)** — Clayton K. N. Passos (MIT) — https://github.com/netstart/hyakki
+- **GodotPlayGameServices** — Jacob Ibáñez Sánchez (MIT) — https://github.com/godot-sdk-integrations/godot-play-game-services
+- **Google Play Games Services v2 SDK** — Google LLC (LicenseRef-Google-Play-Games-Services-SDK) — https://developer.android.com/games/pgs/console/setup
+- **Gson** — Google LLC (Apache-2.0) — https://github.com/google/gson
 
 ## Agradecimentos
 

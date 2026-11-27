@@ -14,6 +14,8 @@ const ObjectiveTests := preload("res://tests/objective_tests.gd")
 const HitboxTests := preload("res://tests/hitbox_tests.gd")
 const BeamTests := preload("res://tests/beam_tests.gd")
 const SeaTests := preload("res://tests/sea_tests.gd")
+const RankingTests := preload("res://tests/ranking_tests.gd")
+const LanTests := preload("res://tests/lan_tests.gd")
 const SecondaryTests := preload("res://tests/secondary_tests.gd")
 const ScriptGate := preload("res://tests/script_gate.gd")
 const SEMVER := "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$"
@@ -35,11 +37,13 @@ func _initialize() -> void:
 	var sim := SimTests.new()
 	# Guardado aqui: as unidades só seguram o método, e o RefCounted sumiria antes de rodar.
 	var powers := PowerTests.new()
+	var lan := LanTests.new()
 	# Unidades (tests/test_shard.gd): as regras rápidas numa só; cada missão inteira pelo bot numa
 	# unidade própria, porque são elas que custam (de 1 a 10 s cada).
 	var units: Array[Dictionary] = [{"name": "Regras rápidas", "weight": 2.0, "run": _rules.bind(sim)}]
 	units.append_array(sim.mission_units())
 	units.append_array(powers.units())
+	units.append_array(lan.units())
 	var mine := TestShard.mine(units, shard)
 	for unit: Dictionary in mine:
 		var start := Time.get_ticks_msec()
@@ -76,6 +80,8 @@ func _rules(_unit_check: Callable, sim: SimTests) -> void:
 	HitboxTests.new().run_unit(_check)
 	BeamTests.new().run_unit(_check)
 	SeaTests.new().run_unit(_check)
+	RankingTests.new().run_unit(_check)
+	LanTests.new().run_unit(_check)
 	SecondaryTests.new().run_unit(_check)
 
 

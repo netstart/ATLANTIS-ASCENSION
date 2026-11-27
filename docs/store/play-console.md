@@ -72,7 +72,8 @@ para `netstart.github.io/atlantis/` (como `privacy-policy.html` e `privacy-polic
 
 ### Acesso ao app
 
-"Todas as funcionalidades estão disponíveis sem acesso especial" (não há login).
+"Todas as funcionalidades estão disponíveis sem acesso especial" (o jogo inteiro abre sem login; o login do
+Google Play Games é opcional e só serve ao ranking de abates).
 
 ### Anúncios
 
@@ -136,9 +137,31 @@ As compras no app **não acrescentam tipo de dado**: o pagamento é feito na tel
 é quem coleta, sob a política dele), e o jogo só recebe se a compra existe. Por isso **Informações financeiras ›
 Histórico de compras** fica desmarcado, como no guia do Google para apps que só usam o Play Billing.
 
-Não marque: informações pessoais, financeiras, saúde, mensagens, fotos, áudio, arquivos, agenda, contatos,
-histórico de navegação, local exato, registros de falhas (o jogo não tem Crashlytics). Depois de salvar, confira
-na prévia "Os dados são criptografados em trânsito" e os quatro tipos acima.
+**Com o ranking de abates ligado** (IDs do Play Games preenchidos, seção "Play Games Services e ranking"), acrescente
+os dados de quem **escolhe entrar** no Google Play Games. Os dois com **Coletado: Sim**, **Compartilhado: Não**,
+**Processado de forma temporária: Não** e **Opcional** (sem login nada é enviado):
+
+| Categoria › tipo | Finalidades |
+|---|---|
+| Informações pessoais › **IDs de usuário** (ID de jogador do Play Games) | Funcionalidade do app |
+| Informações pessoais › **Nome** (nome de jogador do Play Games, mostrado no ranking) | Funcionalidade do app |
+
+Em **Atividade no app › Interações no app**, some a finalidade **Funcionalidade do app**: o jogo envia ao placar o
+total de abates e o tempo jogado de quem entrou. Em "forma de pedir a exclusão dos dados" a resposta continua
+**Não** (não há conta nem servidor nosso), com a nota: o jogador apaga os dados do Play Games deste jogo no app
+Play Games (Configurações › Excluir conta e dados do Play Games) ou em <https://myaccount.google.com>. 👤 Antes de
+salvar, confira a lista com o guia de divulgação de dados do Play Games Services na Ajuda do Play Console.
+
+**Cooperativo em rede local:** a partida troca dados só entre os dois aparelhos na mesma rede Wi‑Fi (comandos e
+estado da partida), sem passar por servidor nosso nem de terceiros e sem guardar nada depois da partida. Não entra
+tipo de dado novo por isso. Se o cooperativo passar a enviar o nome do jogador ao outro aparelho, revise esta
+resposta. As permissões `INTERNET` e `ACCESS_NETWORK_STATE` passam a ser também do jogo (ranking e rede local),
+não só do SDK de anúncios; nenhuma das duas é "perigosa".
+
+Não marque: informações pessoais (com o ranking ligado, só as duas linhas acima; nunca e-mail, endereço ou
+telefone), financeiras, saúde, mensagens, fotos, áudio, arquivos, agenda, contatos, histórico de navegação, local
+exato, registros de falhas (o jogo não tem Crashlytics). Depois de salvar, confira na prévia "Os dados são
+criptografados em trânsito" e os quatro tipos acima (seis com o ranking ligado).
 
 ### ID de publicidade
 
@@ -337,3 +360,70 @@ preencher as declarações no Play Console e enviar o AAB 1.18.0. Passos, nesta 
 5. Publicar o `app-ads.txt` ([modelo](app-ads.txt)) com o ID de publisher real.
 6. **Só então** atualizar a política de privacidade, a ficha ("Contém anúncios") e as declarações (Anúncios = Sim,
    ID de publicidade, Segurança dos dados) e enviar um AAB novo.
+
+## Play Games Services e ranking
+
+O código está pronto: plugin `GodotPlayGameServices` 3.4.0 (`addons/GodotPlayGameServices`, SDK
+`play-services-games-v2` 21.0.0, com o patch das 100 melhores pontuações), a ponte `scripts/autoload/play_ranking.gd`,
+as regras em `scripts/core/kill_ranking.gd` e a tela "Ranking de abates" (`scripts/app/screens/ranking_screen.gd`;
+entra por Recordes e por Opções). O placar ordena pelo **total de abates da carreira**; no empate vence quem tem
+menos tempo jogado. O jogo envia o total depois de cada partida (e quando o jogador entra), só para quem fez login.
+
+**Hoje os dois IDs estão vazios** em `project.godot`:
+
+```ini
+[play_games]
+
+game_id=""
+leaderboard_id=""
+```
+
+Com `game_id` vazio o plugin de exportação não põe nada do Play Games no APK/AAB (nem a biblioteca, nem a
+dependência, nem o `APP_ID` do manifesto) e a tela mostra "O ranking ainda não está disponível". Com `game_id`
+preenchido e `leaderboard_id` vazio o SDK entra no build, mas o ranking continua indisponível. Passos 👤, nesta ordem:
+
+1. **Criar o projeto do Play Games.** Play Console → o app → Play Games Services → Configuração e gerenciamento →
+   Configuração → "Não, meu jogo não usa as APIs do Google" → nome "Atlantis Ascension" → Criar. O Console cria (ou
+   pede para escolher) um projeto do Google Cloud. O **ID do projeto do Play Games** (só números, ex.:
+   `344400766390`) aparece no topo da página de Configuração: é o `game_id`.
+2. **Tela de consentimento OAuth.** Se o Console pedir, abra o link para o Google Cloud e configure a tela de
+   consentimento (tipo Externo, nome do app, e-mail de suporte) e publique-a.
+3. **Credenciais OAuth (uma por certificado).** Em Configuração → Credenciais → Adicionar credencial → tipo
+   **Android** → "Criar cliente OAuth" (abre o Google Cloud): tipo de aplicativo Android, pacote
+   `io.github.netstart.atlantisascension` e o **SHA-1** do certificado. Crie e vincule:
+   - a da **chave de assinatura do app** (a que a Google guarda): Play Console → Integridade do app → Assinatura
+     de apps → "Certificado da chave de assinatura do app" → SHA-1. É a que vale para quem instala pela Play;
+   - a da **chave de upload**: SHA-1 `79:EB:03:DD:FB:6F:FC:15:55:65:9D:F4:CE:91:71:ED:1A:71:40:24` (seção 0). Vale
+     para o AAB/APK instalado direto no aparelho, sem passar pela Play;
+   - opcional, a da chave de debug do Godot, para o APK de debug:
+     `keytool -list -v -keystore <debug.keystore> -alias androiddebugkey -storepass android`.
+
+   Sem a credencial do certificado que assinou o app instalado, o login falha em silêncio (a tela fica em "Entrar
+   com Google Play Games").
+4. **Criar o placar.** Play Games Services → Configuração e gerenciamento → Placares → Criar placar: nome "Ranking de
+   abates" (em inglês "Kill ranking"), formato **Numérico**, **0 casas decimais**, ordem **"Maior é melhor"**, sem
+   limite mínimo nem máximo, proteção contra adulteração ligada. O **ID do placar** (começa com `CgkI`) é o
+   `leaderboard_id`.
+5. **Testadores.** Antes de publicar, só as contas de Play Games Services → Testadores conseguem entrar: ponha o seu
+   e-mail e os dos testadores do teste fechado.
+6. **Colar os dois IDs** em `project.godot` (`[play_games]`, entre aspas), subir a versão, rodar
+   `toolsun_checks.ps1` e `toolsuild_release.ps1` e instalar: Opções → Ranking de abates → "Entrar com Google
+   Play Games" → terminar uma missão → a sua linha aparece em menta.
+7. **Publicar o projeto do Play Games.** Play Games Services → Configuração e gerenciamento → Publicação → resolver
+   as pendências (nome, descrição, ícone 512x512 e imagem de destaque do projeto de jogos) → Revisar e publicar. Sem
+   isso só os testadores veem o ranking.
+8. **Declarações.** Atualizar "Segurança dos dados" (acima) e a política de privacidade antes de enviar o AAB com os
+   IDs.
+
+Para saber:
+
+- O placar guarda **um inteiro**: `abates × 10.000.000 + (9.999.999 − segundos jogados, com teto em 9.999.999)`. No
+  app Play Games esse número aparece cru; a tela do jogo é que o separa em abates e tempo (`12h 05m`). **Não mude a
+  fórmula depois de publicar**: as pontuações antigas ficariam misturadas com as novas (se precisar mudar, crie um
+  placar novo e troque o `leaderboard_id`).
+- A Play só guarda a **maior** pontuação de cada jogador. Como os abates da carreira só crescem, cada envio
+  substitui o anterior.
+- Questionário de classificação (IARC): o ranking mostra o nome de jogador do Play Games e os números; não há chat
+  nem troca de conteúdo entre jogadores, então "Interação entre usuários" continua **Não**. 👤 Se a Play perguntar
+  por placares/recursos sociais em separado, marque que o app tem placares.
+- Steam/PC: a tela avisa que o ranking mundial é da versão Android.

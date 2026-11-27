@@ -33,6 +33,8 @@ const POWER_DUCK_SECONDS := 1.8
 ## Atlante salvo: o sino quente sobe uma escala maior a partir de uma sexta abaixo (nada agudo; o último degrau é o
 ## tom original do sino).
 const RESCUE_SCALE: Array[float] = [0.6, 0.675, 0.75, 0.8, 0.9, 1.0]
+## Coop LAN: sem passo da Sim por este tempo, aparece "Esperando o parceiro…".
+const LAN_WAIT_NOTE := 0.5
 
 var sim := Sim.new()
 var mission_id: StringName = &"c1m1"
@@ -54,8 +56,15 @@ var stress: int = 0
 var paused: bool = false
 ## Tela lógica que decide a altura do campo no começo (testes simulam cada aparelho); zero = a da viewport.
 var screen := Vector2.ZERO
+## Coop em rede local (o App liga antes de entrar na árvore): a Sim só anda com a entrada dos dois aparelhos, e a
+## altura do campo e a sensibilidade vêm do pacote de início na carga, nunca deste aparelho.
+var lan: LanSession
 
 var _bot: BotPilot
+## Coop LAN: passos dados neste quadro, há quanto tempo a Sim espera a parceira e o aviso disso sobre o campo.
+var _lan_steps: int = 0
+var _lan_wait: float = 0.0
+var _lan_note: Label
 var _wing_bomb_held: bool = false
 var _ghost_sim: Sim
 var _backdrop: OceanBackdrop
@@ -124,16 +133,16 @@ func _ready() -> void:
 	# reproduz a altura gravado nele (os antigos, sem ela, rodam em 450).
 	loadout = (loadout as Dictionary).duplicate() if typeof(loadout) == TYPE_DICTIONARY \
 			else Sim.default_loadout(StringName(String(loadout)))
-	if playback == null:
-		var view := screen if screen != Vector2.ZERO else get_viewport().get_visible_rect().size
-		loadout["field_h"] = Playfield.height_for(MenuKit.safe_rect(view, MenuKit.safe_margins(self)), _pixel_k())
+	if playback == null and lan == null:
+		loadout["field_h"] = field_height(self, screen if screen != Vector2.ZERO else get_viewport().get_visible_rect().size)
 	sim.setup(mission_data if not mission_data.is_empty() else Sim.load_mission(mission_id), Sim.load_tables(),
 			loadout, seed_value,
-			float(Settings.get_value("drag_sensitivity")))
+			float(loadout["sensitivity"] if lan != null else Settings.get_value("drag_sensitivity")))
 	if use_bot:
 		_bot = BotPilot.new()
 	recording = Replay.new(sim.mission, seed_value, loadout)
-	recording.loadout["sensitivity"] = float(Settings.get_value("drag_sensitivity"))
+	if lan == null:
+		recording.loadout["sensitivity"] = float(Settings.get_value("drag_sensitivity"))
 	if ghost != null and playback == null:
 		_ghost_sim = ghost.make_sim()
 	_backdrop = OceanBackdrop.new()
@@ -191,12 +200,14 @@ func _ready() -> void:
 	_hud.revive_chosen.connect(_on_revive_choice)
 	_hud.blessing_chosen.connect(func(index: int) -> void: _choice = index)
 	_hud.setup_mission(sim)
+	if lan != null:
+		_setup_lan()
 	get_viewport().size_changed.connect(relayout)
 	MenuKit.on_insets_change(self, relayout)
 	relayout.call_deferred()
 	GameClock.reset()
 	# Turbo (compra): mais passos fixos por quadro, a mesma partida passo a passo; o bot dos testes não usa.
-	var turbo := not use_bot and Turbo.owned(SaveManager.data)
+	var turbo := not use_bot and lan == null and Turbo.owned(SaveManager.data)
 	GameClock.turbo = Turbo.speed(SaveManager.data) if turbo else 1.0
 	_hud.set_turbo(turbo, GameClock.turbo)
 	GameClock.ticked.connect(_on_tick)
@@ -254,6 +265,35 @@ func relayout_for(view: Vector2) -> void:
 	_hud.apply_layout(hud_layout, hud_safe)
 	_callouts.position = (hud_layout["field"] as Rect2).position
 	_callouts.size = (hud_layout["field"] as Rect2).size
+
+
+## Altura do campo que cabe na tela `view` de `node` (a partida decide no começo; a sala do coop LAN manda a de cada
+## aparelho e o anfitrião fica com a menor).
+static func field_height(node: Node, view: Vector2) -> float:
+	var k := maxi(1, roundi(node.get_viewport().get_final_transform().x.x))
+	return Playfield.height_for(MenuKit.safe_rect(view, MenuKit.safe_margins(node)), k)
+
+
+## Coop LAN: a convidada pilota a ala (o HUD e o ponto da hitbox seguem a nave dela), ninguém recomeça sozinho e o
+## aviso de espera fica no alto do campo.
+func _setup_lan() -> void:
+	_hud.guest = not lan.is_host
+	_world.guest = not lan.is_host
+	(_hud.find_child("Restart", true, false) as Control).visible = false
+	_lan_note = UiTheme.label("", UiTheme.FONT_SIZE, UiTheme.GOLD)
+	_lan_note.name = "LanNote"
+	_lan_note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_lan_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_lan_note.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_lan_note.visible = false
+	_callouts.add_child(_lan_note)
+	_lan_note.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE, Control.PRESET_MODE_MINSIZE, 8)
+	_lan_note.offset_top = 64.0
+
+
+## Coop LAN: a nave deste aparelho (a ala para a convidada).
+func _my_ship() -> SimPlayer:
+	return sim.wing if lan != null and not lan.is_host and sim.wing != null else sim.player
 
 
 ## Escala inteira da tela lógica para a física (PixelScaler).
@@ -332,6 +372,8 @@ func set_paused(value: bool) -> void:
 	if sim.finished:
 		return
 	paused = value
+	if lan != null:
+		lan.set_paused(value)
 	GameClock.paused = value
 	_weather_audio.paused = value
 	_hud.set_paused(value)
@@ -362,8 +404,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if paused:
 		return
-	if sim.wing != null and (event is InputEventJoypadButton or event is InputEventJoypadMotion):
-		# No co-op o controle é da nave 2 (lido em _wing_input).
+	if sim.wing != null and lan == null and (event is InputEventJoypadButton or event is InputEventJoypadMotion):
+		# No co-op local o controle é da nave 2 (lido em _wing_input).
 		return
 	if event is InputEventScreenTouch:
 		var touch := event as InputEventScreenTouch
@@ -400,8 +442,8 @@ func _human_input() -> SimInput:
 	input.move = _drag
 	_drag = Vector2.ZERO
 	input.axis = Input.get_vector(&"move_left", &"move_right", &"move_up", &"move_down")
-	if sim.wing != null:
-		# Co-op: a nave 1 fica com o teclado (e o toque); o controle move a ala.
+	if sim.wing != null and lan == null:
+		# Co-op local: a nave 1 fica com o teclado (e o toque); o controle move a ala.
 		input.axis = Vector2(_key(KEY_D, KEY_RIGHT) - _key(KEY_A, KEY_LEFT), _key(KEY_S, KEY_DOWN) - _key(KEY_W, KEY_UP))
 		input.axis = input.axis.limit_length(1.0)
 	input.precise = Input.is_action_pressed(&"precise") or _touch_ids.size() >= 2
@@ -424,6 +466,9 @@ func _human_input() -> SimInput:
 func _on_tick(_dt: float) -> void:
 	if paused or sim.finished:
 		return
+	if lan != null:
+		_lan_tick()
+		return
 	var input: SimInput
 	if playback != null:
 		input = playback.next_input()
@@ -445,6 +490,40 @@ func _on_tick(_dt: float) -> void:
 		_stress()
 	sim.step(input, input2)
 	_beam_fire_sound()
+
+
+## Coop LAN (lockstep, LanSession): manda a entrada deste aparelho para daqui a LanSession.DELAY passos e só dá o
+## passo com as duas entradas; sem a da parceira a Sim espera. Atrasado em relação a ela, dá um passo a mais, até o
+## teto de passos por quadro do GameClock. A sensibilidade do arrasto é aplicada aqui (a Sim roda com 1 nos dois).
+func _lan_tick() -> void:
+	lan.poll(0.0)
+	for _i: int in range(2 if lan.behind() else 1):
+		if _lan_steps >= GameClock.MAX_STEPS_PER_SPEED:
+			return
+		if lan.wants_input():
+			var input := _human_input()
+			input.move *= float(Settings.get_value("drag_sensitivity"))
+			lan.push(input)
+		var pair := lan.take()
+		if pair.is_empty():
+			return
+		sim.step(pair[0], pair[1])
+		_lan_steps += 1
+		_lan_wait = 0.0
+		lan.after_step(sim)
+		_beam_fire_sound()
+		if sim.finished:
+			return
+
+
+## Coop LAN: "Esperando o parceiro…" depois de LAN_WAIT_NOTE s sem passo, ou "Parceiro pausou" na hora.
+func _lan_frame(delta: float) -> void:
+	_lan_steps = 0
+	_lan_wait = 0.0 if paused or sim.finished else _lan_wait + delta
+	var text := tr("lan.partner_paused") if lan.partner_paused else tr("lan.waiting")
+	_lan_note.visible = not sim.finished and (lan.partner_paused or _lan_wait > LAN_WAIT_NOTE)
+	if _lan_note.visible and _lan_note.text != text:
+		_lan_note.text = text
 
 
 ## O feixe acende no quadro em que o aviso acaba (idade == aviso): baque grave com rugido que fecha, o fim da carga
@@ -516,6 +595,8 @@ func _stress() -> void:
 # --- Quadro ------------------------------------------------------------------------------------
 
 func _process(delta: float) -> void:
+	if lan != null:
+		_lan_frame(delta)
 	for ev: Dictionary in sim.take_events():
 		_on_event(ev)
 	for c: Dictionary in _style.tick(sim):
@@ -534,7 +615,7 @@ func _process(delta: float) -> void:
 	_world.position = jitter.round()
 	_world.touching = not _touch_ids.is_empty() or Input.is_action_pressed(&"precise")
 	# Câmera 2,5D: o chão acompanha a nave na horizontal (só visual; a Sim não lê nada daqui).
-	var cam_tilt := Vector2(clampf(sim.player.pos.x / Playfield.FIELD.x * 2.0 - 1.0, -1.0, 1.0), 0.0)
+	var cam_tilt := Vector2(clampf(_my_ship().pos.x / Playfield.FIELD.x * 2.0 - 1.0, -1.0, 1.0), 0.0)
 	_backdrop.apply(sim.scroll, _emerge, cam_tilt, bool(Settings.get_value("reduce_motion")))
 	_backdrop.set_drift((sim.gravity if sim.drift_frames > 0 else Vector2.ZERO) + sim.weather.wind)
 	_weather.refresh(delta)

@@ -16,6 +16,7 @@ const MODES: Array[Dictionary] = [
 	{"id": &"second_tide", "after_all": [&"c9m3"], "rewards": true},
 	{"id": &"abyss", "after_all": [&"c7m1"], "rewards": true},
 	{"id": &"coop", "after_all": [&"c1m3"], "rewards": true},
+	{"id": &"coop_lan", "after_all": [&"c1m3"], "rewards": true},
 ]
 ## Segunda Maré: o fim de cada capítulo, com balas mais rápidas, vingança e chefes remendados.
 const SECOND_TIDE: Array[StringName] = [&"c1m2", &"c2m3", &"c3m3a", &"c4m3a", &"c5m3a", &"c6m3a", &"c7m3a", &"c8m3a",
@@ -206,7 +207,7 @@ static func boss_only(boss_id: StringName, index: int) -> Dictionary:
 static func run(mode: StringName, profile: Dictionary, date: String, seed: int) -> Array[Dictionary]:
 	var out: Array[Dictionary] = []
 	match mode:
-		&"arcade", &"coop":
+		&"arcade", &"coop", &"coop_lan":
 			for id: StringName in ARCADE:
 				out.append(_load(id))
 		&"boss_rush":
@@ -262,7 +263,8 @@ static func loadout_for(mode: StringName, profile: Dictionary, date: String) -> 
 		out["second_tide"] = true
 	# A evolução visual do hangar vale em todo modo: só veste a nave, não muda a partida.
 	out["ship_level"] = Economy.ship_level(profile, ship)
-	if mode == &"coop":
+	# No coop em rede o anfitrião troca a ala pela nave da convidada (LanSession.pack_for).
+	if mode in [&"coop", &"coop_lan"]:
 		out["coop"] = true
 		out["coop_ship"] = coop_partner(profile)
 		out["coop_level"] = Economy.ship_level(profile, StringName(String(out["coop_ship"])))
@@ -280,7 +282,7 @@ static func coop_partner(profile: Dictionary) -> String:
 	return "manta" if mine != "manta" else "falcon"
 
 
-## Co-op só no PC (dois controles ou teclado e controle).
+## Co-op local só no PC (dois controles ou teclado e controle); o coop em rede local vale em todo aparelho.
 static func available(mode: StringName) -> bool:
 	return mode != &"coop" or not OS.has_feature("mobile")
 

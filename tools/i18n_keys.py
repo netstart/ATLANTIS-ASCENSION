@@ -60,6 +60,9 @@ EXTRA = [f"credits.section_{s}" for s in ("art", "music", "sfx", "fonts", "tech"
                                   "nova", "titan", "ascension") for n in (1, 2, 3) for x in ("", ".desc")] + [
     "hud.power", "hint.power", "power.tier", "power.ready", "power.meter"] + [
     f"mini.{t}" for t in ("rescue", "sabotage", "intercept")] + [
+    f"ranking.{s}" for s in ("android_only", "unavailable", "sign_in_hint", "loading", "offline", "empty")] + [
+    "mode.coop_lan", "mode.coop_lan_desc"] + [
+    f"lan.err_{e}" for e in ("no_network", "port", "not_found", "full", "version", "left", "lost", "desync")] + [
     f"store.premium_lore_{s}" for s in ("hippocampus", "nereid", "amphitrite")] + [
     f"store.{c}_{k}" for c in ("pearls", "credits") for k in ("section", "intro", "note", "buy")]
 

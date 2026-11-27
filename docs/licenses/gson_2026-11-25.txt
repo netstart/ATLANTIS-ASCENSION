@@ -1,0 +1,9 @@
+Gson license snapshot
+Verified: 2026-11-25
+Artifact: com.google.code.gson:gson:2.11.0
+
+Upstream repository identifies Gson as Apache License 2.0 and its tag LICENSE file carries the full license.
+
+Sources:
+- https://github.com/google/gson/tree/gson-parent-2.11.0
+- https://github.com/google/gson/blob/gson-parent-2.11.0/LICENSE

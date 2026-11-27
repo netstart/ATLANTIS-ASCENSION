@@ -1,0 +1,4 @@
+GodotPlayGameServices 3.4.0 source snapshot
+Source: https://github.com/godot-sdk-integrations/godot-play-game-services
+Commit: 0563b54
+License: MIT

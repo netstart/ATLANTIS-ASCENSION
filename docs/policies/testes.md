@@ -147,7 +147,9 @@ testes rodam no Godot do PC (nunca no emulador).
 | Layout | `tests/layout_tests.gd` | todas as telas em `DeviceProfiles.layout_cases()` |
 | Fatias | `tests/test_shard.gd` (regras em `tests/run_tests.gd`) | toda unidade em exatamente uma fatia, divisão determinística, argumento malformado recusado |
 | Parallax | `tests/parallax_tests.gd` | camadas determinísticas, ordem de profundidade, reduzir movimento |
+| Ranking de abates | `tests/ranking_tests.gd`, `tests/ranking_view_tests.gd` | pontuação (ida e volta, ordem, teto do tempo), tempo jogado, linhas, estados da tela e 100 linhas em todas as resoluções |
 | Loja e anúncios | `tests/shop_tests.gd` | recompensas, relógio voltado, provedor simulado, nada de anúncio na missão |
+| Co-op em rede local | `tests/lan_tests.gd`, `tests/lan_screen_tests.gd` | código e busca da sala, entrada no fio, fator de coop (vida ×, mesmas balas do solo), duas Sims em lockstep por ENet em 127.0.0.1 com latência e perda (hashes iguais, espera, saída, queda, dessincronia), tela da sala em todas as resoluções e dois Apps jogando até o resultado |
 
 Nenhum PR é mesclado e nenhuma versão é lançada sem que os testes unitários (inclusive os de layout em todas as
 resoluções), os de integração, os E2E e os benchmarks de rolagem e de partida passem **no Godot** em todas as

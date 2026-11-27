@@ -35,9 +35,7 @@ func _init(p_mission: Dictionary = {}, p_seed: int = 0, p_loadout: Dictionary = 
 
 ## Grava a entrada de um passo (a mesma que foi para Sim.step).
 func record(input: SimInput) -> void:
-	var bits := (1 if input.precise else 0) | (2 if input.fire else 0) | (4 if input.special else 0) \
-			| (8 if input.bomb else 0) | (16 if input.tide else 0) | (32 if input.power else 0)
-	var row := [input.move.x, input.move.y, input.axis.x, input.axis.y, bits, input.taps, input.choice]
+	var row := [input.move.x, input.move.y, input.axis.x, input.axis.y, bits_of(input), input.taps, input.choice]
 	if row == _last and not blocks.is_empty():
 		blocks[-1][0] = int(blocks[-1][0]) + 1
 		return
@@ -64,16 +62,25 @@ func next_input() -> SimInput:
 	var input := SimInput.new()
 	input.move = Vector2(float(b[1]), float(b[2]))
 	input.axis = Vector2(float(b[3]), float(b[4]))
-	var bits := int(b[5])
+	set_bits(input, int(b[5]))
+	input.taps = int(b[6])
+	input.choice = int(b[7])
+	return input
+
+
+## Botões de uma entrada num inteiro (o replay e o coop em rede, LanSession, usam a mesma codificação).
+static func bits_of(input: SimInput) -> int:
+	return (1 if input.precise else 0) | (2 if input.fire else 0) | (4 if input.special else 0) \
+			| (8 if input.bomb else 0) | (16 if input.tide else 0) | (32 if input.power else 0)
+
+
+static func set_bits(input: SimInput, bits: int) -> void:
 	input.precise = bits & 1 != 0
 	input.fire = bits & 2 != 0
 	input.special = bits & 4 != 0
 	input.bomb = bits & 8 != 0
 	input.tide = bits & 16 != 0
 	input.power = bits & 32 != 0
-	input.taps = int(b[6])
-	input.choice = int(b[7])
-	return input
 
 
 func rewind() -> void:

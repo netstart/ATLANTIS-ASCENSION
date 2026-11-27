@@ -1,0 +1,14 @@
+Google Play Games Services v2 SDK (com.google.android.gms:play-services-games-v2)
+Copyright Google LLC. All rights reserved.
+
+This SDK is distributed by Google through Google Maven and included as an Android dependency of
+the MIT-licensed GodotPlayGameServices plugin. It is governed by Google's Android Software
+Development Kit License Agreement and applicable Google APIs / Play Games Services terms:
+
+- Android SDK License Agreement: https://developer.android.com/studio/terms
+- Google APIs Terms of Service: https://developers.google.com/terms
+- Google Play Games Services setup: https://developer.android.com/games/pgs/console/setup
+- Google Privacy Policy: https://policies.google.com/privacy
+
+The game uses this SDK for Play Games authentication and leaderboards. It does not use server-side
+access or request user email or friends-list data.
