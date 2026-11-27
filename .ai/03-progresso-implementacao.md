@@ -766,3 +766,7 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   loja, `store.credits_note` e a política de privacidade (docs e site) dizem que os créditos sobem o nível da nave e
   também saem jogando; removidas as afirmações gerais de "nenhuma compra vende poder / sem pay-to-win" (as notas por
   produto — Pérolas só cosmético, Apoiar sem poder — seguem verdadeiras). Testes: `iap_tests._credits`
+- ✅ `1.35.1` CI sem testes (pedido do dono): o workflow `.github/workflows/android-play.yml` perdeu o job `checks`
+  (que rodava `tools/run_checks.ps1`) e o gatilho de `pull_request`; o job `release` agora baixa o Godot sozinho
+  (cache + download, não depende mais do job de checagens). O CI só assina o AAB e publica na Play. Regra registrada
+  no `AGENTS.md` ("Testes e CI"): os testes rodam só na máquina do desenvolvedor, antes de cada push.

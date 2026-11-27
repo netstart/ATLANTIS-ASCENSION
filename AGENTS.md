@@ -91,6 +91,10 @@ Sempre que houver uma nova versão (commit com SemVer, ver [docs/policies/versio
 - **Arte própria do mantenedor:** `D:\src\assets-meus` (hoje só a arte do Hyakki; veja o `readme.md` de lá).
 - **Idiomas:** pt-BR, en, es, de, fr, ru, id, ja, ko, zh-TW, zh-CN.
 - **Lojas:** Google Play (grátis, anúncio recompensado opcional, cosméticos) e Steam (premium, sem anúncios).
+- **Testes e CI:** os testes e checagens (`tools/run_checks.ps1`) rodam **só na máquina do desenvolvedor**, antes de
+  cada commit e push (espere o "TUDO OK"). O GitHub Actions **não executa testes**: o workflow
+  `.github/workflows/android-play.yml` só assina o AAB e publica na Play. Quem dá push é responsável por rodar as
+  checagens localmente antes.
 - **Publicação na Play:** push na `main` publica sozinho no teste fechado (`alpha`) se o `version/code` for novo;
   produção só por Actions → Android Play → Run workflow (`production`), promovendo a versão do teste fechado.
 - **Pacote Android:** `io.github.netstart.atlantisascension` (provisório até o Play Console).
