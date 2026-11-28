@@ -21,6 +21,10 @@
 #     o limite de 60 FPS das opções fazia cada `await process_frame` custar 16,7 ms de verdade). As esperas
 #     dos testes contam quadros, então o tempo de jogo esperado é o mesmo de antes.
 #   - As 4 partidas do determinismo (1x, 2x, 3x e 3x na qualidade Baixa) também rodam em paralelo.
+#   - Pesos das fatias em segundos medidos (`-- --timing`). A campanha da economia (~2 min 45 s em série, antes
+#     a unidade que marcava o fim) roda em 3 trechos paralelos (`-- --economy=I/N`): cada trecho parte do estado
+#     guardado em .godot/test-cache/ pela rodada anterior, e este script confere que o começo de cada trecho é
+#     o fim do anterior nesta rodada (se não for, roda o trecho de novo do estado certo; ver Restart-StaleEconomy).
 #   - Cada processo do Godot usa uma pasta user:// própria e temporária (APPDATA e XDG_DATA_HOME apontam
 #     para ela): processos ao mesmo tempo nunca gravam o mesmo save, settings.cfg, replay ou log, e o
 #     perfil do jogador nunca é tocado. A pasta é apagada no fim.
@@ -44,11 +48,15 @@ $project = Split-Path -Parent $PSScriptRoot
 $failed = $false
 $clock = [Diagnostics.Stopwatch]::StartNew()
 $Jobs = [Math]::Max(1, $Jobs)
-# Fatias: a integração tem uma unidade de ~1,5 min (campanha da economia, em série por natureza) e o resto
-# se divide bem; as regras são 41 unidades de 1 a 10 s. Mais fatias que isso só disputam os núcleos.
-$intShards = [int][Math]::Max(1, [Math]::Min(6, [Math]::Floor($Jobs / 2)))
-$ruleShards = [int][Math]::Max(1, [Math]::Min(2, [Math]::Floor($Jobs / 4)))
+# Fatias (pesos em segundos medidos com `-- --timing`, divisão gulosa em tests/test_shard.gd): a integração
+# sem a campanha da economia tem ~8 min de CPU em ~300 unidades curtas; as regras, ~3 min em 56 unidades
+# de até 8 s. A campanha da economia (~2 min 45 s, em série por natureza) roda à parte em 3 trechos.
+$intShards = [int][Math]::Max(1, [Math]::Min(8, [Math]::Floor($Jobs / 2)))
+$ruleShards = [int][Math]::Max(1, [Math]::Min(4, [Math]::Floor($Jobs / 4)))
+$econParts = if ($Jobs -ge 4) { 3 } else { 1 }
 $runRoot = Join-Path ([IO.Path]::GetTempPath()) ("atlantis-checks-" + $PID)
+# Estado do fim de cada trecho da economia, guardado de uma rodada para a seguinte (fora do git: .godot/).
+$econCache = Join-Path $project '.godot\test-cache'
 
 function Invoke-Godot([string[]]$GodotArgs) {
     # O Godot escreve avisos no stderr; no PowerShell 5.1 isso não pode encerrar o script.
@@ -69,7 +77,7 @@ function Add-Job([string]$Name, [string]$Exe, [string[]]$Arguments, [bool]$Sandb
     [void]$jobList.Add([pscustomobject]@{
         Name = $Name; Exe = $Exe; Arguments = $Arguments; Sandbox = $Sandbox
         Process = $null; Out = $null; Err = $null; Code = $null; Seconds = 0.0; Lines = @(); TimedOut = $false
-        Clock = $null
+        Clock = $null; Reruns = 0
     })
 }
 
@@ -133,12 +141,52 @@ function Invoke-Jobs {
                 $job.Process.WaitForExit()
                 Complete-CheckJob $job
                 $running.Remove($job)
+                $again = Restart-StaleEconomy
+                if ($again) { [void]$running.Add($again) }
             }
         }
     }
 }
 
 function Find-CheckJob([string]$Name) { $jobList | Where-Object { $_.Name -eq $Name } | Select-Object -First 1 }
+
+# Hash do estado da economia que o trecho imprimiu ("economia T/N: começo|fim <md5>"; T de 1 a N).
+function Get-EconomyHash($Job, [bool]$End) {
+    foreach ($line in $Job.Lines) {
+        if ($line -match '^economia \d+/\d+: (\S+) ([0-9a-f]{32})$' -and (($Matches[1] -eq 'fim') -eq $End)) {
+            return $Matches[2]
+        }
+    }
+    return $null
+}
+
+# Cada trecho da economia tem de começar do estado em que o anterior terminou. O começo vem do estado guardado
+# na rodada anterior; se o balanceamento mudou desde então, ele está velho: assim que os dois trechos terminam,
+# o de depois roda de novo (sem esperar a fila) a partir do estado que o anterior acabou de guardar, e só as
+# verificações da nova rodada valem. Chamado a cada processo que termina; devolve o trecho reiniciado ou $null.
+function Restart-StaleEconomy {
+    for ($t = 1; $t -lt $econParts; $t++) {
+        $before = Find-CheckJob "economia $($t - 1)/$econParts"
+        $job = Find-CheckJob "economia $t/$econParts"
+        if ($null -eq $before.Code -or $null -eq $job.Code) { return $null }  # ainda rodando
+        $end = Get-EconomyHash $before $true
+        if (-not $end) { return $null }  # o anterior caiu: Test-Shards reprova
+        if ((Get-EconomyHash $job $false) -eq $end) { continue }
+        if ($job.Reruns -gt 0) {
+            if (-not ($job.Lines -match 'não começou do fim')) {
+                $job.Lines += "FALHOU: $($job.Name) não começou do fim do trecho anterior ($end)"
+            }
+            continue
+        }
+        Write-Host "   $($job.Name): começou de um estado guardado velho; roda de novo" -ForegroundColor DarkGray
+        $job.Reruns++
+        $job.Code = $null
+        $job.TimedOut = $false
+        Start-CheckJob $job
+        return $job
+    }
+    return $null
+}
 
 # Fatias de uma suíte: cada fatia sem erro e com a linha final, as fatias somando todas as unidades.
 # Imprime as linhas que interessam e o total de verificações. Devolve $true se passou.
@@ -192,12 +240,18 @@ $importSeconds = $clock.Elapsed.TotalSeconds
 
 # Etapas 2 a 6 em paralelo; as mais longas entram primeiro na fila.
 $godotBase = @('--headless', '--path', $project)
+$integration = $godotBase + @('--fixed-fps', '60', 'res://tests/integration_tests.tscn', '--')
+for ($i = 0; $i -lt $econParts; $i++) {
+    Add-Job "economia $i/$econParts" $Godot ($integration + @("--economy=$i/$econParts", "--economy-cache=$econCache")) $true
+}
 for ($i = 0; $i -lt $intShards; $i++) {
-    Add-Job "integração $i/$intShards" $Godot ($godotBase + @('--fixed-fps', '60', 'res://tests/integration_tests.tscn', '--', "--shard=$i/$intShards")) $true
+    Add-Job "integração $i/$intShards" $Godot ($integration + @("--shard=$i/$intShards")) $true
 }
 for ($i = 0; $i -lt $ruleShards; $i++) {
     Add-Job "regras $i/$ruleShards" $Godot ($godotBase + @('--script', 'res://tests/run_tests.gd', '--', "--shard=$i/$ruleShards")) $true
 }
+# O lint é um processo só de ~25 s: entra antes das partidas, para não ficar por último na fila.
+Add-Job 'lint' 'python' @('-m', 'gdtoolkit.linter', (Join-Path $project 'scripts'), (Join-Path $project 'tests')) $false
 $hasGame = Test-Path (Join-Path $project 'scenes\game\Game.tscn')
 if ($hasGame) {
     foreach ($speed in 1, 2, 3) {
@@ -206,13 +260,12 @@ if ($hasGame) {
     # Qualidade gráfica não pode mudar a simulação.
     Add-Job 'partida 3x Baixa' $Godot ($godotBase + @('--fixed-fps', '60', '--', '--bot', '--seed=7', '--speed=3', '--gfx=low', '--quit-at=90')) $true
 }
-Add-Job 'lint' 'python' @('-m', 'gdtoolkit.linter', (Join-Path $project 'scripts'), (Join-Path $project 'tests')) $false
 Add-Job 'textos' 'python' @('-I', (Join-Path $PSScriptRoot 'build_i18n.py'), '--check') $false
 Add-Job 'licenças' 'python' @('-I', (Join-Path $PSScriptRoot 'check_licenses.py')) $false
 Add-Job 'privacidade' 'python' @('-I', (Join-Path $PSScriptRoot 'build_privacy_page.py'), '--check') $false
 Add-Job 'loja' 'python' @('-I', (Join-Path $PSScriptRoot 'check_store_texts.py')) $false
 
-Write-Host "== Etapas 2 a 6 em paralelo ($Jobs processos; integração em $intShards fatias, regras em $ruleShards)" -ForegroundColor Cyan
+Write-Host "== Etapas 2 a 6 em paralelo ($Jobs processos; integração em $intShards fatias e a economia em $econParts trechos, regras em $ruleShards)" -ForegroundColor Cyan
 try {
     Invoke-Jobs
 } finally {
@@ -241,6 +294,8 @@ foreach ($name in 'textos', 'licenças', 'privacidade', 'loja') {
 
 Write-Host '== 5. Testes de integração (dados, idiomas, save, licenças, layout em todas as resoluções)' -ForegroundColor Cyan
 if (-not (Test-Shards 'integração' 'integração' $intShards 40)) { $failed = $true }
+Write-Host -NoNewline 'campanha da economia: '
+if (-not (Test-Shards 'economia' 'economia' $econParts 40)) { $failed = $true }
 
 Write-Host '== 6. Determinismo e estresse da partida' -ForegroundColor Cyan
 if ($hasGame) {

@@ -416,11 +416,12 @@ func _data(check: Callable) -> void:
 ## Missão inteira pelo bot, uma unidade por missão (tests/test_shard.gd divide as unidades entre
 ## processos): termina, vence, respeita os tetos de balas e o ritmo. A c1m1 também confere o
 ## determinismo: duas vezes com a mesma semente (mesmo hash) e uma com outra semente.
-## Peso de cada unidade: a duração do roteiro (length_s), que acompanha o custo da partida.
+## Peso de cada unidade (segundos, como as outras unidades): a duração do roteiro (length_s) acompanha o custo da
+## partida; o bot joga ~35 s de roteiro por segundo de processo (Ryzen 7 4750U, `-- --timing`).
 func mission_units() -> Array[Dictionary]:
 	var units: Array[Dictionary] = []
 	for id: StringName in mission_ids():
-		var length := float(Sim.load_mission(id).get("length_s", 180.0))
+		var length := float(Sim.load_mission(id).get("length_s", 180.0)) / 35.0
 		if id == &"c1m1":
 			units.append({"name": "Missão c1m1 e determinismo", "weight": length * 3.0,
 					"run": _mission_c1m1})

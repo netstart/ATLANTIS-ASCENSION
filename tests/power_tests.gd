@@ -25,9 +25,9 @@ func run_unit(check: Callable) -> void:
 	_determinism(check)
 
 
-## Unidade pesada (tests/test_shard.gd): 90 s do bot duas vezes, com replay gravado e reproduzido.
+## Unidade das fatias (tests/test_shard.gd): 90 s do bot duas vezes, com replay gravado e reproduzido (~3 s).
 func units() -> Array[Dictionary]:
-	return [{"name": "Poderes: bot, determinismo e replay", "weight": 90.0 * 3.0, "run": _bot_and_replay}]
+	return [{"name": "Poderes: bot, determinismo e replay", "weight": 3.3, "run": _bot_and_replay}]
 
 
 func _sim(ship: StringName, seed: int = 5) -> Sim:

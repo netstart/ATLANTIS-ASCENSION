@@ -14,7 +14,8 @@ extends RefCounted
 ## N + DELAY e só dá o passo quando tem as duas (take); sem a da parceira, espera. A entrada vai em binário (os
 ## campos do replay, floats de 32 bits) e quem a gera usa a mesma versão quantizada que mandou (push), senão as
 ## Sims divergem. A cada HASH_EVERY passos os lados trocam SimHash: diferença encerra a partida nos dois ("desync").
-## Queda da conexão (NetLink.TIMEOUT_MS) encerra com "lost"; a parceira saindo, com "left".
+## Queda da conexão (NetLink.TIMEOUT_MS) encerra com "lost"; a parceira saindo, com "left". O adeus do fim da corrida
+## ("done") não encerra quem ainda está uns passos atrás: as entradas dela até o fim já chegaram.
 
 signal changed
 ## Começou a corrida (nos dois aparelhos): {"missions": [ids], "seed", "loadout"}.
@@ -72,6 +73,8 @@ var _their_hash: Dictionary = {}
 ## Enlace que já se despediu: fica vivo um instante para o adeus sair antes de fechar.
 var _dying: NetLink
 var _dying_at: int = 0
+## A parceira já terminou a corrida e fechou o enlace (adeus "done"): o resto da missão sai das entradas guardadas.
+var _partner_done: bool = false
 
 
 # --- Sala ----------------------------------------------------------------------------------------
@@ -264,11 +267,18 @@ func _on_packet(from: int, data: PackedByteArray) -> void:
 			changed.emit()
 		Msg.BYE:
 			var why := String(body.get("why", ""))
-			if why == "done":
-				# Fim normal da corrida: a parceira fechou depois do resultado. Sem `error`: nada a avisar.
+			if why == "done" and state == State.PLAYING:
+				# Fim normal da corrida: a parceira terminou e fechou. Este aparelho pode estar uns passos atrás (em
+				# pausa, ou o adeus chegou junto com as últimas entradas): as entradas dela até o fim já chegaram (canal
+				# em ordem), então ele termina a própria missão com elas e fecha ao gravar o resultado (leave). Sem
+				# `error` e sem `ended`: nada a avisar.
+				_partner_done = true
+				link.close()
+				link = null
+				changed.emit()
+			elif why == "done":
 				_close()
 				changed.emit()
-				ended.emit(&"done")
 			elif not (is_host and state == State.LINKED):
 				# (A convidada que sai da sala do anfitrião só libera a vaga, quando a conexão dela fecha.)
 				_end(&"desync" if why == "desync" else &"left")
@@ -335,7 +345,7 @@ func wants_input() -> bool:
 func push(input: SimInput) -> void:
 	var bytes := encode_input(lap, _sent, input)
 	_mine[_key(_sent)] = decode_input(bytes)[2]
-	link.send(bytes)
+	_send(bytes)
 	_sent += 1
 
 
@@ -343,6 +353,9 @@ func push(input: SimInput) -> void:
 func take() -> Array[SimInput]:
 	var out: Array[SimInput] = []
 	var key := _key(tick)
+	if state == State.PLAYING and _partner_done and not _theirs.has(key):
+		# A parceira fechou e esta missão pede mais do que ela mandou: não há como seguir.
+		_end(&"left")
 	if state != State.PLAYING or not _mine.has(key) or not _theirs.has(key):
 		return out
 	var a: SimInput = _mine[key]
@@ -366,7 +379,7 @@ func after_step(sim: Sim) -> void:
 		return
 	var key := _key(tick)
 	_my_hash[key] = sim.state_hash()
-	link.send(_msg(Msg.HASH, {"k": key, "h": _my_hash[key]}))
+	_send(_msg(Msg.HASH, {"k": key, "h": _my_hash[key]}))
 	_compare(key)
 
 
@@ -376,14 +389,21 @@ func set_paused(on: bool) -> void:
 	if state != State.PLAYING or on == _paused:
 		return
 	_paused = on
-	link.send(_msg(Msg.PAUSE, {"on": on}))
+	_send(_msg(Msg.PAUSE, {"on": on}))
 	_sync_patience()
-	link.flush()
+	if link != null:
+		link.flush()
 
 
 func _sync_patience() -> void:
 	if link != null:
 		link.patience(AWAY_SECONDS if _paused or partner_paused else 0.0)
+
+
+## Manda para a parceira, se o enlace ainda existe (depois do adeus "done" dela não existe mais).
+func _send(bytes: PackedByteArray) -> void:
+	if link != null:
+		link.send(bytes)
 
 
 func _compare(key: int) -> void:
@@ -489,6 +509,7 @@ func _close() -> void:
 	_peer_id = 0
 	partner_paused = false
 	_paused = false
+	_partner_done = false
 	_mine.clear()
 	_theirs.clear()
 	_my_hash.clear()

@@ -27,20 +27,23 @@ var _failures: int = 0
 func _initialize() -> void:
 	var gate := ScriptGate.new()
 	gate.install()
-	for bad: String in ScriptGate.check_all():
-		_check(false, "script quebrado: " + bad)
 	var shard := TestShard.parse(OS.get_cmdline_user_args())
 	if shard.y == 0:
 		printerr("FALHOU: argumento --shard malformado (use --shard=I/N, com 0 <= I < N)")
 		quit(1)
 		return
+	# Carregar todos os scripts (~1 s) basta numa fatia: são os mesmos arquivos em todas. Nas outras, o portão
+	# (install/take) ainda pega qualquer erro de script dos testes que elas rodam.
+	if shard.x == 0:
+		for bad: String in ScriptGate.check_all():
+			_check(false, "script quebrado: " + bad)
 	var sim := SimTests.new()
 	# Guardado aqui: as unidades só seguram o método, e o RefCounted sumiria antes de rodar.
 	var powers := PowerTests.new()
 	var lan := LanTests.new()
-	# Unidades (tests/test_shard.gd): as regras rápidas numa só; cada missão inteira pelo bot numa
-	# unidade própria, porque são elas que custam (de 1 a 10 s cada).
-	var units: Array[Dictionary] = [{"name": "Regras rápidas", "weight": 2.0, "run": _rules.bind(sim)}]
+	# Unidades (tests/test_shard.gd): as regras rápidas, uma por arquivo; cada missão inteira pelo bot numa
+	# unidade própria, porque são elas que custam (de 2 a 8 s cada). Peso em segundos.
+	var units := _rule_units(sim)
 	units.append_array(sim.mission_units())
 	units.append_array(powers.units())
 	units.append_array(lan.units())
@@ -58,31 +61,37 @@ func _initialize() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
-## As regras rápidas usam o _check deste runner direto; o parâmetro só segue a forma das unidades.
-func _rules(_unit_check: Callable, sim: SimTests) -> void:
-	_test_scaler()
-	_test_playfield()
-	_test_spatial_hash()
-	_test_frame_stats()
-	_test_frame_pacing()
-	_test_gfx_quality()
-	_test_fps_guard()
-	_test_music_intensity()
-	_test_languages()
-	_test_version()
-	_test_shard()
-	sim.run_basics(_check)
-	ParallaxTests.new().run_unit(_check)
-	VfxTests.new().run_unit(_check)
-	WeatherTests.new().run_unit(_check)
-	PowerTests.new().run_unit(_check)
-	ObjectiveTests.new().run_unit(_check)
-	HitboxTests.new().run_unit(_check)
-	BeamTests.new().run_unit(_check)
-	SeaTests.new().run_unit(_check)
-	RankingTests.new().run_unit(_check)
-	LanTests.new().run_unit(_check)
-	SecondaryTests.new().run_unit(_check)
+## Regras rápidas, uma unidade por arquivo (cada uma é pura e independente das outras, então a ordem e a
+## fatia não mudam nada). Peso: segundos medidos com `-- --timing` num processo sozinho.
+## As funções daqui usam o _check deste runner direto; o parâmetro só segue a forma das unidades.
+func _rule_units(sim: SimTests) -> Array[Dictionary]:
+	var own := func(_unit_check: Callable) -> void:
+		_test_scaler()
+		_test_playfield()
+		_test_spatial_hash()
+		_test_frame_stats()
+		_test_frame_pacing()
+		_test_gfx_quality()
+		_test_fps_guard()
+		_test_music_intensity()
+		_test_languages()
+		_test_version()
+		_test_shard()
+	return [
+		{"name": "Regras: escala, campo, fatias e versão", "weight": 0.1, "run": own},
+		{"name": "Regras: Sim básica", "weight": 6.7, "run": sim.run_basics},
+		{"name": "Regras: parallax", "weight": 0.05, "run": func(c: Callable) -> void: ParallaxTests.new().run_unit(c)},
+		{"name": "Regras: efeitos", "weight": 0.3, "run": func(c: Callable) -> void: VfxTests.new().run_unit(c)},
+		{"name": "Regras: clima", "weight": 0.4, "run": func(c: Callable) -> void: WeatherTests.new().run_unit(c)},
+		{"name": "Regras: poderes", "weight": 6.5, "run": func(c: Callable) -> void: PowerTests.new().run_unit(c)},
+		{"name": "Regras: objetivos", "weight": 2.1, "run": func(c: Callable) -> void: ObjectiveTests.new().run_unit(c)},
+		{"name": "Regras: colisão", "weight": 1.9, "run": func(c: Callable) -> void: HitboxTests.new().run_unit(c)},
+		{"name": "Regras: feixes", "weight": 0.1, "run": func(c: Callable) -> void: BeamTests.new().run_unit(c)},
+		{"name": "Regras: mar", "weight": 2.0, "run": func(c: Callable) -> void: SeaTests.new().run_unit(c)},
+		{"name": "Regras: ranking", "weight": 0.05, "run": func(c: Callable) -> void: RankingTests.new().run_unit(c)},
+		{"name": "Regras: coop LAN", "weight": 0.8, "run": func(c: Callable) -> void: LanTests.new().run_unit(c)},
+		{"name": "Regras: secundárias", "weight": 0.05, "run": func(c: Callable) -> void: SecondaryTests.new().run_unit(c)},
+	]
 
 
 func _check(condition: bool, label: String) -> void:

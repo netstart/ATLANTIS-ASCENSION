@@ -2,6 +2,7 @@ extends Node
 ## Testes com os autoloads carregados (docs/policies/testes.md): dados, idiomas e fontes, opções,
 ## save, áudio, licenças, PixelScaler, layout de todas as telas e créditos. Rodar:
 ##   godot --headless --path . --fixed-fps 60 res://tests/integration_tests.tscn [-- --shard=I/N --timing]
+##   (campanha da economia em trechos: [-- --economy=I/N --economy-cache=DIR])
 ## Save e opções vão para arquivos próprios dos testes antes de qualquer verificação: nem um teste
 ## interrompido no meio mexe no perfil ou no settings.cfg do jogador.
 
@@ -43,24 +44,33 @@ var _uncounted_failures: int = 0
 
 
 ## Rodar em fatias (tools/run_checks.ps1): `-- --shard=I/N` (tests/test_shard.gd). As unidades pesadas
-## (campanha da economia, Beta, pós-lançamento, cada caso de layout, cada HUD) se dividem entre os
-## processos. O prefixo barato que mexe em estado global (opções, save, vibração, relógio) roda em toda
-## fatia, na mesma ordem, para cada uma começar do mesmo estado do processo único; só a fatia 0 conta
-## essas verificações (nas outras, uma falha ainda reprova). Sem `--shard`, tudo num processo só.
+## (Beta, pós-lançamento, cada caso de layout, cada HUD) se dividem entre os processos. O prefixo barato
+## que mexe em estado global (opções, save, vibração, relógio) roda em toda fatia, na mesma ordem, para
+## cada uma começar do mesmo estado do processo único; só a fatia 0 conta essas verificações (nas outras,
+## uma falha ainda reprova). Com `--shard`, a campanha da economia fica fora das fatias: ela roda em
+## trechos com `-- --economy=I/N --economy-cache=DIR` (_run_economy). Sem argumento, tudo num processo só.
 ## Use `--fixed-fps 60`: cada quadro avança 1/60 s de jogo sem esperar o relógio (as esperas abaixo
 ## contam quadros, não milissegundos).
 func _ready() -> void:
-	var shard := TestShard.parse(OS.get_cmdline_user_args())
-	if shard.y == 0:
-		printerr("FALHOU: argumento --shard malformado (use --shard=I/N, com 0 <= I < N)")
+	var args := OS.get_cmdline_user_args()
+	var shard := TestShard.parse(args)
+	var economy := TestShard.parse(_economy_args(args))
+	if shard.y == 0 or economy.y == 0:
+		printerr("FALHOU: argumento --shard ou --economy malformado (use I/N, com 0 <= I < N)")
 		get_tree().quit(1)
 		return
+	if not _economy_args(args).is_empty():
+		_run_economy(economy, args)
+		return
+	var sharded := Array(args).any(func(a: String) -> bool: return a.begins_with("--shard="))
 	_owns_prefix = shard.x == 0
 	var prefix := _check if _owns_prefix else _check_uncounted
 	var gate := ScriptGate.new()
 	gate.install()
-	for bad: String in ScriptGate.check_all():
-		prefix.call(false, "script quebrado: " + bad)
+	# Carregar todos os scripts (~1 s) basta na fatia 0, a que conta o prefixo: os arquivos são os mesmos.
+	if _owns_prefix:
+		for bad: String in ScriptGate.check_all():
+			prefix.call(false, "script quebrado: " + bad)
 	for file: String in [SaveManager.PATH, SaveManager.BACKUP_PATH, Settings.PATH]:
 		_real_files[file] = FileAccess.get_md5(file) if FileAccess.file_exists(file) else ""
 	SaveManager.use_test_files()
@@ -73,26 +83,38 @@ func _ready() -> void:
 	_test_licenses(prefix)
 	var layout := LayoutTests.new()
 	var cases := DeviceProfiles.layout_cases()
+	# Pesos: segundos de cada unidade num processo sozinho (`-- --timing`, Ryzen 7 4750U). Com todos os
+	# processos ao mesmo tempo cada unidade leva bem mais, mas a proporção é a mesma.
 	var units: Array[Dictionary] = [
-		{"name": "Economia", "weight": 100.0, "run": func() -> void: EconomyTests.new().run(_check)},
-		{"name": "Beta", "weight": 24.0, "run": func() -> void: BetaTests.new().run(_check)},
-		{"name": "Pós-lançamento", "weight": 24.0, "run": func() -> void: PostTests.new().run(_check)},
+		{"name": "Economia (regras)", "weight": 0.2, "run": func() -> void: EconomyTests.new().run_rules(_check)},
+	]
+	# A campanha da economia (~2 min 45 s em série): no processo único, inteira aqui; com --shard, fica fora
+	# das fatias e roda em trechos paralelos com --economy=K/N (_run_economy).
+	if not sharded:
+		units.append({"name": "Economia (campanha)", "weight": 165.0, "run": func() -> void:
+			EconomyTests.new().run_segment(_check, 0, 1, "")})
+	units.append_array([
+		{"name": "Beta", "weight": 20.0, "run": func() -> void: BetaTests.new().run(_check)},
+		{"name": "Pós-lançamento", "weight": 39.0, "run": func() -> void: PostTests.new().run(_check)},
 		{"name": "prefixo 2", "weight": 0.0, "prefix": true, "run": func() -> void:
-			LiveryTests.new().run(prefix)
 			LiveryTests.new().run_damage(prefix)
 			SpriteBankTests.new().run(prefix)
-			GloryTests.new().run(prefix)
+			GloryTests.new().run_rules(prefix)
 			DeviceProfiles.check_scaler(self, prefix)},
-	]
+		# Só leem dados, arte e a Sim (sem estado global): uma fatia basta, fora do prefixo.
+		{"name": "Evolução e Quase lá (regras)", "weight": 4.0, "run": func() -> void:
+			LiveryTests.new().run(_check)
+			GloryTests.new().run_sim(_check)},
+	])
 	var first_layout := units.size()
 	for c: Dictionary in cases:
-		units.append({"name": "Layout [%s]" % c["label"], "weight": 0.8 * (c["langs"] as Array).size(),
+		units.append({"name": "Layout [%s]" % c["label"], "weight": 0.6 * (c["langs"] as Array).size(),
 				"run": func() -> void: await layout.run_case(self, _check, c)})
 	for c: Dictionary in cases:
-		units.append({"name": "Layout HUD [%s]" % c["label"], "weight": 0.4,
+		units.append({"name": "Layout HUD [%s]" % c["label"], "weight": 0.35,
 				"run": func() -> void: await layout.run_hud_case(self, _check, c)})
 	units.append({"name": "fim do layout", "weight": 0.0, "prefix": true, "run": LayoutTests.finish})
-	units.append({"name": "Telas e fluxo", "weight": 6.0, "run": func() -> void:
+	units.append({"name": "Telas e fluxo", "weight": 9.0, "run": func() -> void:
 		await CreditsScreenTests.new().run(self, _check)
 		await FlowTests.new().run(self, _check)
 		await LiveryTests.new().run_view(self, _check)
@@ -101,48 +123,49 @@ func _ready() -> void:
 		await WeatherViewTests.new().run_view(self, _check)
 		await FocusNavTests.new().run(self, _check)
 		await ScreenBuildTests.new().run(self, _check)})
-	units.append({"name": "Menus de comando (regras)", "weight": 1.0, "run": func() -> void:
+	units.append({"name": "Menus de comando (regras)", "weight": 0.5, "run": func() -> void:
 		CommandTests.new().run(_check)
 		CampaignTests.new().run(_check)
 		StoreTests.new().run(_check)
 		TurboTests.new().run(_check)
 		IapTests.new().run(_check)
 		PremiumTests.new().run(_check)})
-	units.append({"name": "Casca de comando", "weight": 1.0, "run": func() -> void:
+	units.append({"name": "Casca de comando", "weight": 0.3, "run": func() -> void:
 		await CommandTests.new().run_view(self, _check)})
-	units.append({"name": "Campanha", "weight": 4.5, "run": func() -> void:
+	units.append({"name": "Campanha", "weight": 3.0, "run": func() -> void:
 		await CampaignTests.new().run_view(self, _check)})
-	# A Oficina em todas as resoluções custa mais que a economia inteira: um caso por unidade.
+	# A Oficina em todas as resoluções custa ~1 min: um caso por unidade.
 	var hangar := HangarTests.new()
 	for c: Dictionary in cases:
-		units.append({"name": "Oficina [%s]" % c["label"], "weight": 3.5,
+		units.append({"name": "Oficina [%s]" % c["label"], "weight": 1.7,
 				"run": func() -> void: await hangar.run_layout_case(self, _check, c)})
-	units.append({"name": "Oficina (fluxo)", "weight": 2.0, "run": func() -> void: await hangar.run_flow(self, _check)})
-	units.append({"name": "Loja, Naves e Eventos", "weight": 1.5, "run": func() -> void:
+	units.append({"name": "Oficina (fluxo)", "weight": 1.0, "run": func() -> void: await hangar.run_flow(self, _check)})
+	units.append({"name": "Loja, Naves e Eventos", "weight": 0.7, "run": func() -> void:
 		await StoreTests.new().run_view(self, _check)})
-	units.append({"name": "Turbo e Play Billing", "weight": 1.0, "run": func() -> void:
+	units.append({"name": "Turbo e Play Billing", "weight": 0.3, "run": func() -> void:
 		await TurboTests.new().run_view(self, _check)})
-	units.append({"name": "Compras da Play (catálogo)", "weight": 1.5, "run": func() -> void:
+	units.append({"name": "Compras da Play (catálogo)", "weight": 0.7, "run": func() -> void:
 		await IapTests.new().run_view(self, _check)})
-	units.append({"name": "Naves premium (Play)", "weight": 0.5, "run": func() -> void:
+	units.append({"name": "Naves premium (Play)", "weight": 0.05, "run": func() -> void:
 		await PremiumTests.new().run_view(self, _check)})
 	var premium := PremiumTests.new()
 	for c: Dictionary in cases:
-		units.append({"name": "Naves premium [%s]" % c["label"], "weight": 0.6,
+		units.append({"name": "Naves premium [%s]" % c["label"], "weight": 0.5,
 				"run": func() -> void: await premium.run_layout_case(self, _check, c)})
 	var ranking := RankingViewTests.new()
-	units.append({"name": "Ranking de abates", "weight": 0.5, "run": func() -> void: await ranking.run_view(self, _check)})
+	units.append({"name": "Ranking de abates", "weight": 0.15,
+			"run": func() -> void: await ranking.run_view(self, _check)})
 	for c: Dictionary in cases:
-		units.append({"name": "Ranking de abates [%s]" % c["label"], "weight": 0.5 * (c["langs"] as Array).size(),
+		units.append({"name": "Ranking de abates [%s]" % c["label"], "weight": 0.3 * (c["langs"] as Array).size(),
 				"run": func() -> void: await ranking.run_layout_case(self, _check, c)})
 	var lan := LanScreenTests.new()
-	units.append({"name": "Coop LAN (sala e partida)", "weight": 8.0,
+	units.append({"name": "Coop LAN (sala e partida)", "weight": 5.0,
 			"run": func() -> void: await lan.run_flow(self, _check)})
 	for c: Dictionary in cases:
-		units.append({"name": "Coop LAN [%s]" % c["label"], "weight": 0.6 * (c["langs"] as Array).size(),
+		units.append({"name": "Coop LAN [%s]" % c["label"], "weight": 0.12 * (c["langs"] as Array).size(),
 				"run": func() -> void: await lan.run_layout_case(self, _check, c)})
-	units.append({"name": "Lançamento", "weight": 10.0, "run": func() -> void: LaunchTests.new().run(_check)})
-	units.append({"name": "Poderes na tela", "weight": 8.0, "run": func() -> void:
+	units.append({"name": "Lançamento", "weight": 7.0, "run": func() -> void: LaunchTests.new().run(_check)})
+	units.append({"name": "Poderes na tela", "weight": 3.5, "run": func() -> void:
 		await PowerViewTests.new().run(self, _check)})
 	# Unidades do prefixo ficam fora da divisão: rodam em toda fatia, no lugar de sempre.
 	var shardable: Array[Dictionary] = units.filter(func(u: Dictionary) -> bool: return not u.has("prefix"))
@@ -171,6 +194,35 @@ func _ready() -> void:
 	print(TestShard.summary("integração", shard, mine.size(), shardable.size()))
 	print("%d verificações, %d falhas" % [_count, _failures])
 	get_tree().quit(1 if _failures > 0 or _uncounted_failures > 0 else 0)
+
+
+## `--economy=I/N` lido como um `--shard=I/N` (mesmo formato e mesmas recusas); vazio sem o argumento.
+static func _economy_args(args: PackedStringArray) -> PackedStringArray:
+	for arg: String in args:
+		if arg.begins_with("--economy="):
+			return PackedStringArray(["--shard=" + arg.trim_prefix("--economy=")])
+	return PackedStringArray()
+
+
+## Só o trecho I de N da campanha da economia (tools/run_checks.ps1 roda os N em paralelo). Não precisa do
+## prefixo: a campanha joga num perfil próprio, sem save nem opções. O estado do começo vem de
+## `--economy-cache=DIR` (o fim do trecho anterior, guardado na rodada anterior; o run_checks.ps1 confere).
+func _run_economy(part: Vector2i, args: PackedStringArray) -> void:
+	var gate := ScriptGate.new()
+	gate.install()
+	var cache := ""
+	for arg: String in args:
+		if arg.begins_with("--economy-cache="):
+			cache = arg.trim_prefix("--economy-cache=")
+	var start := Time.get_ticks_msec()
+	EconomyTests.new().run_segment(_check, part.x, part.y, cache)
+	if TestShard.timing_enabled():
+		print("tempo %6d ms  %5d verificações  Economia %d/%d" % [Time.get_ticks_msec() - start, _count, part.x + 1, part.y])
+	for error: String in gate.take():
+		_check(false, "erro de script durante os testes: " + error)
+	print(TestShard.summary("economia", part, 1, part.y))
+	print("%d verificações, %d falhas" % [_count, _failures])
+	get_tree().quit(1 if _failures > 0 else 0)
 
 
 ## Verificação do prefixo nas fatias 1..N-1: não entra na conta (a fatia 0 já conta), mas reprova.

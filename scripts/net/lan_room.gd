@@ -26,6 +26,10 @@ const SWEEP_NETS := 3
 const READ_MAX := 32
 ## Dados móveis pelo nome da placa (Android rmnet/ccmni, o clat do IPv4 sobre IPv6, o "Cellular" do Windows).
 const CELLULAR_HINTS: Array[String] = ["rmnet", "ccmni", "clat", "pdp", "wwan", "cellular"]
+## Placas virtuais do PC (WSL, Hyper-V, VirtualBox, VMware, Docker, VPNs): o sistema as lista muitas vezes antes do
+## Wi-Fi e a busca só varre SWEEP_NETS redes, então elas vão para o fim da lista.
+const VIRTUAL_HINTS: Array[String] = ["vethernet", "virtual", "vmware", "vmnet", "vbox", "docker", "wsl", "hyper-v",
+		"zerotier", "tailscale", "hamachi", "vpn"]
 
 ## Só para testes: desloca as portas, para suítes que rodam em processos paralelos não abrirem a mesma sala.
 static var test_shift: int = 0
@@ -53,20 +57,28 @@ static func local_addresses() -> PackedStringArray:
 
 ## IPv4 privados das placas `interfaces` (linhas de IP.get_local_interfaces), sem 127.x, link-local nem as placas de
 ## dados móveis: a operadora dá muitas vezes um 10.x que o outro aparelho nunca alcança, e só com ele o jogo tem de
-## dizer "sem rede local".
+## dizer "sem rede local". As das placas virtuais (VIRTUAL_HINTS) vêm por último.
 static func addresses_of(interfaces: Array) -> PackedStringArray:
 	var out := PackedStringArray()
+	var virtual := PackedStringArray()
 	for row: Variant in interfaces:
 		var iface: Dictionary = row if row is Dictionary else {}
 		var label := (String(iface.get("name", "")) + " " + String(iface.get("friendly", ""))).to_lower()
 		var cellular := false
+		var is_virtual := false
 		for hint: String in CELLULAR_HINTS:
 			cellular = cellular or label.contains(hint)
+		for hint: String in VIRTUAL_HINTS:
+			is_virtual = is_virtual or label.contains(hint)
 		for value: Variant in ([] if cellular else iface.get("addresses", [])):
 			var address := String(value)
 			if not address.contains(":") and not address.begins_with("127.") and not address.begins_with("169.254.") \
-					and NetLink.is_private_address(address) and not out.has(address):
-				out.append(address)
+					and NetLink.is_private_address(address) and not out.has(address) and not virtual.has(address):
+				if is_virtual:
+					virtual.append(address)
+				else:
+					out.append(address)
+	out.append_array(virtual)
 	return out
 
 

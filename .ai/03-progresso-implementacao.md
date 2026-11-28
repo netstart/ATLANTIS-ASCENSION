@@ -338,6 +338,14 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   calculando as projeções das balas uma vez por passo e descartando só as que provadamente não pesam (`BotPilot`):
   hash igual nas 80 partidas (40 missões x sementes 7 e 11) e no determinismo (`fc77bf6d...`). Caminho crítico
   restante: a campanha da economia (34 missões em série, ~75 s sozinha). Detalhes em `docs/policies/testes.md`
+- ✅ `tools/run_checks.ps1` ~1/3 mais rápido nas etapas 2 a 6 (Ryzen 7 4750U, 8 núcleos / 16 lógicos; lado a lado
+  na mesma carga: 358 s para 241 s), com as mesmas verificações (2.737 de regras e 540.518 de integração). Medido com `-- --timing`: a campanha da economia tinha crescido para ~165 s sozinha (~270 s com a
+  máquina cheia) e marcava o fim; os pesos das fatias estavam fora (a unidade dos poderes valia 270 e custava 3 s; as
+  "regras rápidas" valiam 2 e custavam 22 s). Agora: pesos em segundos medidos; as regras rápidas em uma unidade por
+  arquivo; a campanha da economia em 3 trechos paralelos (`-- --economy=I/N`), cada um partindo do estado guardado em
+  `.godot/test-cache/` e conferido pelo script contra o fim do trecho anterior nesta rodada (estado velho: o trecho
+  roda de novo); a parte pura da Evolução e do "Quase lá" saiu do prefixo que rodava em toda fatia; o portão de
+  scripts carrega tudo só numa fatia. A rodada logo depois de mudar a partida refaz um ou dois trechos (+~1 min)
 - ✅ `1.14.5` Telas montadas uma vez só por abertura. Antes, o `_ready` de `Screen` chamava `refresh_texts()` e o App
   chamava `on_show()` logo depois, que chamava de novo: as 10 listas (`ListScreen`: hangar, naves, opções, diário,
   eventos, loja, cidade, prática, temporada, recordes) montavam a coluna inteira duas vezes na primeira abertura, e
@@ -803,3 +811,8 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   Sims em 127.0.0.1 com latência e perda) e `tests/lan_screen_tests.gd` (layout de cada estado da sala em todas as
   resoluções e idiomas, e dois Apps jogando pelo Game até o resultado). Falta 👤 testar em dois aparelhos de
   verdade no mesmo Wi-Fi (Android + Android e Android + PC). Política de privacidade 1.8 já cita a rede local.
+- ✅ `1.36.1` Co-op LAN corrigido e testes mais rápidos: o adeus do fim da corrida não derruba mais a parceira que
+  está uns passos atrás (termina a missão com as entradas já recebidas e grava o resultado); a busca da sala varre
+  primeiro a placa real (Wi-Fi) e deixa as virtuais (WSL, Hyper-V, VirtualBox, VPN) para o fim. `run_checks` de ~281 s
+  para ~246 s com as mesmas verificações (campanha da economia em 3 trechos paralelos, pesos das fatias em segundos
+  medidos, regras em 4 fatias e integração em 8).

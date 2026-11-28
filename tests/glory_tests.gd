@@ -7,11 +7,16 @@ const LayoutTests := preload("res://tests/layout_tests.gd")
 
 
 func run(check: Callable) -> void:
+	run_rules(check)
+	run_sim(check)
+
+
+## Tudo menos as partidas da Sim; mexe em estado global (vibração, GameClock): fica no prefixo da integração.
+func run_rules(check: Callable) -> void:
 	_grade(check)
 	_chest(check)
 	_settle(check)
 	_insight(check)
-	_sim_result(check)
 	_style(check)
 	_achievements(check)
 	_vibration(check)
@@ -124,8 +129,9 @@ func _insight(check: Callable) -> void:
 	check.call(general["tip"] in DefeatInsight.GENERAL, "Quase lá: dica geral pela semente")
 
 
-## A Sim conta até onde o jogador chegou e do que caiu, sem mudar a partida.
-func _sim_result(check: Callable) -> void:
+## A Sim conta até onde o jogador chegou e do que caiu, sem mudar a partida. Só lê a Sim (sem estado global):
+## é unidade comum das fatias da integração, fora do prefixo.
+func run_sim(check: Callable) -> void:
 	var tables := Sim.load_tables()
 	var sim := Sim.new()
 	sim.setup(Sim.load_mission(&"c1m1"), tables, Sim.default_loadout(&"falcon"), 7)

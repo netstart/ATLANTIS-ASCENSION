@@ -22,6 +22,9 @@ const ENET_TIMEOUT_LIMIT := 32
 const REFUSE_GRACE_MS := 1500
 const RESEND_MS := 120
 
+## Só para testes: prazo de queda (ms) no lugar de TIMEOUT_MS, para o teste da queda não esperar 5 s.
+static var test_timeout_ms: int = 0
+
 var peer: ENetMultiplayerPeer
 var is_host: bool = false
 var latency_ms: int = 0
@@ -163,7 +166,7 @@ func flush() -> void:
 func patience(seconds: float = 0.0) -> void:
 	if peer == null:
 		return
-	var most := maxi(TIMEOUT_MS, int(seconds * 1000.0))
+	var most := maxi(test_timeout_ms if test_timeout_ms > 0 else TIMEOUT_MS, int(seconds * 1000.0))
 	for id: int in (peers.duplicate() if is_host else [MultiplayerPeer.TARGET_PEER_SERVER]):
 		var remote := peer.get_peer(id)
 		if remote != null:

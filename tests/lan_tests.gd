@@ -12,12 +12,16 @@ const GUEST_INFO := {"ship": "manta", "level": 2, "field_h": 520.0}
 const PUMP_SECONDS := 6.0
 ## Portas desta suíte (LanRoom.test_shift): fora das do jogo e das de tests/lan_screen_tests.gd.
 const PORT_SHIFT := 40
+## Passo em que as duas naves caem juntas no teste da partida longa (a missão acaba no passo seguinte).
+const KILL_AT := 1500
+## Prazo de queda do ENet no teste da queda (NetLink.test_timeout_ms), em vez dos 5 s do jogo.
+const DROP_MS := 1000
 
 var _tables: Dictionary = {}
 
 
 func units() -> Array[Dictionary]:
-	return [{"name": "Coop LAN: sala, lockstep e enlace", "weight": 60.0, "run": _link}]
+	return [{"name": "Coop LAN: sala, lockstep e enlace", "weight": 8.0, "run": _link}]
 
 
 ## Regras rápidas (sem rede).
@@ -63,6 +67,14 @@ func _room(check: Callable) -> void:
 			"Sala: só IPv4 privados de Wi-Fi ou cabo contam como rede local (%s)" % str(nets))
 	check.call(LanRoom.addresses_of([{"name": "rmnet_data0", "addresses": ["10.44.1.2"]}]).is_empty(),
 			"Sala: só com dados móveis não há rede local")
+	# PC com WSL, Hyper-V e VirtualBox: as placas virtuais vêm antes na lista do sistema, mas a busca (SWEEP_NETS
+	# redes) precisa varrer a do Wi-Fi.
+	var pc := LanRoom.addresses_of([{"name": "{A}", "friendly": "vEthernet (WSL)", "addresses": ["172.22.48.1"]},
+			{"name": "{B}", "friendly": "vEthernet (Default Switch)", "addresses": ["172.29.96.1"]},
+			{"name": "{C}", "friendly": "VirtualBox Host-Only Network", "addresses": ["192.168.56.1"]},
+			{"name": "{D}", "friendly": "Wi-Fi", "addresses": ["192.168.0.20"]}])
+	check.call(pc.size() == 4 and pc[0] == "192.168.0.20" and LanRoom.targets(pc).has("192.168.0.7"),
+			"Sala: placas virtuais do PC ficam por último na busca (%s)" % str(pc))
 	check.call(LanSession.valid_pack({"missions": ["c1m1", "c2m3"], "seed": 7, "loadout": {}}), "Pacote de início válido")
 	for bad: Dictionary in [{"missions": [], "seed": 7, "loadout": {}}, {"missions": ["../x"], "seed": 7, "loadout": {}},
 			{"missions": ["nao_existe"], "seed": 7, "loadout": {}}, {"missions": ["c1m1"], "seed": "7", "loadout": {}},
@@ -228,6 +240,15 @@ func _pump(sessions: Array, done: Callable, seconds: float = PUMP_SECONDS) -> bo
 	return false
 
 
+## Fecha as sessões na hora, sem esperar o adeus sair: as portas ficam livres para o próximo par.
+func _drop(sessions: Array) -> void:
+	for s: LanSession in sessions:
+		s.leave()
+		if s._dying != null:
+			s._dying.close()
+			s._dying = null
+
+
 ## Anfitrião e convidada já na sala (LINKED).
 func _pair(latency: int = 0, loss: float = 0.0) -> Array[LanSession]:
 	var host := _session(latency, loss)
@@ -260,11 +281,11 @@ func _start(pair: Array[LanSession]) -> Array[Sim]:
 	return sims
 
 
-## Um quadro de cada aparelho, como o Game._lan_tick: manda a entrada se falta, dá o passo se tem as duas. Devolve
-## quantos passos saíram.
-func _frame(pair: Array[LanSession], sims: Array[Sim], bots: Array[BotPilot]) -> int:
+## Um quadro de cada aparelho de `sides`, como o Game._lan_tick: manda a entrada se falta, dá o passo se tem as duas.
+## Devolve quantos passos saíram.
+func _frame(pair: Array[LanSession], sims: Array[Sim], bots: Array[BotPilot], sides: Array = [0, 1]) -> int:
 	var stepped := 0
-	for i: int in range(2):
+	for i: int in sides:
 		var s := pair[i]
 		s.poll(0.0)
 		if s.state != LanSession.State.PLAYING or sims[i].finished:
@@ -328,8 +349,7 @@ func _handshake(check: Callable) -> void:
 	check.call(_pump([host, guest], func() -> bool: return host.state == LanSession.State.HOSTING)
 			and LanRoom.is_valid(host.code) and host.partner.is_empty(),
 			"Sala: a convidada saiu e a vaga volta, com o mesmo código")
-	host.leave()
-	_pump([host, guest], func() -> bool: return false, 0.6)
+	_drop([host, guest, lost, wrong, old, third])
 
 
 ## Partida inteira em lockstep com latência e perda: a Sim espera quando falta a entrada e os dois lados terminam
@@ -357,7 +377,7 @@ func _lockstep(check: Callable) -> void:
 	# Esses passos foram só da sessão (nenhuma Sim andou): a partida de verdade começa com um par novo.
 	pair[0].leave()
 	_pump(pair, func() -> bool: return pair[1].state == LanSession.State.IDLE)
-	_pump(pair, func() -> bool: return false, 0.6)
+	_drop(pair)
 	pair = _pair(12, 0.03)
 	sims = _start(pair)
 	var waits := 0
@@ -369,26 +389,41 @@ func _lockstep(check: Callable) -> void:
 			OS.delay_msec(1)
 	check.call(sims[0].frame >= 900 and waits > 0 and pair[0].error == &"" and pair[1].error == &"",
 			"Lockstep: 15 s de partida com rede ruim, esperando %d vezes, sem dessincronia" % waits)
-	# O resto da missão com a rede boa, para caber no tempo do teste.
+	# O resto com a rede boa e a convidada num aparelho mais lento (um passo a cada dois quadros). As duas naves caem
+	# juntas no passo KILL_AT: o anfitrião termina antes e fecha a corrida na hora (adeus "done") com a convidada uns
+	# passos atrás. As entradas dele até o fim já chegaram (canal em ordem): ela termina a mesma missão, sem "saiu".
 	for s: LanSession in pair:
 		s.link.latency_ms = 0
 		s.link.loss = 0.0
-	end = Time.get_ticks_msec() + 120000
+	var ended := [&""]
+	pair[1].ended.connect(func(reason: StringName) -> void: ended[0] = reason)
+	var killed := [false, false]
+	var lag := -1
+	var k := 0
+	end = Time.get_ticks_msec() + 60000
 	while not (sims[0].finished and sims[1].finished) and Time.get_ticks_msec() < end \
-			and pair[0].state == LanSession.State.PLAYING and pair[1].state == LanSession.State.PLAYING:
-		_frame(pair, sims, bots)
-	_pump(pair, func() -> bool: return false, 0.2)
-	check.call(sims[0].finished and sims[1].finished and sims[0].frame == sims[1].frame and sims[0].frame > 3000,
-			"Lockstep: a missão termina nos dois no mesmo passo (%d e %d)" % [sims[0].frame, sims[1].frame])
+			and pair[1].state == LanSession.State.PLAYING:
+		_frame(pair, sims, bots, [0, 1] if k % 2 == 0 else [0])
+		k += 1
+		for i: int in range(2):
+			if sims[i].frame == KILL_AT and not killed[i]:
+				killed[i] = true
+				sims[i].player.alive = false
+		if sims[0].finished and lag < 0:
+			lag = sims[0].frame - sims[1].frame
+			check.call(pair[0].error == &"", "Lockstep: nenhum hash trocado divergiu até o fim")
+			pair[0].leave(&"done")
+	check.call(lag > 0 and sims[0].finished and sims[1].finished and sims[0].frame == sims[1].frame,
+			"Fim: o anfitrião fecha %d passos à frente e a convidada termina a mesma missão (%d e %d)" % [lag,
+			sims[0].frame, sims[1].frame])
 	check.call(sims[0].state_hash() == sims[1].state_hash() and sims[0].scoring.score == sims[1].scoring.score,
 			"Lockstep: hashes iguais ao fim da missão (%s)" % sims[0].state_hash())
-	check.call(pair[0].error == &"" and pair[1].error == &"" and pair[0].state == LanSession.State.PLAYING,
-			"Lockstep: nenhum hash trocado divergiu")
-	# Fim normal da corrida: quem fecha primeiro não vira erro no outro.
-	pair[0].leave(&"done")
-	check.call(_pump(pair, func() -> bool: return pair[1].state == LanSession.State.IDLE) and pair[1].error == &"",
+	check.call(pair[1].error == &"" and ended[0] == &"" and pair[1].state == LanSession.State.PLAYING,
+			"Fim: o adeus de quem terminou primeiro não vira erro na outra (%s)" % ended[0])
+	pair[1].leave(&"done")
+	check.call(pair[1].state == LanSession.State.IDLE and pair[1].error == &"" and ended[0] == &"",
 			"Fim: a sala fecha nos dois sem aviso de erro")
-	_pump(pair, func() -> bool: return false, 0.6)
+	_drop(pair)
 
 
 ## Encerramento limpo: pausa avisada, dessincronia, parceira que sai e conexão que cai.
@@ -417,7 +452,7 @@ func _endings(check: Callable) -> void:
 	pair[0].leave()
 	check.call(_pump(pair, func() -> bool: return ended[1] != &"") and ended[1] == &"left" and pair[1].error == &"left"
 			and pair[1].state == LanSession.State.IDLE, "Saída: a parceira saiu e a partida encerra com aviso (%s)" % ended[1])
-	_pump(pair, func() -> bool: return false, 0.6)
+	_drop(pair)
 	# Dessincronia: um lado diverge; no primeiro hash trocado os dois encerram com o mesmo motivo.
 	pair = _pair()
 	sims = _start(pair)
@@ -432,8 +467,24 @@ func _endings(check: Callable) -> void:
 			and pair[1].state == LanSession.State.IDLE and sims[0].frame <= LanSession.HASH_EVERY + LanSession.DELAY + 1,
 			"Dessincronia: os dois encerram no primeiro hash diferente (%s e %s, passo %d)" % [ended[0], ended[1],
 			sims[0].frame])
-	_pump(pair, func() -> bool: return false, 0.6)
-	# Queda: o enlace da convidada some sem adeus; o anfitrião encerra com "a conexão caiu".
+	_drop(pair)
+	# Adeus "done" com a missão desta ainda pedindo entradas que a parceira nunca mandou: encerra com "saiu".
+	pair = _pair()
+	sims = _start(pair)
+	ended = [&"", &""]
+	pair[1].ended.connect(func(reason: StringName) -> void: ended[1] = reason)
+	for _k: int in range(30):
+		_frame(pair, sims, bots)
+	pair[0].leave(&"done")
+	end = Time.get_ticks_msec() + 3000
+	while ended[1] == &"" and Time.get_ticks_msec() < end:
+		_frame(pair, sims, bots, [1])
+	check.call(ended[1] == &"left" and pair[1].state == LanSession.State.IDLE
+			and sims[1].frame <= 30 + LanSession.DELAY + 1,
+			"Fim: adeus 'done' antes das entradas que faltam encerra com aviso (%s, passo %d)" % [ended[1], sims[1].frame])
+	_drop(pair)
+	# Queda: o enlace da convidada some sem adeus; o anfitrião encerra com "a conexão caiu" (prazo curto no teste).
+	NetLink.test_timeout_ms = DROP_MS
 	pair = _pair()
 	sims = _start(pair)
 	ended = [&"", &""]
@@ -441,7 +492,8 @@ func _endings(check: Callable) -> void:
 	for _k: int in range(30):
 		_frame(pair, sims, bots)
 	pair[1].link.close()
-	check.call(_pump([pair[0]], func() -> bool: return ended[0] != &"", NetLink.TIMEOUT_MS / 1000.0 + 2.0)
+	check.call(_pump([pair[0]], func() -> bool: return ended[0] != &"", DROP_MS / 1000.0 + 2.0)
 			and ended[0] == &"lost" and pair[0].state == LanSession.State.IDLE and not sims[0].finished,
 			"Queda: sem a parceira o anfitrião encerra limpo (%s)" % ended[0])
-	pair[1].leave()
+	NetLink.test_timeout_ms = 0
+	_drop(pair)

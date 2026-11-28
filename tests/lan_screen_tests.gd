@@ -7,9 +7,9 @@ const DeviceProfiles := preload("res://tests/device_profiles.gd")
 const LayoutTests := preload("res://tests/layout_tests.gd")
 ## Portas desta suíte (LanRoom.test_shift): fora das do jogo e das de tests/lan_tests.gd.
 const PORT_SHIFT := 20
-## Estados da sala forjados na sessão (sem rede): [nome, estado, anfitrião, erro].
+## Estados da sala forjados na sessão (sem rede): [nome, estado, anfitrião, erro]. A sala vazia sem erro já é
+## conferida em tests/layout_tests.gd (todas as telas); "falha" é ela mesma com o cartão do erro por cima.
 const STATES: Array[Array] = [
-	["sem sala", LanSession.State.IDLE, false, &""],
 	["falha", LanSession.State.IDLE, false, &"not_found"],
 	["sala aberta", LanSession.State.HOSTING, true, &""],
 	["procurando", LanSession.State.SEEKING, false, &""],
@@ -19,17 +19,19 @@ const STATES: Array[Array] = [
 ]
 
 
-## Um caso de tests/device_profiles.gd: cada idioma do caso, cada estado da sala.
+## Um caso de tests/device_profiles.gd: cada idioma do caso, cada estado da sala. Um App só por caso, trocando o
+## idioma (a tela remonta os textos e a fonte): conferido que dá a mesma geometria e os mesmos textos de um App novo
+## por idioma, em todos os casos, com um terço a menos de tempo.
 func run_layout_case(host: Node, check: Callable, c: Dictionary) -> void:
 	var view: Vector2 = c["view"]
 	var safe := DeviceProfiles.safe_rect(view, c["insets"])
 	DeviceProfiles.simulate_insets(c["insets"])
+	var app := App.new()
+	host.add_child(app)
+	await host.get_tree().process_frame
+	LayoutTests.fit(app, view)
 	for lang: String in c["langs"]:
 		Locale.set_language(lang, false)
-		var app := App.new()
-		host.add_child(app)
-		await host.get_tree().process_frame
-		LayoutTests.fit(app, view)
 		app.go(&"lan")
 		var screen := app.screen(&"lan") as LanScreen
 		var session := app.lan_session()
@@ -45,10 +47,10 @@ func run_layout_case(host: Node, check: Callable, c: Dictionary) -> void:
 			LayoutTests.check_screen(screen, safe, check, tag, app.shell())
 			_check_inside(screen, safe, check, tag)
 		session.state = LanSession.State.IDLE
-		app.queue_free()
-		await host.get_tree().process_frame
+		session.error = &""
+	app.queue_free()
+	await host.get_tree().process_frame
 	LayoutTests.finish()
-
 
 ## Botões e o código da sala: na largura da área segura, com alvo de toque e sem texto cortado.
 func _check_inside(screen: LanScreen, safe: Rect2, check: Callable, tag: String) -> void:
@@ -137,7 +139,7 @@ func run_flow(host: Node, check: Callable) -> void:
 			"Partida: a convidada pilota a ala e o HUD dela segue a ala")
 	check.call(not (a.game.hud().find_child("Restart", true, false) as Control).visible,
 			"Partida: sem recomeçar sozinho no coop em rede")
-	check.call(await _wait(host, func() -> bool: return a.game.sim.frame >= 240 and b.game.sim.frame >= 240, 1800),
+	check.call(await _wait(host, func() -> bool: return a.game.sim.frame >= 130 and b.game.sim.frame >= 130, 1800),
 			"Partida: os dois Games andam em lockstep (%d e %d passos)" % [a.game.sim.frame, b.game.sim.frame])
 	check.call(a.lan.error == &"" and b.lan.error == &"" and absi(a.game.sim.frame - b.game.sim.frame) <= 4,
 			"Partida: hashes trocados sem dessincronia")

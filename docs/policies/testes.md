@@ -176,7 +176,17 @@ núcleos o `run_checks.ps1` caiu de ~12 min para ~2,5 min, com as **mesmas verif
   o Beta...); a divisão é determinística (maior peso primeiro, sempre para a fatia mais leve) e cada unidade cai em
   **exatamente uma** fatia. Cada fatia termina com `fatia <suíte> I/N: k de T unidades`; o `run_checks.ps1` soma as
   verificações e confere que as fatias somam as T unidades (fatia que caiu no meio reprova). Sem `--shard`, a suíte
-  roda inteira num processo só, como antes. Suíte nova entra como unidade com peso (custo estimado em segundos).
+  roda inteira num processo só, como antes. Suíte nova entra como unidade com peso: **segundos medidos** com
+  `-- --timing` num processo sozinho (a divisão gulosa só equilibra se os pesos forem do mesmo tamanho real).
+- **Campanha da economia em trechos:** a campanha inteira do bot (~2 min 45 s, em série por natureza: cada missão
+  parte do perfil da anterior) marcava o tempo total. Com `--shard` ela sai das fatias e roda em 3 trechos
+  paralelos (`-- --economy=I/N --economy-cache=DIR`, `tests/economy_tests.gd`). Cada trecho começa do estado
+  (perfil e contadores) em que o anterior terminou **na rodada anterior**, guardado em `.godot/test-cache/`, e
+  imprime o hash do estado do começo e do fim. O `run_checks.ps1` confere que o começo de cada trecho é o fim do
+  anterior **nesta** rodada; se o guardado estava velho (o balanceamento mudou), o trecho roda de novo a partir
+  do estado certo e só a nova rodada vale. Assim as verificações são exatamente as da campanha em série; só a
+  primeira rodada depois de mudar a partida fica mais longa. Sem estado guardado, o trecho refaz os anteriores
+  sem verificações antes de começar.
 - **Estado igual ao do processo único:** o prefixo barato da integração que mexe em estado global (opções, save,
   vibração, relógio) roda em toda fatia, na mesma ordem; só a fatia 0 conta essas verificações (nas outras, uma falha
   ainda reprova). Uma fatia de layout que não começa pelo primeiro caso abre antes um App igual ao dele, sem

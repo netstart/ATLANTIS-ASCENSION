@@ -5,11 +5,23 @@ extends RefCounted
 ## planejada. Chamado por tests/integration_tests.gd (precisa do perfil padrão do SaveManager).
 
 const SaveManagerScript := preload("res://scripts/autoload/save_manager.gd")
+## Ordem em que o "jogador" joga a campanha (as secretas só entram se abertas).
+const ORDER: Array[StringName] = [&"c1m1", &"c1m2", &"c1m3", &"c2m1", &"s1", &"c2m2", &"c2m3", &"c3m1", &"c3m2",
+		&"c3m3a", &"c4m1", &"s2", &"c4m2", &"c4m3a", &"c5m1", &"c5m2", &"c5m3s", &"c6m1", &"s3", &"c6m2", &"c6m3a",
+		&"c7m1", &"c7m2", &"c7m3s", &"c8m1", &"s4", &"c8m2", &"c8m3a", &"c9m1", &"c9m2", &"c9m3",
+		&"c10m1", &"c10m2", &"c10m3"]
+
+## Estado da campanha no fim do último trecho jogado neste processo (trecho seguinte na mesma fatia parte dele).
+static var _handoff: Dictionary = {}
 
 
 func run(check: Callable) -> void:
+	run_rules(check)
+	run_segment(check, 0, 1, "")
+
+
+func run_rules(check: Callable) -> void:
 	_rules(check)
-	_campaign(check)
 
 
 func _rules(check: Callable) -> void:
@@ -65,17 +77,84 @@ func _rules(check: Callable) -> void:
 ## Faixas planejadas (plano mestre 18.1): ao
 ## fim do Ato I (3-3) a aeronave está no nível 3 a 7; ao fim da campanha, no 6 ou mais, com as 6
 ## aeronaves abertas e um final escolhido.
-func _campaign(check: Callable) -> void:
-	var p := SaveManagerScript.default_profile()
+##
+## Em trechos (`part` de `parts`, ~1 min cada), para rodar em fatias paralelas sem perder nada: o trecho k
+## precisa do estado (perfil e contadores) do fim do trecho k-1. Na mesma fatia ele vem da memória; em fatias
+## separadas vem do estado guardado em `cache_dir` pela rodada anterior (tools/run_checks.ps1). Cada trecho
+## imprime o hash do estado em que começou e em que terminou; o run_checks.ps1 confere que o começo de cada
+## trecho é o fim do anterior e, se o guardado estava velho (balanceamento mudou), roda o trecho de novo a
+## partir do estado certo. Sem estado nenhum, o trecho refaz os anteriores sem verificações antes de começar.
+func run_segment(check: Callable, part: int, parts: int, cache_dir: String) -> void:
 	var tables := Sim.load_tables()
-	var order: Array[StringName] = [&"c1m1", &"c1m2", &"c1m3", &"c2m1", &"s1", &"c2m2", &"c2m3", &"c3m1", &"c3m2",
-			&"c3m3a", &"c4m1", &"s2", &"c4m2", &"c4m3a", &"c5m1", &"c5m2", &"c5m3s", &"c6m1", &"s3", &"c6m2", &"c6m3a",
-			&"c7m1", &"c7m2", &"c7m3s", &"c8m1", &"s4", &"c8m2", &"c8m3a", &"c9m1", &"c9m2", &"c9m3",
-			&"c10m1", &"c10m2", &"c10m3"]
-	var act1_level := 0
-	var ending := ""
-	var chapter := 0
-	for id: StringName in order:
+	var state := _start_state(part, parts, cache_dir, tables)
+	print("economia %d/%d: começo %s" % [part + 1, parts, state_hash(state)])
+	_play(check, state, _slice(part, parts), tables)
+	if part < parts - 1:
+		_handoff = {"part": part + 1, "parts": parts, "state": state.duplicate(true)}
+		print("economia %d/%d: fim %s" % [part + 1, parts, state_hash(state)])
+		if not cache_dir.is_empty():
+			_store(cache_dir, part + 1, parts, state)
+		return
+	_final_checks(check, state)
+
+
+static func state_hash(state: Dictionary) -> String:
+	return var_to_str(state).md5_text()
+
+
+## Missões do trecho `part`. Em 3 trechos, cortes medidos (~55 s cada: as do fim custam mais); senão, pela contagem.
+static func _slice(part: int, parts: int) -> Array[StringName]:
+	var cuts: Array[int] = [0, 13, 22, ORDER.size()]
+	if parts != 3:
+		cuts.clear()
+		for k: int in range(parts + 1):
+			cuts.append(int(ORDER.size() * k / float(parts)))
+	return ORDER.slice(cuts[part], cuts[part + 1])
+
+
+static func _fresh_state() -> Dictionary:
+	return {"p": SaveManagerScript.default_profile(), "act1_level": 0, "ending": "", "chapter": 0}
+
+
+func _start_state(part: int, parts: int, cache_dir: String, tables: Dictionary) -> Dictionary:
+	if part == 0:
+		return _fresh_state()
+	if int(_handoff.get("part", -1)) == part and int(_handoff.get("parts", -1)) == parts:
+		return (_handoff["state"] as Dictionary).duplicate(true)
+	if not cache_dir.is_empty():
+		var path := _cache_path(cache_dir, part, parts)
+		if FileAccess.file_exists(path):
+			var stored: Variant = str_to_var(FileAccess.get_file_as_string(path))
+			if stored is Dictionary and (stored as Dictionary).has("p"):
+				return stored
+	print("economia %d/%d: sem estado guardado; refaz os trechos anteriores" % [part + 1, parts])
+	var state := _fresh_state()
+	for k: int in range(part):
+		_play(func(_ok: bool, _label: String) -> void: pass, state, _slice(k, parts), tables)
+	return state
+
+
+static func _cache_path(cache_dir: String, part: int, parts: int) -> String:
+	return cache_dir.path_join("economia_%d_de_%d.txt" % [part + 1, parts])
+
+
+static func _store(cache_dir: String, part: int, parts: int, state: Dictionary) -> void:
+	DirAccess.make_dir_recursive_absolute(cache_dir)
+	var path := _cache_path(cache_dir, part, parts)
+	var file := FileAccess.open(path + ".tmp", FileAccess.WRITE)
+	if file == null:
+		return
+	file.store_string(var_to_str(state))
+	file.close()
+	DirAccess.rename_absolute(path + ".tmp", path)
+
+
+func _play(check: Callable, state: Dictionary, missions: Array[StringName], tables: Dictionary) -> void:
+	var p: Dictionary = state["p"]
+	var act1_level: int = state["act1_level"]
+	var ending: String = state["ending"]
+	var chapter: int = state["chapter"]
+	for id: StringName in missions:
 		if Economy.node(id)["kind"] == &"secret" and not Economy.mission_unlocked(p, id):
 			continue
 		# Poder recomendado ancorado na curva do bot: ao chegar em cada capítulo ele alcança o recomendado,
@@ -103,6 +182,15 @@ func _campaign(check: Callable) -> void:
 			pass
 		if id == &"c3m3a":
 			act1_level = Economy.ship_level(p, &"falcon")
+	state["act1_level"] = act1_level
+	state["ending"] = ending
+	state["chapter"] = chapter
+
+
+func _final_checks(check: Callable, state: Dictionary) -> void:
+	var p: Dictionary = state["p"]
+	var act1_level: int = state["act1_level"]
+	var ending: String = state["ending"]
 	var level := Economy.ship_level(p, &"falcon")
 	if "--verbose" in OS.get_cmdline_user_args():
 		print("Economia: Ato I nível %d; fim nível %d, carteira %s, estrelas %d, resgatados %d, secretas %d" % [
