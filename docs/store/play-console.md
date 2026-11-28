@@ -369,51 +369,41 @@ as regras em `scripts/core/kill_ranking.gd` e a tela "Ranking de abates" (`scrip
 entra por Recordes e por Opções). O placar ordena pelo **total de abates da carreira**; no empate vence quem tem
 menos tempo jogado. O jogo envia o total depois de cada partida (e quando o jogador entra), só para quem fez login.
 
-**Hoje os dois IDs estão vazios** em `project.godot`:
+**Os dois IDs estão configurados** em `project.godot` (desde a `1.37.0`):
 
 ```ini
 [play_games]
 
-game_id=""
-leaderboard_id=""
+game_id="1046588535122"
+leaderboard_id="CgkI0uKm7LoeEAIQAA"
 ```
 
-Com `game_id` vazio o plugin de exportação não põe nada do Play Games no APK/AAB (nem a biblioteca, nem a
-dependência, nem o `APP_ID` do manifesto) e a tela mostra "O ranking ainda não está disponível". Com `game_id`
-preenchido e `leaderboard_id` vazio o SDK entra no build, mas o ranking continua indisponível. Passos 👤, nesta ordem:
+Feito no Play Console e no Google Cloud (projeto `atlantis-ascension`):
 
-1. **Criar o projeto do Play Games.** Play Console → o app → Play Games Services → Configuração e gerenciamento →
-   Configuração → "Não, meu jogo não usa as APIs do Google" → nome "Atlantis Ascension" → Criar. O Console cria (ou
-   pede para escolher) um projeto do Google Cloud. O **ID do projeto do Play Games** (só números, ex.:
-   `344400766390`) aparece no topo da página de Configuração: é o `game_id`.
-2. **Tela de consentimento OAuth.** Se o Console pedir, abra o link para o Google Cloud e configure a tela de
-   consentimento (tipo Externo, nome do app, e-mail de suporte) e publique-a.
-3. **Credenciais OAuth (uma por certificado).** Em Configuração → Credenciais → Adicionar credencial → tipo
-   **Android** → "Criar cliente OAuth" (abre o Google Cloud): tipo de aplicativo Android, pacote
-   `io.github.netstart.atlantisascension` e o **SHA-1** do certificado. Crie e vincule:
-   - a da **chave de assinatura do app** (a que a Google guarda): Play Console → Integridade do app → Assinatura
-     de apps → "Certificado da chave de assinatura do app" → SHA-1. É a que vale para quem instala pela Play;
-   - a da **chave de upload**: SHA-1 `79:EB:03:DD:FB:6F:FC:15:55:65:9D:F4:CE:91:71:ED:1A:71:40:24` (seção 0). Vale
-     para o AAB/APK instalado direto no aparelho, sem passar pela Play;
-   - opcional, a da chave de debug do Godot, para o APK de debug:
-     `keytool -list -v -keystore <debug.keystore> -alias androiddebugkey -storepass android`.
+- Projeto do Play Games criado; o ID dele (`1046588535122`) é o `game_id`.
+- Placar "Kill ranking" (idioma padrão en-US), numérico, 0 casas decimais, "Maior é melhor"; o ID dele
+  (`CgkI0uKm7LoeEAIQAA`) é o `leaderboard_id`.
+- Clientes OAuth do tipo Android (pacote `io.github.netstart.atlantisascension`) para o SHA-1 da **chave de
+  assinatura do app** (vale para quem instala pela Play) e da **chave de upload**
+  (`79:EB:03:DD:FB:6F:FC:15:55:65:9D:F4:CE:91:71:ED:1A:71:40:24`, para o AAB/APK instalado direto). Sem a credencial
+  do certificado que assinou o app instalado, o login falha em silêncio. Para o APK de debug, crie mais um com o
+  SHA-1 de `keytool -list -v -keystore <debug.keystore> -alias androiddebugkey -storepass android`.
 
-   Sem a credencial do certificado que assinou o app instalado, o login falha em silêncio (a tela fica em "Entrar
-   com Google Play Games").
-4. **Criar o placar.** Play Games Services → Configuração e gerenciamento → Placares → Criar placar: nome "Ranking de
-   abates" (em inglês "Kill ranking"), formato **Numérico**, **0 casas decimais**, ordem **"Maior é melhor"**, sem
-   limite mínimo nem máximo, proteção contra adulteração ligada. O **ID do placar** (começa com `CgkI`) é o
-   `leaderboard_id`.
-5. **Testadores.** Antes de publicar, só as contas de Play Games Services → Testadores conseguem entrar: ponha o seu
-   e-mail e os dos testadores do teste fechado.
-6. **Colar os dois IDs** em `project.godot` (`[play_games]`, entre aspas), subir a versão, rodar
-   `toolsun_checks.ps1` e `toolsuild_release.ps1` e instalar: Opções → Ranking de abates → "Entrar com Google
-   Play Games" → terminar uma missão → a sua linha aparece em menta.
-7. **Publicar o projeto do Play Games.** Play Games Services → Configuração e gerenciamento → Publicação → resolver
-   as pendências (nome, descrição, ícone 512x512 e imagem de destaque do projeto de jogos) → Revisar e publicar. Sem
-   isso só os testadores veem o ranking.
-8. **Declarações.** Atualizar "Segurança dos dados" (acima) e a política de privacidade antes de enviar o AAB com os
-   IDs.
+Com `game_id` preenchido o plugin de exportação põe o SDK, a dependência e o `APP_ID` do manifesto só nos builds
+Android; Windows e Linux não mudam. Se o `game_id` voltar a ficar vazio, nada do Play Games entra no build e a tela
+mostra "O ranking ainda não está disponível".
+
+- Projeto do Play Games **publicado** em 28/11/2026 (descrição, categoria Arcade, ícone 512x512 e destaque
+  `build/store/play/en/feature_graphic.png`).
+
+Falta 👤:
+
+1. **Tela OAuth em produção.** Google Cloud → Google Auth Platform → Branding: página inicial
+   `https://netstart.github.io/`, política `https://netstart.github.io/atlantis/privacy-policy.html`, domínio
+   autorizado `netstart.github.io` → Salvar; depois Público-alvo → Publicar app (sem logotipo, não pede verificação).
+   Conferir no aparelho: Opções → Ranking de abates → "Entrar com Google Play Games" → terminar uma missão → a sua
+   linha aparece em menta.
+2. **Segurança dos dados.** Atualizar a declaração (acima) para o ranking; a política de privacidade 1.8 já o cita.
 
 Para saber:
 

@@ -816,3 +816,8 @@ Legenda: ⬜ a fazer · 🔄 em andamento · ✅ feito e validado · ⚠️ limi
   primeiro a placa real (Wi-Fi) e deixa as virtuais (WSL, Hyper-V, VirtualBox, VPN) para o fim. `run_checks` de ~281 s
   para ~246 s com as mesmas verificações (campanha da economia em 3 trechos paralelos, pesos das fatias em segundos
   medidos, regras em 4 fatias e integração em 8).
+- ✅ `1.37.0` Ranking de abates ligado: `project.godot` `[play_games]` com `game_id="1046588535122"` e
+  `leaderboard_id="CgkI0uKm7LoeEAIQAA"` (placar "Kill ranking", en-US; clientes OAuth Android da chave de assinatura
+  do app e da chave de upload no projeto do Cloud `atlantis-ascension`). O SDK do Play Games entra só nos builds
+  Android. Falta 👤 os testadores, publicar o projeto do Play Games e atualizar "Segurança dos dados"
+  (`docs/store/play-console.md`, "Play Games Services e ranking").

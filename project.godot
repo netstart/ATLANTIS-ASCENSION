@@ -17,7 +17,7 @@ general/android/enable_r8_optimization=true
 
 config/name="Atlantis Ascension"
 config/description="Atlantis Ascension — The ocean remembers. The sky belongs to whoever survives."
-config/version="1.36.1"
+config/version="1.37.0"
 run/main_scene="res://scenes/app/App.tscn"
 config/quit_on_go_back=false
 config/features=PackedStringArray("4.7", "GL Compatibility")
@@ -62,8 +62,8 @@ pointing/emulate_touch_from_mouse=true
 
 [play_games]
 
-game_id=""
-leaderboard_id=""
+game_id="1046588535122"
+leaderboard_id="CgkI0uKm7LoeEAIQAA"
 
 [rendering]
 
